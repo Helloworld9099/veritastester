@@ -16,6 +16,7 @@ from .audio import sources
 from .session import LiveSession
 from .context import parse_glossary
 from .pipeline import Pipeline
+from .provider import TranslationRequest
 from .providers import PROVIDERS, key_available, needs_cloud, create_translator
 
 LANGUAGES = {
@@ -137,7 +138,8 @@ class Application:
         self.engine_box = self.picker(engine_controls, PROVIDERS, width=12)
         self.engine_box.set(self.engine_selected)
         self.engine_box.bind("<<ComboboxSelected>>", lambda _event: self.change_engine())
-        self.label(engine_controls, "Ollama: local / Groq, Azure, Gemini: cloud", 9, MUTED).pack(side="left", padx=8)
+        self.button(engine_controls, "CHECK ENGINE", self.check_engine).pack(side="left", padx=8)
+        self.label(engine_controls, "Local / cloud selection is explicit", 9, MUTED).pack(side="left", padx=8)
 
         caption_panel = tk.Frame(self.root, bg=PANEL, padx=20, pady=14)
         caption_panel.pack(fill="both", expand=True, padx=18, pady=7)
@@ -229,6 +231,27 @@ class Application:
         self.status_var.set(
             "Azure is context-free for baseline comparisons." if next_engine == "azure"
             else f"Engine set to {next_engine}. Context selection available.")
+
+    def check_engine(self):
+        """Check one provider with a public synthetic phrase, never meeting text."""
+        if self.live_session is not None or (self.worker and self.worker.is_alive()):
+            self.status_var.set("Stop the current task before checking the engine.")
+            return
+        engine = self.engine_box.get()
+        if not key_available(engine):
+            self.status_var.set(f"Configure the {engine} key in .env, then restart the app.")
+            return
+        def task():
+            try:
+                model = create_translator(engine)
+                response = model.translate(TranslationRequest(
+                    text="Hola", source="es", target="en", context_enabled=False))
+                self.publish("engine_check", engine, response[:80])
+            except Exception as exc:
+                self.publish("engine_check", engine, f"ERROR: {exc}")
+        self.status_var.set(f"Checking {engine} with a public example...")
+        self.worker = threading.Thread(target=task, daemon=True)
+        self.worker.start()
 
     def check_consent(self):
         engine = self.engine_box.get()
@@ -385,6 +408,8 @@ class Application:
                 elif kind == "typed_error":
                     if values[0] == self.text_generation:
                         self.status_var.set("ERROR · " + values[1])
+                elif kind == "engine_check":
+                    self.status_var.set(f"{values[0]} test: {values[1]}")
                 elif kind == "error":
                     self.status_var.set("ERROR · " + values[0])
                 elif kind == "live":
