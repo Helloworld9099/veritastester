@@ -29,8 +29,8 @@ def source_rows(path: Path, task: str):
             if not line.strip():
                 continue
             item = json.loads(line)
-            if item.get("split") == "test":
-                raise ValueError(f"Test/holdout item found on line {line_no}")
+            if item.get("split") not in {"train", "dev"}:
+                raise ValueError(f"Test/holdout or invalid split found on line {line_no}")
             if task == "memory":
                 required = {"case_id","group_id","language","utterance","previous",
                             "candidate_memory","provenance"}
