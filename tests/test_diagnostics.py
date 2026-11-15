@@ -1,0 +1,36 @@
+import pytest
+
+from bridgecaption.diagnostics import check_provider
+
+
+class Translator:
+    def __init__(self):
+        self.calls = []
+
+    def translate(self, req):
+        self.calls.append(req)
+        return "Hello, good morning."
+
+
+def test_check_provider_uses_only_public_phrase(monkeypatch):
+    monkeypatch.setenv("AZURE_TRANSLATOR_KEY", "dummy-test-key")
+    model = Translator()
+    report = check_provider("azure", factory=lambda name: model)
+    assert report["engine"] == "azure"
+    assert report["synthetic_only"] is True
+    assert report["destination"] == "cloud"
+    assert model.calls[0].text == "Hola, buenos días."
+    assert model.calls[0].context_enabled is False
+    assert model.calls[0].previous == []
+
+
+def test_missing_credentials_do_not_expose_value(monkeypatch):
+    monkeypatch.delenv("GROQ_API_KEY", raising=False)
+    with pytest.raises(RuntimeError, match="Missing groq credential"):
+        check_provider("groq", factory=lambda _: Translator())
+
+
+def test_unrecognized_provider_never_calls_factory():
+    with pytest.raises(ValueError, match="Unsupported"):
+        check_provider("invalid", factory=lambda name: (_ for _ in ()).throw(
+            AssertionError("must not create provider")))
