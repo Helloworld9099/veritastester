@@ -46,3 +46,8 @@ def test_heldout_group_splits():
     assert outcome["train_n"] + outcome["dev_n"] + outcome["test_n"] == 100
     assert outcome["model"]["format"] == "bridgecaption_senses_v1"
     assert 0.5 <= outcome["threshold"] < 1
+
+
+def test_training_rejects_tiny_datasets():
+    with pytest.raises(ValueError, match="60 examples"):
+        train([example(i, "excellent" if i % 2 else "ill") for i in range(20)])
