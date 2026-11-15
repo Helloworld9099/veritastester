@@ -26,10 +26,11 @@ class Pipeline:
         selected = (infer_topic(" ".join(previous[-2:] + [text]))
                     if contextual and topic == "auto"
                     else ("general" if topic == "auto" else topic))
-        response = self.translator.translate(TranslationRequest(
+        # Same-language captions require no API call; preserve raw spoken text.
+        response = (text if source == target else self.translator.translate(TranslationRequest(
             text=text, source=source, target=target, topic=selected,
             previous=previous, glossary=(glossary or {}) if contextual else {},
-            context_enabled=contextual))
+            context_enabled=contextual)))
         if contextual:
             self.history.add(text)
         else:
