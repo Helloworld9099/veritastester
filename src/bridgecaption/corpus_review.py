@@ -9,10 +9,16 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 from pathlib import Path
 
 from .research_training import MemoryExample
 from .sense_model import SenseExample
+
+
+def safe_display(text: str) -> str:
+    """Strip control characters so downloaded corpus text cannot send terminal escapes."""
+    return re.sub(r"[\x00-\x1f\x7f-\x9f]", " ", str(text))
 
 
 def source_rows(path: Path, task: str):
@@ -29,7 +35,7 @@ def source_rows(path: Path, task: str):
                 required = {"case_id","group_id","language","utterance","previous",
                             "candidate_memory","provenance"}
             else:
-                required = {"case_id","group_id","language","utterance","previous",
+                required = {"case_id","group_id","language","utterance",
                             "expression","provenance"}
             if not required.issubset(item) or any(not isinstance(item[key], str) or
                     not item[key].strip() for key in required):
@@ -69,13 +75,16 @@ def review(candidates: Path, out: Path, task: str, *, append=False,
                 continue
             output_fn(f"\nID {candidate['case_id']} | group {candidate['group_id']}")
             output_fn(f"Language: {candidate['language']}")
-            output_fn(f"Original: {candidate['utterance']}")
-            output_fn(f"Previous: {candidate['previous']}")
+            output_fn(f"Original: {safe_display(candidate['utterance'])}")
+            previous_text = candidate.get("previous", "").strip()
+            if not previous_text and task == "sense":
+                previous_text = "[NO_PREVIOUS_TURN_IN_SOURCE]"
+            output_fn(f"Previous: {safe_display(previous_text)}")
             if task == "memory":
-                output_fn(f"Candidate memory: {candidate['candidate_memory']}")
+                output_fn(f"Candidate memory: {safe_display(candidate['candidate_memory'])}")
                 output_fn("NOTE: Same-dialogue is not necessarily helpful; other-dialogue is not necessarily harmful.")
             else:
-                output_fn(f"Expression: {candidate['expression']}")
+                output_fn(f"Expression: {safe_display(candidate['expression'])}")
                 output_fn("NOTE: Existing idiomaticity labels or dictionary definitions are NOT automatically the sense.")
             output_fn("Independent review required. 'q' at any prompt stops without saving that row.")
 
@@ -119,6 +128,7 @@ def review(candidates: Path, out: Path, task: str, *, append=False,
                     **{k:candidate[k] for k in
                        ("case_id","group_id","language","utterance","previous",
                         "expression","provenance")},
+                    "previous": previous_text,
                     "situation": situation, "meaning": meaning})
             stream.write(json.dumps(record.__dict__, ensure_ascii=False) + "\n")
             stream.flush()
