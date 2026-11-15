@@ -192,3 +192,27 @@ def test_clear_context_suppresses_old_inflight_translation():
     assert not any(event[0] == 'caption' for event in events)
     session.stop()
     assert wait_for(lambda: any(event[0] == 'stopped' for event in events))
+
+
+def test_clear_context_suppresses_old_inflight_recognition():
+    began = threading.Event()
+    release = threading.Event()
+
+    class SlowASR:
+        def transcribe(self, data, language):
+            began.set()
+            release.wait(2)
+            return data.decode(), 'es'
+
+    events = []
+    session = LiveSession('mock', on_event=lambda *a: events.append(a),
+        audio_factory=lambda n, d: FakeCapture(n, d, [b'pre-reset']),
+        recognizer_factory=SlowASR, pipeline_factory=FakePipeline,
+        sound_gate=lambda b: True).start()
+    assert wait_for(lambda: began.is_set())
+    session.reset_context()
+    release.set()
+    time.sleep(.1)
+    assert not any(event[0] in {'heard', 'caption'} for event in events)
+    session.stop()
+    assert wait_for(lambda: any(event[0] == 'stopped' for event in events))
