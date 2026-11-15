@@ -161,3 +161,13 @@ Each CSV row needs a genuine participant/licensing provenance, a stable conversa
 Provider connectivity can be checked with bridgecaption-check --engine azure --execute, which translates only a hard-coded public Spanish phrase. A successful check confirms API access, **not** live audio, contextual translation, or the accuracy of the trained memory selector.
 
 Training is still blocked until adequate real labels exist. If labelled data is insufficient, report the zero-training baseline and failure examples rather than presenting a small synthetic-data demonstration as measured real-world improvement.
+
+## 12. Eight-corpus preparation and training safeguards
+
+See [CORPUS_PREPARATION.md](CORPUS_PREPARATION.md) for exact source links, licenses, field mappings, private imports, dataset roles, multi-corpus leakage checks, and human annotation. `bridgecaption-prep-corpus` converts local files only, retaining original source split IDs and SHA-256 fingerprints. `bridgecaption-corpus-curriculum` produces (1) unlabelled helpful/harmful **candidate comparisons**, (2) unlabelled slang-sense review cases, and (3) genuinely known same-conversation-versus-other-conversation **temporal proxy labels**. Those proxy labels cannot be used as helpfulness ground truth.
+
+The new `bridgecaption-corpus-review` tool produces actual memory/sense training rows only after a human provides the second grounded scene view and independent reference meaning/translation. It excludes test/holdout records and refuses to overwrite or write into a Git-tracked folder.
+
+`bridgecaption-train-idiom` adds an optional CPU-friendly binary idiomaticity ablation using the same hashed feature budget for utterance-only and utterance-plus-context models. MAGPIE and SemEval binary labels may supervise this **different auxiliary task**, but they do not supervise exact senses or memory value. The module is not invoked without explicit `--train --confirm-dataset-rights` and a successful local preflight. Model output is JSON, not executable pickle.
+
+**Training has not begun.** The project still requires real source files acquired by the user within licensing terms, a fresh complete unit test run of this branch, independent human labels, and measured held-out translation quality before enabling learned weights in the live app.
