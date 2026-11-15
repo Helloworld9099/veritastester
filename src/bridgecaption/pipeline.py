@@ -5,6 +5,7 @@ from .context import Conversation
 from .context_engine import ContextSelector
 from .provider import TranslationRequest
 from .providers import create_translator
+from .sense_model import load_predictor, inferred_senses
 
 
 @dataclass
@@ -17,12 +18,14 @@ class Caption:
 
 
 class Pipeline:
-    def __init__(self, translator=None, selector=None, context_mode="selective"):
+    def __init__(self, translator=None, selector=None, context_mode="selective",
+                 sense_artifact=None):
         self.translator = translator if translator is not None else create_translator()
         self.selector = selector if selector is not None else ContextSelector()
         if context_mode not in {"selective", "all"}:
             raise ValueError("context_mode must be selective or all")
         self.context_mode = context_mode
+        self.sense_artifact = sense_artifact if sense_artifact is not None else load_predictor()
         self.history = Conversation()
 
     def translate(self, text, source="auto", target="en", topic="auto", glossary=None, contextual=True):
@@ -43,16 +46,19 @@ class Pipeline:
                 previous, reason = list(result.memories), result.mode
         else:
             previous, reason = [], "disabled"
+        hypotheses = inferred_senses(self.sense_artifact, text, previous,
+                                     selected_topic, source) if with_context else {}
         response = text if source == target else self.translator.translate(TranslationRequest(
             text=text, source=source, target=target, topic=selected_topic,
             previous=previous, glossary=(glossary or {}) if with_context else {},
-            context_enabled=with_context))
+            context_enabled=with_context, sense_hints=hypotheses))
         if with_context:
             self.history.add(text)
         else:
             self.history.clear()
         return Caption(text, response, source, selected_topic,
-                       context_info=f"{reason}: {len(previous)} prior utterance(s)")
+                       context_info=f"{reason}: {len(previous)} prior utterance(s); "
+                                    f"{len(hypotheses)} learned sense hint(s)")
 
     def reset(self):
         self.history.clear()
