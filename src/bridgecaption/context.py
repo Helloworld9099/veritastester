@@ -34,7 +34,7 @@ def slang_hints(text: str, lang: str) -> list[str]:
     for term, meaning in SLANG.get(lang, {}).items():
         needle = term.casefold()
         if re.search(r"[a-z]", needle):
-            matched = bool(re.search(r"(?<!\\w)" + re.escape(needle) + r"(?!\\w)", lowered))
+            matched = bool(re.search(r"(?<!\w)" + re.escape(needle) + r"(?!\w)", lowered))
         else:
             # CJK phrases do not always use whitespace between words.
             matched = needle in lowered
