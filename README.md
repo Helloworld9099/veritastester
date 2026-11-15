@@ -1,102 +1,129 @@
 # BridgeCaption
 
-**A visible, movable AI translation overlay for Linux meetings, videos and lectures.** Built for the **2026 Veritas AI International High School Hackathon — AI + Languages** track.
+A **visible, always-on-top Linux desktop translation overlay** for videos, online meetings and lectures. Built for the **2026 Veritas AI Hackathon — AI + Languages** track.
 
-BridgeCaption opens an always-on-top caption window with normal Linux window decorations and minimize controls. Select a **System audio** monitor to translate what is playing on your computer, or a microphone to translate nearby speech. The app transcribes speech locally with a pretrained multilingual Whisper model, then sends **transcribed text** (not raw audio) to Google's Gemini translation model with short-term conversation context, glossary terms and contextual slang hints. It displays the original language and translated captions side by side.
+**Status:** Prototype code with offline tests; no claim of production readiness or verified multilingual accuracy. User-approved audio sources are processed by local Faster-Whisper. A separate provider translates text, with context selection designed to avoid misleading previous statements. Audio is not deliberately saved.
 
-This is an early working-code prototype, **not a verified production service**. Actual live caption quality depends on the user's machine, Gemini quota, network and source language. Translations process approximately four-second chunks of audio, so there will be a delay; it is not simultaneous word-by-word interpretation. Capture, recognition and translation run independently with bounded queues; if the translation service is too slow, older queued chunks are skipped and the app reports this instead of silently accumulating minutes of latency.
+## What it does
 
-## Quick start on Ubuntu / Linux
+- Select microphone or PulseAudio/PipeWire **system audio monitor**; read subtitles over other desktop windows.
+- Translate with **local Ollama (no API key)**, Groq, Gemini or Microsoft Azure Translator. Provider switching is explicit: **no silent cloud fallbacks**.
+- Use an in-memory recent-conversation buffer, topical hints, slang ambiguity hints and a user glossary. A context selector can **abstain** from passing unrelated older text. This is a conservative untrained heuristic until independently trained predictor weights are supplied.
+- Display original and translated text and report processing lag/skipped audio chunks. Three independent workers capture audio, transcribe it and translate it.
+- Clear private context between sessions; Clear Context discards old queued audio/captions. The UI requests disclosure/consent about the selected transcript destination.
+- Test baseline vs. always-on context vs. learned one-view and two-view memory selection without mixing speaker/conversation groups.
 
-Prerequisites: Python 3.10+, FFmpeg, PulseAudio-compatible PipeWire or PulseAudio, an audio output or microphone, and a Gemini Developer API key.
+**Language coverage is not equivalent to Google Translate's entire list.** Listed speech and translation languages vary by model; Swahili, Yoruba, accented speech and slang need actual tests.
+
+## Ubuntu installation
 
 ~~~bash
-git clone --branch feat/bridgecaption-hackathon --single-branch https://github.com/Helloworld9099/veritastester.git
+git clone --branch fix/translation-foundation-and-training-gates \
+  https://github.com/Helloworld9099/veritastester.git
 cd veritastester
-sudo apt install ffmpeg pulseaudio-utils python3-tk python3-venv
+sudo apt update
+sudo apt install -y ffmpeg pulseaudio-utils python3-tk python3-venv
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[test,eval]'
 cp .env.example .env
-# Open .env in an editor and set GEMINI_API_KEY
+~~~
+
+The clone may require GitHub login because this repository is private.
+
+### Select the translation engine
+
+**Local: Ollama (no provider key).** Install Ollama using its official documentation, start the Ollama service, and run `ollama pull qwen3:4b`. Keep the service running. With `BRIDGE_TRANSLATOR=ollama` in `.env`, the recognized speech is translated locally at `127.0.0.1:11434`. CPU performance may be slow: this is a privacy/no-quota option, not a speed guarantee.
+
+**Groq (cloud):** Set `BRIDGE_TRANSLATOR=groq` and `GROQ_API_KEY`; the default model is `openai/gpt-oss-20b`. This supports instructions and selected context, but free-tier quotas still apply.
+
+**Gemini (cloud):** Set `BRIDGE_TRANSLATOR=gemini` and `GEMINI_API_KEY`. Model defaults to `gemini-3.5-flash-lite`; verify availability for your account.
+
+**Azure (cloud baseline):** Set `BRIDGE_TRANSLATOR=azure`, `AZURE_TRANSLATOR_KEY` and, where needed, `AZURE_TRANSLATOR_REGION`. This endpoint only receives the current transcript. It **does not support our contextual prompts or glossary** and should be treated as a conventional translation baseline.
+
+Run:
+
+~~~bash
 bridgecaption
 ~~~
 
-Get a key at https://aistudio.google.com/apikey. The default translation model is gemini-3.5-flash-lite, and the model setting is configurable. If a model ID is unavailable for your account, change GEMINI_MODEL in .env to an available text-generation model. The first speech-model run downloads weights to the local machine.
+The **Translation Engine** control inside the app changes providers; you can also choose a provider in `.env`. The privacy dialog identifies the current destination. The app does not send text to other translation providers if one fails.
 
-Use **System audio (current output)** for meetings, browser videos and other playback, or a microphone. Read and accept the visible disclosure about transmitting transcript text to Gemini, then click **START LISTENING** to capture speech. Click **STOP LISTENING** to end capture. Drag the top header to move the window; PINNED toggles always-on-top mode.
+To test translation without audio, select Spanish as source, type *Ese código está chido*, and click **TRANSLATE TEXT**. With system audio, choose a monitor such as **System audio (current output)**, then click **START LISTENING**. Consent and participant authorization are required. Use **STOP LISTENING** when done.
 
-**To try without audio**, select **Spanish** rather than Auto detect, type "Ese código está chido" and click TRANSLATE TEXT. Open GLOSSARY and enter "chido = cool", or select a specific meeting topic. Toggle Context + slang to compare context-enabled behavior.
+The first speech recognition run downloads Whisper model weights. `WHISPER_MODEL=tiny` may reduce CPU load but usually hurts accuracy. Set `AUDIO_CHUNK_SECONDS` between 1 and 12 (default 4) and `TRANSLATION_TIMEOUT_SECONDS` within 3–30 seconds. Results depend on hardware, provider and model.
 
-If output devices are missing, run `pactl list short sources`. A device whose name ends in `.monitor` generally captures output playback. On some Wayland compositors, always-on-top behavior may be restricted. If CPU recognition is too slow, set WHISPER_MODEL=tiny in .env, which can reduce accuracy. To change the listening interval, set AUDIO_CHUNK_SECONDS to between 1 and 12.
+## AI and context architecture
 
-## Language coverage
+~~~text
+Authorized audio -> faster-whisper (local speech recognition)
+                         |
+                         v
+                Current transcript
+                         |
+               Context intelligence
+             (select memories or abstain)
+                    /         \
+       optional trained        untrained conservative
+       utility predictor       context heuristic
+                    \         /
+                         |
+              Model instructions + data
+                         |
+              Explicit translator provider
+             Ollama | Groq | Gemini | Azure*
+                         |
+               Original + translated captions
 
-The UI offers a broad language selector, including Spanish, French, Mandarin Chinese, Swahili, Yoruba and other languages. **It does not yet include every language supported by Google Translate, and not every listed language or translation pair has been empirically validated.** The speech model and translation model have different language coverage. The target selector accepts any listed language but successful output depends on the chosen model's actual capabilities.
-
-## Core AI design
-
-Audio from selected device -> **Faster-Whisper ASR** -> transcript and language -> **Gemini translation** -> original and translated captions.
-
-Each listening session has independent, memory-only context that is cleared when the session ends. The translation request can use the last four preceding utterances, a chosen topic, a small term glossary, and conditional slang-meaning hints. Hints are not unconditional replacements: slang can have literal meanings too. Prior transcript text is treated as untrusted data and cannot legitimately instruct the AI.
-
-An older, unvalidated **small supervised Naive Bayes topic classifier** is retained for demonstration, but is disabled in the live translation pipeline. Train it from scratch using original synthetic labels, but do not confuse it with training Whisper or Gemini:
-
-~~~bash
-bridgecaption-train --data data/topic_train.csv --out data/topic_model.json --metrics data/topic_metrics.json
+* Azure does not receive optional dialogue context.
 ~~~
 
-The older topic classifier is an offline synthetic-data demonstration **not connected to live translation**. Choosing Auto for the meeting topic currently uses the neutral General setting; manual topic selection and the previous-utterance context are still supported. The central intelligence is the pretrained speech and translation models, which are **not fine-tuned in this repository**.
+The local context selector uses relevant prior utterances, potential slang and manually provided meeting topics. The **supervised memory-utility predictor** is a small trainable baseline using eight shared lexical features. Its training experiments follow the uploaded two-view/transfer-value hypothesis **by analogy**, not as a reinforcement-learning or JEPA implementation. The predictor does **not** generate meaning from nothing; the translation language model still performs contextual language interpretation. The predictor's only learned task is which earlier memory might help or harm a translation.
 
-## Foundation checks and future memory training
+No reliable pretrained local memory model or trained semantic encoder is bundled. Before enabling a trained artifact, it must outperform no-context and always-on-context baselines on independently reviewed, held-out data; see [training design and readiness gates](docs/TRAINING_READINESS.md).
 
-Run `bridgecaption-preflight` from the repository root after installing the test dependencies. It runs compile and offline unit tests, checks whether desktop/audio dependencies are available, and writes a local report to `results/foundation_preflight.json`. It **cannot** establish real microphone, system-audio, Gemini API, language coverage or desktop usability. Those require testing on your own workstation.
-
-The research hypotheses in the provided document concern two-view representation learning, predicting whether old experiences are useful, and avoiding harmful transfer. BridgeCaption adapts them cautiously to translation: an opt-in supervised predictor can **abstain** from reusing earlier dialogue when that dialogue appears likely to distort a new translation. The experimental code is **not JEPA, reinforcement learning or fine-tuning of Whisper/Gemini**, and is not yet connected to the live application.
-
-After collecting independent permitted and human-reviewed conversation examples:
+## Tests and foundation preflight
 
 ~~~bash
-# Validates JSONL schema and grouped train/dev/test splits. Does NOT train.
+python -m compileall -q src tests
+python -m pytest -q
+bridgecaption-preflight
+~~~
+
+Preflight reports offline compilation, dependencies and tests only. **It does not verify live audio, provider responses, model quality, participant consent or UI behavior.**
+
+For independent, permissioned contextual datasets:
+
+~~~bash
+# Validate data, do not train:
 bridgecaption-train-memory --data data/private/annotated_context.jsonl
 
-# Only after all readiness gates have been verified, opt in to training:
-bridgecaption-train-memory --data data/private/annotated_context.jsonl --train --confirm-live-verified
+# After successful preflight + real audio/provider tests, explicit opt-in:
+bridgecaption-train-memory --data data/private/annotated_context.jsonl \
+  --train --confirm-live-verified
+
+# Experimental model is never automatically activated:
+# BRIDGE_CONTEXT_MODEL=results/memory_research.json
+
+# Compare all four methods on test groups without making API calls:
+bridgecaption-eval-context --data data/private/annotated_context.jsonl \
+  --artifact results/memory_research.json
+
+# Only after confirming account quota and data sharing permissions:
+bridgecaption-eval-context --data data/private/annotated_context.jsonl \
+  --artifact results/memory_research.json --engine ollama --execute
 ~~~
 
-Read the [training hypotheses, dataset schema, experimental baselines, and pre-training acceptance gates](docs/TRAINING_READINESS.md). No real model training or hackathon accuracy benchmark is claimed in the current revision.
+The four-arm comparison uses the **same translation engine** in every condition, and reports per-language chrF and request latency. It requires real fluent reference translations and speaker/conversation-disjoint splits. Synthetic examples and unit tests are **not evidence of real-world accuracy**.
 
-## Test and evaluate
+ASR can be evaluated on held-out public or consented clips via `python -m bridgecaption.asr_eval --manifest /path/to/manifest.csv`. See [dataset guidance](docs/DATASETS.md) for FLEURS, Common Voice, FLORES+, and CoVoST 2.
 
-~~~bash
-python -m pytest -q
-# Focused session/normalization tests can run without model weights or an API key.
-# Requires GEMINI_API_KEY, actually calls the remote model:
-bridgecaption-eval --data data/context_demo.jsonl --out results/demo_results.csv
-# Requires authorized held-out audio clips and a CSV manifest:
-python -m bridgecaption.asr_eval --manifest /path/to/manifest.csv
-~~~
+## Security, privacy, limitations
 
-The synthetic contextual examples are for testing software mechanics, not a validated competitive benchmark. For genuine results, use **FLEURS** and **Common Voice** for multilingual/accent recognition, **FLORES+** for parallel text translation, and optionally **CoVoST 2** for speech translation. See [Dataset Guide](docs/DATASETS.md).
+Raw audio is decoded locally; chosen text and selected prior context are sent to the **explicitly selected** cloud provider, or only to local Ollama. Do not use confidential material or record meeting participants without authorization. Recordings and API credentials must not be committed; `.env`, `data/private/`, and `results/` are ignored by Git. For a complete data-policy assessment, consult the selected provider's terms.
 
-Report **actual WER for each language**, translation chrF by language, latency, slang/term accuracy on independent human references, examples of errors and comparisons against the same model without context. No real audio, Gemini, or translation-performance results have been collected by this repository's authoring environment yet. Small synthetic topic-training examples are included, but the training step is deliberately pending. See [Pre-training implementation status](docs/PRETRAINING_STATUS.md).
+The app can lag, skip audio under load, misrecognize accents or speakers, and generate incorrect translations. No certified real-time guarantee, complete Google language parity, model fine-tuning, or sustained Ubuntu field test is claimed here. Running Ollama and Whisper on CPU can be considerably slower than cloud translation.
 
-## Privacy
+### Attribution
 
-Capture starts **only** after an explicit click and consent notice. There is no hidden/stealth recording or saving of audio files by BridgeCaption. Microphone/system audio stays local for recognition. **Text from the conversation, recent context and terminology are sent to the Gemini API**, subject to Google's data-handling policies and quota. Do not use confidential meetings or record other people without permission. The overlay is visible, not designed to evade screensharing or monitoring.
-
-.env, recordings and local evaluation results are ignored by git. No secrets should be committed.
-
-## Hackathon integrity
-
-Pretrained speech and translation models, public datasets and AI-assisted coding are permitted by the event rules, provided they are credited and the team understands its work. This application was generated with extensive assistance from ChatGPT GPT-6 during the hackathon. The work does not claim to train a new multilingual foundation model. The trained topic classifier is a limited supplemental experiment. See [Hackathon checklist](docs/HACKATHON.md) for evaluation and disclosure requirements.
-
-## Sources and credits
-
-- [OpenAI Whisper](https://github.com/openai/whisper) — pretrained multilingual speech recognition
-- [faster-whisper](https://github.com/SYSTRAN/faster-whisper) — optimized local inference
-- [Gemini Developer API](https://ai.google.dev/gemini-api/docs) — cloud translation; model and quotas are configuration-dependent
-- [FFmpeg](https://ffmpeg.org/) — local audio capture
-- [FLEURS](https://huggingface.co/datasets/google/fleurs), [Common Voice](https://commonvoice.mozilla.org/en/datasets), [FLORES+](https://huggingface.co/datasets/openlanguagedata/flores_plus), [CoVoST 2](https://github.com/facebookresearch/covost) — optional external evaluation datasets, not included
-
-MIT license applies to original project code. Respect separately licensed libraries, models and datasets.
+[OpenAI Whisper](https://github.com/openai/whisper), [faster-whisper](https://github.com/SYSTRAN/faster-whisper), [Ollama](https://docs.ollama.com/api), [Groq](https://console.groq.com/docs/openai), [Gemini](https://ai.google.dev/gemini-api/docs), [Azure Translator](https://learn.microsoft.com/en-us/azure/ai-services/translator/text-translation/reference/v3/reference), and [FFmpeg](https://ffmpeg.org/) are third-party dependencies or services. Major code and documentation have been developed with ChatGPT assistance; disclose this in the competition submission. Original project code is MIT licensed.
