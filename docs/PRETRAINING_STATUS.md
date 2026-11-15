@@ -15,7 +15,7 @@ Repository: `Helloworld9099/veritastester`. Initial prototype is already on `mai
 
 ## Local and remote checks
 
-- The isolated local component fixture tests completed with **39 passed** (context selection, provider schemas, prompt boundaries, grouped data handling and evaluation logic). This is not a full checkout of the GitHub revision and does not test a running desktop.
+- The isolated local component fixture tests completed with **40 passed** (context selection, provider schemas, prompt boundaries, grouped data handling and evaluation logic). This is not a full checkout of the GitHub revision and does not test a running desktop.
 - GitHub Actions CI runs for this branch returned **failure with no reported runner/job steps**. This does not establish an application test failure or a successful test run; inspect repository Actions settings/runners/billing and run `bridgecaption-preflight` on a fresh local checkout.
 - No real Whisper weights were downloaded in the isolated development environment, and no authorized system audio, cloud API credentials or actual user sessions were tested.
 
