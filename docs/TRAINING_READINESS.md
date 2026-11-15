@@ -131,3 +131,19 @@ The live `Pipeline` now invokes `ContextSelector` before contextual translation.
 The UI has an explicit **Ollama / Groq / Azure / Gemini** provider selector and a safe CHECK ENGINE button. No silent cloud failover is permitted; Azure is marked context-free. Recognition remains local in all modes, though selected transcript text is sent to the explicitly chosen cloud provider.
 
 **Release and research status: not verified.** Local component tests cover the new provider and selector boundaries using mocks, but the GitHub-hosted full test workflow has failed without any reported runner steps, and actual desktop, microphone/system-audio, provider-key, model-availability and held-out spoken-translation tests are outstanding. No real supervised training of context weights has occurred in this project revision.
+
+## 10. Supervised slang-sense classifier (additional opt-in component)
+
+`src/bridgecaption/sense_model.py` implements a **character n-gram Naive Bayes** baseline to classify the meaning of an ambiguous phrase using earlier turns and a grounded situation description. It is not a JEPA, multilingual sentence embedding or foundation model. It can abstain when no valid meaning has sufficiently high dev-calibrated probability. The provider prompt treats its output as uncertain evidence, never an instruction or guaranteed interpretation.
+
+Prepare permissioned `data/private/sense_labels.jsonl` with these required fields: `case_id`, `group_id`, `language`, `expression`, `utterance`, `previous`, `situation`, `meaning`, `provenance`. Each ambiguous expression must have examples of **at least two distinct senses** across independent conversations and speakers; avoid leaking text, targets or speaker groups across splits. `group_id` needs to represent an entire speaker/conversation family, not a random row.
+
+Validation does not train:
+
+~~~bash
+bridgecaption-train-sense --data data/private/sense_labels.jsonl
+~~~
+
+Actual training is blocked behind `bridgecaption-preflight`, real live-test verification, and the explicit `--train --confirm-live-verified` flags. This is an **operator attestation**, not an automated proof of real-world readiness. Its JSON artifact may contain character fragments of private source data: keep it local and unshared. `BRIDGE_SENSE_MODEL` must be set explicitly to activate it.
+
+The model's held-out coverage and accuracy must be evaluated per language and slang family, including negative transfer between literal and idiomatic meanings. If it fails to improve translation while controlling hallucinations and latency, leave it disabled. No independently validated trained sense artifact is included with this repository.
