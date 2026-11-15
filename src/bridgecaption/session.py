@@ -188,6 +188,11 @@ class LiveSession:
                 original, lang = model.transcribe(chunk.pcm, self.source_language)
                 if self._stop.is_set():
                     break
+                with self._lock:
+                    stale_audio = chunk.captured_at < self._reset_at
+                if stale_audio:
+                    # Neither the transcript nor its translation may reappear after reset.
+                    continue
                 original = " ".join(original.split())[:1500]
                 if not original:
                     continue
