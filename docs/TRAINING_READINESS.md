@@ -121,3 +121,13 @@ A result is **successful** only if the combined approach improves held-out trans
 The training scaffold's isolated Python unit tests passed locally with generated synthetic data. They did **not** establish performance of the live translator. Main-repository end-to-end tests, real Gemini calls, downloaded speech model performance and multilingual held-out accuracy are still unverified at the time this document was written.
 
 Do not claim a 100%-bug-free foundation. The appropriate statement is: no known high-priority blockers **after** the above critical tests pass, with clearly disclosed residual limitations.
+
+## 9. Implementation status (updated November 15, 2026)
+
+The live `Pipeline` now invokes `ContextSelector` before contextual translation. Without `BRIDGE_CONTEXT_MODEL`, selection uses **a conservative untrained heuristic**, which is not a trained semantic interpreter. With an explicitly configured, validated output artifact from `bridgecaption-train-memory`, the same eight-feature predictor structure is used for inference and training. This learned selector can choose up to two relevant earlier utterances or abstain; it does not independently generate missing facts, and the chosen translation engine still interprets slang.
+
+`bridgecaption-eval-context` evaluates the four arms with identical source utterances and a single explicit provider, and groups test examples by conversation/speaker. It reports per-language chrF, model call latency, harmful-memory selection and helpful-memory misses. Cloud engines can incur rate limits or quota; API calls are off until `--execute` is used. Azure is only a context-free baseline and cannot be substituted into the four prompt-based experimental arms.
+
+The UI has an explicit **Ollama / Groq / Azure / Gemini** provider selector and a safe CHECK ENGINE button. No silent cloud failover is permitted; Azure is marked context-free. Recognition remains local in all modes, though selected transcript text is sent to the explicitly chosen cloud provider.
+
+**Release and research status: not verified.** Local component tests cover the new provider and selector boundaries using mocks, but the GitHub-hosted full test workflow has failed without any reported runner steps, and actual desktop, microphone/system-audio, provider-key, model-availability and held-out spoken-translation tests are outstanding. No real supervised training of context weights has occurred in this project revision.
