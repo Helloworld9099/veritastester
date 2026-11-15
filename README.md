@@ -2,15 +2,17 @@
 
 **A visible, movable AI translation overlay for Linux meetings, videos and lectures.** Built for the **2026 Veritas AI International High School Hackathon — AI + Languages** track.
 
-BridgeCaption opens a small always-on-top caption window. Select a **System audio** monitor to translate what is playing on your computer, or a microphone to translate nearby speech. The app transcribes speech locally with a pretrained multilingual Whisper model, then sends **transcribed text** (not raw audio) to Google's Gemini translation model with short-term conversation context, glossary terms and contextual slang hints. It displays the original language and translated captions side by side.
+BridgeCaption opens an always-on-top caption window with normal Linux window decorations and minimize controls. Select a **System audio** monitor to translate what is playing on your computer, or a microphone to translate nearby speech. The app transcribes speech locally with a pretrained multilingual Whisper model, then sends **transcribed text** (not raw audio) to Google's Gemini translation model with short-term conversation context, glossary terms and contextual slang hints. It displays the original language and translated captions side by side.
 
-This is an early working-code prototype, **not a verified production service**. Actual live caption quality depends on the user's machine, Gemini quota, network and source language. Translations process approximately four-second chunks of audio, so there will be a delay; it is not simultaneous word-by-word interpretation.
+This is an early working-code prototype, **not a verified production service**. Actual live caption quality depends on the user's machine, Gemini quota, network and source language. Translations process approximately four-second chunks of audio, so there will be a delay; it is not simultaneous word-by-word interpretation. Capture, recognition and translation run independently with bounded queues; if the translation service is too slow, older queued chunks are skipped and the app reports this instead of silently accumulating minutes of latency.
 
 ## Quick start on Ubuntu / Linux
 
 Prerequisites: Python 3.10+, FFmpeg, PulseAudio-compatible PipeWire or PulseAudio, an audio output or microphone, and a Gemini Developer API key.
 
 ~~~bash
+git clone --branch feat/bridgecaption-hackathon --single-branch https://github.com/Helloworld9099/veritastester.git
+cd veritastester
 sudo apt install ffmpeg pulseaudio-utils python3-tk python3-venv
 python3 -m venv .venv
 source .venv/bin/activate
@@ -20,9 +22,9 @@ cp .env.example .env
 bridgecaption
 ~~~
 
-Get a key at https://aistudio.google.com/apikey. The provided model setting is configurable. If a model ID is unavailable for your account, change GEMINI_MODEL in .env to an available text-generation model. The first speech-model run downloads weights to the local machine.
+Get a key at https://aistudio.google.com/apikey. The default translation model is gemini-3.5-flash-lite, and the model setting is configurable. If a model ID is unavailable for your account, change GEMINI_MODEL in .env to an available text-generation model. The first speech-model run downloads weights to the local machine.
 
-Use **System audio (current output)** for meetings, browser videos and other playback, or a microphone. Click **START LISTENING** to capture speech. Click **STOP LISTENING** to end capture. Drag the top header to move the window; PINNED toggles always-on-top mode.
+Use **System audio (current output)** for meetings, browser videos and other playback, or a microphone. Read and accept the visible disclosure about transmitting transcript text to Gemini, then click **START LISTENING** to capture speech. Click **STOP LISTENING** to end capture. Drag the top header to move the window; PINNED toggles always-on-top mode.
 
 **To try without audio**, select **Spanish** rather than Auto detect, type "Ese código está chido" and click TRANSLATE TEXT. Open GLOSSARY and enter "chido = cool", or select a specific meeting topic. Toggle Context + slang to compare context-enabled behavior.
 
@@ -36,7 +38,7 @@ The UI offers a broad language selector, including Spanish, French, Mandarin Chi
 
 Audio from selected device -> **Faster-Whisper ASR** -> transcript and language -> **Gemini translation** -> original and translated captions.
 
-The translation request can use the last four preceding utterances, a chosen topic, a small term glossary, and conditional slang-meaning hints. Hints are not unconditional replacements: slang can have literal meanings too. Prior transcript text is treated as untrusted data and cannot legitimately instruct the AI.
+Each listening session has independent, memory-only context that is cleared when the session ends. The translation request can use the last four preceding utterances, a chosen topic, a small term glossary, and conditional slang-meaning hints. Hints are not unconditional replacements: slang can have literal meanings too. Prior transcript text is treated as untrusted data and cannot legitimately instruct the AI.
 
 The system includes a **small supervised Naive Bayes topic classifier**. Train it from scratch using original synthetic labels, but do not confuse it with training Whisper or Gemini:
 
@@ -50,6 +52,7 @@ The model may perform poorly on real meetings and can be overridden with an expl
 
 ~~~bash
 python -m pytest -q
+# Focused session/normalization tests can run without model weights or an API key.
 # Requires GEMINI_API_KEY, actually calls the remote model:
 bridgecaption-eval --data data/context_demo.jsonl --out results/demo_results.csv
 # Requires authorized held-out audio clips and a CSV manifest:
@@ -58,11 +61,11 @@ python -m bridgecaption.asr_eval --manifest /path/to/manifest.csv
 
 The synthetic contextual examples are for testing software mechanics, not a validated competitive benchmark. For genuine results, use **FLEURS** and **Common Voice** for multilingual/accent recognition, **FLORES+** for parallel text translation, and optionally **CoVoST 2** for speech translation. See [Dataset Guide](docs/DATASETS.md).
 
-Report **actual WER for each language**, translation chrF by language, latency, slang/term accuracy on independent human references, examples of errors and comparisons against the same model without context. No real audio, Gemini, or translation-performance results have been collected by this repository's authoring environment yet.
+Report **actual WER for each language**, translation chrF by language, latency, slang/term accuracy on independent human references, examples of errors and comparisons against the same model without context. No real audio, Gemini, or translation-performance results have been collected by this repository's authoring environment yet. Small synthetic topic-training examples are included, but the training step is deliberately pending. See [Pre-training implementation status](docs/PRETRAINING_STATUS.md).
 
 ## Privacy
 
-Capture starts **only** after a click. There is no hidden/stealth recording or saving of audio files by BridgeCaption. Microphone/system audio stays local for recognition. **Text from the conversation, recent context and terminology are sent to the Gemini API**, subject to Google's data-handling policies and quota. Do not use confidential meetings or record other people without permission. The overlay is visible, not designed to evade screensharing or monitoring.
+Capture starts **only** after an explicit click and consent notice. There is no hidden/stealth recording or saving of audio files by BridgeCaption. Microphone/system audio stays local for recognition. **Text from the conversation, recent context and terminology are sent to the Gemini API**, subject to Google's data-handling policies and quota. Do not use confidential meetings or record other people without permission. The overlay is visible, not designed to evade screensharing or monitoring.
 
 .env, recordings and local evaluation results are ignored by git. No secrets should be committed.
 
