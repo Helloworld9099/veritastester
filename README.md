@@ -163,6 +163,38 @@ bridgecaption-eval-audio --manifest /path/to/examples.csv --execute \
 
 The output is **aggregate-only** (per-language ASR WER/CER, clip inference timings and optional translation chrF), and goes into ignored results/. It does not store audio or full recognized transcripts. Clip replay is **not** a test of multi-minute live performance. See [Azure setup](docs/AZURE_SETUP.md) and [training readiness](docs/TRAINING_READINESS.md).
 
+## Collecting real context and slang labels
+
+The models must train from **independently reviewed examples**, not from invented AI labels. We added a local-only annotation command for this purpose. Prepare a CSV queue using permitted conversations; include speaker/conversation family IDs so the train/test split cannot reuse the same person or meeting.
+
+For **memory-usefulness labels**, the CSV header is:
+
+~~~text
+case_id,group_id,language,utterance,previous,situation,candidate_memory,reference_translation,provenance
+~~~
+
+For **slang-sense labels**, use:
+
+~~~text
+case_id,group_id,language,expression,utterance,previous,situation,provenance
+~~~
+
+Reviewers see the speech and grounded situation **locally**, and provide a label interactively. The CLI never generates its own ground-truth label, sends the text to an API, or records audio. 'q' stops without guessing. Outputs are written as private JSONL with owner-only permissions on POSIX systems.
+
+~~~bash
+bridgecaption-annotate --task memory \
+  --queue data/private/memory_queue.csv --out data/private/memory_labels.jsonl
+
+bridgecaption-annotate --task sense \
+  --queue data/private/sense_queue.csv --out data/private/sense_labels.jsonl
+
+# Continue an interrupted annotation without duplicating labelled cases:
+bridgecaption-annotate --task sense \
+  --queue data/private/sense_queue.csv --out data/private/sense_labels.jsonl --append
+~~~
+
+Memory labels are **helpful**, **neutral**, or **harmful**; sense labels are concise meanings such as *excellent* versus *ill*. Both require actual independent human review. The output under data/private/ is ignored by Git. See [training readiness](docs/TRAINING_READINESS.md) before fitting either model. No verified training dataset has yet been produced in this repository.
+
 ## Security, privacy, limitations
 
 Raw audio is decoded locally; chosen text and selected prior context are sent to the **explicitly selected** cloud provider, or only to local Ollama. Do not use confidential material or record meeting participants without authorization. Recordings and API credentials must not be committed; `.env`, `data/private/`, and `results/` are ignored by Git. For a complete data-policy assessment, consult the selected provider's terms.
