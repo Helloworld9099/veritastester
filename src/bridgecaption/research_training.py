@@ -14,6 +14,8 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
+from .research_features import context_features
+
 
 @dataclass(frozen=True)
 class MemoryExample:
@@ -96,17 +98,9 @@ def overlap(a: set[str], b: set[str]) -> float:
 
 
 def features(row: MemoryExample, multiview: bool) -> tuple[float, ...]:
-    """Same eight-feature predictor capacity with/without complementary view.
-
-    Never access reference_translation or human_judgement at inference time.
-    """
-    u, p, m, s = row.utterance, row.previous, row.candidate_memory, row.situation
-    return (1.0,
-            overlap(words(u), words(m)), overlap(grams(u), grams(m)),
-            overlap(words(p), words(m)), overlap(grams(p), grams(m)),
-            overlap(words(s), words(m)) if multiview else 0.0,
-            overlap(grams(s), grams(m)) if multiview else 0.0,
-            min(len(m) / 500, 1.0))
+    """Exactly the same eight features used for opt-in live context inference."""
+    return context_features(row.utterance, row.previous, row.candidate_memory,
+                            row.situation, multiview)
 
 
 def sigmoid(x: float) -> float:
