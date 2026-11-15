@@ -18,6 +18,8 @@ test = ["pytest>=8"]
 bridgecaption = "bridgecaption.app:main"
 bridgecaption-train = "bridgecaption.training:main"
 bridgecaption-eval = "bridgecaption.evaluate:main"
+bridgecaption-preflight = "bridgecaption.preflight:main"
+bridgecaption-train-memory = "bridgecaption.research_training:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
