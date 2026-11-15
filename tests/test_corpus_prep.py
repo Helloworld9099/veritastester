@@ -48,6 +48,27 @@ def test_magpie_refuses_ambiguous_target_location(tmp_path):
         prepare("magpie", path)
 
 
+def test_official_magpie_training_split_alias(tmp_path):
+    path = write_jsonl(tmp_path, "official.jsonl", [{
+        "id": 9, "idiom": "bear fruit", "context": ["It will bear fruit"],
+        "label": "i", "split": "training", "document_id": "doc-9"}])
+    item, = prepare("magpie", path)
+    assert item["split"] == "train"
+    assert item["original_split"] == "training"
+
+
+def test_dialogue_preserves_source_speaker_turn_and_parallel_group(tmp_path):
+    path = tmp_path / "dialogue.json"
+    path.write_text(json.dumps({"aligned-1": {"log": [
+        {"text": "Where next?", "speaker": "USER", "turn_id": "source-7"}]}}))
+    en, = prepare("multi3woz", path, language="en", source_split="train")
+    fr, = prepare("multi3woz", path, language="fr", source_split="train")
+    assert en["extra"]["speaker"] == "USER"
+    assert en["extra"]["source_turn_id"] == "source-7"
+    assert en["extra"]["source_dialogue_id"] == "aligned-1"
+    assert en["group_id"] == fr["group_id"]
+
+
 def test_semeval_original_header_and_label_are_honored(tmp_path):
     path = write_csv(tmp_path, "semeval.csv", [
         {"DataID": "foo", "Language": "EN", "MWE": "spill the beans",

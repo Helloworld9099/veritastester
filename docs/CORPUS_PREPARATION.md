@@ -12,7 +12,7 @@ The attached RL hypothesis proposes two complementary views, a predictor of usef
 
 ## Install and initialize
 
-From a checkout of `fix/translation-foundation-and-training-gates`:
+From a checkout containing `research/dataset-training-20261115` (see [the execution receipt](OFFLINE_RESEARCH_RESULTS.md)):
 
 ~~~bash
 python -m pip install -e '.[test,research]'
@@ -176,7 +176,7 @@ You can include curated slang expressions in a separate CSV with `language,expre
 
 The review tools deliberately refuse test/holdout records. They never generate a "grounded situation" from a target/reference label: the reviewer must provide one based only on permitted scene evidence.
 
-## Optional supervised experiment (do not start yet)
+## Optional supervised auxiliary experiment (explicit opt-in)
 
 ~~~bash
 # Schema/split verification only, no model fit:

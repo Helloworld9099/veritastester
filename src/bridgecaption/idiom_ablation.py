@@ -11,6 +11,7 @@ import argparse
 import json
 import math
 import os
+import time
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -70,6 +71,9 @@ def score_binary(real, predicted):
         recalls.append(recall)
     return {"macro_f1": round(sum(f1s) / 2, 4),
             "balanced_accuracy": round(sum(recalls) / 2, 4),
+            "confusion_matrix_labels": ["literal", "idiomatic"],
+            "confusion_matrix": [[sum(a == i and b == j for a, b in zip(real, predicted))
+                                  for j in (0, 1)] for i in (0, 1)],
             "by_class": by_class}
 
 
@@ -84,9 +88,11 @@ def run_model(train, dev, test, two_view: bool):
     classifier = SGDClassifier(loss="log_loss", alpha=.0001, max_iter=30,
                                random_state=2026, class_weight="balanced",
                                tol=.0001)
+    begin = time.perf_counter()
     x_train = vectorizer.transform([render(row, two_view) for row in train])
     y_train = [LABELS[row["source_label"]] for row in train]
     classifier.fit(x_train, y_train)
+    training_seconds = time.perf_counter() - begin
 
     def confidences(rows):
         x = vectorizer.transform([render(row, two_view) for row in rows])
@@ -111,6 +117,12 @@ def run_model(train, dev, test, two_view: bool):
         by_language[language]["n"] = len(indices)
 
     # JSON-only artifact, no pickle/joblib executable deserialization.
+    latency = []
+    for row in test[:200]:
+        begin = time.perf_counter()
+        classifier.predict_proba(vectorizer.transform([render(row, two_view)]))
+        latency.append((time.perf_counter() - begin) * 1000)
+    latency.sort()
     return {
         "two_view": two_view,
         "threshold": threshold,
@@ -119,7 +131,19 @@ def run_model(train, dev, test, two_view: bool):
         "weights": [round(float(w), 8) for w in classifier.coef_[0]],
         "intercept": round(float(classifier.intercept_[0]), 8),
         "train_n": len(train), "dev_n": len(dev), "test_n": len(test),
-        "test_metrics": test_metrics, "by_language": by_language
+        "test_metrics": test_metrics, "by_language": by_language,
+        "training_seconds": round(training_seconds, 6),
+        "inference_ms_p50": round(latency[len(latency)//2], 4),
+        "inference_ms_p95": round(latency[min(len(latency)-1, int(.95*len(latency)))], 4),
+        "latency_sample_n": len(latency),
+        "test_predictions": [{"case_id": row["case_id"], "group_id": row["group_id"],
+                              "gold": y, "probability_idiomatic": round(p, 8)}
+                             for row, y, p in zip(test, y_test, test_probs)],
+        "partitions": {name: {"rows": len(rows),
+                               "groups": len({r["group_id"] for r in rows}),
+                               "class_balance": dict(Counter(r["source_label"] for r in rows)),
+                               "by_language": dict(Counter(r["language"] for r in rows))}
+                       for name, rows in [("train", train), ("dev", dev), ("test", test)]},
     }
 
 

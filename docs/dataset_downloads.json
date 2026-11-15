@@ -1,0 +1,86 @@
+[
+  {
+    "file": "magpie-LICENSE",
+    "url": "https://raw.githubusercontent.com/hslh/magpie-corpus/7fa677b82b9a772dfa54bbdd0fb414412d73db3b/LICENSE",
+    "bytes": 18651,
+    "sha256": "05ab88f3f9da1d05f9c5bf0a7c45c49a9007f877dd9c237a5bf668276fe04c3b"
+  },
+  {
+    "file": "magpie-README.md",
+    "url": "https://raw.githubusercontent.com/hslh/magpie-corpus/7fa677b82b9a772dfa54bbdd0fb414412d73db3b/README.md",
+    "bytes": 2879,
+    "sha256": "bc9d281e2348a780b91929e44de0e58bc26a822d69835b0e6dd8a666754af6db"
+  },
+  {
+    "file": "multi3woz-LICENSE",
+    "url": "https://raw.githubusercontent.com/cambridgeltl/multi3woz/c65e80fe120704125255de5cf582a51ebaa285cd/LICENSE",
+    "bytes": 1066,
+    "sha256": "2d97dfdde8d33b61f9fe2cab6e87fbd31d90a52615f4b85bab6be8568423b95f"
+  },
+  {
+    "file": "multi3woz-README.md",
+    "url": "https://raw.githubusercontent.com/cambridgeltl/multi3woz/c65e80fe120704125255de5cf582a51ebaa285cd/README.md",
+    "bytes": 2606,
+    "sha256": "b959b07b30b4e317988e33fe660af20e472897d90daad0053c86fefb6a497156"
+  },
+  {
+    "file": "semeval-LICENSE",
+    "url": "https://raw.githubusercontent.com/H-TayyarMadabushi/SemEval_2022_Task2-idiomaticity/872625c8f9c5d656b7866ff063a2ab0238ac4c80/LICENSE",
+    "bytes": 35149,
+    "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+  },
+  {
+    "file": "semeval-README.md",
+    "url": "https://raw.githubusercontent.com/H-TayyarMadabushi/SemEval_2022_Task2-idiomaticity/872625c8f9c5d656b7866ff063a2ab0238ac4c80/README.md",
+    "bytes": 1443,
+    "sha256": "e825fbdccfd6934fb81e0b03384bb3b9f3fe844b8f697d1ab8b67dcbc5151ba4"
+  },
+  {
+    "file": "diabla-LICENSE",
+    "url": "https://huggingface.co/datasets/rbawden/DiaBLa/resolve/5345895c56a601afe1a98519ce3199be60a27dba/LICENSE",
+    "bytes": 20136,
+    "sha256": "7a77fb7f2677fa525e2fc9a916c8d0c163987e144886dddbf608be4c6437a2eb"
+  },
+  {
+    "file": "diabla-DiaBLa.json",
+    "url": "https://huggingface.co/datasets/rbawden/DiaBLa/resolve/5345895c56a601afe1a98519ce3199be60a27dba/DiaBLa.json",
+    "bytes": 9124531,
+    "sha256": "17b53905a4d1a4e7e1ee1c7b05b8f0f49c7ba1cc111accd4470faa9782e87515"
+  },
+  {
+    "file": "magpie-typebased.jsonl",
+    "url": "https://raw.githubusercontent.com/hslh/magpie-corpus/7fa677b82b9a772dfa54bbdd0fb414412d73db3b/MAGPIE_filtered_split_typebased.jsonl",
+    "bytes": 46913846,
+    "sha256": "9b85f321d5afae9361b4c0aaa1f9ef61cbb7257a10712f1f9c839ab91ae5a4c8"
+  },
+  {
+    "file": "multi3woz.zip",
+    "url": "https://raw.githubusercontent.com/cambridgeltl/multi3woz/c65e80fe120704125255de5cf582a51ebaa285cd/data.zip",
+    "bytes": 90631848,
+    "sha256": "da238995eed56ed76551c19d0d3fc58e039b62197514ca0d7b705880664ca65e"
+  },
+  {
+    "file": "semeval-train.csv",
+    "url": "https://raw.githubusercontent.com/H-TayyarMadabushi/SemEval_2022_Task2-idiomaticity/872625c8f9c5d656b7866ff063a2ab0238ac4c80/SubTaskA/Data/train_zero_shot.csv",
+    "bytes": 2235861,
+    "sha256": "4bfe249d769760fb4df417f293df28add40ae3c8bfc085e1d8d16284598875d1"
+  },
+  {
+    "file": "semeval-dev.csv",
+    "url": "https://raw.githubusercontent.com/H-TayyarMadabushi/SemEval_2022_Task2-idiomaticity/872625c8f9c5d656b7866ff063a2ab0238ac4c80/SubTaskA/Data/dev.csv",
+    "bytes": 334344,
+    "sha256": "360cac1db795515defc7402a1450ae813f96a546aebf7711c1aa910e35ddea8e"
+  },
+  {
+    "file": "semeval-dev-gold.csv",
+    "url": "https://raw.githubusercontent.com/H-TayyarMadabushi/SemEval_2022_Task2-idiomaticity/872625c8f9c5d656b7866ff063a2ab0238ac4c80/SubTaskA/Data/dev_gold.csv",
+    "bytes": 18592,
+    "sha256": "57415fc19408ab3cc24a65d43868f2b07fd5e6957070f641dee4af13babf38f9"
+  },
+  {
+    "file": "semeval-test.csv",
+    "url": "https://raw.githubusercontent.com/H-TayyarMadabushi/SemEval_2022_Task2-idiomaticity/872625c8f9c5d656b7866ff063a2ab0238ac4c80/SubTaskA/TestData/test.csv",
+    "bytes": 1077243,
+    "sha256": "ce57e1d434ea36c8352b64e28f1ad8f5a31ac33230f04e670dba7c4ff1c18182"
+  }
+]

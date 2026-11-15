@@ -1,6 +1,6 @@
 # Training theories and foundation readiness
 
-**Status: HOLD. Real model training has not started.** This is a research plan and an opt-in offline predictor prototype. Never treat the prototype's unit tests as proof of accurate live translation.
+**Status: auxiliary idiomaticity training completed; product model training remains HOLD.** See [OFFLINE_RESEARCH_RESULTS.md](OFFLINE_RESEARCH_RESULTS.md) for the 2026-11-15 execution receipt. No translation-quality or live-readiness claim follows from the classifier results or unit tests.
 
 ## 1. Scientific translation of the uploaded RL theories
 
@@ -170,4 +170,4 @@ The new `bridgecaption-corpus-review` tool produces actual memory/sense training
 
 `bridgecaption-train-idiom` adds an optional CPU-friendly binary idiomaticity ablation using the same hashed feature budget for utterance-only and utterance-plus-context models. MAGPIE and SemEval binary labels may supervise this **different auxiliary task**, but they do not supervise exact senses or memory value. The module is not invoked without explicit `--train --confirm-dataset-rights` and a successful local preflight. Model output is JSON, not executable pickle.
 
-**Training has not begun.** The project still requires real source files acquired by the user within licensing terms, a fresh complete unit test run of this branch, independent human labels, and measured held-out translation quality before enabling learned weights in the live app.
+**Product memory/sense training has not begun.** Source files and offline code checks were completed in the 2026-11-15 research run; independent human labels, actual workstation checks and measured held-out translation quality are still required before enabling learned weights in the live app.

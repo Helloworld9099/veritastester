@@ -66,7 +66,8 @@ def group_split(group: str) -> str:
 
 def normalize_split(value: str, default: str):
     value = tidy(value).casefold()
-    aliases = {"val": "dev", "validation": "dev", "eval": "test", "development": "dev"}
+    aliases = {"val": "dev", "validation": "dev", "eval": "test",
+               "development": "dev", "training": "train"}
     if value:
         value = aliases.get(value, value)
         if value not in {"train", "dev", "test"}:
@@ -310,7 +311,14 @@ def dialogue_records(source: str, rows, *, mapping: dict, language: str,
                 group_id=group_id, language=source_lang, utterance=text,
                 previous=" ".join(history[key][-3:]), original_split=supplied_split,
                 provenance=f"{source}:dialogue-{tidy(group,80)}:turn-{turn_number}",
-                rights=rights)
+                rights=rights, extra={
+                    "source_dialogue_id": tidy(group, 200),
+                    "turn_number": turn_number,
+                    "speaker": tidy(row.get("speaker") if source == "bangor" else
+                                    sequence(row, mapping)[turn_number-1].get("speaker"), 80),
+                    "source_turn_id": tidy("" if source == "bangor" else
+                                           sequence(row, mapping)[turn_number-1].get("turn_id"), 80),
+                })
             history[key].append(text)
             if len(history[key]) > 4:
                 history[key].pop(0)
