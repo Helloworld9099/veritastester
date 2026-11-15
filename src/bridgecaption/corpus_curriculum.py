@@ -103,6 +103,56 @@ def human_memory_candidates(records, *, seed=2026, max_items=5000):
     return outputs
 
 
+def temporal_alignment_pairs(records, *, seed=2026, max_items=5000):
+    """Self-supervised adjacency proxy: NOT usefulness or translation truth.
+
+    Positive means "adjacent turns in the SAME dialogue." Negative means
+    "from DIFFERENT dialogues in the same language and split." Neither label
+    claims semantic equivalence, helpful memory, or a verified second scene.
+    """
+    eligible = [r for r in records if r["role"] == "conversation_review" and
+                r["split"] in {"train", "dev"}]
+    groups = defaultdict(list)
+    for row in eligible:
+        groups[(row["dataset"], row["language"], row["split"], row["group_id"])].append(row)
+    buckets = defaultdict(list)
+    for key, turns in groups.items():
+        buckets[key[:3]].append((key, turns))
+    rng = random.Random(seed)
+    pairs = []
+    for key, turns in sorted(groups.items()):
+        if len(turns) < 2:
+            continue
+        dataset, language, split, group_id = key
+        alternatives = [(other_key, values) for other_key, values in buckets[key[:3]]
+                        if other_key != key]
+        for i in range(1, len(turns)):
+            current, prior = turns[i], turns[i-1]
+            pair = {
+                "case_id": f"adj:{digest(current['case_id']+':'+prior['case_id'])}",
+                "group_id": group_id,
+                "language": language, "split": split,
+                "view_utterance": current["utterance"],
+                "view_previous_turn": prior["utterance"],
+                "proxy_label": "same_dialogue_adjacent",
+                "proxy_task": "temporal_coherence_not_memory_usefulness",
+                "human_judgement": None, "situation_view": "",
+                "provenance": f"{dataset}:{current['case_id']}:{prior['case_id']}",
+            }
+            pairs.append(pair)
+            if alternatives:
+                other_key, other = rng.choice(alternatives)
+                candidate = rng.choice(other)
+                pairs.append({**pair,
+                    "case_id": f"adj:{digest(current['case_id']+':'+candidate['case_id'])}",
+                    "view_previous_turn": candidate["utterance"],
+                    "proxy_label": "different_dialogue",
+                    "provenance": f"{dataset}:{current['case_id']}:{candidate['case_id']}"})
+            if len(pairs) >= max_items:
+                return pairs[:max_items]
+    return pairs
+
+
 def read_terms(path: Path):
     """Optional explicitly reviewed term list, never a fabricated sense dictionary."""
     with path.open(encoding="utf-8", newline="") as file:
@@ -155,7 +205,7 @@ def human_sense_candidates(records, *, terms=None, max_items=5000):
 def main():
     parser = argparse.ArgumentParser(description="Create human curation queues, not model labels")
     parser.add_argument("--inputs", nargs="+", type=Path, required=True)
-    parser.add_argument("--task", choices=("audit","memory","sense"), default="audit")
+    parser.add_argument("--task", choices=("audit","memory","sense","alignment"), default="audit")
     parser.add_argument("--terms", type=Path, help="Optional human-curated language/expression CSV")
     parser.add_argument("--max-items", type=int, default=2000)
     parser.add_argument("--out", type=Path)
@@ -177,9 +227,12 @@ def main():
             output = human_sense_candidates(
                 records, terms=read_terms(args.terms) if args.terms else None,
                 max_items=args.max_items)
+        elif args.task == "alignment":
+            output = temporal_alignment_pairs(records, max_items=args.max_items)
         else:
             output = []
-        print(f"Review candidates: {len(output)}; all require independent human verification")
+        print(f"Prepared {len(output)} {args.task} records; "
+              "alignment labels mean dialogue adjacency only, not helpful memories")
         if args.write:
             if args.task == "audit":
                 parser.error("Audit mode never writes source records")
