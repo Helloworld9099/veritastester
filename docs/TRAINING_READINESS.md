@@ -138,7 +138,7 @@ The UI has an explicit **Ollama / Groq / Azure / Gemini** provider selector and 
 
 Prepare permissioned `data/private/sense_labels.jsonl` with these required fields: `case_id`, `group_id`, `language`, `expression`, `utterance`, `previous`, `situation`, `meaning`, `provenance`. Each ambiguous expression must have examples of **at least two distinct senses** across independent conversations and speakers; avoid leaking text, targets or speaker groups across splits. `group_id` needs to represent an entire speaker/conversation family, not a random row.
 
-Validation does not train:
+Sense-model training rejects tiny labels (fewer than 60 examples or 12 independent conversation/speaker groups), underrepresented labels (fewer than 10 examples per language-expression-sense), and data marked synthetic/demo/example. These are minimum validation gates, **not** evidence of adequate real-world coverage.\n\nValidation does not train:
 
 ~~~bash
 bridgecaption-train-sense --data data/private/sense_labels.jsonl
