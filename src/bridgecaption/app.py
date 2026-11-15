@@ -203,12 +203,15 @@ class Application:
         if language == "auto":
             self.status_var.set("For typed text, select the source language manually.")
             return
+        target = self.target_lang()
+        topic = self.topic_box.get()
+        glossary = dict(self.glossary)
+        contextual = self.context_enabled.get()
         def task():
             try:
                 self.publish("status", "Translating typed text...")
-                result = self.pipeline.translate(text, language, self.target_lang(),
-                                                 self.topic_box.get(), self.glossary,
-                                                 self.context_enabled.get())
+                result = self.pipeline.translate(text, language, target,
+                                                 topic, glossary, contextual)
                 self.publish("caption", result.original, result.translated, result.source_language, "Text")
             except Exception as exc:
                 self.publish("error", str(exc))
@@ -247,6 +250,8 @@ class Application:
             try:
                 self.publish("status", "Loading Whisper (first run downloads model weights)...")
                 recognizer = SpeechRecognizer(os.getenv("WHISPER_MODEL", "base"))
+                if self.stop_event.is_set():
+                    return
                 capture = AudioCapture(device, float(os.getenv("AUDIO_CHUNK_SECONDS", "4"))).start()
                 self.capture = capture
                 self.publish("status", "Listening to selected audio; original audio remains local.")
