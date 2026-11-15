@@ -46,7 +46,7 @@ An older, unvalidated **small supervised Naive Bayes topic classifier** is retai
 bridgecaption-train --data data/topic_train.csv --out data/topic_model.json --metrics data/topic_metrics.json
 ~~~
 
-The model may perform poorly on real meetings and can be overridden with an explicit topic. It is optional; without trained artifacts, the app falls back to General. The central intelligence is the speech and translation models, which are pretrained and **not fine-tuned in this repository**.
+The older topic classifier is an offline synthetic-data demonstration **not connected to live translation**. Choosing Auto for the meeting topic currently uses the neutral General setting; manual topic selection and the previous-utterance context are still supported. The central intelligence is the pretrained speech and translation models, which are **not fine-tuned in this repository**.
 
 ## Foundation checks and future memory training
 
