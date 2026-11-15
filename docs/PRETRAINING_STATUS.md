@@ -1,6 +1,6 @@
 # BridgeCaption — updated implementation checkpoint
 
-Repository: `Helloworld9099/veritastester`. Initial prototype is already on `main`; this checkpoint describes foundation + context intelligence work proposed in **PR #2**.
+Repository: `Helloworld9099/veritastester`. Initial prototype is already on `main`; this checkpoint documents the foundation and context-intelligence implementation from **PR #2**. Release state and deployment should be verified separately.
 
 ## Implemented in the review branch
 
