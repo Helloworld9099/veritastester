@@ -49,7 +49,7 @@ bridgecaption
 
 The **Translation Engine** control inside the app changes providers; you can also choose a provider in `.env`. The privacy dialog identifies the current destination. The app does not send text to other translation providers if one fails.
 
-To test translation without audio, select Spanish as source, type *Ese código está chido*, and click **TRANSLATE TEXT**. With system audio, choose a monitor such as **System audio (current output)**, then click **START LISTENING**. Consent and participant authorization are required. Use **STOP LISTENING** when done.
+To test translation without audio, select Spanish as source, type *Ese código está chido*, and click **TRANSLATE TEXT**. Click **CHECK ENGINE** to try a public sample sentence without accessing your meeting. With system audio, choose a monitor such as **System audio (current output)**, then click **START LISTENING**. Consent and participant authorization are required. Use **STOP LISTENING** when done.
 
 The first speech recognition run downloads Whisper model weights. `WHISPER_MODEL=tiny` may reduce CPU load but usually hurts accuracy. Set `AUDIO_CHUNK_SECONDS` between 1 and 12 (default 4) and `TRANSLATION_TIMEOUT_SECONDS` within 3–30 seconds. Results depend on hardware, provider and model.
 
@@ -81,6 +81,26 @@ Authorized audio -> faster-whisper (local speech recognition)
 The local context selector uses relevant prior utterances, potential slang and manually provided meeting topics. The **supervised memory-utility predictor** is a small trainable baseline using eight shared lexical features. Its training experiments follow the uploaded two-view/transfer-value hypothesis **by analogy**, not as a reinforcement-learning or JEPA implementation. The predictor does **not** generate meaning from nothing; the translation language model still performs contextual language interpretation. The predictor's only learned task is which earlier memory might help or harm a translation.
 
 No reliable pretrained local memory model or trained semantic encoder is bundled. Before enabling a trained artifact, it must outperform no-context and always-on-context baselines on independently reviewed, held-out data; see [training design and readiness gates](docs/TRAINING_READINESS.md).
+
+## Optional supervised slang-sense training
+
+A separate CPU-friendly **character n-gram classifier** can learn which labelled meaning of a slang expression is appropriate given earlier speech and a grounded meeting description. It trains with conversation-group splits and abstains when predicted confidence is too low. This is **not a pretrained multilingual semantic encoder**: without a validated dataset it supplies **no learned hints**. The translation model is never forced to use a predicted sense.
+
+Annotated JSONL records contain `case_id`, `group_id`, `language`, `expression`, `utterance`, `previous`, `situation`, `meaning`, and `provenance`. For an ambiguous expression such as *sick*, independent reviewers should label both the medical and informal-positive meanings in different conversations. Keep all examples from the same speaker/conversation in one split.
+
+~~~bash
+# Validate syntax/groups without training:
+bridgecaption-train-sense --data data/private/sense_labels.jsonl
+
+# Only after code, real-audio, API and privacy verification:
+bridgecaption-train-sense --data data/private/sense_labels.jsonl \
+  --train --confirm-live-verified
+
+# Explicitly enable a separately validated artifact:
+# BRIDGE_SENSE_MODEL=results/sense_model.json
+~~~
+
+The model stores character n-gram statistics in a local JSON artifact. Since these features can encode fragments of private speech, treat the artifact as **confidential** and do not commit it. Compare the learned model with no-sense and literal-context baselines before enabling it for real users. See [training readiness](docs/TRAINING_READINESS.md).
 
 ## Tests and foundation preflight
 
