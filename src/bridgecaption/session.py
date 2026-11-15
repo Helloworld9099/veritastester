@@ -238,7 +238,8 @@ class LiveSession:
             if self._stop.is_set():
                 break
             self._emit("caption", result.original, result.translated,
-                       result.source_language, round(monotonic() - speech.captured_at, 2))
+                       result.source_language, round(monotonic() - speech.captured_at, 2),
+                       getattr(result, "context_info", "unknown"))
 
     def _finish(self):
         for worker in self._workers:
