@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+results/
+*.wav
+*.mp3
+*.mp4
+*.flac
+*.parquet

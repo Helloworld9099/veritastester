@@ -1,0 +1,10 @@
+{"language":"es","source":"Tenemos que revisar la rama principal antes del merge.","reference":"We need to review the main branch before the merge.","topic":"technology","previous":["We just finished the API feature.","The pull request needs review."],"glossary":{"rama principal":"main branch"}}
+{"language":"es","source":"Ese código está chido.","reference":"That code is cool.","topic":"technology","previous":["We were reviewing a new app."],"glossary":{"chido":"cool"}}
+{"language":"es","source":"No manches, ya se cayó el servidor.","reference":"No way, the server already went down.","topic":"technology","previous":["The app was working earlier."],"glossary":{}}
+{"language":"es","source":"Vale, hablamos luego.","reference":"Okay, we'll talk later.","topic":"casual","previous":["I'll message you tomorrow."],"glossary":{}}
+{"language":"fr","source":"C'est ouf ce résultat.","reference":"That result is crazy.","topic":"casual","previous":["We just saw the competition results."],"glossary":{}}
+{"language":"fr","source":"Ce plan est grave intéressant.","reference":"This plan is really interesting.","topic":"casual","previous":["We are discussing the project."],"glossary":{}}
+{"language":"zh","source":"这个功能太牛了。","reference":"This feature is awesome.","topic":"technology","previous":["We're testing a new feature."],"glossary":{}}
+{"language":"zh","source":"他上班的时候老是在摸鱼。","reference":"He keeps slacking off at work.","topic":"business","previous":["We discussed the office."],"glossary":{}}
+{"language":"sw","source":"Mambo, unaendeleaje?","reference":"What's up, how are you doing?","topic":"casual","previous":[],"glossary":{}}
+{"language":"sw","source":"Poa, tutaonana baadaye.","reference":"Cool, see you later.","topic":"casual","previous":[],"glossary":{}}

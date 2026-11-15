@@ -1,0 +1,359 @@
+"""Visible draggable translation overlay for authorized Linux audio.
+
+The application starts no recording until START LISTENING is clicked.
+The text translator sends recognized text to Gemini; microphone/system audio
+remains on the local computer.
+"""
+import os
+import queue
+import threading
+import tkinter as tk
+from tkinter import ttk, messagebox
+
+from dotenv import load_dotenv
+
+from .audio import sources
+from .session import LiveSession
+from .context import parse_glossary
+from .pipeline import Pipeline
+
+LANGUAGES = {
+    "auto": "Auto detect", "en": "English", "es": "Spanish", "fr": "French",
+    "de": "German", "zh": "Chinese", "ja": "Japanese", "ko": "Korean",
+    "ar": "Arabic", "hi": "Hindi", "pt": "Portuguese", "ru": "Russian",
+    "it": "Italian", "sw": "Swahili", "yo": "Yoruba", "am": "Amharic",
+    "bn": "Bengali", "ta": "Tamil", "te": "Telugu", "ur": "Urdu",
+    "tr": "Turkish", "fa": "Persian", "id": "Indonesian", "vi": "Vietnamese",
+    "th": "Thai", "uk": "Ukrainian", "pl": "Polish", "nl": "Dutch",
+    "sv": "Swedish", "da": "Danish", "fi": "Finnish", "no": "Norwegian",
+    "he": "Hebrew", "el": "Greek", "cs": "Czech", "hu": "Hungarian",
+    "ro": "Romanian", "bg": "Bulgarian", "hr": "Croatian", "sr": "Serbian",
+    "sk": "Slovak", "sl": "Slovenian", "lt": "Lithuanian", "lv": "Latvian",
+    "et": "Estonian", "ms": "Malay", "tl": "Tagalog", "ne": "Nepali",
+    "mr": "Marathi", "gu": "Gujarati", "pa": "Punjabi", "kn": "Kannada",
+    "ml": "Malayalam", "my": "Burmese", "km": "Khmer", "lo": "Lao",
+    "ka": "Georgian", "hy": "Armenian", "az": "Azerbaijani",
+    "kk": "Kazakh", "uz": "Uzbek", "mn": "Mongolian",
+    "af": "Afrikaans", "sq": "Albanian", "ca": "Catalan", "eu": "Basque",
+    "gl": "Galician", "is": "Icelandic", "cy": "Welsh", "so": "Somali",
+    "ha": "Hausa", "si": "Sinhala", "jw": "Javanese", "su": "Sundanese",
+    "mt": "Maltese", "mk": "Macedonian", "be": "Belarusian",
+}
+TOPICS = ["auto", "general", "technology", "business", "education", "healthcare", "gaming", "casual"]
+BG = "#121b20"
+PANEL = "#19272d"
+TEXT = "#eaf4ed"
+MUTED = "#a0b8af"
+ACCENT = "#a9e4c4"
+
+class Application:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("BridgeCaption | AI translation")
+        self.root.geometry("860x400+220+380")
+        self.root.minsize(650, 300)
+        self.root.configure(bg=BG)
+        self.root.attributes("-topmost", True)
+        self.root.overrideredirect(False)
+        self.worker = None
+        self.events = queue.Queue()
+        self.pipeline = Pipeline()  # Typed-text testing; not shared with live audio.
+        self.live_session = None
+        self.session_generation = 0
+        self.consent_given = False
+        self.closed = False
+        self.context_enabled = tk.BooleanVar(value=True)
+        self.glossary = {}
+        self.devices = []
+        self._drag_xy = None
+        self.is_pinned = True
+        self._ui()
+        self.refresh_sources()
+        self.root.after(100, self.poll)
+        self.root.protocol("WM_DELETE_WINDOW", self.close)
+
+    def label(self, parent, text, size=11, color=TEXT, bold=False):
+        return tk.Label(parent, text=text, bg=parent.cget("bg"), fg=color,
+                        font=("DejaVu Sans", size, "bold" if bold else "normal"),
+                        anchor="w")
+
+    def button(self, parent, text, command, accent=False):
+        b = tk.Button(parent, text=text, command=command, relief="flat", bd=0,
+                      bg=ACCENT if accent else "#30443f",
+                      fg="#14211a" if accent else TEXT, activebackground="#d5f5e2",
+                      font=("DejaVu Sans", 10, "bold"), padx=12, pady=8, cursor="hand2")
+        return b
+
+    def picker(self, parent, values, width=15):
+        box = ttk.Combobox(parent, state="readonly", values=values, width=width)
+        box.current(0)
+        box.pack(side="left", padx=(0, 8), pady=4)
+        return box
+
+    def _ui(self):
+        top = tk.Frame(self.root, bg=BG, padx=18, pady=13)
+        top.pack(fill="x")
+        self.label(top, "BRIDGE / CAPTION", 15, ACCENT, True).pack(side="left")
+        self.button(top, "×", self.close).pack(side="right", padx=(6, 0))
+        self.button(top, "—", self.root.iconify).pack(side="right", padx=(6, 0))
+        self.pin_button = self.button(top, "PINNED", self.toggle_pin)
+        self.pin_button.pack(side="right", padx=4)
+        self.label(top, "AI LIVE TRANSLATION", 9, MUTED, True).pack(side="right", padx=15)
+        for widget in (top,):
+            widget.bind("<ButtonPress-1>", self.drag_start)
+            widget.bind("<B1-Motion>", self.drag_move)
+
+        controls = tk.Frame(self.root, bg=BG, padx=18)
+        controls.pack(fill="x")
+        self.source_box = self.picker(controls, ["No audio sources"], width=28)
+        self.source_box.bind("<<ComboboxSelected>>", lambda _event: self.reset_history())
+        self.source_labels = sorted(LANGUAGES.items(), key=lambda kv: kv[1])
+        self.source_picker = self.picker(controls, [f"{name} [{code}]" for code, name in self.source_labels], 15)
+        self.target_labels = [item for item in self.source_labels if item[0] != "auto"]
+        self.target_picker = self.picker(controls, [f"{name} [{code}]" for code, name in self.target_labels], 14)
+        self.source_picker.set("Auto detect [auto]")
+        self.target_picker.set("English [en]")
+        self.topic_box = self.picker(controls, TOPICS, width=12)
+        self.start_button = self.button(controls, "START LISTENING", self.toggle_capture, accent=True)
+        self.start_button.pack(side="right")
+        settings = tk.Frame(self.root, bg=BG, padx=18, pady=7)
+        settings.pack(fill="x")
+        tk.Checkbutton(settings, text="Context + slang", variable=self.context_enabled,
+                       bg=BG, fg=TEXT, selectcolor=PANEL, activebackground=BG,
+                       activeforeground=TEXT).pack(side="left")
+        self.button(settings, "GLOSSARY", self.edit_glossary).pack(side="left", padx=8)
+        self.button(settings, "REFRESH AUDIO", self.refresh_sources).pack(side="left", padx=8)
+        self.button(settings, "CLEAR CONTEXT", self.reset_history).pack(side="left")
+
+        caption_panel = tk.Frame(self.root, bg=PANEL, padx=20, pady=14)
+        caption_panel.pack(fill="both", expand=True, padx=18, pady=7)
+        self.label(caption_panel, "ORIGINAL SPEECH", 9, MUTED, True).pack(fill="x")
+        self.source_text = self.label(caption_panel, "Your transcript appears here.", 14, MUTED)
+        self.source_text.configure(wraplength=760, justify="left")
+        self.source_text.pack(fill="x", pady=(6, 10))
+        self.label(caption_panel, "LIVE TRANSLATION", 9, ACCENT, True).pack(fill="x")
+        self.translated_text = self.label(caption_panel, "Play a video or join a meeting.", 20, TEXT, True)
+        self.translated_text.configure(wraplength=760, justify="left")
+        self.translated_text.pack(fill="both", expand=True, pady=(6, 0))
+
+        bottom = tk.Frame(self.root, bg=BG, padx=18)
+        bottom.pack(fill="x")
+        self.test_text = tk.Entry(bottom, bg="#27383d", fg=TEXT, insertbackground=TEXT,
+                                  relief="flat", font=("DejaVu Sans", 12))
+        self.test_text.pack(side="left", fill="x", expand=True, ipady=8, padx=(0, 8))
+        self.test_text.insert(0, "Ese código está chido")
+        self.test_text.bind("<Return>", lambda _event: self.test_translate())
+        self.button(bottom, "TRANSLATE TEXT", self.test_translate).pack(side="right")
+        self.status_var = tk.StringVar(value="Select an audio source. Requires a Gemini API key.")
+        tk.Label(self.root, textvariable=self.status_var, bg=BG, fg=MUTED,
+                 anchor="w", wraplength=790, padx=18, pady=8).pack(fill="x")
+
+    def source_lang(self):
+        return self.source_picker.get().rsplit("[", 1)[-1].rstrip("]")
+
+    def target_lang(self):
+        return self.target_picker.get().rsplit("[", 1)[-1].rstrip("]")
+
+    def drag_start(self, event):
+        self._drag_xy = (event.x_root - self.root.winfo_x(),
+                         event.y_root - self.root.winfo_y())
+
+    def drag_move(self, event):
+        if self._drag_xy:
+            self.root.geometry(f"+{event.x_root - self._drag_xy[0]}+{event.y_root - self._drag_xy[1]}")
+
+    def toggle_pin(self):
+        self.is_pinned = not self.is_pinned
+        self.root.attributes("-topmost", self.is_pinned)
+        self.pin_button.config(text="PINNED" if self.is_pinned else "UNPINNED")
+
+    def reset_history(self):
+        self.pipeline.reset()
+        if self.live_session is not None:
+            self.live_session.reset_context()
+        self.status_var.set("Conversation context will be cleared before the next translation.")
+
+    def check_consent(self):
+        if self.consent_given:
+            return True
+        permission = messagebox.askokcancel(
+            "Transcript privacy",
+            "This app captures only the audio source you select. Whisper processes raw "
+            "audio locally, but transcripts, recent conversation history, selected "
+            "topic and glossary terms are sent to Google's Gemini API.\n\n"
+            "Only use audio you are authorized to process. Avoid confidential meetings "
+            "unless your organization permits sharing transcripts with the provider.\n\n"
+            "Continue?",
+            parent=self.root,
+        )
+        if permission:
+            self.consent_given = True
+        return permission
+
+    def refresh_sources(self):
+        self.devices = sources()
+        labels = [name for name, _device in self.devices]
+        self.source_box["values"] = labels or ["No audio sources: check pactl"]
+        self.source_box.current(0)
+        if not labels:
+            self.status_var.set("No audio source found; install pulseaudio-utils, FFmpeg and check PipeWire/PulseAudio.")
+
+    def edit_glossary(self):
+        popup = tk.Toplevel(self.root)
+        popup.title("Meeting glossary")
+        popup.geometry("500x340")
+        popup.configure(bg=BG)
+        self.label(popup, "One line per term: spoken = preferred translation", 11).pack(padx=12, pady=12)
+        editor = tk.Text(popup, bg=PANEL, fg=TEXT, insertbackground=TEXT, relief="flat")
+        editor.pack(fill="both", expand=True, padx=12)
+        editor.insert("1.0", "\n".join(f"{k} = {v}" for k, v in self.glossary.items()))
+        def save():
+            self.glossary = parse_glossary(editor.get("1.0", "end"))
+            self.status_var.set(f"{len(self.glossary)} glossary terms active; stored in memory only.")
+            popup.destroy()
+        self.button(popup, "SAVE GLOSSARY", save, True).pack(pady=12)
+
+    def publish(self, kind, *values):
+        self.events.put((kind, values))
+
+    def test_translate(self):
+        text = self.test_text.get().strip()
+        if not text or self.live_session is not None:
+            return
+        if not self.check_consent():
+            return
+        language = self.source_lang()
+        if language == "auto":
+            self.status_var.set("For typed text, select the source language manually.")
+            return
+        target = self.target_lang()
+        topic = self.topic_box.get()
+        glossary = dict(self.glossary)
+        contextual = self.context_enabled.get()
+        def task():
+            try:
+                self.publish("status", "Translating typed text...")
+                result = self.pipeline.translate(text, language, target,
+                                                 topic, glossary, contextual)
+                self.publish("caption", result.original, result.translated, result.source_language, "Text")
+            except Exception as exc:
+                self.publish("error", str(exc))
+        if self.worker and self.worker.is_alive():
+            self.status_var.set("Busy; try after current translation completes.")
+            return
+        self.worker = threading.Thread(target=task, daemon=True)
+        self.worker.start()
+
+    def toggle_capture(self):
+        if self.live_session is not None:
+            self.live_session.stop()
+            self.start_button.config(text="STOPPING...", state="disabled")
+            self.status_var.set("Stopping. Waiting for current processing to finish.")
+            return
+        if not self.devices:
+            self.status_var.set("No audio sources found. Try REFRESH AUDIO.")
+            return
+        if not os.getenv("GEMINI_API_KEY"):
+            self.status_var.set("Set GEMINI_API_KEY in .env before listening.")
+            return
+        if self.worker and self.worker.is_alive():
+            self.status_var.set("Finish the current typed translation before listening.")
+            return
+        if not self.check_consent():
+            return
+        index = self.source_box.current()
+        if index < 0 or index >= len(self.devices):
+            self.status_var.set("Select a valid audio source.")
+            return
+        try:
+            duration = float(os.getenv("AUDIO_CHUNK_SECONDS", "4"))
+            self.pipeline.reset()
+            self.session_generation += 1
+            generation = self.session_generation
+            session = LiveSession(
+                source=self.devices[index][1],
+                source_language=self.source_lang(),
+                target_language=self.target_lang(),
+                topic=self.topic_box.get(),
+                glossary=dict(self.glossary),
+                contextual=self.context_enabled.get(),
+                chunk_seconds=duration,
+                on_event=lambda kind, *data: self.publish(
+                    "live", generation, kind, *data),
+            )
+        except (ValueError, TypeError) as exc:
+            self.status_var.set(f"Invalid audio settings: {exc}")
+            return
+        self.live_session = session
+        self.start_button.config(text="STOP LISTENING", state="normal")
+        for selector in (self.source_box, self.source_picker,
+                         self.target_picker, self.topic_box):
+            selector.config(state="disabled")
+        session.start()
+
+    def poll(self):
+        try:
+            while True:
+                kind, values = self.events.get_nowait()
+                if kind == "status":
+                    self.status_var.set(values[0])
+                elif kind == "heard":
+                    self.source_text.config(text=values[0])
+                    self.translated_text.config(text="Translating…")
+                elif kind == "caption":
+                    original, translated, lang, latency = values
+                    self.source_text.config(text=f"[{lang}]  {original[:700]}")
+                    self.translated_text.config(text=translated[:900])
+                    self.status_var.set(f"Translation ready · {latency}")
+                elif kind == "error":
+                    self.status_var.set("ERROR · " + values[0])
+                elif kind == "live":
+                    generation, event, *data = values
+                    if generation != self.session_generation:
+                        continue
+                    if event == "status":
+                        self.status_var.set(data[0])
+                    elif event == "heard":
+                        original, language = data
+                        self.source_text.config(text=f"[{language}]  {original[:700]}")
+                        self.translated_text.config(text="Translating...")
+                    elif event == "caption":
+                        original, translated, lang, latency = data
+                        self.source_text.config(text=f"[{lang}]  {original[:700]}")
+                        self.translated_text.config(text=translated[:900])
+                        self.status_var.set(
+                            f"Translation ready · {latency:.1f}s since audio chunk ended")
+                    elif event == "backlog":
+                        self.status_var.set(
+                            f"Processing behind playback · skipped {data[0]} older chunk(s)")
+                    elif event == "error":
+                        self.status_var.set("ERROR · " + data[0])
+                    elif event == "stopped":
+                        self.live_session = None
+                        self.pipeline.reset()
+                        for selector in (self.source_box, self.source_picker,
+                                         self.target_picker, self.topic_box):
+                            selector.config(state="readonly")
+                        self.start_button.config(text="START LISTENING", state="normal")
+                        self.status_var.set(
+                            f"Stopped. Session memory cleared. Skipped chunks: {data[0]}.")
+        except queue.Empty:
+            pass
+        if not self.closed:
+            self.root.after(100, self.poll)
+
+    def close(self):
+        self.closed = True
+        if self.live_session is not None:
+            self.live_session.stop()
+        self.pipeline.reset()
+        self.root.destroy()
+
+def main():
+    load_dotenv()
+    root = tk.Tk()
+    Application(root)
+    root.mainloop()
+
+if __name__ == "__main__":
+    main()
