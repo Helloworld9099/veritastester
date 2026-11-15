@@ -3,7 +3,6 @@ from dataclasses import dataclass
 
 from .context import Conversation
 from .provider import GeminiTranslator, TranslationRequest
-from .training import infer_topic
 
 @dataclass
 class Caption:
@@ -22,10 +21,9 @@ class Pipeline:
         if not text:
             raise ValueError("Blank transcript")
         previous = self.history.snapshot() if contextual else []
-        # Explicit topics bypass the optional classifier and its disk I/O.
-        selected = (infer_topic(" ".join(previous[-2:] + [text]))
-                    if contextual and topic == "auto"
-                    else ("general" if topic == "auto" else topic))
+        # The synthetic topic classifier has no validated real-world performance.
+        # "auto" safely uses a neutral topic until independent testing is available.
+        selected = "general" if topic == "auto" else topic
         # Same-language captions require no API call; preserve raw spoken text.
         response = (text if source == target else self.translator.translate(TranslationRequest(
             text=text, source=source, target=target, topic=selected,
