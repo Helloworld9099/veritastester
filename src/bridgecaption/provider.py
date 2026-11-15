@@ -34,7 +34,8 @@ def prompt_for(r: TranslationRequest) -> str:
     context = {
         "topic": r.topic[:100],
         "previous_utterances": [s[:500] for s in r.previous[-4:]],
-        "preferred_glossary": dict(list(r.glossary.items())[:20]),
+        "preferred_glossary": {str(k)[:80]: str(v)[:100]
+                               for k, v in list(r.glossary.items())[:20]},
         "possible_slang_interpretations": slang_hints(r.text, r.source),
     } if r.context_enabled else {}
     data = {
