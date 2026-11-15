@@ -171,7 +171,9 @@ class Application:
         self.pipeline.reset()
         if self.live_session is not None:
             self.live_session.reset_context()
-        self.status_var.set("Conversation context will be cleared before the next translation.")
+        self.source_text.config(text="Previous transcript cleared.")
+        self.translated_text.config(text="Context cleared.")
+        self.status_var.set("Context and pending older captions cleared.")
 
     def check_consent(self):
         if self.consent_given:
@@ -253,8 +255,8 @@ class Application:
         if not self.devices:
             self.status_var.set("No audio sources found. Try REFRESH AUDIO.")
             return
-        if not os.getenv("GEMINI_API_KEY"):
-            self.status_var.set("Set GEMINI_API_KEY in .env before listening.")
+        if not os.getenv("GEMINI_API_KEY") and self.source_lang() != self.target_lang():
+            self.status_var.set("Set GEMINI_API_KEY in .env before translating.")
             return
         if self.worker and self.worker.is_alive():
             self.status_var.set("Finish the current typed translation before listening.")
@@ -335,6 +337,8 @@ class Application:
                                          self.target_picker, self.topic_box):
                             selector.config(state="readonly")
                         self.start_button.config(text="START LISTENING", state="normal")
+                        self.source_text.config(text="Listening stopped.")
+                        self.translated_text.config(text="Start another authorized session to see captions.")
                         self.status_var.set(
                             f"Stopped. Session memory cleared. Skipped chunks: {data[0]}.")
         except queue.Empty:
