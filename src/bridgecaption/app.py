@@ -317,6 +317,8 @@ class Application:
     def toggle_capture(self):
         if self.live_session is not None:
             self.live_session.stop()
+            self.source_text.config(text="Audio capture stopping.")
+            self.translated_text.config(text="Previous captions hidden.")
             self.start_button.config(text="STOPPING...", state="disabled")
             self.status_var.set("Stopping. Waiting for current processing to finish.")
             return
