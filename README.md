@@ -48,6 +48,24 @@ bridgecaption-train --data data/topic_train.csv --out data/topic_model.json --me
 
 The model may perform poorly on real meetings and can be overridden with an explicit topic. It is optional; without trained artifacts, the app falls back to General. The central intelligence is the speech and translation models, which are pretrained and **not fine-tuned in this repository**.
 
+## Foundation checks and future memory training
+
+Run `bridgecaption-preflight` from the repository root after installing the test dependencies. It runs compile and offline unit tests, checks whether desktop/audio dependencies are available, and writes a local report to `results/foundation_preflight.json`. It **cannot** establish real microphone, system-audio, Gemini API, language coverage or desktop usability. Those require testing on your own workstation.
+
+The research hypotheses in the provided document concern two-view representation learning, predicting whether old experiences are useful, and avoiding harmful transfer. BridgeCaption adapts them cautiously to translation: an opt-in supervised predictor can **abstain** from reusing earlier dialogue when that dialogue appears likely to distort a new translation. The experimental code is **not JEPA, reinforcement learning or fine-tuning of Whisper/Gemini**, and is not yet connected to the live application.
+
+After collecting independent permitted and human-reviewed conversation examples:
+
+~~~bash
+# Validates JSONL schema and grouped train/dev/test splits. Does NOT train.
+bridgecaption-train-memory --data data/private/annotated_context.jsonl
+
+# Only after all readiness gates have been verified, opt in to training:
+bridgecaption-train-memory --data data/private/annotated_context.jsonl --train
+~~~
+
+Read the [training hypotheses, dataset schema, experimental baselines, and pre-training acceptance gates](docs/TRAINING_READINESS.md). No real model training or hackathon accuracy benchmark is claimed in the current revision.
+
 ## Test and evaluate
 
 ~~~bash
