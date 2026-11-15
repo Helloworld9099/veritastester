@@ -62,9 +62,13 @@ def test_real_tk_expands_settings_without_hiding_start_stop(monkeypatch):
         assert app.bottom_frame.winfo_manager() == ""
         assert app.caption_panel.winfo_manager() == "pack"
         assert app.start_button.winfo_manager() == "pack"
+        # Compact preview is bounded; full sentence remains available on expansion.
+        app._render_caption("x" * 400, "y" * 650, "es")
+        assert len(app.translated_text.cget("text")) < 260
         app.toggle_settings()
         root.update_idletasks()
         assert app.compact is False
+        assert app.translated_text.cget("text") == "y" * 650
         assert app.controls_frame.winfo_manager() == "pack"
         assert app.engine_controls_frame.winfo_manager() == "pack"
         assert app.bottom_frame.winfo_manager() == "pack"
@@ -74,5 +78,9 @@ def test_real_tk_expands_settings_without_hiding_start_stop(monkeypatch):
         assert app.compact is True
         assert app.source_text.winfo_manager() == "pack"
         assert app.start_button.winfo_manager() == "pack"
+        app.reset_history()
+        assert app.last_caption is None
+        app.toggle_settings()
+        assert "y" * 20 not in app.translated_text.cget("text")
     finally:
         root.destroy()
