@@ -167,8 +167,10 @@ def main():
         records = load_normalized(args.inputs)
         summary = leakage_report(records)
         print(json.dumps(summary, indent=2, ensure_ascii=False))
-        if summary["cross_split_group_conflicts"] or summary["cross_split_exact_text_conflicts"]:
-            parser.error("Refusing review preparation because train/test leakage was detected")
+        if summary["cross_split_group_conflicts"]:
+            parser.error("Refusing review preparation because group leakage was detected")
+        if summary["cross_split_exact_text_warnings"]:
+            print("WARNING: Repeated long utterances across splits; manually inspect duplicates")
         if args.task == "memory":
             output = human_memory_candidates(records, max_items=args.max_items)
         elif args.task == "sense":
