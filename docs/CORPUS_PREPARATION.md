@@ -1,6 +1,6 @@
 # Corpus preparation for BridgeCaption — eight data sources
 
-**No downloading, model training, cloud inference, or uploads occur in these preparation commands.** You supply dataset files that you acquired under each source's terms. Records and annotations are written only to local, gitignored \`data/private/\` or \`results/\`, with owner-only file permissions on POSIX systems. \`--write\` is explicit, and existing files are never overwritten.
+**No downloading, model training, cloud inference, or uploads occur in these preparation commands.** You supply dataset files that you acquired under each source's terms. Records and annotations are written only to local, gitignored `data/private/` or `results/`, with owner-only file permissions on POSIX systems. `--write` is explicit, and existing files are never overwritten.
 
 The attached RL hypothesis proposes two complementary views, a predictor of useful previous memories, and avoiding negative transfer. In language translation this remains a **testable analogy**, not a demonstrated JEPA or reinforcement-learning method. Use an honest staged pipeline:
 
@@ -12,7 +12,7 @@ The attached RL hypothesis proposes two complementary views, a predictor of usef
 
 ## Install and initialize
 
-From a checkout of \`fix/translation-foundation-and-training-gates\`:
+From a checkout of `fix/translation-foundation-and-training-gates`:
 
 ~~~bash
 python -m pip install -e '.[test,research]'
@@ -81,7 +81,7 @@ bridgecaption-prep-corpus --source slanginterp --language en \
 
 Only use this corpus for permitted research; do **not** publish raw entries or derived proprietary text.
 
-**Multi3WOZ** — unzip the source's 90MB \`data.zip\` outside the repo; locate actual language/split JSON files:
+**Multi3WOZ** — unzip the source's 90MB `data.zip` outside the repo; locate actual language/split JSON files:
 
 ~~~bash
 cd ~/bridgecaption-datasets/multi3woz
@@ -94,9 +94,9 @@ bridgecaption-prep-corpus --source multi3woz --language en \
   --out data/private/multi3woz-en-train.jsonl --write
 ~~~
 
-The generic adapter recognizes **dialogue_id + turns/log/dialogue/messages** and **utterance/text/content**. Actual extracted files can use different wrapping. If the importer rejects the schema, inspect the JSON and supply an explicit \`--columns\` mapping or convert it to a normalized dialogue JSONL first. Never silently flatten the whole ZIP or lose dialogue IDs.
+The generic adapter recognizes **dialogue_id + turns/log/dialogue/messages** and **utterance/text/content**. Actual extracted files can use different wrapping. If the importer rejects the schema, inspect the JSON and supply an explicit `--columns` mapping or convert it to a normalized dialogue JSONL first. Never silently flatten the whole ZIP or lose dialogue IDs.
 
-**Bangor Miami** — after using TalkBank-compatible tools to export CHAT utterance tiers into a tab-separated file with header \`conversation_id,speaker,language,utterance\` (TSV fields separated by tabs):
+**Bangor Miami** — after using TalkBank-compatible tools to export CHAT utterance tiers into a tab-separated file with header `conversation_id,speaker,language,utterance` (TSV fields separated by tabs):
 
 ~~~bash
 bridgecaption-prep-corpus --source bangor \
@@ -107,7 +107,7 @@ bridgecaption-prep-corpus --source bangor \
 
 The tool **does not claim to parse raw .cha files directly**.
 
-**DiaBLa** — export the Hugging Face dataset locally with its \`id,orig,ref,utterance_meta\` fields; add a **verified real conversation ID from source metadata** as \`dialogue_id\` before importing:
+**DiaBLa** — export the Hugging Face dataset locally with its `id,orig,ref,utterance_meta` fields; add a **verified real conversation ID from source metadata** as `dialogue_id` before importing:
 
 ~~~bash
 bridgecaption-prep-corpus --source diabla \
@@ -128,7 +128,7 @@ bridgecaption-prep-corpus --source naijasenti --language pcm \
   --out data/private/naijasenti-pcm.jsonl --write
 ~~~
 
-**Okwu** — export the dataset locally from Hugging Face to JSONL. The adapter reads the published fields \`record_id,source_lang,source_text,english_translation,verified\`:
+**Okwu** — export the dataset locally from Hugging Face to JSONL. The adapter reads the published fields `record_id,source_lang,source_text,english_translation,verified`:
 
 ~~~bash
 bridgecaption-prep-corpus --source okwu \
@@ -137,7 +137,7 @@ bridgecaption-prep-corpus --source okwu \
   --out data/private/okwu.jsonl --write
 ~~~
 
-A published \`verified\` flag is preserved as a claim, not proof that every translation is correct; samples should be independently checked.
+A published `verified` flag is preserved as a claim, not proof that every translation is correct; samples should be independently checked.
 
 ## Multi-corpus audit, contrastive candidates and human review
 
@@ -172,7 +172,7 @@ bridgecaption-corpus-review --task sense \
   --out data/private/reviewed_senses.jsonl
 ~~~
 
-You can include curated slang expressions in a separate CSV with \`language,expression\` columns via \`--terms\` for NaijaSenti and other informal corpora. This identifies **review candidates**, not their meanings.
+You can include curated slang expressions in a separate CSV with `language,expression` columns via `--terms` for NaijaSenti and other informal corpora. This identifies **review candidates**, not their meanings.
 
 The review tools deliberately refuse test/holdout records. They never generate a "grounded situation" from a target/reference label: the reviewer must provide one based only on permitted scene evidence.
 
@@ -193,7 +193,7 @@ bridgecaption-train-idiom --inputs \
 
 This auxiliary classifier trains **two equal-budget linear models**, one reading the utterance only and the other reading preceding context, and compares held-out *idiomatic versus literal* classification macro-F1. It uses CPU-friendly hashed character n-grams and an optional scikit-learn install. It **does not fine-tune Whisper or the translation LLM, and does not output the exact meaning of slang**.
 
-The model training command validates source-provided train/dev/test grouping, licenses confirmed by the operator, a successful offline preflight and minimum data. It writes a JSON-only artifact under \`results/\`, not an unsafe pickle file.
+The model training command validates source-provided train/dev/test grouping, licenses confirmed by the operator, a successful offline preflight and minimum data. It writes a JSON-only artifact under `results/`, not an unsafe pickle file.
 
 ## Core research checks
 
