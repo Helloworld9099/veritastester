@@ -318,7 +318,8 @@ def dialogue_records(source: str, rows, *, mapping: dict, language: str,
 
 def prepare(source: str, path: Path, *, language: str = "", columns: dict | None = None,
             source_split: str = "", rights: str = "review-required",
-            limit: int = 50_000):
+            limit: int = 50_000, skip_invalid: bool = False,
+            stats: dict | None = None):
     if source not in SOURCES:
         raise ValueError(f"Unknown dataset: {source}")
     if not 1 <= limit <= 200_000:
@@ -326,17 +327,36 @@ def prepare(source: str, path: Path, *, language: str = "", columns: dict | None
     mapping = columns or {}
     if any(not isinstance(k, str) or not isinstance(v, str) for k,v in mapping.items()):
         raise ValueError("Column mappings must be strings")
+    if not source_split and source in {"slanginterp", "semeval"}:
+        # The original corpora are distributed as explicitly partitioned files.
+        parts = set(re.split(r"[^a-z]+", path.stem.casefold()))
+        matches = {"train","dev","test","eval","validation"} & parts
+        if len(matches) == 1:
+            source_split = normalize_split(matches.pop(), "train")
+        elif len(matches) > 1:
+            raise ValueError("Ambiguous source split filename; set --source-split")
     if source_split:
         normalize_split(source_split, "train")
     rows = load_rows(path, limit=limit)
+    rejected = Counter()
     if source in {"multi3woz", "bangor"}:
         records = list(dialogue_records(source, rows, mapping=mapping,
                                         language=language, rights=rights,
                                         supplied_split=source_split))
     else:
-        records = [one_record(source, row, n, language=language, mapping=mapping,
-                              supplied_split=source_split, rights=rights)
-                   for n, row in enumerate(rows, 1)]
+        records = []
+        for n, row in enumerate(rows, 1):
+            try:
+                records.append(one_record(
+                    source, row, n, language=language, mapping=mapping,
+                    supplied_split=source_split, rights=rights))
+            except (ValueError, TypeError, KeyError) as exc:
+                if not skip_invalid:
+                    raise ValueError(f"{source} row {n}: {exc}") from exc
+                rejected[type(exc).__name__ + ":" + str(exc)[:80]] += 1
+    if stats is not None:
+        stats["rejected"] = dict(rejected)
+        stats["accepted"] = len(records)
     if not records:
         raise ValueError("No valid records: verify the source schema")
     # Record exact local dataset bytes for reproducibility without publishing
@@ -410,14 +430,19 @@ def main():
     p.add_argument("--limit", type=int, default=50000)
     p.add_argument("--out", type=Path)
     p.add_argument("--write", action="store_true", help="Save private records locally; never uploads")
+    p.add_argument("--skip-invalid", action="store_true",
+                   help="Quarantine invalid rows by reason instead of aborting")
     args = p.parse_args()
     try:
         mapping = json.loads(args.columns)
         if not isinstance(mapping, dict):
             raise ValueError("--columns must be a JSON object")
+        stats = {}
         records = prepare(args.source, args.input, language=args.language, columns=mapping,
-                          source_split=args.source_split, rights=args.rights, limit=args.limit)
+                          source_split=args.source_split, rights=args.rights, limit=args.limit,
+                          skip_invalid=args.skip_invalid, stats=stats)
         report = audit(records)
+        report["import"] = stats
         print(json.dumps(report, indent=2, ensure_ascii=False))
         if report["cross_split_group_conflicts"]:
             p.error("Group leakage found. Correct grouping/source splits before writing")
