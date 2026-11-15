@@ -175,11 +175,17 @@ def human_sense_candidates(records, *, terms=None, max_items=5000):
     for r in records:
         if r["split"] == "test" or r["role"] in ("evaluation_only", "parallel_text"):
             continue
-        candidate_terms = [r["expression"]] if r.get("expression") else []
+        # Source-provided idiom labels may use a dictionary form, e.g.
+        # "spill the beans" when the actual utterance says "spilled the beans".
+        # Preserve those as HUMAN-REVIEW candidates, not verified senses.
+        # In contrast, externally curated terms must match the actual text.
+        source_expression = r.get("expression") or ""
+        candidate_terms = [source_expression] if source_expression else []
         candidate_terms += [term for term in sorted(terms.get(r["language"], []))
                             if contains_expression(r["utterance"], term)]
         for expression in dict.fromkeys(filter(None, candidate_terms)):
-            if not contains_expression(r["utterance"], expression):
+            verbatim_match = contains_expression(r["utterance"], expression)
+            if not verbatim_match and expression != source_expression:
                 continue
             key = (r["case_id"], expression.casefold())
             if key in seen:
@@ -193,9 +199,13 @@ def human_sense_candidates(records, *, terms=None, max_items=5000):
                 "meaning": None, "source_suggested_definition": r.get("candidate_definition", ""),
                 "source_label": r.get("source_label", ""),
                 "label_kind": r.get("label_kind", ""),
+                "source_expression_matches_verbatim": verbatim_match,
                 "provenance": r["provenance"],
                 "split": r["split"],
-                "warning": "Source label/definition is not an independently reviewed sense.",
+                "warning": ("Source phrase is not verbatim in the utterance (it may be a "
+                            "dictionary form or incorrect metadata); verify manually. "
+                            if not verbatim_match else "") +
+                           "Source label/definition is not an independently reviewed sense.",
             })
             if len(result) >= max_items:
                 return result
