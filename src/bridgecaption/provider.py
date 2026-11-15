@@ -46,7 +46,7 @@ def prompt_for(r: TranslationRequest) -> str:
 class GeminiTranslator:
     def __init__(self, api_key: str | None = None, model: str | None = None):
         self.key = api_key if api_key is not None else os.getenv("GEMINI_API_KEY", "")
-        self.model = model or os.getenv("GEMINI_MODEL", "gemini-2.5-flash-lite")
+        self.model = model or os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
         if not self.model.replace("-", "").replace(".", "").isalnum():
             raise ValueError("Invalid model identifier")
 
