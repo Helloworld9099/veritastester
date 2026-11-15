@@ -75,3 +75,22 @@ def test_invalid_timeout_is_rejected(monkeypatch):
     with pytest.raises(ValueError, match="between 3 and 30"):
         provider.GeminiTranslator(api_key="dummy").translate(
             provider.TranslationRequest(text="hola", source="es"))
+
+
+def test_same_language_pass_through_avoids_cloud_provider():
+    translator = StubTranslator()
+    pipe = pipeline.Pipeline(translator=translator)
+    result = pipe.translate("Good morning", source="en", target="en",
+                            topic="general")
+    assert result.translated == "Good morning"
+    assert translator.calls == []
+
+
+def test_glossary_payload_is_bounded():
+    prompt = provider.prompt_for(provider.TranslationRequest(
+        text="saludos", source="es", target="en",
+        glossary={"a" * 120: "b" * 150},
+        previous=["private" * 300]))
+    assert "a" * 81 not in prompt
+    assert "b" * 101 not in prompt
+    assert "private" * 100 not in prompt
