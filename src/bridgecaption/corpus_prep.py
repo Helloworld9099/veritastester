@@ -217,9 +217,11 @@ def one_record(source: str, row: dict, number: int, *, language: str,
             original_split=supplied_split,
             provenance=provenance, rights=rights)
     if source == "slanginterp":
-        expression = tidy(column(row, "expression", mapping, required=True), 100)
-        usage = tidy(column(row, "utterance", mapping, required=True))
-        meaning = tidy(column(row, "definition", mapping, required=True), 200)
+        expression = tidy(column(row, "expression", mapping) or row.get("Slang"), 100)
+        usage = tidy(column(row, "utterance", mapping) or row.get("Usage Context"))
+        meaning = tidy(column(row, "definition", mapping) or row.get("Definition"), 200)
+        if not expression or not usage or not meaning:
+            raise ValueError("SlangInterp requires Slang, Definition and Usage Context")
         if "[*SLANGAAAP*]" in usage:
             usage = usage.replace("[*SLANGAAAP*]", expression)
         elif expression.casefold() not in usage.casefold():
@@ -241,14 +243,21 @@ def one_record(source: str, row: dict, number: int, *, language: str,
             label_kind="sentiment_is_not_sense",
             extra={"has_sentiment_label": bool(row.get(mapping.get("sentiment", "label")))})
     if source == "okwu":
-        utterance = column(row, "utterance", mapping, required=True)
-        reference = column(row, "reference_translation", mapping, required=True)
+        utterance = column(row, "utterance", mapping) or row.get("source_text")
+        reference = column(row, "reference_translation", mapping) or row.get("english_translation")
+        source_lang = supplied_lang or row.get("source_lang")
+        if not utterance or not reference or not source_lang:
+            raise ValueError("Okwu requires source_lang, source_text and english_translation")
+        key = f"{lang(source_lang)}:{tidy(utterance)}:{tidy(reference)}"
         return make_record(source,
-            case_id=identity(source, f"{lang(supplied_lang)}:{tidy(utterance)}:{tidy(reference)}"),
-            group_id=identity("pair", f"{lang(supplied_lang)}:{tidy(utterance)}"),
-            language=supplied_lang, utterance=utterance,
+            case_id=identity(source, str(row.get("record_id") or key)),
+            group_id=identity("pair", f"{lang(source_lang)}:{tidy(utterance)}"),
+            language=source_lang, utterance=utterance,
             reference_translation=reference, original_split=supplied_split,
-            provenance=provenance, rights=rights, label_kind="parallel_text_not_dialogue")
+            provenance=provenance, rights=rights,
+            label_kind="parallel_text_not_dialogue",
+            extra={"source_verified_claim": row.get("verified") is True,
+                   "original_source": tidy(row.get("source"), 80)})
     if source == "diabla":
         group = column(row, "dialogue_id", mapping)
         if not group:
