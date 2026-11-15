@@ -40,7 +40,7 @@ Audio from selected device -> **Faster-Whisper ASR** -> transcript and language 
 
 Each listening session has independent, memory-only context that is cleared when the session ends. The translation request can use the last four preceding utterances, a chosen topic, a small term glossary, and conditional slang-meaning hints. Hints are not unconditional replacements: slang can have literal meanings too. Prior transcript text is treated as untrusted data and cannot legitimately instruct the AI.
 
-The system includes a **small supervised Naive Bayes topic classifier**. Train it from scratch using original synthetic labels, but do not confuse it with training Whisper or Gemini:
+An older, unvalidated **small supervised Naive Bayes topic classifier** is retained for demonstration, but is disabled in the live translation pipeline. Train it from scratch using original synthetic labels, but do not confuse it with training Whisper or Gemini:
 
 ~~~bash
 bridgecaption-train --data data/topic_train.csv --out data/topic_model.json --metrics data/topic_metrics.json
@@ -61,7 +61,7 @@ After collecting independent permitted and human-reviewed conversation examples:
 bridgecaption-train-memory --data data/private/annotated_context.jsonl
 
 # Only after all readiness gates have been verified, opt in to training:
-bridgecaption-train-memory --data data/private/annotated_context.jsonl --train
+bridgecaption-train-memory --data data/private/annotated_context.jsonl --train --confirm-live-verified
 ~~~
 
 Read the [training hypotheses, dataset schema, experimental baselines, and pre-training acceptance gates](docs/TRAINING_READINESS.md). No real model training or hackathon accuracy benchmark is claimed in the current revision.
