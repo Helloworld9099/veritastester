@@ -39,7 +39,7 @@ The clone may require GitHub login because this repository is private.
 
 **Gemini (cloud):** Set `BRIDGE_TRANSLATOR=gemini` and `GEMINI_API_KEY`. Model defaults to `gemini-3.5-flash-lite`; verify availability for your account.
 
-**Azure (cloud baseline):** Set `BRIDGE_TRANSLATOR=azure`, `AZURE_TRANSLATOR_KEY` and, where needed, `AZURE_TRANSLATOR_REGION`. This endpoint only receives the current transcript. It **does not support our contextual prompts or glossary** and should be treated as a conventional translation baseline.
+**Azure (cloud baseline):** Set `BRIDGE_TRANSLATOR=azure`, `AZURE_TRANSLATOR_KEY` and, where needed, `AZURE_TRANSLATOR_REGION`. Select **Translator F0** in the portal for its free character allotment. See [Azure key setup](docs/AZURE_SETUP.md) for the exact resource, pricing tier and configuration. The standard Azure endpoint receives only the current transcript and **does not support our contextual prompts or glossary**.
 
 Run:
 
@@ -137,6 +137,31 @@ bridgecaption-eval-context --data data/private/annotated_context.jsonl \
 The four-arm comparison uses the **same translation engine** in every condition, and reports per-language chrF and request latency. It requires real fluent reference translations and speaker/conversation-disjoint splits. Synthetic examples and unit tests are **not evidence of real-world accuracy**.
 
 ASR can be evaluated on held-out public or consented clips via `python -m bridgecaption.asr_eval --manifest /path/to/manifest.csv`. See [dataset guidance](docs/DATASETS.md) for FLEURS, Common Voice, FLORES+, and CoVoST 2.
+
+## Testing the translator and measuring actual speech clips
+
+You reported that the offline tests passed on Ubuntu. Next, test the selected provider using **public synthetic text**, without exposing credentials or conversation content:
+
+~~~bash
+# No network request
+bridgecaption-check --engine azure
+# One real, synthetic Spanish-to-English request using your private .env key
+bridgecaption-check --engine azure --execute
+~~~
+
+To evaluate real speech, prepare a CSV in the same directory as your own permitted audio clips (file,language,transcript; optionally translation,previous_json,topic). The source clip path must stay inside that CSV's folder. A sample with genuine reference transcripts and translations can quantify WER/CER and chrF; unverified synthetic references cannot establish accuracy.
+
+~~~bash
+# Validate manifest only
+bridgecaption-eval-audio --manifest /path/to/examples.csv
+# Actually decode audio and run local Whisper ASR; no provider request
+bridgecaption-eval-audio --manifest /path/to/examples.csv --execute
+# Include Azure translation, only with participant permission
+bridgecaption-eval-audio --manifest /path/to/examples.csv --execute \
+  --translate --engine azure --allow-cloud-transcripts
+~~~
+
+The output is **aggregate-only** (per-language ASR WER/CER, clip inference timings and optional translation chrF), and goes into ignored results/. It does not store audio or full recognized transcripts. Clip replay is **not** a test of multi-minute live performance. See [Azure setup](docs/AZURE_SETUP.md) and [training readiness](docs/TRAINING_READINESS.md).
 
 ## Security, privacy, limitations
 
