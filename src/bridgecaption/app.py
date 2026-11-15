@@ -74,6 +74,7 @@ class Application:
         self.context_enabled = tk.BooleanVar(value=True)
         self.glossary = {}
         self.devices = []
+        self.last_caption = None
         self._drag_xy = None
         self.is_pinned = True
         self.compact = True
@@ -213,6 +214,8 @@ class Application:
                           245 if self.compact else 400)
         self.root.geometry(f"{width}x{height}")
         self._resize_caption_wrap()
+        if self.last_caption is not None:
+            self._render_caption(*self.last_caption)
 
     def toggle_settings(self):
         self.compact = not self.compact
@@ -236,6 +239,22 @@ class Application:
         self.source_text.config(wraplength=width)
         self.translated_text.config(wraplength=width)
         self.status_label.config(wraplength=width)
+
+    def _render_caption(self, original, translated, lang):
+        """Display bounded subtitles without changing the underlying translation.
+
+        Compact mode intentionally shows a preview. Expanding Settings can
+        reveal more of the last caption without another provider/API call.
+        """
+        self.last_caption = (original, translated, lang)
+        original_limit = 160 if self.compact else 700
+        translated_limit = 240 if self.compact else 900
+
+        def clipped(text, limit):
+            return text if len(text) <= limit else text[:limit - 1].rstrip() + "…"
+
+        self.source_text.config(text=f"[{lang}]  {clipped(original, original_limit)}")
+        self.translated_text.config(text=clipped(translated, translated_limit))
 
     def _update_overlay_summary(self):
         if not hasattr(self, "summary_var"):
@@ -273,6 +292,7 @@ class Application:
         self.pin_button.config(text="PINNED" if self.is_pinned else "UNPINNED")
 
     def reset_history(self):
+        self.last_caption = None
         self.text_generation += 1
         self.pipeline.reset()
         if self.live_session is not None:
@@ -312,6 +332,7 @@ class Application:
         self.text_generation += 1
         self.pipeline.reset()
         self.pipeline = new_pipeline
+        self.last_caption = None
         self.engine_selected = next_engine
         self._update_overlay_summary()
         self.consent_given = False
@@ -431,6 +452,7 @@ class Application:
     def toggle_capture(self):
         if self.live_session is not None:
             self.live_session.stop()
+            self.last_caption = None
             self.source_text.config(text="Audio capture stopping.")
             self.translated_text.config(text="Previous captions hidden.")
             self.start_button.config(text="STOPPING", state="disabled")
@@ -488,14 +510,14 @@ class Application:
                 if kind == "status":
                     self.status_var.set(values[0])
                 elif kind == "heard":
+                    self.last_caption = None
                     self.source_text.config(text=values[0])
                     self.translated_text.config(text="Translating…")
                 elif kind == "typed_caption":
                     generation, original, translated, lang, latency = values
                     if generation != self.text_generation:
                         continue
-                    self.source_text.config(text=f"[{lang}]  {original[:700]}")
-                    self.translated_text.config(text=translated[:900])
+                    self._render_caption(original, translated, lang)
                     self.status_var.set(f"Translation ready · {latency}")
                 elif kind == "typed_error":
                     if values[0] == self.text_generation:
@@ -512,12 +534,12 @@ class Application:
                         self.status_var.set(data[0])
                     elif event == "heard":
                         original, language = data
+                        self.last_caption = None
                         self.source_text.config(text=f"[{language}]  {original[:700]}")
                         self.translated_text.config(text="Translating...")
                     elif event == "caption":
                         original, translated, lang, latency, *details = data
-                        self.source_text.config(text=f"[{lang}]  {original[:700]}")
-                        self.translated_text.config(text=translated[:900])
+                        self._render_caption(original, translated, lang)
                         self.status_var.set(
                             f"Translation ready · {latency:.1f}s since chunk ended"
                             + (f" · {details[0]}" if details else ""))
@@ -527,6 +549,7 @@ class Application:
                     elif event == "error":
                         self.status_var.set("ERROR · " + data[0])
                     elif event == "stopped":
+                        self.last_caption = None
                         self.live_session = None
                         self._update_overlay_summary()
                         self.pipeline.reset()
