@@ -74,6 +74,10 @@ def summary(rows):
         outcomes[language] = {
             arm: {"chrF": round(scorer.corpus_score([r[arm] for r in subset], [refs]).score, 2),
                   "n": len(subset),
+                  "harmful_memories_selected": sum(
+                      r["judgement"] == "harmful" and r[arm + "_included_history"] for r in subset),
+                  "helpful_memories_missed": sum(
+                      r["judgement"] == "helpful" and not r[arm + "_included_history"] for r in subset),
                   "mean_translation_seconds": round(
                       sum(r[arm + "_seconds"] for r in subset) / len(subset), 3)}
             for arm in ARMS
