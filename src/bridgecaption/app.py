@@ -171,12 +171,22 @@ class Application:
         self.pipeline.reset()
         if self.live_session is not None:
             self.live_session.reset_context()
-        # Discard old UI notifications already queued before the reset.
+        # Remove queued old captions, but preserve lifecycle/errors (especially
+        # the "stopped" event that re-enables the controls).
+        retained = []
         while True:
             try:
-                self.events.get_nowait()
+                event = self.events.get_nowait()
             except queue.Empty:
                 break
+            kind, values = event
+            if kind == "live" and len(values) > 1 and values[1] in ("heard", "caption"):
+                continue
+            if kind == "caption" or kind == "heard":
+                continue
+            retained.append(event)
+        for event in retained:
+            self.events.put_nowait(event)
         self.source_text.config(text="Previous transcript cleared.")
         self.translated_text.config(text="Context cleared.")
         self.status_var.set("Context and pending older captions cleared.")
