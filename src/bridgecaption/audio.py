@@ -1,6 +1,7 @@
 """Capture authorized Linux microphone or output-monitor audio via FFmpeg/PulseAudio."""
 import array
 import math
+from functools import lru_cache
 import shutil
 import subprocess
 import threading
@@ -84,14 +85,21 @@ class AudioCapture:
                 self.process.kill()
                 self.process.wait(timeout=2)
 
+@lru_cache(maxsize=1)
+def _cached_whisper(name: str):
+    from faster_whisper import WhisperModel
+    return WhisperModel(name, device="cpu", compute_type="int8")
+
+
 class SpeechRecognizer:
     def __init__(self, model: str = "base"):
         if model not in {"tiny", "base", "small", "medium"}:
             raise ValueError("Invalid Whisper model setting")
-        from faster_whisper import WhisperModel
-        self.model = WhisperModel(model, device="cpu", compute_type="int8")
+        self.model = _cached_whisper(model)
 
     def transcribe(self, raw: bytes, language: str = "auto") -> tuple[str, str]:
+        if language != "auto" and language not in self.model.supported_languages:
+            raise ValueError(f"Speech model does not support {language!r}; choose Auto detect.")
         import numpy as np
         samples = np.frombuffer(raw, dtype="<i2").astype("float32") / 32768.0
         if samples.size < RATE:
