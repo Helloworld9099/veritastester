@@ -20,6 +20,7 @@ bridgecaption-train = "bridgecaption.training:main"
 bridgecaption-eval = "bridgecaption.evaluate:main"
 bridgecaption-preflight = "bridgecaption.preflight:main"
 bridgecaption-train-memory = "bridgecaption.research_training:main"
+bridgecaption-eval-context = "bridgecaption.evaluate_context:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
