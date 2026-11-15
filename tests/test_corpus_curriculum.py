@@ -49,6 +49,8 @@ def test_sense_candidates_preserve_source_idiom_label_but_not_as_meaning():
     result, = human_sense_candidates([row])
     assert result["meaning"] is None
     assert result["source_label"] == "idiomatic"
+    assert result["source_expression_matches_verbatim"] is False
+    assert "verify manually" in result["warning"]
     assert result["situation"] == ""
 
 
@@ -114,3 +116,41 @@ def test_temporal_pairs_are_only_proxy_labels():
                for p in pairs)
     assert all(p["human_judgement"] is None for p in pairs)
     assert all(p["situation_view"] == "" for p in pairs)
+
+
+def test_source_dictionary_form_is_review_candidate_not_verified_training_label():
+    row = make_record("magpie", case_id="mag-2", group_id="idiom:spill-two",
+        language="en", utterance="She spills the beans about the deal",
+        expression="spill the beans", label="idiomatic",
+        label_kind="idiomaticity_not_exact_sense", original_split="train")
+    (candidate,) = human_sense_candidates([row])
+    assert candidate["expression"] == "spill the beans"
+    assert candidate["meaning"] is None
+    assert candidate["source_expression_matches_verbatim"] is False
+
+
+def test_curated_slang_terms_are_not_suggested_without_surface_match():
+    row = make_record("naijasenti", case_id="tweet-not-present", group_id="speaker-x",
+        language="pcm", utterance="This na very good news", original_split="train")
+    assert human_sense_candidates([row], terms={"pcm": {"wahala"}}) == []
+
+
+def test_source_expression_matching_exactly_is_recorded():
+    row = make_record("slanginterp", case_id="slang-match", group_id="slang:sick",
+        language="en", utterance="That was sick", expression="sick",
+        candidate_definition="amazing", original_split="train")
+    (candidate,) = human_sense_candidates([row])
+    assert candidate["source_expression_matches_verbatim"] is True
+    assert "not verbatim" not in candidate["warning"]
+
+
+def test_sense_review_keeps_document_groups_and_idiom_family_separate():
+    rows = [make_record("magpie", case_id=f"source-{i}", group_id="idiom:en:green light",
+        language="en", utterance="A green light appeared", expression="green light",
+        label="literal", original_split="train", extra={"document_id": doc})
+        for i, doc in enumerate(["doc-a", "doc-b", "doc-a"])]
+    a, b, c = human_sense_candidates(rows)
+    assert a["group_id"] == c["group_id"] != b["group_id"]
+    assert a["source_group_id"] == b["source_group_id"] == "idiom:en:green light"
+    assert a["source_document_id"] == "doc-a"
+    assert a["meaning"] is None

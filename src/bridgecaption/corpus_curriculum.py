@@ -95,6 +95,10 @@ def human_memory_candidates(records, *, seed=2026, max_items=5000):
                     "provenance": f"{dataset}:{current['case_id']}:{candidate['case_id']}",
                     "split": split,
                     "candidate_origin": origin,
+                    "candidate_group_id": candidate["group_id"],
+                    "rights_status": current.get("rights_status", ""),
+                    "source_sha256": current.get("source_sha256", ""),
+                    "source_filename": current.get("source_filename", ""),
                     "human_judgement": None,
                     "warning": "Unlabelled comparison. Older != helpful; other dialogue != harmful.",
                 })
@@ -175,27 +179,46 @@ def human_sense_candidates(records, *, terms=None, max_items=5000):
     for r in records:
         if r["split"] == "test" or r["role"] in ("evaluation_only", "parallel_text"):
             continue
-        candidate_terms = [r["expression"]] if r.get("expression") else []
+        # Source-provided idiom labels may use a dictionary form, e.g.
+        # "spill the beans" when the actual utterance says "spilled the beans".
+        # Preserve those as HUMAN-REVIEW candidates, not verified senses.
+        # In contrast, externally curated terms must match the actual text.
+        source_expression = r.get("expression") or ""
+        candidate_terms = [source_expression] if source_expression else []
         candidate_terms += [term for term in sorted(terms.get(r["language"], []))
                             if contains_expression(r["utterance"], term)]
         for expression in dict.fromkeys(filter(None, candidate_terms)):
-            if not contains_expression(r["utterance"], expression):
+            verbatim_match = contains_expression(r["utterance"], expression)
+            if not verbatim_match and expression != source_expression:
                 continue
             key = (r["case_id"], expression.casefold())
             if key in seen:
                 continue
             seen.add(key)
+            # Idiom-type holdouts are correct for idiomaticity, but exact sense
+            # training needs the same expression in independent documents.
+            document_id = r.get("extra", {}).get("document_id", "")
+            review_group = ("magpie-document:" + digest(document_id)
+                            if r["dataset"] == "magpie" and document_id else r["group_id"])
             result.append({
                 "case_id": f"review:{digest(r['case_id']+'|'+expression)}",
-                "group_id": r["group_id"], "language": r["language"],
+                "group_id": review_group, "language": r["language"],
+                "source_group_id": r["group_id"], "source_document_id": document_id,
                 "expression": expression, "utterance": r["utterance"],
                 "previous": r["previous"], "situation": "",  # Independent view needed.
                 "meaning": None, "source_suggested_definition": r.get("candidate_definition", ""),
                 "source_label": r.get("source_label", ""),
                 "label_kind": r.get("label_kind", ""),
+                "source_expression_matches_verbatim": verbatim_match,
+                "rights_status": r.get("rights_status", ""),
+                "source_sha256": r.get("source_sha256", ""),
+                "source_filename": r.get("source_filename", ""),
                 "provenance": r["provenance"],
                 "split": r["split"],
-                "warning": "Source label/definition is not an independently reviewed sense.",
+                "warning": ("Source phrase is not verbatim in the utterance (it may be a "
+                            "dictionary form or incorrect metadata); verify manually. "
+                            if not verbatim_match else "") +
+                           "Source label/definition is not an independently reviewed sense.",
             })
             if len(result) >= max_items:
                 return result

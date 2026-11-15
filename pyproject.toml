@@ -30,6 +30,7 @@ bridgecaption-prep-corpus = "bridgecaption.corpus_prep:main"
 bridgecaption-corpus-curriculum = "bridgecaption.corpus_curriculum:main"
 bridgecaption-train-idiom = "bridgecaption.idiom_ablation:main"
 bridgecaption-corpus-review = "bridgecaption.corpus_review:main"
+bridgecaption-export-review = "bridgecaption.review_export:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
