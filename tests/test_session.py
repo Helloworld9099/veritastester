@@ -186,8 +186,8 @@ def test_clear_context_suppresses_old_inflight_translation():
     assert wait_for(lambda: began.is_set())
     session.reset_context()
     release.set()
-    # The worker must process the old translation and suppress its caption.
-    assert wait_for(lambda: session._speech.empty())
+    # Wait until translation completed; the stale result must be discarded.
+    assert wait_for(lambda: bool(SlowPipeline.instances[-1].requests))
     time.sleep(.1)
     assert not any(event[0] == 'caption' for event in events)
     session.stop()
