@@ -172,3 +172,40 @@ def test_empty_and_missing_schema_are_rejected(tmp_path):
     with pytest.raises(ValueError):
         prepare("multi3woz", write_jsonl(tmp_path, "incorrect.jsonl", [{"hello":"world"}]),
                 language="en")
+
+
+def test_slanginterp_official_headers_and_partition(tmp_path):
+    path = write_csv(tmp_path, "UD_test.csv", [
+        {"Slang": "balsa", "Definition": "a colloquial meaning",
+         "Usage Context": "This was [*SLANGAAAP*] all along."}])
+    row, = prepare("slanginterp", path, language="en")
+    assert row["split"] == "test"
+    assert row["expression"] == "balsa"
+    assert row["candidate_definition"] == "a colloquial meaning"
+    assert row["source_sha256"]
+
+
+def test_okwu_official_fixture_columns_and_source_lang(tmp_path):
+    path = write_jsonl(tmp_path, "okwu.jsonl", [
+        {"record_id": "YOR-01", "source_lang": "yor", "source_text": "Báwo ní",
+         "english_translation": "Hi", "verified": True, "source": "lessons"}])
+    row, = prepare("okwu", path)
+    assert row["language"] == "yo"
+    assert row["reference_translation"] == "Hi"
+    assert row["extra"]["source_verified_claim"] is True
+    assert row["source_sha256"]
+
+
+def test_skip_invalid_quarantines_but_does_not_fabricate(tmp_path):
+    path = write_jsonl(tmp_path, "magpie.jsonl", [
+        {"id": 1, "idiom": "bear fruit",
+         "context": ["Work can bear fruit"], "label": "i"},
+        {"id": 2, "idiom": "other expression",
+         "context": ["The text does not have the phrase"], "label": "i"}])
+    with pytest.raises(ValueError, match="row 2"):
+        prepare("magpie", path)
+    stats = {}
+    rows = prepare("magpie", path, skip_invalid=True, stats=stats)
+    assert len(rows) == 1
+    assert stats["accepted"] == 1
+    assert sum(stats["rejected"].values()) == 1
