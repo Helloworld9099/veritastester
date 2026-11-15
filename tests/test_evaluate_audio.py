@@ -81,3 +81,28 @@ def test_reject_invalid_context_json(tmp_path):
 
 def test_percentile_one_element():
     assert evaluate_audio.percentile([2], .95) == 2
+
+
+def test_cloud_replay_requires_explicit_consent_flag(tmp_path, monkeypatch):
+    import sys
+    f = manifest(tmp_path, [entry()])
+    monkeypatch.setattr(sys, "argv", [
+        "bridgecaption-eval-audio", "--manifest", str(f), "--execute",
+        "--translate", "--engine", "azure"])
+    from bridgecaption import audio
+    monkeypatch.setattr(audio, "SpeechRecognizer", lambda *_: (_ for _ in ()).throw(
+        AssertionError("must block before loading model")))
+    with pytest.raises(SystemExit) as exc:
+        evaluate_audio.main()
+    assert exc.value.code == 2
+
+
+def test_manifest_dry_run_skips_audio_model_and_translation(tmp_path, monkeypatch, capsys):
+    import sys
+    f = manifest(tmp_path, [entry()])
+    monkeypatch.setattr(sys, "argv", ["bridgecaption-eval-audio", "--manifest", str(f)])
+    from bridgecaption import audio
+    monkeypatch.setattr(audio, "SpeechRecognizer", lambda *_: (_ for _ in ()).throw(
+        AssertionError("dry run must not load model")))
+    evaluate_audio.main()
+    assert "DRY RUN" in capsys.readouterr().out
