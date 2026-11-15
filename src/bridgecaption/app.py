@@ -87,6 +87,9 @@ class Application:
         self.root.bind("<Configure>", self._resize_caption_wrap)
         self.root.bind("<Control-comma>", lambda _event: self.toggle_settings())
         self.root.after(100, self.poll)
+        # On Tk/X11, alpha set before the window is mapped may silently be lost.
+        self.root.after(180, lambda: self._apply_opacity(
+            self.opacity_value.get(), notify=False))
         self.root.protocol("WM_DELETE_WINDOW", self.close)
 
     def label(self, parent, text, size=11, color=TEXT, bold=False):
