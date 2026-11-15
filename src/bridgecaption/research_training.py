@@ -185,6 +185,10 @@ def main():
     parser = argparse.ArgumentParser(description="Validate/prepare selective-context research; training is opt-in")
     parser.add_argument("--data", type=Path, required=True)
     parser.add_argument("--train", action="store_true", help="Explicitly authorize offline training")
+    parser.add_argument("--preflight-report", type=Path,
+                        default=Path("results/foundation_preflight.json"))
+    parser.add_argument("--confirm-live-verified", action="store_true",
+                        help="Confirm real desktop, audio, API, privacy and latency gates were checked")
     parser.add_argument("--out", type=Path, default=Path("results/memory_research.json"))
     args = parser.parse_args()
     rows = load_examples(args.data)
@@ -199,6 +203,15 @@ def main():
                       "trained": False}, indent=2))
     if not args.train:
         return
+    try:
+        report = json.loads(args.preflight_report.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        parser.error(f"Training blocked: run bridgecaption-preflight first ({exc})")
+    if not report.get("offline_code_checks_pass"):
+        parser.error("Training blocked: preflight code compilation or test suite failed")
+    if not args.confirm_live_verified:
+        parser.error("Training blocked: independently verify live audio/API/privacy/latency first; "
+                     "then add --confirm-live-verified")
     outcome = run_experiment(rows)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(outcome, indent=2, ensure_ascii=False), encoding="utf-8")
