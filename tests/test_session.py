@@ -120,3 +120,37 @@ def test_invalid_audio_settings():
         LiveSession('', chunk_seconds=4)
     with pytest.raises(ValueError):
         LiveSession('mock', chunk_seconds=0)
+
+
+def test_continuous_capture_while_translator_is_blocked():
+    """The microphone must keep draining even when a remote API call stalls."""
+    begin = threading.Event()
+    release = threading.Event()
+
+    class StalledPipeline(FakePipeline):
+        def translate(self, *args):
+            begin.set()
+            release.wait(2)
+            return super().translate(*args)
+
+    class BusyCapture(FakeCapture):
+        def chunks(self):
+            yield b'first'
+            if not begin.wait(2):
+                return
+            for i in range(12):
+                yield f'clip{i}'.encode()
+            self.done.wait(2)
+
+    events = []
+    session = LiveSession('mock', on_event=lambda *v: events.append(v),
+        audio_factory=BusyCapture, recognizer_factory=FakeASR,
+        pipeline_factory=StalledPipeline, queue_size=2,
+        sound_gate=lambda b: True).start()
+    assert wait_for(lambda: begin.is_set())
+    assert wait_for(lambda: session.dropped_chunks > 0)
+    assert session._audio.qsize() <= 2 and session._speech.qsize() <= 2
+    release.set()
+    assert wait_for(lambda: any(e[0] == 'caption' for e in events))
+    session.stop()
+    assert wait_for(lambda: any(e[0] == 'stopped' for e in events))
