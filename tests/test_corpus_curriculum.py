@@ -6,7 +6,7 @@ import pytest
 from bridgecaption.corpus_prep import make_record, private_write
 from bridgecaption.corpus_curriculum import (
     human_memory_candidates, human_sense_candidates,
-    leakage_report, load_normalized, read_terms
+    leakage_report, load_normalized, read_terms, temporal_alignment_pairs
 )
 
 
@@ -102,3 +102,15 @@ def test_leakage_audit_rejects_groups_in_train_and_test():
 def test_all_candidate_generation_is_deterministic():
     records = [turn("A", i) for i in range(5)] + [turn("B", i) for i in range(5)]
     assert human_memory_candidates(records, seed=11) == human_memory_candidates(records, seed=11)
+
+
+def test_temporal_pairs_are_only_proxy_labels():
+    data = [turn("A", i) for i in range(5)] + [turn("B", i) for i in range(5)]
+    pairs = temporal_alignment_pairs(data, seed=2026)
+    assert pairs
+    assert {p["proxy_label"] for p in pairs} == {
+        "same_dialogue_adjacent", "different_dialogue"}
+    assert all(p["proxy_task"] == "temporal_coherence_not_memory_usefulness"
+               for p in pairs)
+    assert all(p["human_judgement"] is None for p in pairs)
+    assert all(p["situation_view"] == "" for p in pairs)
