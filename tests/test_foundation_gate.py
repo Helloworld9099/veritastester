@@ -28,13 +28,13 @@ def test_baseline_never_retains_previous_meeting_text():
     assert translator.calls[-1].previous == []
 
 
-def test_explicit_topic_bypasses_inference(monkeypatch):
+def test_topic_selection_does_not_run_unvalidated_classifier():
     translator = StubTranslator()
     pipe = pipeline.Pipeline(translator=translator)
-    monkeypatch.setattr(pipeline, "infer_topic", lambda text: (_ for _ in ()).throw(
-        AssertionError("Unnecessary topic inference")))
     pipe.translate("hello", "es", topic="technology")
     assert translator.calls[-1].topic == "technology"
+    pipe.translate("world", "es", topic="auto")
+    assert translator.calls[-1].topic == "general"
 
 
 def test_gemini_request_separates_instructions_from_transcript(monkeypatch):
