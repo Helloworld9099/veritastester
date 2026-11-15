@@ -86,7 +86,7 @@ bridgecaption-preflight
 bridgecaption-train-memory --data data/private/annotated_context.jsonl
 
 # Only AFTER live end-to-end checks and dataset validation:
-bridgecaption-train-memory --data data/private/annotated_context.jsonl --train
+bridgecaption-train-memory --data data/private/annotated_context.jsonl --train --confirm-live-verified
 ~~~
 
 **No training was executed on real user data during this implementation.** The last command is intentionally opt-in and must not be run until the acceptance gates below are met.
