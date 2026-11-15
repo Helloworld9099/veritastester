@@ -171,6 +171,12 @@ class Application:
         self.pipeline.reset()
         if self.live_session is not None:
             self.live_session.reset_context()
+        # Discard old UI notifications already queued before the reset.
+        while True:
+            try:
+                self.events.get_nowait()
+            except queue.Empty:
+                break
         self.source_text.config(text="Previous transcript cleared.")
         self.translated_text.config(text="Context cleared.")
         self.status_var.set("Context and pending older captions cleared.")
