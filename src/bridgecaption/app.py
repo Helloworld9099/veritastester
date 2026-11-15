@@ -57,6 +57,7 @@ class Application:
         self.root.attributes("-topmost", True)
         self.root.overrideredirect(False)
         self.worker = None
+        self.text_generation = 0
         self.events = queue.Queue()
         self.engine_selected = os.getenv("BRIDGE_TRANSLATOR", "ollama").strip().lower()
         if self.engine_selected not in PROVIDERS:
@@ -157,7 +158,7 @@ class Application:
         self.test_text.insert(0, "Ese código está chido")
         self.test_text.bind("<Return>", lambda _event: self.test_translate())
         self.button(bottom, "TRANSLATE TEXT", self.test_translate).pack(side="right")
-        self.status_var = tk.StringVar(value="Select an audio source. Requires a Gemini API key.")
+        self.status_var = tk.StringVar(value="Select a microphone/system monitor and a translation engine.")
         tk.Label(self.root, textvariable=self.status_var, bg=BG, fg=MUTED,
                  anchor="w", wraplength=790, padx=18, pady=8).pack(fill="x")
 
@@ -181,6 +182,7 @@ class Application:
         self.pin_button.config(text="PINNED" if self.is_pinned else "UNPINNED")
 
     def reset_history(self):
+        self.text_generation += 1
         self.pipeline.reset()
         if self.live_session is not None:
             self.live_session.reset_context()
@@ -216,6 +218,7 @@ class Application:
             self.engine_box.set(self.engine_selected)
             self.status_var.set(f"Cannot select engine: {exc}")
             return
+        self.text_generation += 1
         self.pipeline.reset()
         self.pipeline = new_pipeline
         self.engine_selected = next_engine
@@ -294,14 +297,17 @@ class Application:
         topic = self.topic_box.get()
         glossary = dict(self.glossary)
         contextual = self.context_enabled.get()
+        generation = self.text_generation
+        active_pipeline = self.pipeline
         def task():
             try:
                 self.publish("status", "Translating typed text...")
-                result = self.pipeline.translate(text, language, target,
-                                                 topic, glossary, contextual)
-                self.publish("caption", result.original, result.translated, result.source_language, "Text")
+                result = active_pipeline.translate(text, language, target,
+                                                   topic, glossary, contextual)
+                self.publish("typed_caption", generation, result.original, result.translated,
+                             result.source_language, "Text")
             except Exception as exc:
-                self.publish("error", str(exc))
+                self.publish("typed_error", generation, str(exc))
         if self.worker and self.worker.is_alive():
             self.status_var.set("Busy; try after current translation completes.")
             return
@@ -348,8 +354,8 @@ class Application:
                 on_event=lambda kind, *data: self.publish(
                     "live", generation, kind, *data),
             )
-        except (ValueError, TypeError) as exc:
-            self.status_var.set(f"Invalid audio settings: {exc}")
+        except (ValueError, TypeError, OSError) as exc:
+            self.status_var.set(f"Cannot start audio session: {exc}")
             return
         self.live_session = session
         self.start_button.config(text="STOP LISTENING", state="normal")
@@ -367,11 +373,16 @@ class Application:
                 elif kind == "heard":
                     self.source_text.config(text=values[0])
                     self.translated_text.config(text="Translating…")
-                elif kind == "caption":
-                    original, translated, lang, latency = values
+                elif kind == "typed_caption":
+                    generation, original, translated, lang, latency = values
+                    if generation != self.text_generation:
+                        continue
                     self.source_text.config(text=f"[{lang}]  {original[:700]}")
                     self.translated_text.config(text=translated[:900])
                     self.status_var.set(f"Translation ready · {latency}")
+                elif kind == "typed_error":
+                    if values[0] == self.text_generation:
+                        self.status_var.set("ERROR · " + values[1])
                 elif kind == "error":
                     self.status_var.set("ERROR · " + values[0])
                 elif kind == "live":
