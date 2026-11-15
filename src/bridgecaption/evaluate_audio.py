@@ -81,7 +81,8 @@ def summarize(cases):
                 "asr_metric": "CER" if language in {"zh", "yue", "ja", "th", "lo", "km", "my"} else "WER",
                 "asr_error_rate": round(error_count / unit_count, 4) if unit_count else None,
                 "asr_median_seconds": percentile([x["asr_seconds"] for x in examples], .5),
-                "asr_p95_seconds": percentile([x["asr_seconds"] for x in examples], .95)}
+                "asr_p95_seconds": percentile([x["asr_seconds"] for x in examples], .95),
+                "decode_median_seconds": percentile([x["audio_decode_seconds"] for x in examples], .5)}
         translations = [x for x in examples if x.get("translated") is not None]
         if translations:
             item["translation_median_seconds"] = percentile(
@@ -106,8 +107,12 @@ def summarize(cases):
 def run_replay(rows, recognizer, *, translator=None, contextual=False,
                context_mode="selective", target="en"):
     outputs = []
+    # Load the optional trained artifacts just once; reset history per clip.
+    pipeline = Pipeline(translator=translator, context_mode=context_mode) if translator else None
     for row in rows:
+        decode_start = time.monotonic()
         raw = decode_audio(row["file"])
+        decode_seconds = round(time.monotonic() - decode_start, 3)
         start = time.monotonic()
         predicted, detected = recognizer.transcribe(raw, row["language"])
         asr_seconds = round(time.monotonic() - start, 3)
@@ -116,23 +121,26 @@ def run_replay(rows, recognizer, *, translator=None, contextual=False,
         output = {
             "language": row["language"], "reference_units": len(reference),
             "asr_errors": edit_distance(reference, candidate),
-            "asr_seconds": asr_seconds, "translated": None,
+            "asr_seconds": asr_seconds, "audio_decode_seconds": decode_seconds,
+            "translated": None,
             "reference_translation": row["translation"], "translation_seconds": None,
             "detected_language": detected,
         }
-        if translator is not None and predicted.strip():
-            # New isolated history per clip. Only the explicit preceding turns
-            # belong to this clip; no other sample's audio/text is reused.
-            pipeline = Pipeline(translator=translator, context_mode=context_mode)
-            if contextual:
-                for earlier in row["previous"]:
-                    pipeline.history.add(earlier)
-            begin = time.monotonic()
-            result = pipeline.translate(predicted, row["language"], target,
-                                        row["topic"], contextual=contextual)
-            output["translated"] = result.translated
-            output["translation_seconds"] = round(time.monotonic() - begin, 3)
+        if pipeline is not None and predicted.strip():
+            # Explicitly isolate every sample; no transcript from another clip
+            # may enter a subsequent API prompt.
             pipeline.reset()
+            try:
+                if contextual:
+                    for earlier in row["previous"]:
+                        pipeline.history.add(earlier)
+                begin = time.monotonic()
+                result = pipeline.translate(predicted, row["language"], target,
+                                            row["topic"], contextual=contextual)
+                output["translated"] = result.translated
+                output["translation_seconds"] = round(time.monotonic() - begin, 3)
+            finally:
+                pipeline.reset()
         outputs.append(output)
     return outputs
 
