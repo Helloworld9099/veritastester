@@ -1,31 +1,25 @@
-# Pre-training checkpoint — November 14, 2026
+# BridgeCaption — updated implementation checkpoint
 
-The BridgeCaption prototype from PR #1 **has been merged to main** (merge commit 854212b3c3df3b89e25b11e3e17c7fe3e7ef3646). This document tracks the subsequent foundation hardening on the fix/translation-foundation-and-training-gates branch.
+Repository: `Helloworld9099/veritastester`. Initial prototype is already on `main`; this checkpoint describes foundation + context intelligence work proposed in **PR #2**.
 
-## Current implementation
+## Implemented in the review branch
 
-- Visible, movable Linux Tkinter caption window with system-audio and microphone source discovery.
-- Continuous audio capture, independent Whisper and Gemini workers, bounded queues, and visible backlog counters.
-- Each listening session has isolated short-term context. Context reset now discards queued older utterances and suppresses in-flight captions from the prior context generation.
-- The UI clears displayed captions on Stop and Clear Context; no raw meeting audio is intentionally stored.
-- Trusted translation rules use the Gemini system-instruction field while transcripts and glossaries are serialized as untrusted data.
-- Bounded glossary entries, optional translation timeout, and free local same-language transcription/captions.
-- The previously experimental and poorly performing synthetic topic classifier **does not influence live translations**. Explicit user-selected topics and Gemini context remain.
-- Opt-in offline utility-predictor training scaffold with grouped conversation/speaker splits, independent labels, negative-transfer accounting and an abstention threshold.
+- Separate continuous audio, speech recognition and translation workers with bounded queues.
+- All new listening sessions use independent in-memory history; Clear Context drops pending pre-reset audio and suppresses previously started ASR/translation display events.
+- Explicit translation providers: Ollama local, Groq cloud, Gemini cloud, Azure context-free cloud baseline. No automatic provider fallback. Provider selection is accompanied by updated privacy disclosures.
+- AI translation prompting separates trusted system instructions from untrusted spoken data and bounds context, glossary and API timeouts. Cloud response error messages suppress credentials and transcript payloads.
+- A `ContextSelector` integrated into the live `Pipeline` selects or abstains from using earlier dialogue. **Default mode uses a heuristic, not a trained semantic model.** An opt-in supervised eight-feature memory-utility predictor can be used when independently annotated training and evaluation have been completed.
+- Four-arm ablation evaluator, grouped train/dev/test splits, small-scale data validation, explicit network call opt-in and honest per-language/harmful-transfer reporting.
+- One-click **CHECK ENGINE** uses a public synthetic phrase, not meeting speech.
 
-## Verification and constraints
+## Local and remote checks
 
-- Local isolated Python tests for the new offline research scaffold and provider/pipeline behaviors passed using synthetic fixtures; those checks are **not** a full checkout or end-to-end run of this GitHub revision.
-- Run `bridgecaption-preflight` from a **fresh checkout on the user's own Linux workstation**. It executes compile + pytest and reports dependencies. It deliberately does not imply that real audio capture or Google API calls were verified.
-- Real audio-device interactions, Gemini API credential access, desktop UX, multilingual speech recognition quality, and sustained latency remain unverified.
-- No real model has been trained or fine-tuned. The supervised research predictor is separate from the live app and requires verified data and opt-in `--train`.
+- The isolated local component fixture tests completed with **32 passed** (context selection, provider schemas, prompt boundaries, grouped data handling and evaluation logic). This is not a full checkout of the GitHub revision and does not test a running desktop.
+- GitHub Actions CI runs for this branch returned **failure with no reported runner/job steps**. This does not establish an application test failure or a successful test run; inspect repository Actions settings/runners/billing and run `bridgecaption-preflight` on a fresh local checkout.
+- No real Whisper weights were downloaded in the isolated development environment, and no authorized system audio, cloud API credentials or actual user sessions were tested.
 
-## Before training or submitting
+## Hard blockers to calling the project ready
 
-1. Run all offline tests/compilation successfully and test a real live audio session with start/stop, errors and session privacy isolation.
-2. Measure recognition and contextual translation separately on held-out permitted examples, with at least two languages and some difficult slang/dialect cases.
-3. Obtain independent human references and judge whether candidate memories truly help; avoid examples used to write prompts or glossaries.
-4. Follow [training-readiness gates](TRAINING_READINESS.md), including fixed-model four-arm ablation tests and total compute/latency accounting.
-5. Verify GitHub code access for judges and accurately disclose the use of pretrained models, AI coding and all unverified claims.
+Run a full checkout's tests/compile and actual Linux GUI controls; verify audio monitor and microphone capture, actual chosen translation provider, start/stop/reset consent isolation, p50/p95 caption lag and missed chunks. Assemble licensed/consented fluent-speaker reference examples for Spanish, Swahili and Yoruba (or other representative languages). Evaluate positive and negative transfer and compare all four experimental arms fairly.
 
-**Training readiness: NOT YET VERIFIED.** There is no justified basis to claim the translator is bug-free or meets accuracy/latency targets until the device/API integration tests are performed.
+**No human-labelled context predictor has been trained. Do not claim production readiness or improved real-world accuracy until genuine held-out results support it.**
