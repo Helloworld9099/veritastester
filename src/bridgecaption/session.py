@@ -61,6 +61,8 @@ class LiveSession:
         self._stop = Event()
         self._reset = Event()
         self._lock = Lock()
+        self._reset_generation = 0
+        self._reset_at = 0.0
         self._capture = None
         self._started = False
         self._workers: list[Thread] = []
@@ -105,8 +107,18 @@ class LiveSession:
             Thread(target=capture.stop, name="bridgecaption-stop-audio", daemon=True).start()
 
     def reset_context(self):
-        """Reset on the translator worker before its next translation."""
-        self._reset.set()
+        """Forget old context and pending, pre-reset speech without stopping capture."""
+        with self._lock:
+            self._reset_generation += 1
+            self._reset_at = monotonic()
+            self._reset.set()
+        # Queued frames from the former context must not be sent to Gemini.
+        for pending in (self._audio, self._speech):
+            while True:
+                try:
+                    pending.get_nowait()
+                except Empty:
+                    break
 
     def _offer(self, queue: Queue, item):
         if self._stop.is_set():
@@ -190,9 +202,18 @@ class LiveSession:
                 speech = self._speech.get(timeout=.2)
             except Empty:
                 continue
-            if self._reset.is_set():
+            with self._lock:
+                generation = self._reset_generation
+                reset_at = self._reset_at
+                reset_pending = self._reset.is_set()
+            if reset_pending:
                 self._pipeline.reset()
-                self._reset.clear()
+                with self._lock:
+                    if self._reset_generation == generation:
+                        self._reset.clear()
+            if speech.captured_at < reset_at:
+                # Speech recorded before CLEAR CONTEXT is no longer permitted.
+                continue
             try:
                 result = self._pipeline.translate(
                     speech.original, speech.language, self.target_language,
@@ -201,6 +222,13 @@ class LiveSession:
                 # A transient remote translation error should not end listening.
                 if not self._stop.is_set():
                     self._emit("error", f"Translation: {exc}")
+                continue
+            with self._lock:
+                stale = self._reset_generation != generation
+            if stale:
+                # The request was already in flight; suppress stale captions
+                # and make sure its old context does not survive the reset.
+                self._pipeline.reset()
                 continue
             if self._stop.is_set():
                 break
