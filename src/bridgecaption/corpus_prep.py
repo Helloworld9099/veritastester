@@ -339,6 +339,16 @@ def prepare(source: str, path: Path, *, language: str = "", columns: dict | None
                    for n, row in enumerate(rows, 1)]
     if not records:
         raise ValueError("No valid records: verify the source schema")
+    # Record exact local dataset bytes for reproducibility without publishing
+    # content, participant identities, local absolute paths or API credentials.
+    checksum = hashlib.sha256()
+    with path.open("rb") as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b""):
+            checksum.update(block)
+    fingerprint = checksum.hexdigest()
+    for record in records:
+        record["source_sha256"] = fingerprint
+        record["source_filename"] = path.name
     ids = [r["case_id"] for r in records]
     if len(ids) != len(set(ids)):
         raise ValueError("Duplicate normalized case IDs; retain unique source identifiers")
@@ -350,6 +360,8 @@ def audit(records):
     cross_split_groups = defaultdict(set)
     counts = Counter()
     split_counts = Counter()
+    document_groups = defaultdict(set)
+    rights = Counter()
     for record in records:
         counts[(record["dataset"], record["role"])] += 1
         split_counts[record["split"]] += 1
@@ -357,12 +369,17 @@ def audit(records):
         if len(record["utterance"]) >= 32:
             duplicates[text_hash].add(record["split"])
         cross_split_groups[record["group_id"]].add(record["split"])
+        rights[record.get("rights_status", "unknown")] += 1
+        if record["dataset"] == "magpie" and record.get("extra", {}).get("document_id"):
+            document_groups[record["extra"]["document_id"]].add(record["split"])
     return {
         "count": len(records),
         "by_dataset_role": {f"{s}/{r}": n for (s,r),n in sorted(counts.items())},
         "by_split": dict(sorted(split_counts.items())),
         "cross_split_group_conflicts": sum(len(v) > 1 for v in cross_split_groups.values()),
         "cross_split_exact_text_warnings": sum(len(v) > 1 for v in duplicates.values()),
+        "cross_split_magpie_document_warnings": sum(len(v) > 1 for v in document_groups.values()),
+        "rights_metadata": dict(rights),
         "label_types": dict(Counter(r["label_kind"] or "none" for r in records)),
         "training_ready": False,
         "reason": "Source examples are not independently reviewed memory/sense utility labels",
