@@ -154,3 +154,65 @@ def test_continuous_capture_while_translator_is_blocked():
     assert wait_for(lambda: any(e[0] == 'caption' for e in events))
     session.stop()
     assert wait_for(lambda: any(e[0] == 'stopped' for e in events))
+
+
+def test_clear_context_drops_pre_reset_queued_audio_and_speech():
+    from bridgecaption.session import SpokenChunk
+    session = LiveSession('mock', on_event=lambda *a: None,
+        audio_factory=FakeCapture, recognizer_factory=FakeASR,
+        pipeline_factory=FakePipeline, queue_size=3)
+    session._offer(session._audio, AudioChunk(1, b'private', 0))
+    session._offer(session._speech, SpokenChunk(1, 'private', 'es', 0))
+    session.reset_context()
+    assert session._audio.qsize() == 0
+    assert session._speech.qsize() == 0
+
+
+def test_clear_context_suppresses_old_inflight_translation():
+    began = threading.Event()
+    release = threading.Event()
+
+    class SlowPipeline(FakePipeline):
+        def translate(self, *args):
+            began.set()
+            release.wait(2)
+            return super().translate(*args)
+
+    events = []
+    session = LiveSession('mock', on_event=lambda *a: events.append(a),
+        audio_factory=lambda n, d: FakeCapture(n, d, [b'old secret']),
+        recognizer_factory=FakeASR, pipeline_factory=SlowPipeline,
+        sound_gate=lambda b: True).start()
+    assert wait_for(lambda: began.is_set())
+    session.reset_context()
+    release.set()
+    # Wait until translation completed; the stale result must be discarded.
+    assert wait_for(lambda: bool(SlowPipeline.instances[-1].requests))
+    time.sleep(.1)
+    assert not any(event[0] == 'caption' for event in events)
+    session.stop()
+    assert wait_for(lambda: any(event[0] == 'stopped' for event in events))
+
+
+def test_clear_context_suppresses_old_inflight_recognition():
+    began = threading.Event()
+    release = threading.Event()
+
+    class SlowASR:
+        def transcribe(self, data, language):
+            began.set()
+            release.wait(2)
+            return data.decode(), 'es'
+
+    events = []
+    session = LiveSession('mock', on_event=lambda *a: events.append(a),
+        audio_factory=lambda n, d: FakeCapture(n, d, [b'pre-reset']),
+        recognizer_factory=SlowASR, pipeline_factory=FakePipeline,
+        sound_gate=lambda b: True).start()
+    assert wait_for(lambda: began.is_set())
+    session.reset_context()
+    release.set()
+    time.sleep(.1)
+    assert not any(event[0] in {'heard', 'caption'} for event in events)
+    session.stop()
+    assert wait_for(lambda: any(event[0] == 'stopped' for event in events))

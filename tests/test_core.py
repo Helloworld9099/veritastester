@@ -58,7 +58,7 @@ def test_pipeline_does_not_reuse_current_utterance_as_history():
         def translate(self, request):
             calls.append(request)
             return "output"
-    p = Pipeline(translator=Dummy())
+    p = Pipeline(translator=Dummy(), context_mode="all")
     p.translate("one", "es", topic="general")
     p.translate("two", "es", topic="general")
     assert calls[0].previous == []
