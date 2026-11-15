@@ -18,15 +18,18 @@ ARMS = ("A_no_context", "B_all_context_two_view",
         "C_selected_single_view", "D_selected_two_view")
 
 
-def build_requests(row, artifact: Path):
+def build_requests(row, artifact: Path, selectors=None):
     """Build controlled ablations without using withheld reference text."""
     if not artifact:
         raise ValueError("A trained memory artifact is required for C and D")
     previous = [row.previous, row.candidate_memory]
-    single = ContextSelector(artifact, variant="single_view").select(
+    if selectors is None:
+        selectors = (ContextSelector(artifact, variant="single_view"),
+                     ContextSelector(artifact, variant="two_view"))
+    single = selectors[0].select(
         row.utterance, [row.candidate_memory], row.language, "general",
         background=row.previous)
-    multiple = ContextSelector(artifact, variant="two_view").select(
+    multiple = selectors[1].select(
         row.utterance, [row.candidate_memory], row.language, row.situation,
         background=row.previous)
     conditions = (
@@ -43,8 +46,10 @@ def build_requests(row, artifact: Path):
 
 def evaluate(rows, translator, artifact: Path):
     results = []
+    selectors = (ContextSelector(artifact, variant="single_view"),
+                 ContextSelector(artifact, variant="two_view"))
     for row in rows:
-        requests = build_requests(row, artifact)
+        requests = build_requests(row, artifact, selectors)
         item = {"case_id": row.case_id, "group_id": row.group_id, "language": row.language,
                 "reference": row.reference_translation, "judgement": row.human_judgement}
         for name, req in requests.items():
