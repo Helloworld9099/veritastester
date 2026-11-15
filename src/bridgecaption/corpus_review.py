@@ -126,7 +126,7 @@ def review(candidates: Path, out: Path, task: str, *, append=False,
                     break
                 record = SenseExample.from_dict({
                     **{k:candidate[k] for k in
-                       ("case_id","group_id","language","utterance","previous",
+                       ("case_id","group_id","language","utterance",
                         "expression","provenance")},
                     "previous": previous_text,
                     "situation": situation, "meaning": meaning})
