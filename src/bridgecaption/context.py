@@ -1,6 +1,7 @@
 """Short, in-memory conversation context and context-sensitive slang hints."""
 from collections import deque
 from dataclasses import dataclass, field
+import re
 
 SLANG = {
     "es": {
@@ -27,9 +28,19 @@ SLANG = {
 }
 
 def slang_hints(text: str, lang: str) -> list[str]:
+    """Supply possible interpretations, never replace the speaker's words."""
     lowered = text.casefold()
-    return [f"{term}: {meaning}" for term, meaning in SLANG.get(lang, {}).items()
-            if term.casefold() in lowered][:5]
+    hints = []
+    for term, meaning in SLANG.get(lang, {}).items():
+        needle = term.casefold()
+        if re.search(r"[a-z]", needle):
+            matched = bool(re.search(r"(?<!\\w)" + re.escape(needle) + r"(?!\\w)", lowered))
+        else:
+            # CJK phrases do not always use whitespace between words.
+            matched = needle in lowered
+        if matched:
+            hints.append(f"{term}: {meaning}")
+    return hints[:5]
 
 def parse_glossary(text: str) -> dict[str, str]:
     entries = {}
