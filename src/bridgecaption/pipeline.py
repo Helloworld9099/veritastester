@@ -21,13 +21,20 @@ class Pipeline:
         text = " ".join(text.split())
         if not text:
             raise ValueError("Blank transcript")
-        guessed = infer_topic(" ".join(self.history.snapshot()[-2:] + [text]))
-        selected = guessed if topic == "auto" else topic
+        previous = self.history.snapshot() if contextual else []
+        # Explicit topics bypass the optional classifier and its disk I/O.
+        selected = (infer_topic(" ".join(previous[-2:] + [text]))
+                    if contextual and topic == "auto"
+                    else ("general" if topic == "auto" else topic))
         response = self.translator.translate(TranslationRequest(
             text=text, source=source, target=target, topic=selected,
-            previous=self.history.snapshot() if contextual else [],
-            glossary=glossary or {} if contextual else {}, context_enabled=contextual))
-        self.history.add(text)
+            previous=previous, glossary=(glossary or {}) if contextual else {},
+            context_enabled=contextual))
+        if contextual:
+            self.history.add(text)
+        else:
+            # Disabling context must also prevent later reuse of this utterance.
+            self.history.clear()
         return Caption(text, response, source, selected)
 
     def reset(self):
