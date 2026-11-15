@@ -24,6 +24,7 @@ bridgecaption-eval-context = "bridgecaption.evaluate_context:main"
 bridgecaption-train-sense = "bridgecaption.sense_model:main"
 bridgecaption-check = "bridgecaption.diagnostics:main"
 bridgecaption-eval-audio = "bridgecaption.evaluate_audio:main"
+bridgecaption-annotate = "bridgecaption.annotate:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
