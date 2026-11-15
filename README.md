@@ -47,6 +47,8 @@ Run:
 bridgecaption
 ~~~
 
+The app starts in a **compact, floating, lightly transparent caption view** (760 × 282, 92% opacity). **START/STOP** and **SETTINGS** remain visible. Select **SETTINGS** (or press Ctrl+,) to expand the full controls, change the microphone/system monitor, choose your translation engine, edit your glossary, test typed text, or change transparency with the 82–100% slider. Hide settings to return to the compact overlay. The window remains draggable and pinnable; transparency is compositor-dependent on Linux/Wayland. This is a normal Tkinter desktop window, not click-through.
+
 The **Translation Engine** control inside the app changes providers; you can also choose a provider in `.env`. The privacy dialog identifies the current destination. The app does not send text to other translation providers if one fails.
 
 To test translation without audio, select Spanish as source, type *Ese código está chido*, and click **TRANSLATE TEXT**. Click **CHECK ENGINE** to try a public sample sentence without accessing your meeting. With system audio, choose a monitor such as **System audio (current output)**, then click **START LISTENING**. Consent and participant authorization are required. Use **STOP LISTENING** when done.
