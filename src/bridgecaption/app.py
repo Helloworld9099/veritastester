@@ -7,13 +7,13 @@ remains on the local computer.
 import os
 import queue
 import threading
-import time
 import tkinter as tk
 from tkinter import ttk, messagebox
 
 from dotenv import load_dotenv
 
-from .audio import AudioCapture, SpeechRecognizer, audible, sources
+from .audio import sources
+from .session import LiveSession
 from .context import parse_glossary
 from .pipeline import Pipeline
 
@@ -54,12 +54,14 @@ class Application:
         self.root.minsize(650, 300)
         self.root.configure(bg=BG)
         self.root.attributes("-topmost", True)
-        self.root.overrideredirect(True)
+        self.root.overrideredirect(False)
         self.worker = None
-        self.stop_event = threading.Event()
-        self.capture = None
         self.events = queue.Queue()
-        self.pipeline = Pipeline()
+        self.pipeline = Pipeline()  # Typed-text testing; not shared with live audio.
+        self.live_session = None
+        self.session_generation = 0
+        self.consent_given = False
+        self.closed = False
         self.context_enabled = tk.BooleanVar(value=True)
         self.glossary = {}
         self.devices = []
@@ -167,7 +169,26 @@ class Application:
 
     def reset_history(self):
         self.pipeline.reset()
-        self.status_var.set("Conversation context cleared.")
+        if self.live_session is not None:
+            self.live_session.reset_context()
+        self.status_var.set("Conversation context will be cleared before the next translation.")
+
+    def check_consent(self):
+        if self.consent_given:
+            return True
+        permission = messagebox.askokcancel(
+            "Transcript privacy",
+            "This app captures only the audio source you select. Whisper processes raw "
+            "audio locally, but transcripts, recent conversation history, selected "
+            "topic and glossary terms are sent to Google's Gemini API.\n\n"
+            "Only use audio you are authorized to process. Avoid confidential meetings "
+            "unless your organization permits sharing transcripts with the provider.\n\n"
+            "Continue?",
+            parent=self.root,
+        )
+        if permission:
+            self.consent_given = True
+        return permission
 
     def refresh_sources(self):
         self.devices = sources()
@@ -197,7 +218,9 @@ class Application:
 
     def test_translate(self):
         text = self.test_text.get().strip()
-        if not text:
+        if not text or self.live_session is not None:
+            return
+        if not self.check_consent():
             return
         language = self.source_lang()
         if language == "auto":
@@ -222,64 +245,51 @@ class Application:
         self.worker.start()
 
     def toggle_capture(self):
-        if self.capture is not None:
-            self.stop_event.set()
-            self.capture.stop()
-            self.start_button.config(text="STOPPING...")
-            self.status_var.set("Stopping audio capture...")
+        if self.live_session is not None:
+            self.live_session.stop()
+            self.start_button.config(text="STOPPING...", state="disabled")
+            self.status_var.set("Stopping. Waiting for current processing to finish.")
             return
         if not self.devices:
-            self.status_var.set("No audio devices available.")
+            self.status_var.set("No audio sources found. Try REFRESH AUDIO.")
             return
         if not os.getenv("GEMINI_API_KEY"):
             self.status_var.set("Set GEMINI_API_KEY in .env before listening.")
             return
         if self.worker and self.worker.is_alive():
-            self.status_var.set("Wait until the previous translation finishes.")
+            self.status_var.set("Finish the current typed translation before listening.")
             return
-        self.stop_event.clear()
-        device = self.devices[self.source_box.current()][1]
-        language = self.source_lang()
-        target = self.target_lang()
-        topic = self.topic_box.get()
-        glossary = dict(self.glossary)
-        contextual = self.context_enabled.get()
-        self.start_button.config(text="STOP LISTENING")
-        def task():
-            capture = None
-            try:
-                self.publish("status", "Loading Whisper (first run downloads model weights)...")
-                recognizer = SpeechRecognizer(os.getenv("WHISPER_MODEL", "base"))
-                if self.stop_event.is_set():
-                    return
-                capture = AudioCapture(device, float(os.getenv("AUDIO_CHUNK_SECONDS", "4"))).start()
-                self.capture = capture
-                self.publish("status", "Listening to selected audio; original audio remains local.")
-                for raw in capture.chunks():
-                    if self.stop_event.is_set():
-                        break
-                    if not audible(raw):
-                        continue
-                    begin = time.monotonic()
-                    original, detected = recognizer.transcribe(raw, language)
-                    if not original or self.stop_event.is_set():
-                        continue
-                    self.publish("heard", original, detected)
-                    result = self.pipeline.translate(original, detected, target, topic,
-                                                     glossary, contextual)
-                    if self.stop_event.is_set():
-                        break
-                    self.publish("caption", result.original, result.translated,
-                                 detected, f"{time.monotonic() - begin:.1f}s after audio chunk")
-            except Exception as exc:
-                if not self.stop_event.is_set():
-                    self.publish("error", str(exc))
-            finally:
-                if capture:
-                    capture.stop()
-                self.publish("stopped")
-        self.worker = threading.Thread(target=task, daemon=True)
-        self.worker.start()
+        if not self.check_consent():
+            return
+        index = self.source_box.current()
+        if index < 0 or index >= len(self.devices):
+            self.status_var.set("Select a valid audio source.")
+            return
+        try:
+            duration = float(os.getenv("AUDIO_CHUNK_SECONDS", "4"))
+            self.pipeline.reset()
+            self.session_generation += 1
+            generation = self.session_generation
+            session = LiveSession(
+                source=self.devices[index][1],
+                source_language=self.source_lang(),
+                target_language=self.target_lang(),
+                topic=self.topic_box.get(),
+                glossary=dict(self.glossary),
+                contextual=self.context_enabled.get(),
+                chunk_seconds=duration,
+                on_event=lambda kind, *data: self.publish(
+                    "live", generation, kind, *data),
+            )
+        except (ValueError, TypeError) as exc:
+            self.status_var.set(f"Invalid audio settings: {exc}")
+            return
+        self.live_session = session
+        self.start_button.config(text="STOP LISTENING", state="normal")
+        for selector in (self.source_box, self.source_picker,
+                         self.target_picker, self.topic_box):
+            selector.config(state="disabled")
+        session.start()
 
     def poll(self):
         try:
@@ -297,17 +307,46 @@ class Application:
                     self.status_var.set(f"Translation ready · {latency}")
                 elif kind == "error":
                     self.status_var.set("ERROR · " + values[0])
-                elif kind == "stopped":
-                    self.capture = None
-                    self.start_button.config(text="START LISTENING")
+                elif kind == "live":
+                    generation, event, *data = values
+                    if generation != self.session_generation:
+                        continue
+                    if event == "status":
+                        self.status_var.set(data[0])
+                    elif event == "heard":
+                        original, language = data
+                        self.source_text.config(text=f"[{language}]  {original[:700]}")
+                        self.translated_text.config(text="Translating...")
+                    elif event == "caption":
+                        original, translated, lang, latency = data
+                        self.source_text.config(text=f"[{lang}]  {original[:700]}")
+                        self.translated_text.config(text=translated[:900])
+                        self.status_var.set(
+                            f"Translation ready · {latency:.1f}s since audio chunk ended")
+                    elif event == "backlog":
+                        self.status_var.set(
+                            f"Processing behind playback · skipped {data[0]} older chunk(s)")
+                    elif event == "error":
+                        self.status_var.set("ERROR · " + data[0])
+                    elif event == "stopped":
+                        self.live_session = None
+                        self.pipeline.reset()
+                        for selector in (self.source_box, self.source_picker,
+                                         self.target_picker, self.topic_box):
+                            selector.config(state="readonly")
+                        self.start_button.config(text="START LISTENING", state="normal")
+                        self.status_var.set(
+                            f"Stopped. Session memory cleared. Skipped chunks: {data[0]}.")
         except queue.Empty:
             pass
-        self.root.after(100, self.poll)
+        if not self.closed:
+            self.root.after(100, self.poll)
 
     def close(self):
-        self.stop_event.set()
-        if self.capture is not None:
-            self.capture.stop()
+        self.closed = True
+        if self.live_session is not None:
+            self.live_session.stop()
+        self.pipeline.reset()
         self.root.destroy()
 
 def main():
