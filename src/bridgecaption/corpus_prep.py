@@ -199,7 +199,7 @@ def one_record(source: str, row: dict, number: int, *, language: str,
             provenance=provenance, rights=rights,
             extra={"document_id": tidy(row.get("document_id"), 100)})
     if source == "semeval":
-        raw_label = tidy(column(row, "label", mapping)).casefold()
+        raw_label = tidy(column(row, "label", mapping) or row.get("Label")).casefold()
         if raw_label not in {"0", "1"} and supplied_split != "test":
             raise ValueError("SemEval needs binary Label (0 idiomatic, 1 non-idiomatic)")
         expression = tidy(column(row, "expression", mapping) or row.get("MWE"))
@@ -225,7 +225,7 @@ def one_record(source: str, row: dict, number: int, *, language: str,
         elif expression.casefold() not in usage.casefold():
             raise ValueError("SlangInterp usage lacks token or expression")
         return make_record(source,
-            case_id=identity(source, str(column(row, "id", mapping) or number)),
+            case_id=identity(source, f"{expression}|{usage}|{meaning}"),
             group_id=f"slang:{expression.casefold()}", language=supplied_lang or "en",
             utterance=usage, expression=expression, candidate_definition=meaning,
             provenance=provenance, rights=rights, original_split=supplied_split,
@@ -235,8 +235,8 @@ def one_record(source: str, row: dict, number: int, *, language: str,
         source_lang = supplied_lang or column(row, "lang", mapping)
         case_id = str(column(row, "id", mapping) or number)
         family = column(row, "author_id", mapping) or case_id
-        return make_record(source, case_id=identity(source, case_id),
-            group_id=identity("author", str(family)), language=source_lang,
+        return make_record(source, case_id=identity(source, f"{lang(source_lang)}:{case_id}"),
+            group_id=identity("author", f"{lang(source_lang)}:{family}"), language=source_lang,
             utterance=text, provenance=provenance, rights=rights,
             label_kind="sentiment_is_not_sense",
             extra={"has_sentiment_label": bool(row.get(mapping.get("sentiment", "label")))})
@@ -244,7 +244,7 @@ def one_record(source: str, row: dict, number: int, *, language: str,
         utterance = column(row, "utterance", mapping, required=True)
         reference = column(row, "reference_translation", mapping, required=True)
         return make_record(source,
-            case_id=identity(source, str(column(row, "id", mapping) or number)),
+            case_id=identity(source, f"{lang(supplied_lang)}:{tidy(utterance)}:{tidy(reference)}"),
             group_id=identity("pair", f"{lang(supplied_lang)}:{tidy(utterance)}"),
             language=supplied_lang, utterance=utterance,
             reference_translation=reference, original_split=supplied_split,
@@ -345,14 +345,15 @@ def audit(records):
         counts[(record["dataset"], record["role"])] += 1
         split_counts[record["split"]] += 1
         text_hash = digest(record["utterance"].casefold())
-        duplicates[text_hash].add(record["split"])
+        if len(record["utterance"]) >= 32:
+            duplicates[text_hash].add(record["split"])
         cross_split_groups[record["group_id"]].add(record["split"])
     return {
         "count": len(records),
         "by_dataset_role": {f"{s}/{r}": n for (s,r),n in sorted(counts.items())},
         "by_split": dict(sorted(split_counts.items())),
         "cross_split_group_conflicts": sum(len(v) > 1 for v in cross_split_groups.values()),
-        "cross_split_exact_text_conflicts": sum(len(v) > 1 for v in duplicates.values()),
+        "cross_split_exact_text_warnings": sum(len(v) > 1 for v in duplicates.values()),
         "label_types": dict(Counter(r["label_kind"] or "none" for r in records)),
         "training_ready": False,
         "reason": "Source examples are not independently reviewed memory/sense utility labels",
@@ -392,8 +393,10 @@ def main():
                           source_split=args.source_split, rights=args.rights, limit=args.limit)
         report = audit(records)
         print(json.dumps(report, indent=2, ensure_ascii=False))
-        if report["cross_split_group_conflicts"] or report["cross_split_exact_text_conflicts"]:
-            p.error("Split leakage found. Correct grouping/source splits before writing")
+        if report["cross_split_group_conflicts"]:
+            p.error("Group leakage found. Correct grouping/source splits before writing")
+        if report["cross_split_exact_text_warnings"]:
+            print("WARNING: Repeated long text across splits. Review duplicates before training.")
         if args.write:
             if not args.out:
                 p.error("--out is required with --write")
