@@ -11,10 +11,11 @@ Repository: `Helloworld9099/veritastester`. Initial prototype is already on `mai
 - A `ContextSelector` integrated into the live `Pipeline` selects or abstains from using earlier dialogue. **Default mode uses a heuristic, not a trained semantic model.** An opt-in supervised eight-feature memory-utility predictor can be used when independently annotated training and evaluation have been completed.
 - Four-arm ablation evaluator, grouped train/dev/test splits, small-scale data validation, explicit network call opt-in and honest per-language/harmful-transfer reporting.
 - One-click **CHECK ENGINE** uses a public synthetic phrase, not meeting speech.
+- A separate optional trainable character n-gram **slang-sense model** can suggest meanings of ambiguous expressions and abstain when uncertain; it has not been trained on real human-labelled examples.
 
 ## Local and remote checks
 
-- The isolated local component fixture tests completed with **32 passed** (context selection, provider schemas, prompt boundaries, grouped data handling and evaluation logic). This is not a full checkout of the GitHub revision and does not test a running desktop.
+- The isolated local component fixture tests completed with **39 passed** (context selection, provider schemas, prompt boundaries, grouped data handling and evaluation logic). This is not a full checkout of the GitHub revision and does not test a running desktop.
 - GitHub Actions CI runs for this branch returned **failure with no reported runner/job steps**. This does not establish an application test failure or a successful test run; inspect repository Actions settings/runners/billing and run `bridgecaption-preflight` on a fresh local checkout.
 - No real Whisper weights were downloaded in the isolated development environment, and no authorized system audio, cloud API credentials or actual user sessions were tested.
 
