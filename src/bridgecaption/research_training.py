@@ -10,7 +10,6 @@ import argparse
 import json
 import math
 import random
-import re
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -81,20 +80,6 @@ def split_groups(rows: list[MemoryExample], seed: int = 2026):
     split = [[row for row in rows if row.group_id in b] for b in bins]
     assert not (bins[0] & bins[1] or bins[0] & bins[2] or bins[1] & bins[2])
     return tuple(split)
-
-
-def grams(text: str) -> set[str]:
-    text = " ".join(text.casefold().split())
-    return {text[i:i + 3] for i in range(max(0, len(text) - 2))}
-
-
-def words(text: str) -> set[str]:
-    return set(re.findall(r"[^\W_]+", text.casefold(), flags=re.UNICODE))
-
-
-def overlap(a: set[str], b: set[str]) -> float:
-    union = a | b
-    return len(a & b) / len(union) if union else 0.0
 
 
 def features(row: MemoryExample, multiview: bool) -> tuple[float, ...]:
