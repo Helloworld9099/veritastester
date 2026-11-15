@@ -2,6 +2,7 @@
 import argparse
 import csv
 import subprocess
+import unicodedata
 from collections import defaultdict
 from pathlib import Path
 
@@ -15,6 +16,21 @@ def edit_distance(reference: list[str], predicted: list[str]) -> int:
             row.append(min(row[-1] + 1, old[j] + 1, old[j - 1] + (word != guess)))
         old = row
     return old[-1]
+
+def normalized(text: str) -> str:
+    """Normalize case, common punctuation and Unicode width before scoring."""
+    text = unicodedata.normalize("NFKC", text).casefold()
+    text = "".join(" " if unicodedata.category(ch).startswith("P") else ch for ch in text)
+    return " ".join(text.split())
+
+
+def score_units(text: str, language: str) -> list[str]:
+    cleaned = normalized(text)
+    # Languages often written without inter-word spaces need character error rate.
+    if language in {"zh", "yue", "ja", "th", "lo", "km", "my"}:
+        return [ch for ch in cleaned if not ch.isspace()]
+    return cleaned.split()
+
 
 def decode_audio(path: Path) -> bytes:
     proc = subprocess.run(
@@ -38,15 +54,15 @@ def main():
                 break
             raw = decode_audio((args.manifest.parent / row["file"]).resolve())
             predicted, _ = recognizer.transcribe(raw, row["language"])
-            reference = row["transcript"].casefold().split()
-            hypothesis = predicted.casefold().split()
+            reference = score_units(row["transcript"], row["language"])
+            hypothesis = score_units(predicted, row["language"])
             errors[row["language"]] += edit_distance(reference, hypothesis)
             lengths[row["language"]] += len(reference)
             print(f"{row['language']}: reference={row['transcript']!r} prediction={predicted!r}")
     for language in sorted(lengths):
         words = lengths[language]
-        print(f"{language}: WER={errors[language] / words:.3f} reference_words={words}" if words else
-              f"{language}: reference has zero words")
+        print(f"{language}: {'CER' if language in {'zh', 'yue', 'ja', 'th', 'lo', 'km', 'my'} else 'WER'}={errors[language] / words:.3f} reference_units={words}" if words else
+              f"{language}: reference has zero units")
 
 if __name__ == "__main__":
     main()
