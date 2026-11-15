@@ -18,7 +18,7 @@ A **visible, always-on-top Linux desktop translation overlay** for videos, onlin
 ## Ubuntu installation
 
 ~~~bash
-git clone --branch fix/translation-foundation-and-training-gates \
+git clone --branch main \
   https://github.com/Helloworld9099/veritastester.git
 cd veritastester
 sudo apt update
