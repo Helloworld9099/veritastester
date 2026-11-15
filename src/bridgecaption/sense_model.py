@@ -170,6 +170,12 @@ def evaluate(rows: list[SenseExample], model: dict, threshold: float):
 
 
 def train(rows: list[SenseExample]) -> dict:
+    # Weak small-sample labels make overconfident wrong predictions dangerous.
+    if len(rows) < 60 or len({r.group_id for r in rows}) < 12:
+        raise ValueError("Sense training needs >=60 examples and >=12 independent groups")
+    counts = Counter((r.language, normalize(r.expression), r.meaning) for r in rows)
+    if any(n < 10 for n in counts.values()):
+        raise ValueError("Each observed (language, expression, sense) needs >=10 examples")
     train_rows, dev, test = split_groups(rows)
     model = fit(train_rows)
     candidates = (.5, .6, .7, .8, .85, .9, .95)
@@ -214,6 +220,9 @@ def main():
     print(f"Validated {len(rows)} sense examples across {len({r.group_id for r in rows})} groups")
     if not args.train:
         return
+    if any(any(flag in row.provenance.casefold() for flag in ("synthetic", "demo", "example"))
+           for row in rows):
+        parser.error("Synthetic/demo labelled examples are not eligible for deployment training")
     if not args.confirm_live_verified:
         parser.error("Training blocked until actual audio, provider, privacy and latency are verified")
     try:
