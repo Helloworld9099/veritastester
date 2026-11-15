@@ -1,0 +1,121 @@
+text,topic
+We need to merge the pull request before deploying,technology
+The frontend build failed after the latest commit,technology
+Can you review the database query and indexes,technology
+The API endpoint is returning a server error,technology
+Let's refactor the module before releasing,technology
+Push the changes to the staging branch,technology
+The deployment pipeline ran the unit tests,technology
+Our backend caches the response,technology
+The compiler cannot find that import,technology
+Please update the dependency versions,technology
+The application has a memory leak,technology
+We should check the logs after release,technology
+I need to clone the repository,technology
+The server uses a reverse proxy,technology
+We are testing a fix for the login flow,technology
+The code review found a race condition,technology
+The app crashed when I opened the settings,technology
+Our new feature needs integration tests,technology
+Let's rollback the latest deployment,technology
+The documentation is missing a setup step,technology
+We need to finalize the invoice this afternoon,business
+Please send the signed contract by Friday,business
+The customer asked for a revised quote,business
+Our revenue forecast has changed this quarter,business
+The sales pipeline includes three prospects,business
+Can the supplier reduce shipping costs,business
+Let's discuss the purchase order and payment terms,business
+The marketing campaign begins next month,business
+We need approval from the finance team,business
+The partnership agreement is ready for review,business
+The board asked about customer acquisition,business
+The budget does not cover the advertising expense,business
+We should negotiate a better wholesale price,business
+The vendor missed the delivery date,business
+Our investors need a presentation,business
+Can you check the margin on this product,business
+We received a payment from the client,business
+The organization needs more volunteers,business
+The meeting agenda includes quarterly goals,business
+Please attach the receipt to the expense report,business
+I need to finish my homework before class,education
+The teacher scheduled another quiz for Friday,education
+We studied integrals during the lecture,education
+The exam covers the last three chapters,education
+Can you explain the solution to that equation,education
+The student submitted the lab report late,education
+We should review the vocabulary list,education
+The professor posted the course syllabus,education
+Our study group meets after school,education
+The assignment requires two citations,education
+The classroom projector stopped working,education
+The lesson includes a reading comprehension test,education
+The school has a new grading policy,education
+The next unit covers American history,education
+I have to prepare for a physics test,education
+Please upload the essay to the class portal,education
+The tutor helped me with algebra,education
+The principal announced the assembly,education
+The presentation is due on Monday,education
+Our research project needs a bibliography,education
+The doctor scheduled another appointment,healthcare
+The nurse checked the patient's temperature,healthcare
+We should review the vaccination records,healthcare
+The clinic needs extra medical supplies,healthcare
+Please describe your symptoms to the physician,healthcare
+The hospital requested a follow up scan,healthcare
+The treatment plan needs a specialist,healthcare
+The patient reported a persistent cough,healthcare
+The medication label lists several warnings,healthcare
+A blood pressure reading was recorded,healthcare
+The therapist recommended an exercise,healthcare
+Our community health center is recruiting staff,healthcare
+The prescription needs to be reviewed,healthcare
+She is waiting for laboratory results,healthcare
+The surgeon explained the operation,healthcare
+The pharmacist reviewed the dosage,healthcare
+The public health campaign starts next week,healthcare
+Our medical records must remain confidential,healthcare
+The clinic has a long waiting list,healthcare
+The hospital is organizing its next shift,healthcare
+We are waiting in the game lobby,gaming
+That boss fight took three tries,gaming
+I need more experience points to level up,gaming
+The server is lagging during the match,gaming
+My character respawned at the checkpoint,gaming
+The player switched to another loadout,gaming
+We found rare loot in the dungeon,gaming
+The update changed the map rotation,gaming
+Can you send me the party invite,gaming
+I keep losing rank in competitive mode,gaming
+The raid begins after everyone joins,gaming
+That new weapon is overpowered,gaming
+We should farm materials before the fight,gaming
+The team needs a healer,gaming
+Let's queue for another match,gaming
+I built a farm near our base,gaming
+The game crashed during multiplayer,gaming
+The opponent had a stronger shield,gaming
+Our guild finished the weekly quest,gaming
+Try to dodge the enemy attack,gaming
+That song is so fire right now,casual
+No cap this movie was awesome,casual
+Bet I will meet you after lunch,casual
+The party was lit last night,casual
+She absolutely slayed that performance,casual
+His messages sound kinda sus,casual
+That outfit looks sick,casual
+Stop being salty about the joke,casual
+The vibe in here is amazing,casual
+Lowkey I wanted to leave early,casual
+I got ghosted after our conversation,casual
+Bro this food is actually so good,casual
+That joke went over my head,casual
+No manches eso estuvo genial,casual
+Qué onda cómo estás hoy,casual
+Ese concierto estuvo chido,casual
+La película me mola muchísimo,casual
+That new show is pretty mid,casual
+I cannot stop laughing at that meme,casual
+We're just hanging out after school,casual
