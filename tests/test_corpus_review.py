@@ -51,9 +51,9 @@ def test_memory_reviewer_collects_grounded_two_views_and_utility(tmp_path):
 def test_slang_examples_with_no_previous_are_explicitly_marked(tmp_path):
     path = write_rows(tmp_path, [sense_case()])
     out = tmp_path / "private" / "sense.jsonl"
-    review(path, out, "sense", input_fn=iter([
-        "The speaker praised a performance", "amazing"]).__next__,
-        output_fn=lambda _: None)
+    responses = iter(["The speaker praised a performance", "amazing"])
+    review(path, out, "sense", input_fn=lambda _: next(responses),
+           output_fn=lambda _: None)
     obj = json.loads(out.read_text(encoding="utf-8"))
     assert obj["previous"] == "[NO_PREVIOUS_TURN_IN_SOURCE]"
     assert obj["meaning"] == "amazing"
