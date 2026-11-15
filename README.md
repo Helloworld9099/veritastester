@@ -163,6 +163,23 @@ bridgecaption-eval-audio --manifest /path/to/examples.csv --execute \
 
 The output is **aggregate-only** (per-language ASR WER/CER, clip inference timings and optional translation chrF), and goes into ignored results/. It does not store audio or full recognized transcripts. Clip replay is **not** a test of multi-minute live performance. See [Azure setup](docs/AZURE_SETUP.md) and [training readiness](docs/TRAINING_READINESS.md).
 
+## Prepare public research corpora (no automatic training)
+
+BridgeCaption now includes **offline adapters for MAGPIE, SemEval-2022 Task 2, SlangInterp, Multi3WOZ, Bangor Miami (normalized CHAT export), DiaBLa, NaijaSenti and Okwu**. Their data roles differ: idiomaticity is not an exact meaning, sentiment is not slang interpretation, and a prior utterance is not automatically a helpful memory. The import process preserves source identifiers, local file fingerprints, train/dev/test boundaries and attribution metadata.
+
+Start with the [step-by-step eight-dataset preparation guide](docs/CORPUS_PREPARATION.md). It includes the real source field mappings, license restrictions, commands, source holdout rules and the optional two-view idiomaticity classifier. All import tools dry-run by default; private outputs require explicit `--write`.
+
+~~~bash
+bridgecaption-prep-corpus --help
+bridgecaption-corpus-curriculum --help
+bridgecaption-corpus-review --help
+bridgecaption-train-idiom --help
+~~~
+
+The curriculum tool can create human-review candidates for **helpful/neutral/harmful memory utility** and **slang meanings**, plus separately labelled same-dialogue versus cross-dialogue adjacency pairs for future self-supervised pretraining. No automatic labels of translation usefulness or slang meaning are fabricated. The human review CLI requires a grounded second situation description and a verified reference meaning/translation.
+
+**No dataset is downloaded, bundled, uploaded or trained in this repository revision.** Some sources (notably SlangInterp/Urban Dictionary) are restricted to research use, and DiaBLa is reserved as evaluation-only.
+
 ## Collecting real context and slang labels
 
 The models must train from **independently reviewed examples**, not from invented AI labels. We added a local-only annotation command for this purpose. Prepare a CSV queue using permitted conversations; include speaker/conversation family IDs so the train/test split cannot reuse the same person or meeting.
