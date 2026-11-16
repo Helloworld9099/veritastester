@@ -1,0 +1,42 @@
+[
+  {
+    "candidate": "base",
+    "metrics": {
+      "n": 128,
+      "chrf": 64.33415360523385,
+      "bleu": 40.811766975987794,
+      "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+      "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+    }
+  },
+  {
+    "candidate": "previous",
+    "metrics": {
+      "n": 128,
+      "chrf": 64.36966943799865,
+      "bleu": 40.57743295787909,
+      "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+      "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+    }
+  },
+  {
+    "candidate": "step64",
+    "metrics": {
+      "n": 128,
+      "chrf": 64.35699783580698,
+      "bleu": 40.8244567457327,
+      "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+      "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+    }
+  },
+  {
+    "candidate": "step128",
+    "metrics": {
+      "n": 128,
+      "chrf": 64.3652713179715,
+      "bleu": 40.8529930385371,
+      "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+      "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+    }
+  }
+]

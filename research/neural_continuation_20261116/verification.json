@@ -1,0 +1,41 @@
+{
+  "french": {
+    "all_planned_updates_completed": true,
+    "selection_matches_registered_dev_rule": true,
+    "checkpoint_replay_exact": true,
+    "old_selected_checkpoint_unchanged": true,
+    "all_original_checkpoint_hashes_preserved": true,
+    "all_original_base_files_unchanged": true,
+    "finite_nonzero_selected_weights": true,
+    "new_source_test_alignment_and_counts": true,
+    "new_source_test_freeze_precedes_outputs": true,
+    "new_source_test_base_metric_replay": true,
+    "new_source_test_previous_metric_replay": true,
+    "new_source_test_selected_metric_replay": true,
+    "new_external_guard_alignment_and_counts": true,
+    "new_external_guard_freeze_precedes_outputs": true,
+    "new_external_guard_base_metric_replay": true,
+    "new_external_guard_previous_metric_replay": true,
+    "new_external_guard_selected_metric_replay": true
+  },
+  "spanish": {
+    "all_planned_updates_completed": true,
+    "selection_matches_registered_dev_rule": true,
+    "checkpoint_replay_exact": true,
+    "old_selected_checkpoint_unchanged": true,
+    "all_original_checkpoint_hashes_preserved": true,
+    "all_original_base_files_unchanged": true,
+    "finite_nonzero_selected_weights": true,
+    "new_source_test_alignment_and_counts": true,
+    "new_source_test_freeze_precedes_outputs": true,
+    "new_source_test_base_metric_replay": true,
+    "new_source_test_previous_metric_replay": true,
+    "new_source_test_selected_metric_replay": true,
+    "new_external_guard_alignment_and_counts": true,
+    "new_external_guard_freeze_precedes_outputs": true,
+    "new_external_guard_base_metric_replay": true,
+    "new_external_guard_previous_metric_replay": true,
+    "new_external_guard_selected_metric_replay": true
+  },
+  "strict_dialogue_sensitivity_registered_before_outputs": true
+}

@@ -1,0 +1,7 @@
+{
+  "tests_run": 8,
+  "failures": 0,
+  "errors": 0,
+  "passed": true,
+  "scope": "schema, source alignment, no future/reference leakage, split isolation and hashes; not model quality"
+}

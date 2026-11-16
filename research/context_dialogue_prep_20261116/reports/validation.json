@@ -1,0 +1,7 @@
+{
+  "checks_run": 9,
+  "errors": 0,
+  "failures": 0,
+  "passed": true,
+  "scope": "data integrity, source/reference alignment, prior-only context, split/text isolation, rights and consumed holdout accounting; NOT translation quality"
+}

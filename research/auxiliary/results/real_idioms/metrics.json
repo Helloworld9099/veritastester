@@ -1,0 +1,307 @@
+{
+  "task": "idiomaticity; source label 0=idiomatic and 1=literal; NOT translation",
+  "source_repository": "H-TayyarMadabushi/SemEval_2022_Task2-idiomaticity",
+  "source_license": "repository GPL-3.0; source retained separately; no redistribution/deployment",
+  "train_n": 4491,
+  "internal_train_n": 3593,
+  "internal_validation_n": 898,
+  "evaluation_n": 739,
+  "removed_exact_cross_set_targets": 0,
+  "evaluation_warning": "Official dev set used as evaluation, NOT official test. Some examples were used by prior reported pilot: not a globally untouched benchmark. No test-based tuning in this run.",
+  "models": {
+    "current_only": {
+      "selected": {
+        "analyzer": "word",
+        "ngram_range": [
+          1,
+          2
+        ],
+        "C": 1,
+        "threshold": 0.5
+      },
+      "trials": [
+        {
+          "analyzer": "word",
+          "C": 0.1,
+          "threshold": 0.35,
+          "validation_macro_f1": 0.3139801375095493
+        },
+        {
+          "analyzer": "word",
+          "C": 0.1,
+          "threshold": 0.5,
+          "validation_macro_f1": 0.6226177687594494
+        },
+        {
+          "analyzer": "word",
+          "C": 0.1,
+          "threshold": 0.65,
+          "validation_macro_f1": 0.3516245487364621
+        },
+        {
+          "analyzer": "word",
+          "C": 1,
+          "threshold": 0.35,
+          "validation_macro_f1": 0.47278474320662
+        },
+        {
+          "analyzer": "word",
+          "C": 1,
+          "threshold": 0.5,
+          "validation_macro_f1": 0.6474844208153306
+        },
+        {
+          "analyzer": "word",
+          "C": 1,
+          "threshold": 0.65,
+          "validation_macro_f1": 0.4668363019508058
+        },
+        {
+          "analyzer": "word",
+          "C": 10,
+          "threshold": 0.35,
+          "validation_macro_f1": 0.5819115703472306
+        },
+        {
+          "analyzer": "word",
+          "C": 10,
+          "threshold": 0.5,
+          "validation_macro_f1": 0.6472707110587386
+        },
+        {
+          "analyzer": "word",
+          "C": 10,
+          "threshold": 0.65,
+          "validation_macro_f1": 0.6029872877032845
+        },
+        {
+          "analyzer": "char_wb",
+          "C": 0.1,
+          "threshold": 0.35,
+          "validation_macro_f1": 0.3139801375095493
+        },
+        {
+          "analyzer": "char_wb",
+          "C": 0.1,
+          "threshold": 0.5,
+          "validation_macro_f1": 0.6100552208835341
+        },
+        {
+          "analyzer": "char_wb",
+          "C": 0.1,
+          "threshold": 0.65,
+          "validation_macro_f1": 0.35430579718278243
+        },
+        {
+          "analyzer": "char_wb",
+          "C": 1,
+          "threshold": 0.35,
+          "validation_macro_f1": 0.4888987596766547
+        },
+        {
+          "analyzer": "char_wb",
+          "C": 1,
+          "threshold": 0.5,
+          "validation_macro_f1": 0.6080205797812455
+        },
+        {
+          "analyzer": "char_wb",
+          "C": 1,
+          "threshold": 0.65,
+          "validation_macro_f1": 0.5252294548069196
+        },
+        {
+          "analyzer": "char_wb",
+          "C": 10,
+          "threshold": 0.35,
+          "validation_macro_f1": 0.5573742600219178
+        },
+        {
+          "analyzer": "char_wb",
+          "C": 10,
+          "threshold": 0.5,
+          "validation_macro_f1": 0.5981739292196464
+        },
+        {
+          "analyzer": "char_wb",
+          "C": 10,
+          "threshold": 0.65,
+          "validation_macro_f1": 0.587985488689714
+        }
+      ],
+      "evaluation": {
+        "accuracy": 0.6278755074424899,
+        "macro_f1": 0.6260238454078544,
+        "balanced_accuracy": 0.63951169797944
+      },
+      "by_language": {
+        "EN": {
+          "accuracy": 0.6459227467811158,
+          "macro_f1": 0.6370151113880667,
+          "balanced_accuracy": 0.6424121652994892
+        },
+        "PT": {
+          "accuracy": 0.5970695970695971,
+          "macro_f1": 0.49018742360450906,
+          "balanced_accuracy": 0.5473644003055768
+        }
+      }
+    },
+    "previous_context": {
+      "selected": {
+        "analyzer": "word",
+        "ngram_range": [
+          1,
+          2
+        ],
+        "C": 0.1,
+        "threshold": 0.5
+      },
+      "trials": [
+        {
+          "analyzer": "word",
+          "C": 0.1,
+          "threshold": 0.35,
+          "validation_macro_f1": 0.3139801375095493
+        },
+        {
+          "analyzer": "word",
+          "C": 0.1,
+          "threshold": 0.5,
+          "validation_macro_f1": 0.6508549317731527
+        },
+        {
+          "analyzer": "word",
+          "C": 0.1,
+          "threshold": 0.65,
+          "validation_macro_f1": 0.3516245487364621
+        },
+        {
+          "analyzer": "word",
+          "C": 1,
+          "threshold": 0.35,
+          "validation_macro_f1": 0.46020030599593026
+        },
+        {
+          "analyzer": "word",
+          "C": 1,
+          "threshold": 0.5,
+          "validation_macro_f1": 0.646188885669112
+        },
+        {
+          "analyzer": "word",
+          "C": 1,
+          "threshold": 0.65,
+          "validation_macro_f1": 0.46263297872340425
+        },
+        {
+          "analyzer": "word",
+          "C": 10,
+          "threshold": 0.35,
+          "validation_macro_f1": 0.6159019347437072
+        },
+        {
+          "analyzer": "word",
+          "C": 10,
+          "threshold": 0.5,
+          "validation_macro_f1": 0.6348603957712117
+        },
+        {
+          "analyzer": "word",
+          "C": 10,
+          "threshold": 0.65,
+          "validation_macro_f1": 0.5840863077904429
+        },
+        {
+          "analyzer": "char_wb",
+          "C": 0.1,
+          "threshold": 0.35,
+          "validation_macro_f1": 0.3139801375095493
+        },
+        {
+          "analyzer": "char_wb",
+          "C": 0.1,
+          "threshold": 0.5,
+          "validation_macro_f1": 0.6268680886213083
+        },
+        {
+          "analyzer": "char_wb",
+          "C": 0.1,
+          "threshold": 0.65,
+          "validation_macro_f1": 0.35430579718278243
+        },
+        {
+          "analyzer": "char_wb",
+          "C": 1,
+          "threshold": 0.35,
+          "validation_macro_f1": 0.5085673309178744
+        },
+        {
+          "analyzer": "char_wb",
+          "C": 1,
+          "threshold": 0.5,
+          "validation_macro_f1": 0.6246504134241245
+        },
+        {
+          "analyzer": "char_wb",
+          "C": 1,
+          "threshold": 0.65,
+          "validation_macro_f1": 0.5186954941860464
+        },
+        {
+          "analyzer": "char_wb",
+          "C": 10,
+          "threshold": 0.35,
+          "validation_macro_f1": 0.5869817071654808
+        },
+        {
+          "analyzer": "char_wb",
+          "C": 10,
+          "threshold": 0.5,
+          "validation_macro_f1": 0.6061975924931282
+        },
+        {
+          "analyzer": "char_wb",
+          "C": 10,
+          "threshold": 0.65,
+          "validation_macro_f1": 0.5891869411520066
+        }
+      ],
+      "evaluation": {
+        "accuracy": 0.6211096075778079,
+        "macro_f1": 0.6209089976402996,
+        "balanced_accuracy": 0.6283602150537635
+      },
+      "by_language": {
+        "EN": {
+          "accuracy": 0.6545064377682404,
+          "macro_f1": 0.6218199781235665,
+          "balanced_accuracy": 0.6198537378114843
+        },
+        "PT": {
+          "accuracy": 0.5641025641025641,
+          "macro_f1": 0.36065573770491804,
+          "balanced_accuracy": 0.5
+        }
+      }
+    }
+  },
+  "context_delta_macro_f1": -0.0051148477675547754,
+  "group_bootstrap_95pct_delta": [
+    -0.04374560559334522,
+    0.033883586413919885
+  ],
+  "evaluation_groups": 50,
+  "elapsed_seconds": 6.32144211099876,
+  "source_hashes": {
+    "dev_gold.csv": "30eadbdce398826cd67aa6ba536e772a4317da132f07c633f60117e2ab128a9c",
+    "train_zero_shot.csv": "85ee3782f8917f60235d7e8c38302120d21adb2206880aac56acf5c16777cf77",
+    "dev.csv": "eed838e416b5860ab6c3cb6722fc6fe539f990e9db3d41e7e7ac7923c343ab3f",
+    "train_one_shot.csv": "462704383bb37d3616d066bf5a6db025b22e656ceef350bf69260b89e6e9077f"
+  },
+  "majority_baseline": {
+    "accuracy": 0.4546684709066306,
+    "macro_f1": 0.3125581395348837,
+    "balanced_accuracy": 0.5
+  }
+}

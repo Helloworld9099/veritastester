@@ -1,0 +1,191 @@
+{
+  "warning": "Synthetic English topic hints only; NOT translation or real-world evaluation. Small 24-row holdout; no deployment.",
+  "source_sha256": "94d6865e56746cdcd471c21a7495a80445e57431d42eb5af59d5fcb577d55601",
+  "train_n": 96,
+  "test_n": 24,
+  "selection": "4-fold stratified CV within original 96 training examples only",
+  "candidates": [
+    {
+      "cv_macro_f1": 0.30265244015244014,
+      "analyzer": "word",
+      "ngram": [
+        1,
+        2
+      ],
+      "C": 0.1,
+      "folds": [
+        0.36095848595848595,
+        0.24512987012987011,
+        0.2740740740740741,
+        0.3304473304473304
+      ]
+    },
+    {
+      "cv_macro_f1": 0.2858615921115921,
+      "analyzer": "word",
+      "ngram": [
+        1,
+        2
+      ],
+      "C": 1,
+      "folds": [
+        0.35728715728715726,
+        0.24512987012987011,
+        0.2740740740740741,
+        0.26695526695526695
+      ]
+    },
+    {
+      "cv_macro_f1": 0.297492784992785,
+      "analyzer": "word",
+      "ngram": [
+        1,
+        2
+      ],
+      "C": 10,
+      "folds": [
+        0.35013227513227513,
+        0.2988095238095238,
+        0.2740740740740741,
+        0.26695526695526695
+      ]
+    },
+    {
+      "cv_macro_f1": 0.2979888167388167,
+      "analyzer": "word",
+      "ngram": [
+        1,
+        2
+      ],
+      "C": 100,
+      "folds": [
+        0.35013227513227513,
+        0.3007936507936508,
+        0.2740740740740741,
+        0.26695526695526695
+      ]
+    },
+    {
+      "cv_macro_f1": 0.390981240981241,
+      "analyzer": "char_wb",
+      "ngram": [
+        3,
+        5
+      ],
+      "C": 0.1,
+      "folds": [
+        0.3361111111111111,
+        0.32301587301587303,
+        0.3682539682539683,
+        0.5365440115440115
+      ]
+    },
+    {
+      "cv_macro_f1": 0.38553090428090425,
+      "analyzer": "char_wb",
+      "ngram": [
+        3,
+        5
+      ],
+      "C": 1,
+      "folds": [
+        0.38505291005291004,
+        0.32301587301587303,
+        0.3353174603174603,
+        0.49873737373737376
+      ]
+    },
+    {
+      "cv_macro_f1": 0.3818903318903319,
+      "analyzer": "char_wb",
+      "ngram": [
+        3,
+        5
+      ],
+      "C": 10,
+      "folds": [
+        0.38505291005291004,
+        0.32301587301587303,
+        0.3727753727753728,
+        0.4467171717171717
+      ]
+    },
+    {
+      "cv_macro_f1": 0.3797438672438673,
+      "analyzer": "char_wb",
+      "ngram": [
+        3,
+        5
+      ],
+      "C": 100,
+      "folds": [
+        0.38505291005291004,
+        0.32301587301587303,
+        0.3727753727753728,
+        0.43813131313131315
+      ]
+    }
+  ],
+  "selected": {
+    "analyzer": "char_wb",
+    "ngram": [
+      3,
+      5
+    ],
+    "C": 0.1
+  },
+  "test_accuracy": 0.4166666666666667,
+  "test_macro_f1": 0.3407407407407408,
+  "per_topic": {
+    "business": {
+      "precision": 0.4,
+      "recall": 0.5,
+      "f1-score": 0.4444444444444444,
+      "support": 4.0
+    },
+    "casual": {
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1-score": 0.6666666666666666,
+      "support": 4.0
+    },
+    "education": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 4.0
+    },
+    "gaming": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 4.0
+    },
+    "healthcare": {
+      "precision": 0.5,
+      "recall": 0.75,
+      "f1-score": 0.6,
+      "support": 4.0
+    },
+    "technology": {
+      "precision": 0.5,
+      "recall": 0.25,
+      "f1-score": 0.3333333333333333,
+      "support": 4.0
+    },
+    "accuracy": 0.4166666666666667,
+    "macro avg": {
+      "precision": 0.31666666666666665,
+      "recall": 0.4166666666666667,
+      "f1-score": 0.3407407407407408,
+      "support": 24.0
+    },
+    "weighted avg": {
+      "precision": 0.31666666666666665,
+      "recall": 0.4166666666666667,
+      "f1-score": 0.3407407407407408,
+      "support": 24.0
+    }
+  },
+  "seconds": 12.520329756000137
+}

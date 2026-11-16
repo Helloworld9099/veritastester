@@ -1,0 +1,44 @@
+[
+  {
+    "file": "diabla_all_dialogues.json",
+    "url": "https://raw.githubusercontent.com/rbawden/DiaBLa-dataset/c9f3ae2db7b7c9248ec5dd04d51680c60aa4e7c5/DiaBLa-corpus/all-dialogues.json",
+    "bytes": 8688333,
+    "sha256": "e274af1646285a26f97c2c10cac8d50686eeaa5a7495a9343dcfc99ec157406e"
+  },
+  {
+    "file": "diabla_README.md",
+    "url": "https://raw.githubusercontent.com/rbawden/DiaBLa-dataset/c9f3ae2db7b7c9248ec5dd04d51680c60aa4e7c5/README.md",
+    "bytes": 7850,
+    "sha256": "7368cad10c134feb092c0e0ae84d26ec679d797825164a381a22f1c8f3afa8a8"
+  },
+  {
+    "file": "diabla_LICENSE",
+    "url": "https://raw.githubusercontent.com/rbawden/DiaBLa-dataset/c9f3ae2db7b7c9248ec5dd04d51680c60aa4e7c5/LICENSE",
+    "bytes": 20137,
+    "sha256": "5e436ff8ffbb77d8607220e9bce20c8915d860010feeb6c1ebef5a85688e9b39"
+  },
+  {
+    "file": "fra-eng.zip",
+    "url": "https://storage.googleapis.com/download.tensorflow.org/data/fra-eng.zip",
+    "bytes": 3423204,
+    "sha256": "036e7dc4e83d393db24720ca0c7b7ddcb4b6b6053960438a5c0e1d6d8f2528f5"
+  },
+  {
+    "file": "MAGPIE_filtered_split_typebased.jsonl",
+    "url": "https://raw.githubusercontent.com/hslh/magpie-corpus/7fa677b82b9a772dfa54bbdd0fb414412d73db3b/MAGPIE_filtered_split_typebased.jsonl",
+    "bytes": 46913846,
+    "sha256": "9b85f321d5afae9361b4c0aaa1f9ef61cbb7257a10712f1f9c839ab91ae5a4c8"
+  },
+  {
+    "file": "magpie_README.md",
+    "url": "https://raw.githubusercontent.com/hslh/magpie-corpus/7fa677b82b9a772dfa54bbdd0fb414412d73db3b/README.md",
+    "bytes": 2879,
+    "sha256": "bc9d281e2348a780b91929e44de0e58bc26a822d69835b0e6dd8a666754af6db"
+  },
+  {
+    "file": "magpie_LICENSE",
+    "url": "https://raw.githubusercontent.com/hslh/magpie-corpus/7fa677b82b9a772dfa54bbdd0fb414412d73db3b/LICENSE",
+    "bytes": 18651,
+    "sha256": "05ab88f3f9da1d05f9c5bf0a7c45c49a9007f877dd9c237a5bf668276fe04c3b"
+  }
+]

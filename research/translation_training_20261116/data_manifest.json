@@ -1,0 +1,28 @@
+{
+  "dataset": "Europarl v7 Spanish-English",
+  "url": "https://www.statmt.org/europarl/v7/es-en.tgz",
+  "archive_bytes": 195067649,
+  "archive_sha256": "a545b5be4dc7593aab4db7b07dc9be2a381c31aca5a9a77cf18ff77c4370c473",
+  "source_rows": 1965734,
+  "seed": 20261116,
+  "selection": "unique normalized source, 4-32/4-36 words, length ratio .4-2.5; grouped by contiguous 256-line blocks, not verified document/speaker disjoint",
+  "counts": {
+    "train": 1024,
+    "dev": 128,
+    "test": 256
+  },
+  "eligible_counts": {
+    "train": 1059888,
+    "dev": 132606,
+    "test": 132148
+  },
+  "copyright_source": "https://www.statmt.org/europarl/",
+  "copyright_note": "Corpus author states no known copyright restrictions and asks research users to cite Koehn (2005). Internal research only; no raw corpus redistribution or commercial clearance claimed.",
+  "attribution": "Philipp Koehn. 2005. Europarl: A Parallel Corpus for Statistical Machine Translation. MT Summit. Proceedings of the European Parliament.",
+  "pretraining_warning": "OPUS base may already have seen Europarl. Split is held out from our fine-tuning only, not guaranteed unknown to pretraining.",
+  "file_hashes": {
+    "train": "0f55693ca5d889671b12aae30a476f0ac7561659cf6ac904038d5b65a63d46af",
+    "dev": "ce5880ab744558621552edc6d7277e091ae5df8f5ade9b1a40230f78763b9e28",
+    "test": "31ff44ab18f6731674c82e4f99e7eea8f41b3acc57efeebca9c8381660b07ac9"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "step": 128,
+  "dev": {
+    "n": 128,
+    "chrf": 67.51419331046795,
+    "bleu": 45.43977712805946,
+    "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+    "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+  },
+  "trained_steps": 128,
+  "selection_frozen_before_test": true
+}

@@ -1,0 +1,6 @@
+raw/
+artifacts/
+reproducibility_rebuild/
+__pycache__/
+*.pyc
+*.tar.gz

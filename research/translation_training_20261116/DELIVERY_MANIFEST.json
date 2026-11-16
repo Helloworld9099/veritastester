@@ -1,0 +1,134 @@
+{
+  "translation_training_20261116/prepare_europarl.py": {
+    "size_bytes": 3126,
+    "sha256": "48dcb18303e4091ec55c77420cf2805b34ec2bab9bb59e55d557173bae4eeec7"
+  },
+  "translation_training_20261116/train_adapter.py": {
+    "size_bytes": 10212,
+    "sha256": "c4951921f627674582b580fe32d83cc547cbfcdd29dd01e0e445625f3170c2bf"
+  },
+  "translation_training_20261116/run_candidate.py": {
+    "size_bytes": 1726,
+    "sha256": "26de609ec888bba8f25d74735688f730a3229a4eb4dce81622e0e47ee7c1b44e"
+  },
+  "translation_training_20261116/summarize_evaluation.py": {
+    "size_bytes": 2126,
+    "sha256": "fe417f8c44048a2bccdf81746bbd4aa59f4bfb7e39a68682528c7c62eef4fa01"
+  },
+  "translation_training_20261116/verify_pilots.py": {
+    "size_bytes": 3198,
+    "sha256": "7b27f8ce5759f0c54777d627d8939665078a8f87bdc96b09b96830a6426e716f"
+  },
+  "translation_training_20261116/NEURAL_TRAINING_REPORT.md": {
+    "size_bytes": 9936,
+    "sha256": "2e867e93fe650c7e43bd16645b820a91c32efbe3b607c6e98c4f1ca121b9d252"
+  },
+  "translation_training_20261116/data_manifest.json": {
+    "size_bytes": 1425,
+    "sha256": "3118830006039c1191068153614f53f3379c64450d0511e80f6dcf208c0ad915"
+  },
+  "translation_training_20261116/protocol.json": {
+    "size_bytes": 3317,
+    "sha256": "08741c3eaeb3db88d86dcc4c85591d4af571646498538bfc3e17f36013aeaaee"
+  },
+  "translation_training_20261116/selected.json": {
+    "size_bytes": 341,
+    "sha256": "02a2b763e571fece25b130763932de20b0190ca3f35f2792d194fb3655913cd9"
+  },
+  "translation_training_20261116/dev_history.json": {
+    "size_bytes": 1012,
+    "sha256": "4e1c2641e8ef888410d3705ad97cf5dee1a39e0c8c6cf90fef85e1ae83041adf"
+  },
+  "translation_training_20261116/training_log.json": {
+    "size_bytes": 16808,
+    "sha256": "4b40ca9d1cf46623a19898ef5412446b9f64bdc34d81c9f3aa2618e2451963dd"
+  },
+  "translation_training_20261116/report.json": {
+    "size_bytes": 6292,
+    "sha256": "53fd44f31acfa63d3d8ae0d0e6e16d16622c34b222b395cdc3bcb2023bfcf91b"
+  },
+  "translation_training_20261116/uncertainty.json": {
+    "size_bytes": 1231,
+    "sha256": "671538a7d2ce0292623c90ffb8bf9bd0ca51768b57617279f1fa1ef74242cfae"
+  },
+  "translation_training_20261116/verification.json": {
+    "size_bytes": 766,
+    "sha256": "6f945eecc567e9aeb5aab23451698615b1c326043b0100ba077fefa3d30d3812"
+  },
+  "translation_training_20261116/adapter_selected.safetensors": {
+    "size_bytes": 1187800,
+    "sha256": "31c33afbfc7f3e5e1e58b361c099237578f214ffd6cce5dd9781c9fe0ff3dd0a"
+  },
+  "translation_training_20261116/model/repository_info.json": {
+    "size_bytes": 354,
+    "sha256": "bb43d489d11003281d8db9d71f3343e882a202160972d5012a1728489a2b87c6"
+  },
+  "translation_training_20261116/model/download_manifest.json": {
+    "size_bytes": 1010,
+    "sha256": "f65878b125b933bce9847597533a6d05475941e8708cc27b1e2cbddafbf4a355"
+  },
+  "translation_training_20261116/model/README.md": {
+    "size_bytes": 2427,
+    "sha256": "d67ee971854b4c166da1cc281b58fbdc8596e0412441ef71fb0d422263230e0a"
+  },
+  "translation_fr_training_20261116/prepare_from_handoff.py": {
+    "size_bytes": 2561,
+    "sha256": "09079763e76ebb9a76ff58325b596923e0ee6a071e45485c9d41d4671bc66e95"
+  },
+  "translation_fr_training_20261116/train_adapter.py": {
+    "size_bytes": 9197,
+    "sha256": "9108804eea88c15e32c4315a0092fe0dbeca4d7f99df9715db1e8dccb3293656"
+  },
+  "translation_fr_training_20261116/run_candidate.py": {
+    "size_bytes": 1726,
+    "sha256": "26de609ec888bba8f25d74735688f730a3229a4eb4dce81622e0e47ee7c1b44e"
+  },
+  "translation_fr_training_20261116/data_manifest.json": {
+    "size_bytes": 7170,
+    "sha256": "560b539b7d5b041a614cfa05a1a36ac906779cce295c3baf361ab011a74e3912"
+  },
+  "translation_fr_training_20261116/protocol.json": {
+    "size_bytes": 3373,
+    "sha256": "df747513e0fb6d67c2ff855bd883de772f04b7d9fa713f1bf43264a2f3db3892"
+  },
+  "translation_fr_training_20261116/selected.json": {
+    "size_bytes": 340,
+    "sha256": "d6af4bd19728188ed055521bbf255968bab87dccc5c7b0d2d56c4d6f1bd937d5"
+  },
+  "translation_fr_training_20261116/dev_history.json": {
+    "size_bytes": 1009,
+    "sha256": "e7d03c3ceec7969ea8611b35bf7420138e802bbe5d14c86ba607d10d5edd483f"
+  },
+  "translation_fr_training_20261116/training_log.json": {
+    "size_bytes": 16852,
+    "sha256": "867300d99d7e129167d24aec247bb53931e682152c52dd0addbe32fd6ea57974"
+  },
+  "translation_fr_training_20261116/report.json": {
+    "size_bytes": 6348,
+    "sha256": "1c4f5c383ec6186d6df273f27f18ca6f757d47b61327d7027ed5b1ff68d283b4"
+  },
+  "translation_fr_training_20261116/uncertainty.json": {
+    "size_bytes": 1223,
+    "sha256": "d87771787e04a5f0fe54a045b0200633a7b85e55f58d0b235b7f77cb384a527e"
+  },
+  "translation_fr_training_20261116/replay_smoke.json": {
+    "size_bytes": 170,
+    "sha256": "7dc01347e4b2b0e0c55f65c88bfc8f7a96ce7456ff4e0654ba8cf2e2a0b8926a"
+  },
+  "translation_fr_training_20261116/adapter_selected.safetensors": {
+    "size_bytes": 1187800,
+    "sha256": "7445651cc93617b3c8e4cd00c614371ee7af92ccf541659a9b445f8d9edf372f"
+  },
+  "translation_fr_training_20261116/model/repository_info.json": {
+    "size_bytes": 384,
+    "sha256": "d30d447a8bedeef5f48835db5bd2c26dfd37c158b5de2124261b7e54ba7316e9"
+  },
+  "translation_fr_training_20261116/model/download_manifest.json": {
+    "size_bytes": 1010,
+    "sha256": "b0ae20ad81357178b6924a11ac3e68ec2953017e7bb81ebef15a293309b81220"
+  },
+  "translation_fr_training_20261116/model/README.md": {
+    "size_bytes": 1250,
+    "sha256": "a923263e9691f40ce7c9afe5d59f6296051439ae7776a158d18d57258be48195"
+  }
+}

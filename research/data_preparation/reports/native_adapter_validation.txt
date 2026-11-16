@@ -1,0 +1,9 @@
+{
+  "eligible_idiomaticity": 10238,
+  "splits": {
+    "train": 4391,
+    "dev": 1007,
+    "test": 4840
+  },
+  "trained": false
+}

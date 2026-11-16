@@ -1,0 +1,167 @@
+{
+  "protocol": {
+    "task": "Genuine French-English neural translation LoRA fine-tuning; not contextual translation/ASR",
+    "seed": 20261116,
+    "model": {
+      "model": "Helsinki-NLP/opus-mt-fr-en",
+      "revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+      "files": [
+        ".gitattributes",
+        "README.md",
+        "config.json",
+        "flax_model.msgpack",
+        "generation_config.json",
+        "model.safetensors",
+        "pytorch_model.bin",
+        "source.spm",
+        "target.spm",
+        "tf_model.h5",
+        "tokenizer_config.json",
+        "vocab.json"
+      ]
+    },
+    "torch": "2.7.1+cpu",
+    "device": "CPU, 4 threads",
+    "frozen_backbone": true,
+    "trainable_parameters": 294912,
+    "total_parameters": 75428864,
+    "lora": {
+      "rank": 8,
+      "alpha": 16,
+      "target_modules": [
+        "model.encoder.layers.0.self_attn.v_proj",
+        "model.encoder.layers.0.self_attn.q_proj",
+        "model.encoder.layers.1.self_attn.v_proj",
+        "model.encoder.layers.1.self_attn.q_proj",
+        "model.encoder.layers.2.self_attn.v_proj",
+        "model.encoder.layers.2.self_attn.q_proj",
+        "model.encoder.layers.3.self_attn.v_proj",
+        "model.encoder.layers.3.self_attn.q_proj",
+        "model.encoder.layers.4.self_attn.v_proj",
+        "model.encoder.layers.4.self_attn.q_proj",
+        "model.encoder.layers.5.self_attn.v_proj",
+        "model.encoder.layers.5.self_attn.q_proj",
+        "model.decoder.layers.0.self_attn.v_proj",
+        "model.decoder.layers.0.self_attn.q_proj",
+        "model.decoder.layers.0.encoder_attn.v_proj",
+        "model.decoder.layers.0.encoder_attn.q_proj",
+        "model.decoder.layers.1.self_attn.v_proj",
+        "model.decoder.layers.1.self_attn.q_proj",
+        "model.decoder.layers.1.encoder_attn.v_proj",
+        "model.decoder.layers.1.encoder_attn.q_proj",
+        "model.decoder.layers.2.self_attn.v_proj",
+        "model.decoder.layers.2.self_attn.q_proj",
+        "model.decoder.layers.2.encoder_attn.v_proj",
+        "model.decoder.layers.2.encoder_attn.q_proj",
+        "model.decoder.layers.3.self_attn.v_proj",
+        "model.decoder.layers.3.self_attn.q_proj",
+        "model.decoder.layers.3.encoder_attn.v_proj",
+        "model.decoder.layers.3.encoder_attn.q_proj",
+        "model.decoder.layers.4.self_attn.v_proj",
+        "model.decoder.layers.4.self_attn.q_proj",
+        "model.decoder.layers.4.encoder_attn.v_proj",
+        "model.decoder.layers.4.encoder_attn.q_proj",
+        "model.decoder.layers.5.self_attn.v_proj",
+        "model.decoder.layers.5.self_attn.q_proj",
+        "model.decoder.layers.5.encoder_attn.v_proj",
+        "model.decoder.layers.5.encoder_attn.q_proj"
+      ]
+    },
+    "train_rows": 1024,
+    "dev_rows": 128,
+    "test_rows": 256,
+    "batch_size": 4,
+    "gradient_accumulation": 2,
+    "optimizer": "AdamW lr=2e-4 weight_decay=.01",
+    "planned_optimizer_steps": 128,
+    "budget_seconds": 600,
+    "dev_selection": "baseline, step64 and step128; select greatest dev chrF; baseline remains eligible; NLL descriptive only",
+    "training_max_tokens": 96,
+    "decoding": "beam4, max_new_tokens96, batch8",
+    "warnings": [
+      "Connected-translation-component disjoint; author/topic/template independence not guaranteed.",
+      "Base OPUS may have seen Tatoeba or DiaBLa in pretraining; unknown.",
+      "DiaBLa guard excludes all 40 smoke-dialogue groups and is evaluated only after selection.",
+      "Only French-English text; no ASR or multilingual/slang-accuracy claim."
+    ]
+  },
+  "model_load_seconds": 0.052730097999301506,
+  "steps_completed": 128,
+  "train_seconds": 87.19930278699758,
+  "selected_step": 128,
+  "initial_adapter_exact_backbone_logits": true,
+  "dev_history": [
+    {
+      "step": 0,
+      "dev_nll": 0.560548239709559,
+      "metrics": {
+        "n": 128,
+        "chrf": 76.87139315729796,
+        "bleu": 65.5657359777694,
+        "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+        "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+      }
+    },
+    {
+      "step": 64,
+      "dev_nll": 0.47626788671099324,
+      "metrics": {
+        "n": 128,
+        "chrf": 76.45837673673486,
+        "bleu": 65.659387162464,
+        "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+        "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+      }
+    },
+    {
+      "step": 128,
+      "dev_nll": 0.4455843980873629,
+      "metrics": {
+        "n": 128,
+        "chrf": 77.48710327937401,
+        "bleu": 66.6266421258484,
+        "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+        "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+      }
+    }
+  ],
+  "peak_rss_mib": 985.70703125,
+  "tatoeba_test": {
+    "baseline": {
+      "n": 256,
+      "chrf": 74.24475060707964,
+      "bleu": 61.87471457522444,
+      "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+      "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+    },
+    "selected": {
+      "n": 256,
+      "chrf": 76.37967559514804,
+      "bleu": 66.4553491261249,
+      "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+      "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+    },
+    "baseline_seconds_per_sentence": 0.18526763405468216,
+    "selected_seconds_per_sentence": 0.11767624294138557
+  },
+  "diabla_guard": {
+    "baseline": {
+      "n": 128,
+      "chrf": 54.928233102134186,
+      "bleu": 31.17413783587757,
+      "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+      "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+    },
+    "selected": {
+      "n": 128,
+      "chrf": 55.428430330464366,
+      "bleu": 30.773612428428557,
+      "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+      "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+    },
+    "baseline_seconds_per_sentence": 0.19811076535160055,
+    "selected_seconds_per_sentence": 0.2283223164531023
+  },
+  "selected_adapter_replay_exact": true,
+  "total_seconds": 239.0414716080013
+}

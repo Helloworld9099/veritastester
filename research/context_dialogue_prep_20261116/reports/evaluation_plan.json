@@ -1,0 +1,62 @@
+{
+  "evaluation": {
+    "acceptance": "Pre-register a human meaningful-gain target and noninferiority margins with reviewers; no promotion until independent context-sensitive benefit and harm/latency limits pass. No fresh local DiaBLa set remains; acquire a new independent conversational test before any claim of dialogue improvement.",
+    "arms": [
+      "no_context",
+      "all_history",
+      "selected_history",
+      "selected_history_plus_scene"
+    ],
+    "bootstrap": {
+      "interval": "2.5th/97.5th percentiles",
+      "replicates": 2000,
+      "resample_unit": "whole dialogue, keeping both directions together",
+      "seed": 20261116,
+      "warning": "Mean sentence-chrF intervals do not estimate corpus chrF deltas."
+    },
+    "controls": "Same cases/base checkpoint/decoding/current-utterance token budget; history cap6, selector cap2; charge selector time. Freeze configuration and case membership before any holdout inference.",
+    "freeze_log": "Record checkpoint/tokenizer/selector hashes, chosen thresholds, decoding, exact case IDs, source/reference hashes, context policy, all arms and predeclared acceptance rule before accessing gold.",
+    "fresh_dialogue_groups": 0,
+    "holdout_status": "No fresh DiaBLa groups. Existing DiaBLa is regression-only. Official WMT24 valid/test are unacquired future candidates, requiring split/group/text checks BEFORE any next fitting.",
+    "human_review": "Two fluent reviewers blinded to model/arm; independent adjudication; no candidate outputs when authoring references. No claim of utility from adjacent/different-dialogue membership.",
+    "primary": "Bilingual blinded paired meaning-preservation ratings with context; harmful changes adjudicated.",
+    "secondary": [
+      "corpus chrF",
+      "corpus BLEU",
+      "paired bootstrap by dialogue for mean sentence-chrF difference",
+      "human context-sensitive accuracy: antecedents, gender/formality, ellipsis, lexical consistency",
+      "helpful rejection and harmful selection only on independently labelled memories",
+      "median/p95 latency, context tokens, truncation counts, abstention and failure rates"
+    ],
+    "stress_cases": [
+      "misleading older memory",
+      "empty history",
+      "wrong scene",
+      "session boundary reset",
+      "code switching",
+      "negation",
+      "source-text prompt injection"
+    ]
+  },
+  "history_turn_cap": 6,
+  "max_development_rows": 256,
+  "max_training_rows": 2048,
+  "primary_language": "fr-en",
+  "seed": "context-dialogue-v1:20261116",
+  "status": "PREPARATION_ONLY_NO_TRAINING_OR_MODEL_EVALUATION",
+  "training": {
+    "allowed_inputs": "train.inputs.jsonl + joined train.references.jsonl for target loss only",
+    "commercial_use_allowed": false,
+    "forbidden": [
+      "DiaBLa in training/glossary/tuning",
+      "test references in model requests",
+      "future turns",
+      "gold translations in history",
+      "invented utility/sense labels"
+    ],
+    "memory_supervision_ready": false,
+    "recipe": "Next experiment only after a separate explicit run plan. This package starts no run.",
+    "selection_only": "dev.inputs.jsonl + dev.references.jsonl"
+  },
+  "version": 1
+}

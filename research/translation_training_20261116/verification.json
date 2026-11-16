@@ -1,0 +1,21 @@
+{
+  "translation_training_20261116": {
+    "pinned_base_files_unchanged": true,
+    "no_source_reference_or_group_overlap": true,
+    "all_128_updates_completed": true,
+    "finite_nonzero_adapter": true,
+    "exact_initial_backbone_and_selected_replay": true,
+    "output_counts_and_metrics_reproduce": true
+  },
+  "translation_fr_training_20261116": {
+    "pinned_base_files_unchanged": true,
+    "no_source_reference_or_group_overlap": true,
+    "all_128_updates_completed": true,
+    "finite_nonzero_adapter": true,
+    "exact_initial_backbone_and_selected_replay": true,
+    "output_counts_and_metrics_reproduce": true
+  },
+  "wmt_old_guard_disjoint": true,
+  "diabla_smoke_dialogues_excluded": true,
+  "fresh_process_french_reload_produces_translation": true
+}

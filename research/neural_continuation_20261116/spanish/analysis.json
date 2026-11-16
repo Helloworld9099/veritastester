@@ -1,0 +1,98 @@
+{
+  "new_source_test": {
+    "n": 256,
+    "groups": 201,
+    "scores": {
+      "base": {
+        "chrf": 66.69399911662201,
+        "bleu": 43.99808543074456
+      },
+      "previous": {
+        "chrf": 66.63902389511081,
+        "bleu": 44.07076797627466
+      },
+      "selected": {
+        "chrf": 66.79619215079829,
+        "bleu": 43.90016246587415
+      }
+    },
+    "comparisons": {
+      "selected_minus_base": {
+        "corpus_chrf_delta": 0.10219303417628112,
+        "corpus_bleu_delta": -0.0979229648704063,
+        "group_bootstrap_95pct_corpus_chrf_delta": [
+          -0.2916103307644377,
+          0.5545917076786568
+        ],
+        "changed_outputs": 77
+      },
+      "selected_minus_previous": {
+        "corpus_chrf_delta": 0.1571682556874805,
+        "corpus_bleu_delta": -0.17060551040050598,
+        "group_bootstrap_95pct_corpus_chrf_delta": [
+          -0.41514868797637516,
+          0.7205363863923145
+        ],
+        "changed_outputs": 101
+      },
+      "previous_minus_base": {
+        "corpus_chrf_delta": -0.05497522151119938,
+        "corpus_bleu_delta": 0.07268254553009967,
+        "group_bootstrap_95pct_corpus_chrf_delta": [
+          -0.5936499067532519,
+          0.5954376621795828
+        ],
+        "changed_outputs": 126
+      }
+    },
+    "warning": "Conditional paired group bootstrap, 1000 resamples, descriptive intervals without multiple-comparison adjustment. Group identifiers do not prove independent authors or unknown pretraining. Pinned sacrebleu 2.6.0 private sufficient-statistic methods reproduce public corpus scores exactly before use."
+  },
+  "new_external_guard": {
+    "n": 256,
+    "groups": 256,
+    "scores": {
+      "base": {
+        "chrf": 58.79141941159291,
+        "bleu": 32.149298448529144
+      },
+      "previous": {
+        "chrf": 58.98145374313704,
+        "bleu": 31.980691302777146
+      },
+      "selected": {
+        "chrf": 59.125348441438206,
+        "bleu": 32.524150616394685
+      }
+    },
+    "comparisons": {
+      "selected_minus_base": {
+        "corpus_chrf_delta": 0.3339290298452937,
+        "corpus_bleu_delta": 0.37485216786554076,
+        "group_bootstrap_95pct_corpus_chrf_delta": [
+          -0.033430649790423136,
+          0.7111450627442274
+        ],
+        "changed_outputs": 86
+      },
+      "selected_minus_previous": {
+        "corpus_chrf_delta": 0.14389469830116752,
+        "corpus_bleu_delta": 0.5434593136175394,
+        "group_bootstrap_95pct_corpus_chrf_delta": [
+          -0.24776013675475514,
+          0.5781255609930368
+        ],
+        "changed_outputs": 113
+      },
+      "previous_minus_base": {
+        "corpus_chrf_delta": 0.1900343315441262,
+        "corpus_bleu_delta": -0.16860714575199864,
+        "group_bootstrap_95pct_corpus_chrf_delta": [
+          -0.2617772568874375,
+          0.6648107258879142
+        ],
+        "changed_outputs": 143
+      }
+    },
+    "warning": "Conditional paired group bootstrap, 1000 resamples, descriptive intervals without multiple-comparison adjustment. Group identifiers do not prove independent authors or unknown pretraining. Pinned sacrebleu 2.6.0 private sufficient-statistic methods reproduce public corpus scores exactly before use."
+  }
+}

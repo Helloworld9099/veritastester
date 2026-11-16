@@ -1,0 +1,41 @@
+{
+  "task": "distinct contextual-dialogue preparation; no competing training run",
+  "status": "complete",
+  "source_package": "/workspace/scratch/2b30092347a7/context_dialogue_prep_20261116",
+  "safe_repository_bundle": "SOURCE_DELIVERY.tar.gz",
+  "local_text_directory": "artifacts/ (excluded from source delivery)",
+  "train": {
+    "examples": 2048,
+    "dialogues": 240
+  },
+  "dev": {
+    "examples": 256,
+    "dialogues": 24
+  },
+  "validation": {
+    "checks": 9,
+    "passed": true,
+    "deterministic_artifacts": 10
+  },
+  "important_blockers": [
+    "No untouched local DiaBLa dialogues remain:40 smoke+64 original guard+40 continued guard=144.",
+    "Fresh conversational test needs acquisition and overlap audit before next fitting.",
+    "WMT24 corpus is research-only CC-BY-NC-4.0, not commercial-use clearance.",
+    "Memory utility and grounded second-view annotations remain missing;64 queue rows are unlabelled."
+  ],
+  "coordination_evidence": [
+    "translation_training_20261116/NEURAL_TRAINING_REPORT.md",
+    "translation_continued_20261116/REPORT.md",
+    "translation_continued_20261116/french/guard.jsonl",
+    "translation_independent_revalidation_20261116/registration.json"
+  ],
+  "recommendation": "Parent may deliver source/report bundle to repository; preserve existing changes and keep corpus text local. Register any next training run separately and reserve an independent dialogue test first.",
+  "actions_not_performed": [
+    "training",
+    "model inference",
+    "optional translator integration",
+    "push",
+    "deployment",
+    "paid services"
+  ]
+}

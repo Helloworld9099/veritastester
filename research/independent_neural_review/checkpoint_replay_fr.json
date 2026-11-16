@@ -1,0 +1,55 @@
+{
+  "fr": {
+    "adapter_tensor_count": 72,
+    "adapter_parameters": 294912,
+    "nonzero_B_tensors": 36,
+    "initial_zero_output_matches_base": true,
+    "replays": {
+      "tatoeba_test": {
+        "baseline": {
+          "n": 8,
+          "exact_output_matches": 8,
+          "mismatch_indices": [],
+          "elapsed_seconds": 0.9342284370031848
+        },
+        "selected": {
+          "n": 8,
+          "exact_output_matches": 8,
+          "mismatch_indices": [],
+          "elapsed_seconds": 0.717895032998058
+        }
+      },
+      "diabla_guard": {
+        "baseline": {
+          "n": 8,
+          "exact_output_matches": 8,
+          "mismatch_indices": [],
+          "elapsed_seconds": 1.1055372230002831
+        },
+        "selected": {
+          "n": 8,
+          "exact_output_matches": 8,
+          "mismatch_indices": [],
+          "elapsed_seconds": 1.0452915869973367
+        }
+      }
+    },
+    "source_truncation_counts": {
+      "train": {
+        "source_over_training96": 0,
+        "source_over_eval128": 0,
+        "reference_over_training96": 0
+      },
+      "dev": {
+        "source_over_training96": 0,
+        "source_over_eval128": 0,
+        "reference_over_training96": 0
+      },
+      "test": {
+        "source_over_training96": 0,
+        "source_over_eval128": 0,
+        "reference_over_training96": 0
+      }
+    }
+  }
+}
