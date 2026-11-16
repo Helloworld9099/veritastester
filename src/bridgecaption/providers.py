@@ -67,16 +67,27 @@ def translation_text(text: str) -> str:
     candidate = result
     if candidate.startswith("```"):
         candidate = candidate.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
+    # Some models emit only the beginning of our JSON request.
+    echo = (candidate.startswith("{") and
+            '"source_language"' in candidate and
+            '"current_transcript"' in candidate)
     try:
         parsed = json.loads(candidate)
     except (ValueError, TypeError):
-        return result
-    if isinstance(parsed, dict) and (
-            {"current_transcript", "source_language", "target_language"} <= parsed.keys()
-            or "optional_context" in parsed and "current_transcript" in parsed):
+        parsed = None
+    if isinstance(parsed, dict):
+        echo = echo or (
+            "current_transcript" in parsed and
+            ("source_language" in parsed or "optional_context" in parsed))
+    if echo:
         raise RuntimeError(
             "The model repeated the request data instead of translating. "
             "Try another model or engine.")
+    if isinstance(parsed, dict) and len(parsed) == 1:
+        for field in ("translation", "translated_text", "translated"):
+            value = parsed.get(field)
+            if isinstance(value, str) and value.strip():
+                return value.strip()
     return result
 
 
