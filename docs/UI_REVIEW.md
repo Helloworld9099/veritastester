@@ -1,70 +1,55 @@
 # Caption overlay UI review
 
-The UI branch starts from main `4c45b8d734e52da9d10c567e58b32648b563589f`.
-It changes the Tk interface and window dimensions only; translation providers,
-audio capture, pipelines, trained artifacts, and model defaults are unchanged.
-The optional Marian integration and parallel research branch are not included.
+## Integration on November 16, 2026
 
-## Interface changes
+PR #6 now incorporates main `736980e26705516d364f2881c72648517041ffa1`
+(including merged PRs #7 and #8). The newer main interface is preserved:
+separate action row, bounded scrollable settings, screen-position clamping,
+provider-output guards and readable diagnostics. Overlay dimensions and
+translation/audio pipelines are unchanged from that main revision.
 
-- Consistent dark fields, mint accents, keyboard focus outlines, and caption hierarchy.
-- Labeled audio source, spoken language, target language, and topic selectors.
-- Context/glossary and opacity controls grouped beside translation-engine settings.
-- Separate NOT LISTENING / LISTENING badge and local/cloud text destination note.
-- Compact view: 760 × 320; settings view: 940 × 720. Start, settings, and pin
-  stay at the top. Native window controls handle minimizing and closing.
-- Typed-text guidance explains manual source-language selection and Enter.
-- Full caption opens a scrollable, read-only snapshot of the entire last
-  translation, including text beyond the overlay preview. It sends no request
-  and saves no file. A new viewer replaces the previous one. Context clearing,
-  engine changes, and capture-stop paths dismiss the snapshot; Escape closes it.
+The remaining UI additions are deliberately narrow:
+- Full caption opens a scrollable, read-only Unicode snapshot of the entire
+  last result without another provider request or saved file.
+- Reopening replaces the previous viewer. Close/Escape dismiss it.
+- Context clearing, engine change, capture stop, new heard speech, and app
+  close dismiss private snapshots. Stale-generation events are ignored.
+- The engine section identifies local versus cloud transcript destination.
+  Existing consent remains required; this note does not authorize sharing.
 
-## Verified in this environment
+No optional Marian integration, research models, activation, deployment or
+paid calls are included.
 
-`python -m compileall -q src tests` passed.
+## Verification
 
-`python -m pytest -q`: **149 passed, 2 skipped**. One dependency deprecation
-warning comes from the installed AnyIO pytest plugin, not the application.
-The two skipped tests require a graphical desktop. Headless UI-state tests
-cover capture-state and destination messaging for all four existing engines,
-untruncated Unicode caption viewing without translation calls, empty-state
-handling, and snapshot dismissal on context reset and session stop.
+At this revision, `python -m pytest -q` reports **156 passed, 1 skipped**.
+Compilation and `git diff --check` pass. Tests cover all four provider labels,
+Ready/Listening summary, complete Unicode snapshots, no extra translation,
+context/session clearing, repeated dismissal, stale-generation protection,
+and app close. Existing main diagnostic/provider tests are retained.
 
-All existing non-layout application methods were compared with main using
-Python ASTs: they are unchanged except for dismissing the UI snapshot when
-an existing path clears its caption. `git diff --check` passed.
-
-**No GUI rendering or visual inspection is claimed.** No display was available.
-A temporary Xvfb binary was unpacked outside the repository, but this execution
-environment disallows the local display sockets it requires. No audio was
-captured, cloud provider called, model downloaded, model activated, or
-application deployed during this UI verification.
+The skipped test requires a graphical desktop. No display or Xvfb is available
+in this container; its package index cannot locate Xvfb. Thus native Tk layout,
+compositor behavior, live audio and provider requests remain **unverified**.
+Tests use local fixtures and synthetic text, not private audio or cloud calls.
 
 ## Desktop review before merge
-
-On an Ubuntu desktop with the documented package dependencies installed:
 
 ```bash
 python -m pytest -q tests/test_overlay.py tests/test_overlay_interface.py
 python -m bridgecaption
 ```
 
-Or use `xvfb-run -a python -m pytest -q tests/test_overlay.py` on a machine
-where Xvfb is installed and display sockets are permitted. The optional layout
-test checks control bounds at the compact/expanded defaults and minimum sizes.
+1. Toggle settings repeatedly and resize compact/expanded windows. Ensure Start,
+   Settings, Full caption, captions and status remain visible. Settings should
+   scroll independently rather than hide the caption panel.
+2. Check keyboard focus, disabled controls, multilingual font fallback and
+   opacity on the actual compositor.
+3. Use synthetic typed text; open a long result, scroll to its end, reopen it,
+   and close through Escape and the window close control.
+4. Open a snapshot then clear context/change engines. Verify it closes and the
+   destination note matches the chosen engine.
+5. With consent, start/stop/restart audio. Verify selectors lock during capture,
+   Ready/Listening state changes and old snapshots disappear.
 
-Check the following with synthetic text and authorized audio only:
-
-1. Expand/hide settings with the button and Ctrl+comma. Resize both views;
-   ensure Start, Settings, Pin, caption viewer, and status remain visible.
-2. Tab through fields and buttons; check focused and disabled controls, menu
-   contrast, opacity on the actual compositor, and multilingual font fallback.
-3. Select a source language for typed text. Review a long completed caption,
-   open Full caption, scroll through it, then close it with Escape.
-4. Reopen the viewer and clear context or change engines; the snapshot closes.
-5. With permission, start/stop/restart listening; selectors lock while listening,
-   the badge follows session state, and stopping dismisses the old snapshot.
-
-Real speech accuracy, provider availability, compositor behavior, and native
-window layout still require workstation validation. Passing offline tests does
-not establish model quality or production readiness.
+Offline test success does not establish real-speech/model quality or readiness.

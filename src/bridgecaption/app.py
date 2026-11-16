@@ -43,20 +43,21 @@ LANGUAGES = {
     "mt": "Maltese", "mk": "Macedonian", "be": "Belarusian",
 }
 TOPICS = ["auto", "general", "technology", "business", "education", "healthcare", "gaming", "casual"]
-BG = "#10191f"
-PANEL = "#19262e"
-TEXT = "#edf4f6"
-MUTED = "#adbec7"
-ACCENT = "#a6e6cc"
-BORDER = "#354b56"
-FIELD = "#22343e"
+BG = "#101923"
+PANEL = "#1c2b38"
+CONTROL = "#273b49"
+BORDER = "#3c5565"
+TEXT = "#f4f8fb"
+MUTED = "#bed0dd"
+ACCENT = "#5de1b3"
+ALERT = "#ffb7a8"
 
 class Application:
     def __init__(self, root):
         self.root = root
         self.root.title("BridgeCaption | AI translation")
-        self.root.geometry("760x320+220+340")
-        self.root.minsize(560, 300)
+        self.root.geometry("760x282+220+340")
+        self.root.minsize(560, 245)
         self.root.configure(bg=BG)
         self.root.attributes("-topmost", True)
         self.root.overrideredirect(False)
@@ -101,175 +102,280 @@ class Application:
                         anchor="w")
 
     def button(self, parent, text, command, accent=False):
+        background = ACCENT if accent else CONTROL
+        foreground = BG if accent else TEXT
+        hover = "#87f0ca" if accent else "#395362"
         return tk.Button(
             parent, text=text, command=command, relief="flat", bd=0,
-            bg=ACCENT if accent else FIELD, fg=BG if accent else TEXT,
-            activebackground="#caefdf" if accent else BORDER,
+            bg=background, fg=foreground, activebackground=hover,
             activeforeground=BG if accent else TEXT,
-            disabledforeground=MUTED, highlightthickness=1,
-            highlightbackground=BG, highlightcolor=ACCENT, takefocus=True,
-            font=("DejaVu Sans", 10, "bold"), padx=12, pady=8,
-            cursor="hand2")
+            disabledforeground="#35544e" if accent else MUTED,
+            font=("DejaVu Sans", 10, "bold"),
+            padx=13, pady=8, cursor="hand2", takefocus=True,
+            highlightthickness=1, highlightbackground=BG,
+            highlightcolor=ACCENT,
+        )
 
     def picker(self, parent, values, width=15):
-        box = ttk.Combobox(parent, state="readonly", values=values, width=width,
-                           style="Bridge.TCombobox", font=("DejaVu Sans", 10))
+        box = ttk.Combobox(parent, state="readonly", values=values,
+                           width=width, style="Bridge.TCombobox")
         box.current(0)
         return box
 
-    def _ui(self):
+    def _configure_styles(self):
+        """Keep Tk and ttk controls legible on light or dark Linux themes."""
         style = ttk.Style(self.root)
-        style.theme_use("clam")
-        style.configure("Bridge.TCombobox", fieldbackground=FIELD, background=FIELD,
-                        foreground=TEXT, arrowcolor=ACCENT, bordercolor=BORDER,
-                        lightcolor=BORDER, darkcolor=BORDER, padding=7)
-        style.map("Bridge.TCombobox",
-                  fieldbackground=[("disabled", PANEL), ("readonly", FIELD)],
-                  foreground=[("disabled", MUTED), ("readonly", TEXT)],
-                  bordercolor=[("focus", ACCENT)])
+        if "clam" in style.theme_names():
+            style.theme_use("clam")
+        style.configure(
+            "Bridge.TCombobox", font=("DejaVu Sans", 11), padding=6,
+            foreground=TEXT, fieldbackground=CONTROL, background=CONTROL,
+            selectforeground=TEXT, selectbackground=CONTROL,
+            bordercolor=BORDER, lightcolor=BORDER, darkcolor=BORDER,
+            arrowcolor=TEXT,
+        )
+        style.map(
+            "Bridge.TCombobox",
+            fieldbackground=[("disabled", PANEL), ("readonly", CONTROL)],
+            foreground=[("disabled", MUTED), ("readonly", TEXT)],
+            selectforeground=[("readonly", TEXT)],
+            selectbackground=[("readonly", CONTROL)],
+        )
         style.configure("Bridge.Horizontal.TScale", background=BG,
-                        troughcolor=FIELD, bordercolor=BG)
-        self.root.option_add("*TCombobox*Listbox.background", FIELD)
-        self.root.option_add("*TCombobox*Listbox.foreground", TEXT)
-        self.root.option_add("*TCombobox*Listbox.selectBackground", ACCENT)
-        self.root.option_add("*TCombobox*Listbox.selectForeground", BG)
-        self.root.option_add("*TCombobox*Listbox.font", "{DejaVu Sans} 10")
+                        troughcolor=CONTROL, sliderlength=18)
 
-        top = tk.Frame(self.root, bg=BG, padx=16, pady=10)
+    def _ui(self):
+        self._configure_styles()
+
+        # Caption controls stay visible when Settings is collapsed.
+        # Two rows keep primary actions from being squeezed by window buttons.
+        top = tk.Frame(self.root, bg=BG, padx=18, pady=7)
         top.pack(fill="x")
-        brand = self.label(top, "BridgeCaption", 14, ACCENT, True)
-        brand.pack(side="left")
-        self.start_button = self.button(top, "START", self.toggle_capture, accent=True)
-        self.start_button.pack(side="right", padx=(8, 0))
-        self.settings_button = self.button(top, "SETTINGS", self.toggle_settings)
-        self.settings_button.pack(side="right", padx=(8, 0))
-        self.pin_button = self.button(top, "PINNED", self.toggle_pin)
-        self.pin_button.pack(side="right")
-        for handle in (top, brand):
-            handle.bind("<ButtonPress-1>", self.drag_start)
-            handle.bind("<B1-Motion>", self.drag_move)
+        title_row = tk.Frame(top, bg=BG)
+        title_row.pack(fill="x")
+        title = self.label(title_row, "BridgeCaption", 15, TEXT, True)
+        title.pack(side="left")
+        self.button(title_row, "Close", self.close).pack(side="right", padx=(6, 0))
+        self.button(title_row, "Minimize", self.root.iconify).pack(side="right", padx=(6, 0))
+        self.pin_button = self.button(title_row, "Pinned", self.toggle_pin)
+        self.pin_button.pack(side="right", padx=(6, 0))
+        action_row = tk.Frame(top, bg=BG)
+        action_row.pack(fill="x", pady=(5, 0))
+        self.start_button = self.button(
+            action_row, "Start listening", self.toggle_capture, accent=True)
+        self.start_button.pack(side="left", padx=(0, 8))
+        self.settings_button = self.button(action_row, "Settings", self.toggle_settings)
+        self.settings_button.pack(side="left")
+        self.full_caption_button = self.button(action_row, "Full caption", self.show_full_caption)
+        self.full_caption_button.pack(side="left", padx=(8, 0))
+        for draggable in (top, title_row, title):
+            draggable.bind("<ButtonPress-1>", self.drag_start)
+            draggable.bind("<B1-Motion>", self.drag_move)
 
-        summary = tk.Frame(self.root, bg=BG, padx=16)
-        summary.pack(fill="x", pady=(0, 7))
-        self.session_badge = self.label(summary, "NOT LISTENING", 8, MUTED, True)
-        self.session_badge.pack(side="left", anchor="n", padx=(0, 12))
-        self.summary_var = tk.StringVar(value="Choose a source in Settings")
+        self.summary_var = tk.StringVar(value="Ready  ·  Open Settings to choose languages")
         self.summary_label = tk.Label(
-            summary, textvariable=self.summary_var, bg=BG, fg=MUTED,
-            anchor="w", justify="left", font=("DejaVu Sans", 9))
-        self.summary_label.pack(side="left", fill="x", expand=True)
+            self.root, textvariable=self.summary_var, bg=BG, fg=MUTED,
+            anchor="w", font=("DejaVu Sans", 10), padx=18, pady=4,
+        )
+        self.summary_label.pack(fill="x")
 
-        controls = tk.Frame(self.root, bg=BG, padx=16, pady=6)
-        self.controls_frame = controls
-        controls.columnconfigure((0, 1, 2), weight=1, uniform="language")
-        self.label(controls, "AUDIO SOURCE", 8, MUTED, True).grid(
-            row=0, column=0, columnspan=2, sticky="w", pady=(0, 5))
-        self.source_box = self.picker(controls, ["No audio sources"], width=28)
-        self.source_box.grid(row=1, column=0, columnspan=2, sticky="ew", padx=(0, 10))
-        self.source_box.bind("<<ComboboxSelected>>", lambda _event: self._on_source_change())
-        self.refresh_button = self.button(controls, "REFRESH AUDIO", self.refresh_sources)
-        self.refresh_button.grid(row=1, column=2, sticky="ew")
+        # Scroll configuration independently so captions retain usable height.
+        self.settings_workspace = tk.Frame(self.root, bg=BG)
+        self.settings_canvas = tk.Canvas(
+            self.settings_workspace, bg=BG, bd=0,
+            highlightthickness=0, height=220)
+        self.settings_scrollbar = tk.Scrollbar(
+            self.settings_workspace, orient="vertical",
+            command=self.settings_canvas.yview, bg=CONTROL,
+            troughcolor=BG, activebackground=ACCENT)
+        self.settings_scrollbar.pack(side="right", fill="y")
+        self.settings_canvas.pack(side="left", fill="both", expand=True)
+        self.settings_canvas.configure(yscrollcommand=self.settings_scrollbar.set)
+        self.settings_content = tk.Frame(self.settings_canvas, bg=BG)
+        self.settings_window = self.settings_canvas.create_window(
+            (0, 0), window=self.settings_content, anchor="nw")
+        self.settings_content.bind(
+            "<Configure>", lambda _e: self.settings_canvas.configure(
+                scrollregion=self.settings_canvas.bbox("all")))
+        self.settings_canvas.bind(
+            "<Configure>", lambda e: self.settings_canvas.itemconfigure(
+                self.settings_window, width=e.width))
+        self.settings_canvas.bind("<MouseWheel>", self._scroll_settings)
+        self.settings_canvas.bind("<Button-4>", self._scroll_settings)
+        self.settings_canvas.bind("<Button-5>", self._scroll_settings)
+
+        self.controls_frame = tk.Frame(self.settings_content, bg=BG, padx=18, pady=7)
+        self.controls_frame.pack(fill="x")
+        self.label(self.controls_frame, "Audio & languages", 11, TEXT, True).pack(
+            anchor="w", pady=(0, 8))
+        language_row = tk.Frame(self.controls_frame, bg=BG)
+        language_row.pack(fill="x")
+        for column, weight in ((0, 3), (1, 2), (2, 2)):
+            language_row.grid_columnconfigure(column, weight=weight)
+
+        def field(parent, title, column, last=False):
+            group = tk.Frame(parent, bg=BG)
+            group.grid(row=0, column=column, sticky="ew",
+                       padx=(0, 0 if last else 14))
+            self.label(group, title, 9, MUTED, True).pack(
+                anchor="w", pady=(0, 5))
+            return group
+
+        audio_group = field(language_row, "Audio source", 0)
+        self.source_box = self.picker(audio_group, ["No audio sources"], width=29)
+        self.source_box.pack(fill="x")
+        self.source_box.bind("<<ComboboxSelected>>",
+                             lambda _event: self._on_source_change())
+
         self.source_labels = sorted(LANGUAGES.items(), key=lambda kv: kv[1])
+        from_group = field(language_row, "From", 1)
+        self.source_picker = self.picker(
+            from_group, [f"{name} [{code}]" for code, name in self.source_labels], 18)
+        self.source_picker.pack(fill="x")
         self.target_labels = [item for item in self.source_labels if item[0] != "auto"]
-        self.source_picker = self.picker(controls, [f"{name} [{code}]" for code, name in self.source_labels])
-        self.target_picker = self.picker(controls, [f"{name} [{code}]" for code, name in self.target_labels])
-        self.topic_box = self.picker(controls, TOPICS, width=12)
+        to_group = field(language_row, "To", 2, last=True)
+        self.target_picker = self.picker(
+            to_group, [f"{name} [{code}]" for code, name in self.target_labels], 18)
+        self.target_picker.pack(fill="x")
         self.source_picker.set("Auto detect [auto]")
         self.target_picker.set("English [en]")
-        for column, (title, widget) in enumerate((
-                ("SPOKEN LANGUAGE", self.source_picker),
-                ("TRANSLATE INTO", self.target_picker), ("TOPIC", self.topic_box))):
-            self.label(controls, title, 8, MUTED, True).grid(
-                row=2, column=column, sticky="w", pady=(12, 5))
-            widget.grid(row=3, column=column, sticky="ew",
-                        padx=(0, 10 if column < 2 else 0))
-        self.source_picker.bind("<<ComboboxSelected>>", lambda _event: self._on_source_change())
-        self.target_picker.bind("<<ComboboxSelected>>", lambda _event: self._on_source_change())
+        self.source_picker.bind("<<ComboboxSelected>>",
+                                lambda _event: self._on_source_change())
+        self.target_picker.bind("<<ComboboxSelected>>",
+                                lambda _event: self._on_source_change())
 
-        self.preferences_frame = tk.Frame(self.root, bg=BG, padx=16, pady=6)
-        settings = tk.Frame(self.preferences_frame, bg=BG)
-        settings.pack(side="left", fill="both", expand=True, padx=(0, 16))
-        self.settings_frame = settings
-        context_row = tk.Frame(settings, bg=BG)
-        context_row.pack(fill="x")
-        tk.Checkbutton(
-            context_row, text="Context + slang", variable=self.context_enabled,
-            bg=BG, fg=TEXT, selectcolor=PANEL, activebackground=BG,
-            activeforeground=TEXT, highlightcolor=ACCENT,
-            font=("DejaVu Sans", 10)).pack(side="left")
-        context_actions = tk.Frame(settings, bg=BG)
-        context_actions.pack(fill="x", pady=(4, 0))
-        self.button(context_actions, "GLOSSARY", self.edit_glossary).pack(side="left", padx=(0, 8))
-        self.button(context_actions, "CLEAR CONTEXT", self.reset_history).pack(side="left")
-        opacity_row = tk.Frame(settings, bg=BG)
-        opacity_row.pack(fill="x", pady=(6, 0))
-        self.label(opacity_row, "Window opacity", 9, MUTED).pack(side="left", padx=(0, 10))
-        ttk.Scale(
-            opacity_row, from_=MIN_OPACITY_PERCENT, to=MAX_OPACITY_PERCENT,
-            orient="horizontal", length=140, variable=self.opacity_value,
-            style="Bridge.Horizontal.TScale",
-            command=self._on_opacity_change).pack(side="left")
-        self.opacity_label = tk.StringVar(value=f"{opacity_percent(self.opacity_value.get())}%")
-        tk.Label(opacity_row, textvariable=self.opacity_label, bg=BG, fg=TEXT,
-                 font=("DejaVu Sans", 9), width=5).pack(side="left", padx=8)
-
-        engine_controls = tk.Frame(self.preferences_frame, bg=BG)
-        engine_controls.pack(side="left", fill="both", expand=True)
-        self.engine_controls_frame = engine_controls
-        self.label(engine_controls, "TRANSLATION ENGINE", 8, MUTED, True).pack(anchor="w", pady=(0, 5))
-        engine_row = tk.Frame(engine_controls, bg=BG)
+        self.engine_controls_frame = tk.Frame(self.settings_content, bg=BG, padx=18, pady=7)
+        self.engine_controls_frame.pack(fill="x")
+        self.label(self.engine_controls_frame, "Translation", 11, TEXT, True).pack(
+            anchor="w", pady=(0, 8))
+        engine_row = tk.Frame(self.engine_controls_frame, bg=BG)
         engine_row.pack(fill="x")
-        self.engine_box = self.picker(engine_row, PROVIDERS, width=12)
-        self.engine_box.pack(side="left", padx=(0, 10))
+        engine_row.grid_columnconfigure(0, weight=2)
+        engine_row.grid_columnconfigure(2, weight=2)
+        engine_group = field(engine_row, "Engine", 0)
+        self.engine_box = self.picker(engine_group, PROVIDERS, width=20)
         self.engine_box.set(self.engine_selected)
-        self.engine_box.bind("<<ComboboxSelected>>", lambda _event: self.change_engine())
-        self.button(engine_row, "CHECK ENGINE", self.check_engine).pack(side="left")
-        self.engine_note = self.label(engine_controls, "", 9, MUTED)
-        self.engine_note.configure(justify="left")
-        self.engine_note.pack(fill="x", pady=(6, 0))
+        self.engine_box.pack(fill="x")
+        self.engine_box.bind("<<ComboboxSelected>>",
+                             lambda _event: self.change_engine())
+        self.button(engine_row, "Check connection", self.check_engine).grid(
+            row=0, column=1, sticky="s", padx=(0, 14))
+        topic_group = field(engine_row, "Topic", 2, last=True)
+        self.topic_box = self.picker(topic_group, TOPICS, width=18)
+        self.topic_box.pack(fill="x")
+        self.engine_note = self.label(self.engine_controls_frame, "", 9, MUTED)
+        self.engine_note.configure(justify="left", wraplength=650)
+        self.engine_note.pack(fill="x", pady=(8, 0))
+        self.settings_frame = tk.Frame(self.settings_content, bg=BG, padx=18, pady=7)
+        self.settings_frame.pack(fill="x")
+        self.label(self.settings_frame, "Preferences", 11, TEXT, True).pack(
+            anchor="w", pady=(0, 8))
+        options_row = tk.Frame(self.settings_frame, bg=BG)
+        options_row.pack(fill="x")
+        tk.Checkbutton(
+            options_row, text="Context & slang", variable=self.context_enabled,
+            bg=BG, fg=TEXT, selectcolor=PANEL, activebackground=BG,
+            activeforeground=TEXT, font=("DejaVu Sans", 10), takefocus=True,
+            highlightcolor=ACCENT,
+        ).pack(side="left")
+        self.button(options_row, "Glossary", self.edit_glossary).pack(
+            side="left", padx=(10, 0))
+        self.button(options_row, "Clear context", self.reset_history).pack(
+            side="left", padx=(8, 0))
+        self.button(options_row, "Refresh audio", self.refresh_sources).pack(
+            side="left", padx=(8, 0))
+        opacity_group = tk.Frame(options_row, bg=BG)
+        opacity_group.pack(side="right")
+        self.label(opacity_group, "Opacity", 9, MUTED).pack(
+            side="left", padx=(0, 9))
+        ttk.Scale(
+            opacity_group, from_=MIN_OPACITY_PERCENT, to=MAX_OPACITY_PERCENT,
+            orient="horizontal", length=94, variable=self.opacity_value,
+            command=self._on_opacity_change, style="Bridge.Horizontal.TScale",
+        ).pack(side="left", padx=(0, 8))
+        self.opacity_label = tk.StringVar(
+            value=f"{opacity_percent(self.opacity_value.get())}%")
+        tk.Label(
+            opacity_group, textvariable=self.opacity_label, bg=BG, fg=TEXT,
+            font=("DejaVu Sans", 10),
+        ).pack(side="left")
 
-        caption_panel = tk.Frame(self.root, bg=PANEL, padx=16, pady=12,
-                                 highlightthickness=1, highlightbackground=BORDER)
-        self.caption_panel = caption_panel
-        caption_panel.pack(fill="both", expand=True, padx=16, pady=(5, 8))
-        caption_header = tk.Frame(caption_panel, bg=PANEL)
-        caption_header.pack(fill="x")
-        self.label(caption_header, "ORIGINAL SPEECH", 8, MUTED, True).pack(side="left")
-        self.full_caption_button = tk.Button(
-            caption_header, text="Full caption ↗", command=self.show_full_caption,
-            bg=PANEL, fg=ACCENT, activebackground=FIELD, activeforeground=TEXT,
-            relief="flat", bd=0, font=("DejaVu Sans", 9), cursor="hand2",
-            highlightthickness=1, highlightbackground=PANEL, highlightcolor=ACCENT)
-        self.full_caption_button.pack(side="right")
-        self.source_text = self.label(caption_panel, "Your original speech will appear here.", 12, MUTED)
-        self.source_text.configure(wraplength=700, justify="left")
-        self.source_text.pack(fill="x", pady=(5, 10))
-        self.label(caption_panel, "TRANSLATION", 8, ACCENT, True).pack(fill="x")
-        self.translated_text = self.label(caption_panel, "Ready when you are.", 20, TEXT, True)
-        self.translated_text.configure(wraplength=700, justify="left", anchor="nw")
-        self.translated_text.pack(fill="both", expand=True, pady=(5, 0))
+        self.caption_panel = tk.Frame(self.root, bg=PANEL, padx=20, pady=12)
+        self.caption_panel.pack(fill="both", expand=True, padx=18, pady=(6, 4))
+        self.label(self.caption_panel, "Original speech", 10, MUTED, True).pack(
+            anchor="w")
+        self.source_text = self.label(
+            self.caption_panel, "Your transcript will appear here.", 12, MUTED)
+        self.source_text.configure(wraplength=650, justify="left")
+        self.source_text.pack(fill="x", pady=(7, 8))
+        tk.Frame(self.caption_panel, bg=BORDER, height=1).pack(
+            fill="x", pady=(0, 10))
+        self.label(self.caption_panel, "Translation", 10, ACCENT, True).pack(
+            anchor="w")
+        self.translated_text = self.label(
+            self.caption_panel, "Waiting for speech or a text translation.", 20,
+            TEXT, True)
+        self.translated_text.configure(wraplength=650, justify="left")
+        self.translated_text.pack(fill="both", expand=True, pady=(8, 0))
 
-        bottom = tk.Frame(self.root, bg=BG, padx=16, pady=6)
-        self.bottom_frame = bottom
-        self.label(bottom, "TRY TYPED TEXT", 8, MUTED, True).pack(anchor="w")
-        self.label(bottom, "Choose a spoken language above, then press Enter to translate.", 9, MUTED).pack(
-            anchor="w", pady=(3, 6))
-        text_row = tk.Frame(bottom, bg=BG)
+        self.bottom_frame = tk.Frame(self.settings_content, bg=BG, padx=18, pady=5)
+        self.bottom_frame.pack(fill="x")
+        self.label(self.bottom_frame, "Try a sentence", 10, MUTED, True).pack(
+            anchor="w", pady=(0, 6))
+        text_row = tk.Frame(self.bottom_frame, bg=BG)
         text_row.pack(fill="x")
         self.test_text = tk.Entry(
-            text_row, bg=FIELD, fg=TEXT, insertbackground=ACCENT,
-            relief="flat", font=("DejaVu Sans", 11), highlightthickness=1,
-            highlightbackground=BORDER, highlightcolor=ACCENT)
-        self.test_text.pack(side="left", fill="x", expand=True, ipady=8, padx=(0, 8))
+            text_row, bg=CONTROL, fg=TEXT, insertbackground=TEXT,
+            relief="flat", font=("DejaVu Sans", 12),
+            highlightthickness=1, highlightbackground=BORDER,
+            highlightcolor=ACCENT,
+        )
+        self.test_text.pack(side="left", fill="x", expand=True, ipady=9,
+                            padx=(0, 10))
         self.test_text.insert(0, "Ese código está chido")
         self.test_text.bind("<Return>", lambda _event: self.test_translate())
-        self.button(text_row, "TRANSLATE TEXT", self.test_translate).pack(side="right")
-        self.status_var = tk.StringVar(value="Open Settings to choose audio and languages. Start begins listening.")
+        self.button(text_row, "Translate text", self.test_translate, True).pack(
+            side="right")
+
+        self.status_var = tk.StringVar(
+            value="Choose an audio source and translation engine in Settings.")
         self.status_label = tk.Label(
             self.root, textvariable=self.status_var, bg=BG, fg=MUTED,
-            anchor="w", justify="left", wraplength=700, padx=16, pady=8,
-            font=("DejaVu Sans", 9))
-        self.status_label.pack(fill="x", side="bottom")
+            anchor="w", justify="left", wraplength=700, padx=18, pady=7,
+            font=("DejaVu Sans", 10),
+        )
+        self.status_label.pack(fill="x", side="bottom", before=self.caption_panel)
+        self.status_var.trace_add("write", self._style_status)
+        self._bind_settings_scroll(self.settings_content)
+
+    def _bind_settings_scroll(self, widget):
+        """Wheel-scroll configuration without capturing wheel events globally."""
+        for child in widget.winfo_children():
+            if not isinstance(child, ttk.Combobox):
+                for event in ("<MouseWheel>", "<Button-4>", "<Button-5>"):
+                    child.bind(event, self._scroll_settings, add="+")
+            self._bind_settings_scroll(child)
+
+    def _scroll_settings(self, event):
+        if self.compact:
+            return
+        number = getattr(event, "num", None)
+        if number == 4:
+            direction = -1
+        elif number == 5:
+            direction = 1
+        else:
+            delta = getattr(event, "delta", 0)
+            direction = -1 if delta > 0 else 1 if delta < 0 else 0
+        if direction:
+            self.settings_canvas.yview_scroll(3 * direction, "units")
+            return "break"
+
+    def _style_status(self, *_args):
+        """Make errors identifiable without relying on status text alone."""
+        message = self.status_var.get().casefold()
+        error = message.startswith("error") or message.startswith("no audio")
+        self.status_label.config(fg=ALERT if error else MUTED)
 
     def _dismiss_full_caption(self):
         popup = getattr(self, "caption_popup", None)
@@ -316,19 +422,41 @@ class Application:
 
     def _apply_overlay_mode(self):
         """Collapse configuration without losing captions or Start/Stop controls."""
-        for panel in (self.controls_frame, self.preferences_frame, self.bottom_frame):
+        for panel in (self.controls_frame, self.engine_controls_frame,
+                      self.settings_frame, self.bottom_frame):
             panel.pack_forget()
+        self.settings_workspace.pack_forget()
         if not self.compact:
-            for panel in (self.controls_frame, self.preferences_frame):
-                panel.pack(fill="x", before=self.caption_panel)
-            self.bottom_frame.pack(fill="x", before=self.status_label)
-        self.settings_button.config(text="SETTINGS" if self.compact else "HIDE SETTINGS")
-        self.source_text.config(font=("DejaVu Sans", 11 if self.compact else 14))
-        self.translated_text.config(font=("DejaVu Sans", 17 if self.compact else 20, "bold"))
+            for panel in (self.controls_frame, self.engine_controls_frame,
+                          self.settings_frame, self.bottom_frame):
+                panel.pack(fill="x")
+            self.settings_workspace.pack(fill="x", before=self.caption_panel)
+            self.settings_canvas.yview_moveto(0)
+        self.settings_button.config(
+            text="Settings" if self.compact else "Hide settings")
+        self.source_text.config(
+            font=("DejaVu Sans", 12 if self.compact else 13))
+        self.translated_text.config(
+            font=("DejaVu Sans", 18 if self.compact else 21, "bold"))
         width, height = window_size(self.compact)
-        self.root.minsize(560 if self.compact else 760,
-                          300 if self.compact else 700)
-        self.root.geometry(f"{width}x{height}")
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        minimum_width = 700 if self.compact else 780
+        minimum_height = 350 if self.compact else min(575, max(430, screen_height - 96))
+        # Keep the larger Settings view on-screen on shorter laptops.
+        width = min(width, max(minimum_width, screen_width - 36))
+        height = min(height, max(minimum_height, screen_height - 72))
+        if not self.compact:
+            self.settings_canvas.config(height=min(220, max(140, height // 3)))
+        self.root.minsize(minimum_width, minimum_height)
+        if self.root.winfo_ismapped():
+            x, y = self.root.winfo_x(), self.root.winfo_y()
+        else:
+            x = (screen_width - width) // 2
+            y = (screen_height - height) // 3
+        x = max(0, min(x, max(0, screen_width - width - 24)))
+        y = max(0, min(y, max(0, screen_height - height - 48)))
+        self.root.geometry(f"{width}x{height}+{x}+{y}")
         self._resize_caption_wrap()
         if self.last_caption is not None:
             self._render_caption(*self.last_caption)
@@ -351,12 +479,11 @@ class Application:
     def _resize_caption_wrap(self, event=None):
         if event is not None and event.widget is not self.root:
             return
-        width = max(280, self.root.winfo_width() - 64)
+        width = max(280, self.root.winfo_width() - 110)
         self.source_text.config(wraplength=width)
         self.translated_text.config(wraplength=width)
-        self.status_label.config(wraplength=width)
-        self.summary_label.config(wraplength=max(200, width - 125))
-        self.engine_note.config(wraplength=max(230, (width - 24) // 2))
+        self.status_label.config(wraplength=max(280, self.root.winfo_width() - 52))
+        self.engine_note.config(wraplength=width)
 
     def _render_caption(self, original, translated, lang):
         """Display bounded subtitles without changing the underlying translation.
@@ -365,8 +492,8 @@ class Application:
         reveal more of the last caption without another provider/API call.
         """
         self.last_caption = (original, translated, lang)
-        original_limit = 160 if self.compact else 700
-        translated_limit = 240 if self.compact else 900
+        original_limit = 90 if self.compact else 700
+        translated_limit = 125 if self.compact else 900
 
         def clipped(text, limit):
             return text if len(text) <= limit else text[:limit - 1].rstrip() + "…"
@@ -377,17 +504,11 @@ class Application:
     def _update_overlay_summary(self):
         if not hasattr(self, "summary_var"):
             return
-        engine = self.engine_box.get().upper()
-        source = self.source_lang().upper()
-        target = self.target_lang().upper()
-        device = self.source_box.get().strip()
-        if len(device) > 55:
-            device = device[:52] + "..."
-        listening = self.live_session is not None
-        self.session_badge.config(
-            text="LISTENING" if listening else "NOT LISTENING",
-            fg=ACCENT if listening else MUTED)
-        self.summary_var.set(f"{source} → {target}  ·  {engine}  ·  {device}")
+        engine = self.engine_box.get().capitalize()
+        source = LANGUAGES.get(self.source_lang(), self.source_lang())
+        target = LANGUAGES.get(self.target_lang(), self.target_lang())
+        live = "Listening" if self.live_session is not None else "Ready"
+        self.summary_var.set(f"{live}  ·  {source} → {target}  ·  {engine}")
         self.engine_note.config(text=(
             "Cloud translation · recognized text is sent to the selected service."
             if needs_cloud(self.engine_box.get()) else
@@ -414,7 +535,7 @@ class Application:
     def toggle_pin(self):
         self.is_pinned = not self.is_pinned
         self.root.attributes("-topmost", self.is_pinned)
-        self.pin_button.config(text="PINNED" if self.is_pinned else "UNPINNED")
+        self.pin_button.config(text="Pinned" if self.is_pinned else "Unpinned")
 
     def reset_history(self):
         self.last_caption = None
@@ -484,7 +605,8 @@ class Application:
                 model = create_translator(engine)
                 response = model.translate(TranslationRequest(
                     text="Hola", source="es", target="en", context_enabled=False))
-                self.publish("engine_check", engine, response[:80])
+                from .providers import translation_text
+                self.publish("engine_check", engine, translation_text(response))
             except Exception as exc:
                 self.publish("engine_check", engine, f"ERROR: {exc}")
         self.status_var.set(f"Checking {engine} with a public example...")
@@ -583,7 +705,7 @@ class Application:
             self._dismiss_full_caption()
             self.source_text.config(text="Audio capture stopping.")
             self.translated_text.config(text="Previous captions hidden.")
-            self.start_button.config(text="STOPPING", state="disabled")
+            self.start_button.config(text="Stopping...", state="disabled")
             self.status_var.set("Stopping. Waiting for current processing to finish.")
             return
         if not self.devices:
@@ -625,7 +747,7 @@ class Application:
             return
         self.live_session = session
         self._update_overlay_summary()
-        self.start_button.config(text="STOP", state="normal")
+        self.start_button.config(text="Stop listening", state="normal")
         for selector in (self.source_box, self.source_picker,
                          self.target_picker, self.topic_box, self.engine_box):
             selector.config(state="disabled")
@@ -652,7 +774,12 @@ class Application:
                     if values[0] == self.text_generation:
                         self.status_var.set("ERROR · " + values[1])
                 elif kind == "engine_check":
-                    self.status_var.set(f"{values[0]} test: {values[1]}")
+                    engine, result = values
+                    if result.startswith("ERROR:"):
+                        self.status_var.set(f"ERROR · {engine.capitalize()} connection check failed: {result[6:]}")
+                    else:
+                        self.status_var.set(
+                            f"{engine.capitalize()} is working · Test translation: {result[:90]}")
                 elif kind == "error":
                     self.status_var.set("ERROR · " + values[0])
                 elif kind == "live":
@@ -687,7 +814,7 @@ class Application:
                         for selector in (self.source_box, self.source_picker,
                                          self.target_picker, self.topic_box, self.engine_box):
                             selector.config(state="readonly")
-                        self.start_button.config(text="START", state="normal")
+                        self.start_button.config(text="Start listening", state="normal")
                         self.source_text.config(text="Listening stopped.")
                         self.translated_text.config(text="Start another authorized session to see captions.")
                         self.status_var.set(
@@ -699,6 +826,7 @@ class Application:
 
     def close(self):
         self.closed = True
+        self._dismiss_full_caption()
         if self.live_session is not None:
             self.live_session.stop()
         self.pipeline.reset()

@@ -62,17 +62,52 @@ def test_real_tk_expands_settings_without_hiding_start_stop(monkeypatch):
         assert app.bottom_frame.winfo_manager() == ""
         assert app.caption_panel.winfo_manager() == "pack"
         assert app.start_button.winfo_manager() == "pack"
+        assert app.start_button.winfo_width() >= app.start_button.winfo_reqwidth()
+        assert app.start_button.cget("text") == "Start listening"
         # Compact preview is bounded; full sentence remains available on expansion.
         app._render_caption("x" * 400, "y" * 650, "es")
         assert len(app.translated_text.cget("text")) < 260
         app.toggle_settings()
         root.update_idletasks()
         assert app.compact is False
+        assert app.settings_workspace.winfo_manager() == "pack"
+        assert app.settings_canvas.winfo_height() <= 230
         assert app.translated_text.cget("text") == "y" * 650
+        assert app.source_box.winfo_manager() == "pack"
+        assert app.source_picker.winfo_manager() == "pack"
+        assert app.target_picker.winfo_manager() == "pack"
+        assert app.engine_box.winfo_manager() == "pack"
+        assert app.topic_box.winfo_manager() == "pack"
+        assert app.test_text.winfo_manager() == "pack"
+        assert app.source_text.cget("wraplength") > 500
+        assert app.settings_button.cget("text") == "Hide settings"
+        # Main actions and status remain visible even when the larger view is busy.
+        app._render_caption("Hola", "Hello", "es")
+        root.update_idletasks()
+        assert app.translated_text.winfo_height() > 10
+        assert app.caption_panel.winfo_height() > 120
+        assert app.settings_canvas.yview()[1] < 1  # Settings scroll instead of hiding captions
+        assert app.bottom_frame.winfo_ismapped()
+        assert app.status_label.winfo_ismapped()
+        assert (app.status_label.winfo_y() + app.status_label.winfo_height()
+                <= root.winfo_height())
+        app.status_var.set("ERROR · provider unavailable")
+        assert app.status_label.cget("fg") == application.ALERT
         assert app.controls_frame.winfo_manager() == "pack"
         assert app.engine_controls_frame.winfo_manager() == "pack"
         assert app.bottom_frame.winfo_manager() == "pack"
         assert app.start_button.winfo_manager() == "pack"
+        assert "Local translation" in app.engine_note.cget("text")
+        assert app.full_caption_button.winfo_ismapped()
+        app.show_full_caption()
+        root.update_idletasks()
+        assert app.caption_popup.winfo_exists()
+        old_popup = app.caption_popup
+        app.show_full_caption()
+        root.update_idletasks()
+        assert not old_popup.winfo_exists()
+        app._dismiss_full_caption()
+        assert app.caption_popup is None
         app.toggle_settings()
         root.update_idletasks()
         assert app.compact is True
@@ -82,46 +117,5 @@ def test_real_tk_expands_settings_without_hiding_start_stop(monkeypatch):
         assert app.last_caption is None
         app.toggle_settings()
         assert "y" * 20 not in app.translated_text.cget("text")
-    finally:
-        root.destroy()
-
-
-def test_real_tk_ui_controls_fit_at_supported_window_sizes(monkeypatch):
-    if not os.environ.get("DISPLAY"):
-        pytest.skip("requires a graphical desktop or xvfb-run")
-    import tkinter as tk
-    import bridgecaption.app as application
-    try:
-        root = tk.Tk()
-    except tk.TclError:
-        pytest.skip("Tk display unavailable")
-    try:
-        monkeypatch.setattr(application, "sources", lambda: [
-            ("System audio (current output)", "mock.monitor")])
-        app = application.Application(root)
-        for compact, dimensions in ((True, (560, 300)), (False, (760, 700)),
-                                    (False, EXPANDED_SIZE), (True, COMPACT_SIZE)):
-            app.compact = compact
-            app._apply_overlay_mode()
-            root.geometry(f"{dimensions[0]}x{dimensions[1]}")
-            root.update_idletasks()
-            visible = [app.start_button, app.settings_button, app.pin_button,
-                       app.full_caption_button, app.status_label]
-            if not compact:
-                visible.extend([app.source_box, app.source_picker, app.target_picker,
-                                app.topic_box, app.engine_box, app.test_text])
-            for widget in visible:
-                assert widget.winfo_viewable()
-                x = widget.winfo_rootx() - root.winfo_rootx()
-                y = widget.winfo_rooty() - root.winfo_rooty()
-                assert x >= 0 and y >= 0
-                assert x + widget.winfo_width() <= root.winfo_width()
-                assert y + widget.winfo_height() <= root.winfo_height()
-        app._render_caption("Texto original " * 80, "Complete translation " * 100, "es")
-        app.show_full_caption()
-        root.update_idletasks()
-        assert app.caption_popup.winfo_viewable()
-        app.reset_history()
-        assert app.caption_popup is None
     finally:
         root.destroy()

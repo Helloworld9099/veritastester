@@ -70,3 +70,20 @@ def test_timeout_range(monkeypatch):
     monkeypatch.setenv("TRANSLATION_TIMEOUT_SECONDS", "60")
     with pytest.raises(ValueError):
         providers.request_timeout()
+
+def test_request_echo_is_not_mistaken_for_translation():
+    import json
+    text = json.dumps({
+        "source_language": "es", "target_language": "en",
+        "current_transcript": "Hola", "optional_context": {}})
+    with pytest.raises(RuntimeError, match="repeated the request"):
+        providers.translation_text(text)
+    with pytest.raises(RuntimeError, match="repeated the request"):
+        providers.message_content({"choices": [{"message": {"content": text}}]})
+    assert providers.translation_text('{"Hello": "world"}') == '{"Hello": "world"}'
+    assert providers.translation_text("Hello") == "Hello"
+    assert providers.translation_text('{"translation": "Hello"}') == "Hello"
+    with pytest.raises(RuntimeError, match="repeated the request"):
+        providers.translation_text(
+            '{"source_language":"es","target_language":"en",'
+            '"current_transcript":"Hola"')

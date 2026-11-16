@@ -22,7 +22,7 @@ def app():
     instance.closed = True
     instance.compact = True
     for name in ("source_text", "translated_text", "status_var", "summary_var",
-                 "session_badge", "engine_note", "start_button", "source_box",
+                 "engine_note", "start_button", "source_box",
                  "source_picker", "target_picker", "topic_box", "engine_box"):
         setattr(instance, name, MagicMock())
     instance.engine_box.get.return_value = "ollama"
@@ -38,9 +38,9 @@ def test_summary_distinguishes_capture_state_and_text_destination(app, engine, l
     app.engine_box.get.return_value = engine
     app.live_session = object() if listening else None
     app._update_overlay_summary()
-    assert app.session_badge.config.call_args.kwargs["text"] == (
-        "LISTENING" if listening else "NOT LISTENING")
-    assert f"ES → EN  ·  {engine.upper()}" in app.summary_var.set.call_args.args[0]
+    summary = app.summary_var.set.call_args.args[0]
+    assert ("Listening" if listening else "Ready") in summary
+    assert f"Spanish → English  ·  {engine.capitalize()}" in summary
     note = app.engine_note.config.call_args.kwargs["text"]
     assert ("Local translation" if engine == "ollama" else "Cloud translation") in note
     app.pipeline.translate.assert_not_called()
@@ -87,5 +87,43 @@ def test_stopped_session_dismisses_private_caption_snapshot(app):
     popup.destroy.assert_called_once()
     assert app.caption_popup is None and app.last_caption is None
     assert app.live_session is None
-    app.start_button.config.assert_called_with(text="START", state="normal")
-    assert app.session_badge.config.call_args.kwargs["text"] == "NOT LISTENING"
+    app.start_button.config.assert_called_with(text="Start listening", state="normal")
+    assert "Ready" in app.summary_var.set.call_args.args[0]
+
+
+def test_repeated_dismiss_is_safe(app):
+    popup = MagicMock()
+    app.caption_popup = popup
+    app._dismiss_full_caption()
+    app._dismiss_full_caption()
+    popup.destroy.assert_called_once()
+    assert app.caption_popup is None
+
+
+def test_new_heard_event_dismisses_stale_snapshot(app):
+    popup = MagicMock()
+    app.caption_popup = popup
+    app.publish("live", 1, "heard", "new speech", "es")
+    app.poll()
+    popup.destroy.assert_called_once()
+    assert app.caption_popup is None
+    assert app.last_caption is None
+
+
+def test_old_generation_does_not_clear_current_snapshot(app):
+    popup = MagicMock()
+    app.caption_popup = popup
+    app.last_caption = ("current", "current", "en")
+    app.publish("live", 0, "heard", "stale speech", "es")
+    app.poll()
+    popup.destroy.assert_not_called()
+    assert app.last_caption == ("current", "current", "en")
+
+
+def test_close_dismisses_snapshot_without_translation(app):
+    popup = MagicMock()
+    app.caption_popup = popup
+    app.close()
+    popup.destroy.assert_called_once()
+    app.root.destroy.assert_called_once()
+    app.pipeline.translate.assert_not_called()

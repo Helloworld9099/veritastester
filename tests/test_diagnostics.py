@@ -44,3 +44,30 @@ def test_cli_dry_run_does_not_contact_provider(monkeypatch, capsys):
         AssertionError("dry run must not call remote service")))
     diagnostics.main()
     assert "DRY RUN" in capsys.readouterr().out
+
+def test_cli_success_is_human_readable(monkeypatch, capsys):
+    import sys
+    from bridgecaption import diagnostics
+    monkeypatch.setattr(sys, "argv", [
+        "bridgecaption-check", "--engine", "azure", "--execute"])
+    monkeypatch.setattr(diagnostics, "check_provider", lambda *_: {
+        "engine": "azure", "destination": "cloud",
+        "result": "Hello, good morning.", "elapsed_seconds": 0.25,
+        "synthetic_only": True})
+    diagnostics.main()
+    output = capsys.readouterr().out
+    assert "PASS" in output
+    assert "Hello, good morning." in output
+    assert not output.lstrip().startswith("{")
+
+def test_cli_json_remains_opt_in(monkeypatch, capsys):
+    import json
+    import sys
+    from bridgecaption import diagnostics
+    monkeypatch.setattr(sys, "argv", [
+        "bridgecaption-check", "--engine", "azure", "--execute", "--json"])
+    monkeypatch.setattr(diagnostics, "check_provider", lambda *_: {
+        "engine": "azure", "destination": "cloud",
+        "result": "Hello", "elapsed_seconds": 0.25, "synthetic_only": True})
+    diagnostics.main()
+    assert json.loads(capsys.readouterr().out)["result"] == "Hello"
