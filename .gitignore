@@ -16,3 +16,16 @@ data/recordings/
 *.mp4
 *.flac
 *.parquet
+
+# Local editor, test and coverage artifacts
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+*.py[cod]
+.coverage
+coverage.xml
+htmlcov/
+.mypy_cache/
+.ruff_cache/

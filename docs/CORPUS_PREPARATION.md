@@ -12,7 +12,7 @@ The attached RL hypothesis proposes two complementary views, a predictor of usef
 
 ## Install and initialize
 
-From a checkout containing `research/dataset-training-20261115` (see [the execution receipt](OFFLINE_RESEARCH_RESULTS.md)):
+From the repository root with the documented corpus preparation tools installed (see [the execution receipt](OFFLINE_RESEARCH_RESULTS.md)):
 
 ~~~bash
 python -m pip install -e '.[test,research]'
