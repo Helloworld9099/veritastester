@@ -84,3 +84,44 @@ def test_real_tk_expands_settings_without_hiding_start_stop(monkeypatch):
         assert "y" * 20 not in app.translated_text.cget("text")
     finally:
         root.destroy()
+
+
+def test_real_tk_ui_controls_fit_at_supported_window_sizes(monkeypatch):
+    if not os.environ.get("DISPLAY"):
+        pytest.skip("requires a graphical desktop or xvfb-run")
+    import tkinter as tk
+    import bridgecaption.app as application
+    try:
+        root = tk.Tk()
+    except tk.TclError:
+        pytest.skip("Tk display unavailable")
+    try:
+        monkeypatch.setattr(application, "sources", lambda: [
+            ("System audio (current output)", "mock.monitor")])
+        app = application.Application(root)
+        for compact, dimensions in ((True, (560, 300)), (False, (760, 700)),
+                                    (False, EXPANDED_SIZE), (True, COMPACT_SIZE)):
+            app.compact = compact
+            app._apply_overlay_mode()
+            root.geometry(f"{dimensions[0]}x{dimensions[1]}")
+            root.update_idletasks()
+            visible = [app.start_button, app.settings_button, app.pin_button,
+                       app.full_caption_button, app.status_label]
+            if not compact:
+                visible.extend([app.source_box, app.source_picker, app.target_picker,
+                                app.topic_box, app.engine_box, app.test_text])
+            for widget in visible:
+                assert widget.winfo_viewable()
+                x = widget.winfo_rootx() - root.winfo_rootx()
+                y = widget.winfo_rooty() - root.winfo_rooty()
+                assert x >= 0 and y >= 0
+                assert x + widget.winfo_width() <= root.winfo_width()
+                assert y + widget.winfo_height() <= root.winfo_height()
+        app._render_caption("Texto original " * 80, "Complete translation " * 100, "es")
+        app.show_full_caption()
+        root.update_idletasks()
+        assert app.caption_popup.winfo_viewable()
+        app.reset_history()
+        assert app.caption_popup is None
+    finally:
+        root.destroy()
