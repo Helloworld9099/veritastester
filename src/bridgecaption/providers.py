@@ -59,14 +59,33 @@ def request_timeout() -> float:
     return seconds
 
 
+def translation_text(text: str) -> str:
+    """Reject a model echoing our structured request instead of translating."""
+    if not isinstance(text, str) or not text.strip():
+        raise RuntimeError("The translation model returned empty content")
+    result = text.strip()
+    candidate = result
+    if candidate.startswith("```"):
+        candidate = candidate.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
+    try:
+        parsed = json.loads(candidate)
+    except (ValueError, TypeError):
+        return result
+    if isinstance(parsed, dict) and (
+            {"current_transcript", "source_language", "target_language"} <= parsed.keys()
+            or "optional_context" in parsed and "current_transcript" in parsed):
+        raise RuntimeError(
+            "The model repeated the request data instead of translating. "
+            "Try another model or engine.")
+    return result
+
+
 def message_content(body: dict) -> str:
     try:
         text = body["choices"][0]["message"]["content"]
     except (KeyError, IndexError, TypeError):
         raise RuntimeError("No translation was returned by the model") from None
-    if isinstance(text, str) and text.strip():
-        return text.strip()
-    raise RuntimeError("The translation model returned empty content")
+    return translation_text(text)
 
 
 class GroqTranslator:
@@ -103,7 +122,7 @@ class OllamaTranslator:
         try:
             content = body["message"]["content"]
             if content and content.strip():
-                return content.strip()
+                return translation_text(content)
         except (KeyError, TypeError, AttributeError):
             pass
         raise RuntimeError(f"Ollama returned no translation; is '{self.model}' installed?")
