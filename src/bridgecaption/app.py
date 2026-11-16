@@ -549,7 +549,8 @@ class Application:
                 model = create_translator(engine)
                 response = model.translate(TranslationRequest(
                     text="Hola", source="es", target="en", context_enabled=False))
-                self.publish("engine_check", engine, response[:80])
+                from .providers import translation_text
+                self.publish("engine_check", engine, translation_text(response))
             except Exception as exc:
                 self.publish("engine_check", engine, f"ERROR: {exc}")
         self.status_var.set(f"Checking {engine} with a public example...")
@@ -715,7 +716,12 @@ class Application:
                     if values[0] == self.text_generation:
                         self.status_var.set("ERROR · " + values[1])
                 elif kind == "engine_check":
-                    self.status_var.set(f"{values[0]} test: {values[1]}")
+                    engine, result = values
+                    if result.startswith("ERROR:"):
+                        self.status_var.set(f"ERROR · {engine.capitalize()} connection check failed: {result[6:]}")
+                    else:
+                        self.status_var.set(
+                            f"{engine.capitalize()} is working · Test translation: {result[:90]}")
                 elif kind == "error":
                     self.status_var.set("ERROR · " + values[0])
                 elif kind == "live":
