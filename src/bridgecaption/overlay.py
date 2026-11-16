@@ -4,8 +4,8 @@ Keep geometry and opacity decisions outside audio/model code. Tk applies alpha t
 the entire window (including text); it is not a click-through or secure overlay.
 """
 
-COMPACT_SIZE = (760, 282)
-EXPANDED_SIZE = (940, 560)
+COMPACT_SIZE = (760, 312)
+EXPANDED_SIZE = (980, 690)
 DEFAULT_OPACITY_PERCENT = 92
 MIN_OPACITY_PERCENT = 82
 MAX_OPACITY_PERCENT = 100
