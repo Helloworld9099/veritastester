@@ -108,7 +108,8 @@ class Application:
             parent, text=text, command=command, relief="flat", bd=0,
             bg=background, fg=foreground, activebackground=hover,
             activeforeground=BG if accent else TEXT,
-            disabledforeground=MUTED, font=("DejaVu Sans", 10, "bold"),
+            disabledforeground="#35544e" if accent else MUTED,
+            font=("DejaVu Sans", 10, "bold"),
             padx=13, pady=8, cursor="hand2", takefocus=True,
             highlightthickness=1, highlightbackground=BG,
             highlightcolor=ACCENT,
@@ -250,8 +251,8 @@ class Application:
             side="left", padx=(8, 0))
         self.button(options_row, "Refresh audio", self.refresh_sources).pack(
             side="left", padx=(8, 0))
-        opacity_group = tk.Frame(options_row, bg=BG)
-        opacity_group.pack(side="right")
+        opacity_group = tk.Frame(self.settings_frame, bg=BG)
+        opacity_group.pack(anchor="w", pady=(9, 0))
         self.label(opacity_group, "Opacity", 9, MUTED).pack(
             side="left", padx=(0, 9))
         ttk.Scale(
@@ -336,7 +337,7 @@ class Application:
         self.translated_text.config(
             font=("DejaVu Sans", 18 if self.compact else 21, "bold"))
         width, height = window_size(self.compact)
-        self.root.minsize(620 if self.compact else 770,
+        self.root.minsize(700 if self.compact else 780,
                           278 if self.compact else 575)
         self.root.geometry(f"{width}x{height}")
         self._resize_caption_wrap()
@@ -373,8 +374,8 @@ class Application:
         reveal more of the last caption without another provider/API call.
         """
         self.last_caption = (original, translated, lang)
-        original_limit = 110 if self.compact else 700
-        translated_limit = 160 if self.compact else 900
+        original_limit = 90 if self.compact else 700
+        translated_limit = 125 if self.compact else 900
 
         def clipped(text, limit):
             return text if len(text) <= limit else text[:limit - 1].rstrip() + "…"
