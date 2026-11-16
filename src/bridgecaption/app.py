@@ -227,12 +227,6 @@ class Application:
         topic_group = field(engine_row, "Topic", 2, last=True)
         self.topic_box = self.picker(topic_group, TOPICS, width=18)
         self.topic_box.pack(fill="x")
-        self.label(
-            self.engine_controls_frame,
-            "Cloud engines receive text only after you approve the destination.",
-            9, MUTED,
-        ).pack(anchor="w", pady=(7, 0))
-
         self.settings_frame = tk.Frame(self.root, bg=BG, padx=18, pady=7)
         self.settings_frame.pack(fill="x")
         self.label(self.settings_frame, "Preferences", 11, TEXT, True).pack(
@@ -251,8 +245,8 @@ class Application:
             side="left", padx=(8, 0))
         self.button(options_row, "Refresh audio", self.refresh_sources).pack(
             side="left", padx=(8, 0))
-        opacity_group = tk.Frame(self.settings_frame, bg=BG)
-        opacity_group.pack(anchor="w", pady=(9, 0))
+        opacity_group = tk.Frame(options_row, bg=BG)
+        opacity_group.pack(side="right")
         self.label(opacity_group, "Opacity", 9, MUTED).pack(
             side="left", padx=(0, 9))
         ttk.Scale(
@@ -267,8 +261,8 @@ class Application:
             font=("DejaVu Sans", 10),
         ).pack(side="left")
 
-        self.caption_panel = tk.Frame(self.root, bg=PANEL, padx=20, pady=14)
-        self.caption_panel.pack(fill="both", expand=True, padx=18, pady=(8, 6))
+        self.caption_panel = tk.Frame(self.root, bg=PANEL, padx=20, pady=12)
+        self.caption_panel.pack(fill="both", expand=True, padx=18, pady=(6, 4))
         self.label(self.caption_panel, "Original speech", 10, MUTED, True).pack(
             anchor="w")
         self.source_text = self.label(
@@ -311,7 +305,7 @@ class Application:
             anchor="w", justify="left", wraplength=700, padx=18, pady=7,
             font=("DejaVu Sans", 10),
         )
-        self.status_label.pack(fill="x")
+        self.status_label.pack(fill="x", side="bottom", before=self.caption_panel)
         self.status_var.trace_add("write", self._style_status)
 
     def _style_status(self, *_args):
@@ -329,7 +323,7 @@ class Application:
             for panel in (self.controls_frame, self.engine_controls_frame,
                           self.settings_frame):
                 panel.pack(fill="x", before=self.caption_panel)
-            self.bottom_frame.pack(fill="x", before=self.status_label)
+            self.bottom_frame.pack(fill="x", side="bottom", before=self.caption_panel)
         self.settings_button.config(
             text="Settings" if self.compact else "Hide settings")
         self.source_text.config(
