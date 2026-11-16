@@ -56,12 +56,31 @@ def inspect(root: Path):
 def main():
     parser = argparse.ArgumentParser(description="Check local code readiness without contacting providers")
     parser.add_argument("--root", type=Path, default=Path.cwd())
+    parser.add_argument("--json", action="store_true", help="Print machine-readable JSON instead of a summary")
     parser.add_argument("--out", type=Path, default=Path("results/foundation_preflight.json"))
     args = parser.parse_args()
     report = inspect(args.root.resolve())
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(report, indent=2), encoding="utf-8")
-    print(json.dumps(report, indent=2))
+    if args.json:
+        print(json.dumps(report, indent=2))
+    else:
+        print("BridgeCaption offline preflight")
+        print("-------------------------------")
+        for name in ("compile", "unit_tests"):
+            result = report["commands"].get(name, {})
+            print(f"{'PASS' if result.get('passed') else 'FAIL'} · {name.replace('_', ' ').title()}")
+            summary = result.get("summary", "").strip()
+            if name == "unit_tests" and summary:
+                print("  " + summary.splitlines()[-1])
+            elif not result.get("passed") and summary:
+                print("  " + summary[-350:].replace("\\n", "\\n  "))
+        for name in ("python_3_10_plus", "ffmpeg", "pactl", "import_tkinter",
+                     "import_numpy", "import_faster_whisper", "import_dotenv"):
+            print(f"{'OK' if report['environment'].get(name) else 'MISSING'} · {name.replace('_', ' ')}")
+        print(f"Offline checks: {'PASSED' if report['offline_code_checks_pass'] else 'FAILED'}")
+        print(f"Saved detailed report: {args.out}")
+        print("Live audio, providers and on-screen appearance still require manual testing.")
     if not report["offline_code_checks_pass"]:
         raise SystemExit(1)
 

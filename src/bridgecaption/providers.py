@@ -59,14 +59,44 @@ def request_timeout() -> float:
     return seconds
 
 
+def translation_text(text: str) -> str:
+    """Reject a model echoing our structured request instead of translating."""
+    if not isinstance(text, str) or not text.strip():
+        raise RuntimeError("The translation model returned empty content")
+    result = text.strip()
+    candidate = result
+    if candidate.startswith("```"):
+        candidate = candidate.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
+    # Some models emit only the beginning of our JSON request.
+    echo = (candidate.startswith("{") and
+            '"source_language"' in candidate and
+            '"current_transcript"' in candidate)
+    try:
+        parsed = json.loads(candidate)
+    except (ValueError, TypeError):
+        parsed = None
+    if isinstance(parsed, dict):
+        echo = echo or (
+            "current_transcript" in parsed and
+            ("source_language" in parsed or "optional_context" in parsed))
+    if echo:
+        raise RuntimeError(
+            "The model repeated the request data instead of translating. "
+            "Try another model or engine.")
+    if isinstance(parsed, dict) and len(parsed) == 1:
+        for field in ("translation", "translated_text", "translated"):
+            value = parsed.get(field)
+            if isinstance(value, str) and value.strip():
+                return value.strip()
+    return result
+
+
 def message_content(body: dict) -> str:
     try:
         text = body["choices"][0]["message"]["content"]
     except (KeyError, IndexError, TypeError):
         raise RuntimeError("No translation was returned by the model") from None
-    if isinstance(text, str) and text.strip():
-        return text.strip()
-    raise RuntimeError("The translation model returned empty content")
+    return translation_text(text)
 
 
 class GroqTranslator:
@@ -103,7 +133,7 @@ class OllamaTranslator:
         try:
             content = body["message"]["content"]
             if content and content.strip():
-                return content.strip()
+                return translation_text(content)
         except (KeyError, TypeError, AttributeError):
             pass
         raise RuntimeError(f"Ollama returned no translation; is '{self.model}' installed?")
