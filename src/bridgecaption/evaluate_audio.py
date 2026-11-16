@@ -162,6 +162,7 @@ def main():
     parser.add_argument("--context-mode", choices=("all", "selective"), default="selective")
     parser.add_argument("--target", default="en")
     parser.add_argument("--out", type=Path, default=Path("results/audio_replay_metrics.json"))
+    parser.add_argument("--json", action="store_true", help="Print detailed JSON instead of readable results")
     args = parser.parse_args()
     try:
         rows = read_manifest(args.manifest, args.limit)
@@ -186,7 +187,22 @@ def main():
               "limits": "No continuous-live capture tested; ASR evaluation uses isolated clips."}
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
-    print(json.dumps(report, indent=2, ensure_ascii=False))
+    if args.json:
+        print(json.dumps(report, indent=2, ensure_ascii=False))
+    else:
+        print(f"Audio replay completed: {report['clips']} clips")
+        for language, values in report["by_language"].items():
+            metric = values["asr_metric"]
+            rate = values["asr_error_rate"]
+            print(f"{language}: {values['clips']} clips")
+            print(f"  Speech recognition {metric}: "
+                  + (f"{rate * 100:.1f}% error" if rate is not None else "unavailable"))
+            print(f"  Median speech-recognition time: {values['asr_median_seconds']}s")
+            if "translation_median_seconds" in values:
+                print(f"  Median translation time: {values['translation_median_seconds']}s")
+            if "translation_chrF" in values:
+                print(f"  Translation chrF: {values['translation_chrF']}")
+        print("These isolated clips do not establish live caption performance.")
     print(f"Saved aggregate metrics (no transcript text) to {args.out}")
 
 
