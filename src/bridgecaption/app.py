@@ -147,19 +147,27 @@ class Application:
         self._configure_styles()
 
         # Caption controls stay visible when Settings is collapsed.
-        top = tk.Frame(self.root, bg=BG, padx=18, pady=10)
+        # Two rows keep primary actions from being squeezed by window buttons.
+        top = tk.Frame(self.root, bg=BG, padx=18, pady=7)
         top.pack(fill="x")
-        self.label(top, "BridgeCaption", 15, TEXT, True).pack(side="left")
-        self.button(top, "Close", self.close).pack(side="right", padx=(6, 0))
-        self.button(top, "Minimize", self.root.iconify).pack(side="right", padx=(6, 0))
-        self.pin_button = self.button(top, "Pinned", self.toggle_pin)
+        title_row = tk.Frame(top, bg=BG)
+        title_row.pack(fill="x")
+        title = self.label(title_row, "BridgeCaption", 15, TEXT, True)
+        title.pack(side="left")
+        self.button(title_row, "Close", self.close).pack(side="right", padx=(6, 0))
+        self.button(title_row, "Minimize", self.root.iconify).pack(side="right", padx=(6, 0))
+        self.pin_button = self.button(title_row, "Pinned", self.toggle_pin)
         self.pin_button.pack(side="right", padx=(6, 0))
-        self.settings_button = self.button(top, "Settings", self.toggle_settings)
-        self.settings_button.pack(side="right", padx=(6, 0))
-        self.start_button = self.button(top, "Start listening", self.toggle_capture, accent=True)
-        self.start_button.pack(side="right", padx=(6, 0))
-        top.bind("<ButtonPress-1>", self.drag_start)
-        top.bind("<B1-Motion>", self.drag_move)
+        action_row = tk.Frame(top, bg=BG)
+        action_row.pack(fill="x", pady=(5, 0))
+        self.start_button = self.button(
+            action_row, "Start listening", self.toggle_capture, accent=True)
+        self.start_button.pack(side="left", padx=(0, 8))
+        self.settings_button = self.button(action_row, "Settings", self.toggle_settings)
+        self.settings_button.pack(side="left")
+        for draggable in (top, title_row, title):
+            draggable.bind("<ButtonPress-1>", self.drag_start)
+            draggable.bind("<B1-Motion>", self.drag_move)
 
         self.summary_var = tk.StringVar(value="Ready  ·  Open Settings to choose languages")
         self.summary_label = tk.Label(
@@ -168,7 +176,32 @@ class Application:
         )
         self.summary_label.pack(fill="x")
 
-        self.controls_frame = tk.Frame(self.root, bg=BG, padx=18, pady=7)
+        # Scroll configuration independently so captions retain usable height.
+        self.settings_workspace = tk.Frame(self.root, bg=BG)
+        self.settings_canvas = tk.Canvas(
+            self.settings_workspace, bg=BG, bd=0,
+            highlightthickness=0, height=220)
+        self.settings_scrollbar = tk.Scrollbar(
+            self.settings_workspace, orient="vertical",
+            command=self.settings_canvas.yview, bg=CONTROL,
+            troughcolor=BG, activebackground=ACCENT)
+        self.settings_scrollbar.pack(side="right", fill="y")
+        self.settings_canvas.pack(side="left", fill="both", expand=True)
+        self.settings_canvas.configure(yscrollcommand=self.settings_scrollbar.set)
+        self.settings_content = tk.Frame(self.settings_canvas, bg=BG)
+        self.settings_window = self.settings_canvas.create_window(
+            (0, 0), window=self.settings_content, anchor="nw")
+        self.settings_content.bind(
+            "<Configure>", lambda _e: self.settings_canvas.configure(
+                scrollregion=self.settings_canvas.bbox("all")))
+        self.settings_canvas.bind(
+            "<Configure>", lambda e: self.settings_canvas.itemconfigure(
+                self.settings_window, width=e.width))
+        self.settings_canvas.bind("<MouseWheel>", self._scroll_settings)
+        self.settings_canvas.bind("<Button-4>", self._scroll_settings)
+        self.settings_canvas.bind("<Button-5>", self._scroll_settings)
+
+        self.controls_frame = tk.Frame(self.settings_content, bg=BG, padx=18, pady=7)
         self.controls_frame.pack(fill="x")
         self.label(self.controls_frame, "Audio & languages", 11, TEXT, True).pack(
             anchor="w", pady=(0, 8))
@@ -208,7 +241,7 @@ class Application:
         self.target_picker.bind("<<ComboboxSelected>>",
                                 lambda _event: self._on_source_change())
 
-        self.engine_controls_frame = tk.Frame(self.root, bg=BG, padx=18, pady=7)
+        self.engine_controls_frame = tk.Frame(self.settings_content, bg=BG, padx=18, pady=7)
         self.engine_controls_frame.pack(fill="x")
         self.label(self.engine_controls_frame, "Translation", 11, TEXT, True).pack(
             anchor="w", pady=(0, 8))
@@ -227,7 +260,7 @@ class Application:
         topic_group = field(engine_row, "Topic", 2, last=True)
         self.topic_box = self.picker(topic_group, TOPICS, width=18)
         self.topic_box.pack(fill="x")
-        self.settings_frame = tk.Frame(self.root, bg=BG, padx=18, pady=7)
+        self.settings_frame = tk.Frame(self.settings_content, bg=BG, padx=18, pady=7)
         self.settings_frame.pack(fill="x")
         self.label(self.settings_frame, "Preferences", 11, TEXT, True).pack(
             anchor="w", pady=(0, 8))
@@ -279,7 +312,7 @@ class Application:
         self.translated_text.configure(wraplength=650, justify="left")
         self.translated_text.pack(fill="both", expand=True, pady=(8, 0))
 
-        self.bottom_frame = tk.Frame(self.root, bg=BG, padx=18, pady=5)
+        self.bottom_frame = tk.Frame(self.settings_content, bg=BG, padx=18, pady=5)
         self.bottom_frame.pack(fill="x")
         self.label(self.bottom_frame, "Try a sentence", 10, MUTED, True).pack(
             anchor="w", pady=(0, 6))
@@ -307,6 +340,30 @@ class Application:
         )
         self.status_label.pack(fill="x", side="bottom", before=self.caption_panel)
         self.status_var.trace_add("write", self._style_status)
+        self._bind_settings_scroll(self.settings_content)
+
+    def _bind_settings_scroll(self, widget):
+        """Wheel-scroll configuration without capturing wheel events globally."""
+        for child in widget.winfo_children():
+            if not isinstance(child, ttk.Combobox):
+                for event in ("<MouseWheel>", "<Button-4>", "<Button-5>"):
+                    child.bind(event, self._scroll_settings, add="+")
+            self._bind_settings_scroll(child)
+
+    def _scroll_settings(self, event):
+        if self.compact:
+            return
+        number = getattr(event, "num", None)
+        if number == 4:
+            direction = -1
+        elif number == 5:
+            direction = 1
+        else:
+            delta = getattr(event, "delta", 0)
+            direction = -1 if delta > 0 else 1 if delta < 0 else 0
+        if direction:
+            self.settings_canvas.yview_scroll(3 * direction, "units")
+            return "break"
 
     def _style_status(self, *_args):
         """Make errors identifiable without relying on status text alone."""
@@ -319,11 +376,13 @@ class Application:
         for panel in (self.controls_frame, self.engine_controls_frame,
                       self.settings_frame, self.bottom_frame):
             panel.pack_forget()
+        self.settings_workspace.pack_forget()
         if not self.compact:
             for panel in (self.controls_frame, self.engine_controls_frame,
-                          self.settings_frame):
-                panel.pack(fill="x", before=self.caption_panel)
-            self.bottom_frame.pack(fill="x", side="bottom", before=self.caption_panel)
+                          self.settings_frame, self.bottom_frame):
+                panel.pack(fill="x")
+            self.settings_workspace.pack(fill="x", before=self.caption_panel)
+            self.settings_canvas.yview_moveto(0)
         self.settings_button.config(
             text="Settings" if self.compact else "Hide settings")
         self.source_text.config(
@@ -334,10 +393,12 @@ class Application:
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
         minimum_width = 700 if self.compact else 780
-        minimum_height = 278 if self.compact else 575
+        minimum_height = 350 if self.compact else min(575, max(430, screen_height - 96))
         # Keep the larger Settings view on-screen on shorter laptops.
         width = min(width, max(minimum_width, screen_width - 36))
         height = min(height, max(minimum_height, screen_height - 72))
+        if not self.compact:
+            self.settings_canvas.config(height=min(220, max(140, height // 3)))
         self.root.minsize(minimum_width, minimum_height)
         if self.root.winfo_ismapped():
             x, y = self.root.winfo_x(), self.root.winfo_y()
