@@ -337,9 +337,22 @@ class Application:
         self.translated_text.config(
             font=("DejaVu Sans", 18 if self.compact else 21, "bold"))
         width, height = window_size(self.compact)
-        self.root.minsize(700 if self.compact else 780,
-                          278 if self.compact else 575)
-        self.root.geometry(f"{width}x{height}")
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        minimum_width = 700 if self.compact else 780
+        minimum_height = 278 if self.compact else 575
+        # Keep the larger Settings view on-screen on shorter laptops.
+        width = min(width, max(minimum_width, screen_width - 36))
+        height = min(height, max(minimum_height, screen_height - 72))
+        self.root.minsize(minimum_width, minimum_height)
+        if self.root.winfo_ismapped():
+            x, y = self.root.winfo_x(), self.root.winfo_y()
+        else:
+            x = (screen_width - width) // 2
+            y = (screen_height - height) // 3
+        x = max(0, min(x, max(0, screen_width - width - 24)))
+        y = max(0, min(y, max(0, screen_height - height - 48)))
+        self.root.geometry(f"{width}x{height}+{x}+{y}")
         self._resize_caption_wrap()
         if self.last_caption is not None:
             self._render_caption(*self.last_caption)
