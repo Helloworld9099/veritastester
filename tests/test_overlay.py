@@ -62,12 +62,16 @@ def test_real_tk_expands_settings_without_hiding_start_stop(monkeypatch):
         assert app.bottom_frame.winfo_manager() == ""
         assert app.caption_panel.winfo_manager() == "pack"
         assert app.start_button.winfo_manager() == "pack"
+        assert app.start_button.winfo_width() >= app.start_button.winfo_reqwidth()
+        assert app.start_button.cget("text") == "Start listening"
         # Compact preview is bounded; full sentence remains available on expansion.
         app._render_caption("x" * 400, "y" * 650, "es")
         assert len(app.translated_text.cget("text")) < 260
         app.toggle_settings()
         root.update_idletasks()
         assert app.compact is False
+        assert app.settings_workspace.winfo_manager() == "pack"
+        assert app.settings_canvas.winfo_height() <= 230
         assert app.translated_text.cget("text") == "y" * 650
         assert app.source_box.winfo_manager() == "pack"
         assert app.source_picker.winfo_manager() == "pack"
@@ -81,6 +85,8 @@ def test_real_tk_expands_settings_without_hiding_start_stop(monkeypatch):
         app._render_caption("Hola", "Hello", "es")
         root.update_idletasks()
         assert app.translated_text.winfo_height() > 10
+        assert app.caption_panel.winfo_height() > 120
+        assert app.settings_canvas.yview()[1] < 1  # Settings scroll instead of hiding captions
         assert app.bottom_frame.winfo_ismapped()
         assert app.status_label.winfo_ismapped()
         assert (app.status_label.winfo_y() + app.status_label.winfo_height()
