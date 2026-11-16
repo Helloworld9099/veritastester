@@ -6,8 +6,8 @@
       "sha256": "5c66a2ce4a02fcb2369af543afa975ce30342d0b1b20554a1de3a434beb4071e"
     },
     "README.md": {
-      "bytes": 5443,
-      "sha256": "30ec64cc659002575ea812f2b50238ac05e167b8df6f2d001f02062f495c4505"
+      "bytes": 6182,
+      "sha256": "55c0dc4fa39ba60e927311a56ae814d35ea11cf2df34306eaa301a9583088bfc"
     },
     "requirements-replay.txt": {
       "bytes": 174,
@@ -84,6 +84,46 @@
     "independent_revalidation_20261116/REPORT.md": {
       "bytes": 8477,
       "sha256": "7bfb47d99cb26e3de29ff5de4482efed09b33c633516df4404844b4cb24c32db"
+    },
+    "neural_deadline_20261116/dev_history.json": {
+      "bytes": 956,
+      "sha256": "ad22fdcd62b536c1a59a8cb58b276416e1b6a8c17296d8f7b1ff8a7513bbbfac"
+    },
+    "neural_deadline_20261116/data_manifest.json": {
+      "bytes": 1300,
+      "sha256": "74f0e40f1b0c13d5cb4ea97053580f3da457ff9c1872eaa3fb19e197e4b20164"
+    },
+    "neural_deadline_20261116/verification.json": {
+      "bytes": 1034,
+      "sha256": "0cf023d877e3506ab549ee278ba8b3a839c4436bb275a44dfc1cc830a41d5aaf"
+    },
+    "neural_deadline_20261116/README.md": {
+      "bytes": 5674,
+      "sha256": "0958ccedb897e8d293ff4deaa4660b371ec98673701b88d1f6d914024bb16206"
+    },
+    "neural_deadline_20261116/training_log.json": {
+      "bytes": 13991,
+      "sha256": "de14a0532e3c612d5ad1361090fad392d6a1a28c87ad6efe2159f10899459327"
+    },
+    "neural_deadline_20261116/selected.json": {
+      "bytes": 403,
+      "sha256": "aebcb5116110ece1b9af2d099e1d10d439b0cda449e6d8e1507daec128b55b75"
+    },
+    "neural_deadline_20261116/protocol.json": {
+      "bytes": 1912,
+      "sha256": "7a789cc2930d1b89dd9b5fcc36ffab9a5ca1698bf89f50d15ead372da4b1f48b"
+    },
+    "neural_deadline_20261116/report.json": {
+      "bytes": 3889,
+      "sha256": "a36a817cbe47555069453f798cbb3a13bfb28fd297a7975f5dcfea7e89d8cbef"
+    },
+    "neural_deadline_20261116/base_manifest.json": {
+      "bytes": 1247,
+      "sha256": "a30ec98148642a6d5259092608c1c0b6d2faf2a4792c92c762b9e1f129071528"
+    },
+    "continuation_final_audit_20261116/REPORT.md": {
+      "bytes": 11293,
+      "sha256": "fac742b4a3f75eb339c54b92ffd88946579cbd5d2ac2b964e287ae1b0d115325"
     },
     "neural_continuation_20261116/length_audit.json": {
       "bytes": 1763,
@@ -476,6 +516,10 @@
     "auxiliary/results/real_idioms/source_manifest.json": {
       "bytes": 1814,
       "sha256": "9ec26e25e60e0b33a26c18e09a9847f0bfb325700a4225e79ca81ddb6b8aae59"
+    },
+    "continuation_final_audit_20261116/README.md": {
+      "bytes": 410,
+      "sha256": "b9335e10ac9498c645645f5048e5233b8099e18242561548dcd8a25289ccdd64"
     }
   }
 }

@@ -45,3 +45,9 @@ Original executed training/preparation/review scripts are preserved as evidence,
 - No raw third-party datasets, human-review queue text, real-data translation-output files, pretrained base weights, environment directories, credentials or discarded provider integration are included.
 
 Models retain their upstream Apache-2.0 notices/cards. Tatoeba's older CC BY 2.0 mirror lacks contributor IDs; redistribution review remains unresolved. DiaBLa is CC BY-SA 4.0 and evaluation-only. MAGPIE is CC BY 4.0. WMT24 dialogue source is research-only CC BY-NC 4.0; preparation does not imply commercial clearance. Europarl/WMT and SemEval provenance/limitations are recorded in their reports. Publishing scripts/adapters here does not relicense or grant blanket commercial rights to external data.
+
+## Deadline follow-up
+
+[Additional French experiment](neural_deadline_20261116/README.md) completed 128 lower-rate updates on new data. Neither candidate passed the pre-registered development guard; the previously delivered adapter is retained unchanged. This addendum records aggregate evidence, not a model upgrade.
+
+[Independent frozen-continuation audit](continuation_final_audit_20261116/REPORT.md): fresh French and Spanish cohorts of 128 each did not establish benefit over unchanged bases (chrF deltas −0.128 and +0.047; both 95% intervals include zero). Five French components overlap the concurrent experiment’s test set, not its train/dev; the audit reports this and a post-hoc sensitivity check. No candidate is promoted.

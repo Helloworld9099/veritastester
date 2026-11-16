@@ -1,0 +1,13 @@
+{
+  "step": 0,
+  "metrics": {
+    "n": 128,
+    "chrf": 76.16058963158403,
+    "bleu": 64.45693810869341,
+    "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+    "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+  },
+  "completed_updates": 128,
+  "selection_frozen_at_utc": "2026-11-16T02:30:00.717930+00:00",
+  "test_not_scored_yet": true
+}

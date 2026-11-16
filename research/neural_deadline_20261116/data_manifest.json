@@ -1,0 +1,28 @@
+{
+  "seed": 202611163,
+  "source": "data-thread Tatoeba French-English human parallel corpus",
+  "attribution": "Tatoeba contributors; ManyThings.org/anki; TensorFlow 2019-04-07 mirror; CC BY 2.0 notice retained in data handoff; individual IDs absent, no blanket redistribution clearance.",
+  "scope": "No synthetic data, no DiaBLa use. New examples retain original train/dev/test component partitions. Pretraining contamination, author and paraphrase independence remain unknown.",
+  "counts": {
+    "train": 2048,
+    "dev": 128,
+    "test": 256
+  },
+  "files": {
+    "train": {
+      "input_sha256": "b176856d8c7a606883fcfa40234de4c4149cd5b80e100bbceb89bca421935f7b",
+      "prepared_sha256": "259d9ee5e23780ef28ccacef9737df19a7792425bcdc39872696c1087849b57c",
+      "prior_components_excluded": 5036
+    },
+    "dev": {
+      "input_sha256": "ea1300ca75bbb37a2a427ad90acbd8785a4f6288f76d38ce9807899f0a464334",
+      "prepared_sha256": "a5c3f4b0debb100369cb36ed78c0755b4efba8c586c0af66da9805f42892c4e3",
+      "prior_components_excluded": 382
+    },
+    "test": {
+      "input_sha256": "3a9be9684b3d313d446d07b9c3bf0420cbc6b21a365d21276a128cb2b2646174",
+      "prepared_sha256": "7e5ebf682a1475cf0b7852f2538b3dbe6559b4363a4ab9c972e6da72cf377c99",
+      "prior_components_excluded": 752
+    }
+  }
+}
