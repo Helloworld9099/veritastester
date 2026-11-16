@@ -69,6 +69,16 @@ def test_real_tk_expands_settings_without_hiding_start_stop(monkeypatch):
         root.update_idletasks()
         assert app.compact is False
         assert app.translated_text.cget("text") == "y" * 650
+        assert app.source_box.winfo_manager() == "pack"
+        assert app.source_picker.winfo_manager() == "pack"
+        assert app.target_picker.winfo_manager() == "pack"
+        assert app.engine_box.winfo_manager() == "pack"
+        assert app.topic_box.winfo_manager() == "pack"
+        assert app.test_text.winfo_manager() == "pack"
+        assert app.source_text.cget("wraplength") > 500
+        assert app.settings_button.cget("text") == "Hide settings"
+        app.status_var.set("ERROR · provider unavailable")
+        assert app.status_label.cget("fg") == application.ALERT
         assert app.controls_frame.winfo_manager() == "pack"
         assert app.engine_controls_frame.winfo_manager() == "pack"
         assert app.bottom_frame.winfo_manager() == "pack"
