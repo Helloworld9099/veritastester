@@ -71,7 +71,10 @@ def translate(language: str, variant: str, text: str, cache_dir: Path, repo_root
     model_dir = cache_dir / (language + "-" + spec["revision"][:12])
     if model_dir.is_symlink():
         raise ValueError("Symlinked model directory not permitted")
-    download_base(model_dir, repo_root / "research" / spec["manifest_rel"], spec)
+    # Downloader progress belongs on stderr, leaving stdout as a single JSON record.
+    from contextlib import redirect_stdout
+    with redirect_stdout(sys.stderr):
+        download_base(model_dir, repo_root / "research" / spec["manifest_rel"], spec)
 
     os.environ.update(HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1",
                       TOKENIZERS_PARALLELISM="false")
