@@ -1,0 +1,61 @@
+name: OPUS Books research adaptation (free CPU)
+
+on:
+  push:
+    branches: [research/opus-books-adaptation-20261117]
+    paths:
+      - .github/workflows/books-research.yml
+      - experiments/opus_books_20261117/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: books-research-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  train-and-evaluate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [french, spanish]
+    env:
+      TOKENIZERS_PARALLELISM: 'false'
+      OMP_NUM_THREADS: '4'
+      MKL_NUM_THREADS: '4'
+      HF_HUB_DISABLE_TELEMETRY: '1'
+    name: Books ${{ matrix.language }} research continuation
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install CPU-only dependencies
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'huggingface-hub>=0.34,<1.0'
+      - name: Verify corpus parsing and non-overlapping book groups
+        run: |
+          python -m compileall -q experiments/opus_books_20261117
+          python -m unittest discover -s experiments/opus_books_20261117/tests -p 'test_*.py' -v
+      - name: Train and evaluate once on frozen book-heldout groups
+        run: |
+          python -u experiments/opus_books_20261117/train_books.py --language '${{ matrix.language }}' --output-dir "$RUNNER_TEMP/books-${{ matrix.language }}"
+      - name: Keep only aggregate research results and candidate LoRA weights
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: books-research-${{ matrix.language }}
+          path: |
+            ${{ runner.temp }}/books-${{ matrix.language }}/report.json
+            ${{ runner.temp }}/books-${{ matrix.language }}/books_evaluation.json
+            ${{ runner.temp }}/books-${{ matrix.language }}/candidate_step*.safetensors
+            ${{ runner.temp }}/books-${{ matrix.language }}/candidate_selected.safetensors
+          if-no-files-found: warn
+          retention-days: 14
