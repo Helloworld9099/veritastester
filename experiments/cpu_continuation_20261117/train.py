@@ -112,10 +112,16 @@ def download_base(model_dir: Path, manifest: Path, spec: dict):
         if Path(name).name != name:
             raise ValueError("Invalid pinned filename")
         print("DOWNLOAD BASE", name, flush=True)
-        path = Path(hf_hub_download(spec["model"], filename=name, revision=spec["revision"],
-                                    local_dir=str(model_dir)))
-        if path.stat().st_size != row["size_bytes"] or sha256(path) != row["sha256"]:
-            raise RuntimeError("Pinned model file checksum mismatch: " + name)
+        cache_path = Path(hf_hub_download(spec["model"], filename=name, revision=spec["revision"]))
+        if cache_path.stat().st_size != row["size_bytes"] or sha256(cache_path) != row["sha256"]:
+            raise RuntimeError("Downloaded model file checksum mismatch: " + name)
+        target = model_dir / name
+        if target.is_symlink():
+            raise RuntimeError("Symlinked local model file is not allowed: " + name)
+        if not target.is_file() or target.stat().st_size != row["size_bytes"] or sha256(target) != row["sha256"]:
+            shutil.copyfile(cache_path, target)
+        if target.stat().st_size != row["size_bytes"] or sha256(target) != row["sha256"]:
+            raise RuntimeError("Pinned local model file checksum mismatch: " + name)
     print("VERIFIED PINNED BASE", len(records), "files", flush=True)
 
 
