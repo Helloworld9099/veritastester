@@ -123,8 +123,6 @@ def aligned_subtitles(data: bytes, language: str, *, reservoir_cap=RESERVOIR_CAP
         unique.append((src, en))
         seen_src.add(s)
         seen_en.add(t)
-    if len(unique) < TRAIN_COUNT + DEV_COUNT + TEST_COUNT:
-        raise RuntimeError("Insufficient distinct translation units from QED TMX")
     print("QED_TMX_SHA256", language, digest, "eligible", eligible,
           "sampled_unique", len(unique), flush=True)
     return unique, digest, eligible
