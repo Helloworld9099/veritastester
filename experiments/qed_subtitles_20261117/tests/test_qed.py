@@ -1,5 +1,7 @@
 """No-network tests for verified bilingual QED TMX pairs and split integrity."""
 import gzip
+import hashlib
+from contextlib import contextmanager
 import io
 from pathlib import Path
 import sys
@@ -25,10 +27,27 @@ def archive(language, docs=16, each=20):
     return gzip.compress('\n'.join(pieces).encode('utf-8'))
 
 
+@contextmanager
+def checked_fixture(language, payload):
+    """Supply fixture's own verified digest without weakening production pins."""
+    original = QED[language]["sha256"]
+    try:
+        QED[language]["sha256"] = hashlib.sha256(payload).hexdigest()
+        yield
+    finally:
+        QED[language]["sha256"] = original
+
+
 class TestQED(unittest.TestCase):
+    def test_historical_archive_digests_are_pinned(self):
+        self.assertEqual(QED["french"]["sha256"], "35b4ca45f4d105976c47745a7a6b39d6f3c16403bdcebc8124a89cea262848df")
+        self.assertEqual(QED["spanish"]["sha256"], "6ecd8a6c1e12d767c3451b52d09860891213dbc382b00b8bfd5ba06962460ea0")
+
     def test_pair_alignment_and_splits_for_both_languages(self):
         for language in QED:
-            rows, sha, eligible = aligned_subtitles(archive(language), language, reservoir_cap=500)
+            payload = archive(language)
+            with checked_fixture(language, payload):
+                rows, sha, eligible = aligned_subtitles(payload, language, reservoir_cap=500)
             self.assertEqual(eligible, 320)
             self.assertEqual(len(sha), 64)
             self.assertEqual(len(rows), 320)
@@ -39,8 +58,10 @@ class TestQED(unittest.TestCase):
             self.assertTrue(all(t.startswith('International lecture') for _, t in test))
 
     def test_mismatched_moses_is_never_used(self):
-        with self.assertRaisesRegex(RuntimeError, "compressed QED TMX"):
-            aligned_subtitles(b"not a gzip archive", "french")
+        payload = b"not a gzip archive"
+        with checked_fixture("french", payload):
+            with self.assertRaisesRegex(RuntimeError, "compressed QED TMX"):
+                aligned_subtitles(payload, "french")
 
     def test_source_digest_mismatch_fails(self):
         previous = QED["french"]["sha256"]
@@ -53,7 +74,8 @@ class TestQED(unittest.TestCase):
 
     def test_deduplicate_source_and_english_exact_text(self):
         data = archive("spanish", docs=4, each=20)
-        rows, _, _ = aligned_subtitles(data, "spanish", reservoir_cap=100)
+        with checked_fixture("spanish", data):
+            rows, _, _ = aligned_subtitles(data, "spanish", reservoir_cap=100)
         self.assertEqual(len(rows), 80)
         row = rows[0]
         with self.assertRaisesRegex(RuntimeError, "duplicated across"):
@@ -63,7 +85,8 @@ class TestQED(unittest.TestCase):
     def test_tagged_tmx_with_missing_language_fails_conservatively(self):
         payload = gzip.compress(
             b'<?xml version="1.0"?><tmx><body><tu><tuv xml:lang="en"><seg>Only English here</seg></tuv></tu></body></tmx>')
-        rows, digest, eligible = aligned_subtitles(payload, "french")
+        with checked_fixture("french", payload):
+            rows, digest, eligible = aligned_subtitles(payload, "french")
         self.assertEqual((rows, eligible), ([], 0))
         self.assertEqual(len(digest), 64)
         with self.assertRaisesRegex(ValueError, "Too few distinct"):
