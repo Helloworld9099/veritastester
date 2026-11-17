@@ -48,6 +48,13 @@ jobs:
           python -m unittest discover -s experiments/cpu_continuation_20261117/tests -p 'test_*.py' -v
       - name: Run bounded training and development-only evaluation
         run: python experiments/cpu_continuation_20261117/train.py --language ${{ matrix.language }} --output-dir "$RUNNER_TEMP/bridgecaption-${{ matrix.language }}-cpu-training"
+      - name: Smoke test existing trained adapter through local inference CLI
+        run: |
+          if [ "${{ matrix.language }}" = "french" ]; then TEXT="Je veux reserver une table."; else TEXT="Quiero reservar una mesa."; fi
+          python experiments/cpu_continuation_20261117/local_translate.py --language "${{ matrix.language }}" --text "$TEXT" --cache-dir "$RUNNER_TEMP/replay-models" | tee "$RUNNER_TEMP/bridgecaption-replay.txt"
+          grep '"output"' "$RUNNER_TEMP/bridgecaption-replay.txt"
+          python experiments/cpu_continuation_20261117/local_translate.py --language "${{ matrix.language }}" --text "$TEXT" --baseline --cache-dir "$RUNNER_TEMP/replay-models" | tee "$RUNNER_TEMP/bridgecaption-base.txt"
+          grep '"output"' "$RUNNER_TEMP/bridgecaption-base.txt"
       - name: Preserve only aggregate results and candidate adapter weights
         if: always()
         uses: actions/upload-artifact@v4
