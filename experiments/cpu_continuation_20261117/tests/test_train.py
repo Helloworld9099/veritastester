@@ -6,6 +6,7 @@ import zipfile
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import train
+import local_translate
 
 
 def archive(rows, file_name='fra.txt'):
@@ -43,6 +44,19 @@ class TestCpuContinuation(unittest.TestCase):
     def test_reject_invalid_archive(self):
         with self.assertRaisesRegex(ValueError, 'fra.txt'):
             train.parse_pairs(archive([('a', 'b')], file_name='other.txt'), training_count=1, dev_count=1)
+
+    def test_local_inference_command(self):
+        for language in ('french', 'spanish'):
+            cmd = local_translate.build_command(Path('/repo'), language, Path('/tmp/base'), 'bonjour', baseline=True)
+            self.assertIn('--baseline', cmd)
+            self.assertIn('--text', cmd)
+            self.assertIn('bonjour', cmd)
+            self.assertIn(f'neural_continuation_20261116/{language}', ' '.join(cmd))
+            self.assertNotIn('GEMINI_API_KEY', ' '.join(cmd))
+        with self.assertRaises(ValueError):
+            local_translate.build_command(Path('/repo'), 'unknown', Path('/tmp/base'), 'bonjour')
+        with self.assertRaises(ValueError):
+            local_translate.build_command(Path('/repo'), 'french', Path('/tmp/base'), '  ')
 
     def test_pre_registered_gate(self):
         old = {'chrf': 70., 'bleu': 42.}
