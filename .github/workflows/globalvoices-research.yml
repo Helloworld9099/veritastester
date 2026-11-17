@@ -1,0 +1,61 @@
+name: GlobalVoices bilingual translation research (free CPU)
+
+on:
+  push:
+    branches: [research/globalvoices-finetune-20261117]
+    paths:
+      - .github/workflows/globalvoices-research.yml
+      - experiments/globalvoices_20261117/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: globalvoices-research-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  train-globalvoices:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [french, spanish]
+    name: GlobalVoices ${{ matrix.language }} research LoRA
+    env:
+      HF_HUB_DISABLE_TELEMETRY: '1'
+      TOKENIZERS_PARALLELISM: 'false'
+      OMP_NUM_THREADS: '4'
+      MKL_NUM_THREADS: '4'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install CPU-only training dependencies
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'huggingface-hub>=0.34,<1.0'
+      - name: Run dataset integrity and split tests
+        run: |
+          python -m compileall -q experiments/globalvoices_20261117
+          python -m unittest discover -s experiments/globalvoices_20261117/tests -p 'test_*.py' -v
+      - name: Train and run one-time frozen heldout evaluation
+        run: |
+          python -u experiments/globalvoices_20261117/train_globalvoices.py --language '${{ matrix.language }}' --output-dir "$RUNNER_TEMP/gv-${{ matrix.language }}"
+      - name: Preserve only aggregate results and candidate research adapters
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: globalvoices-research-${{ matrix.language }}
+          path: |
+            ${{ runner.temp }}/gv-${{ matrix.language }}/report.json
+            ${{ runner.temp }}/gv-${{ matrix.language }}/globalvoices_evaluation.json
+            ${{ runner.temp }}/gv-${{ matrix.language }}/candidate_step*.safetensors
+            ${{ runner.temp }}/gv-${{ matrix.language }}/candidate_selected.safetensors
+          if-no-files-found: warn
+          retention-days: 30
