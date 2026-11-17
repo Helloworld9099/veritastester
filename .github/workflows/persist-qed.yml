@@ -1,0 +1,77 @@
+name: Preserve successful QED research checkpoints
+
+on:
+  push:
+    branches: [research/qed-caption-domain-20261117]
+    paths:
+      - .github/workflows/persist-qed.yml
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  preserve:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Retrieve completed bilingual research run
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 44181971163
+          github-token: ${{ github.token }}
+          repository: Helloworld9099/veritastester
+          pattern: qed-research-*
+          merge-multiple: false
+          path: ${{ runner.temp }}/qed-artifacts
+      - name: Verify and retain only frozen research aggregates/selected adapters
+        shell: bash
+        run: |
+          set -euo pipefail
+          for lang in french spanish; do
+            incoming="$RUNNER_TEMP/qed-artifacts/qed-research-$lang"
+            test -d "$incoming"
+            report=$(find "$incoming" -type f -name report.json -print -quit)
+            evaluation=$(find "$incoming" -type f -name qed_evaluation.json -print -quit)
+            test -n "$report" && test -n "$evaluation"
+            target="experiments/qed_subtitles_20261117/saved/$lang"
+            mkdir -p "$target"
+            cp "$report" "$target/report.json"
+            cp "$evaluation" "$target/qed_evaluation.json"
+            python3 - "$target" "$incoming" "$lang" <<'PY'
+          import hashlib,json,pathlib,sys,shutil
+          folder=pathlib.Path(sys.argv[1]);incoming=pathlib.Path(sys.argv[2]);lang=sys.argv[3]
+          report=json.loads((folder/'report.json').read_text())
+          evaluation=json.loads((folder/'qed_evaluation.json').read_text())
+          assert report['language']==lang and evaluation['language']==lang
+          assert report['completed_updates']==320
+          assert evaluation['selection_frozen_before_test']
+          assert evaluation['selected_on_dev_only']==report['selected']
+          assert evaluation['corpus_sha256']==report['corpus_sha256']
+          assert len(evaluation['corpus_sha256'])==64
+          assert evaluation['test_rows']==256
+          selected=report['selected']
+          if selected!='previous':
+              files=list(incoming.rglob('candidate_selected.safetensors'))
+              assert len(files)==1, 'Missing selected LoRA adapter'
+              adapter=files[0]
+              digest=hashlib.sha256(adapter.read_bytes()).hexdigest()
+              assert digest==report['selected_candidate_sha256'], 'Selected SHA mismatch'
+              shutil.copy2(adapter,folder/'adapter_selected.safetensors')
+          checks={}
+          for path in folder.iterdir():
+              if path.is_file() and path.name!='SHA256SUMS.txt':
+                  checks[path.name]=hashlib.sha256(path.read_bytes()).hexdigest()
+          (folder/'SHA256SUMS.txt').write_text(''.join(f'{v}  {k}\n' for k,v in sorted(checks.items())))
+          print('SAVED_QED',lang,selected,'report_sha256',checks['report.json'])
+          PY
+          done
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add experiments/qed_subtitles_20261117/saved
+          git diff --cached --stat
+          git commit -m "research: preserve QED frozen metrics and candidate adapters [skip ci]"
+          git push origin "HEAD:refs/heads/research/qed-caption-domain-20261117"
