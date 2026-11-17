@@ -156,10 +156,13 @@ def train_experiment(repo_root: Path, output_dir: Path, language: str = "french"
     download_base(model_dir, manifest, spec)
 
     print("DOWNLOADING SOURCE-ONLY TRAINING DATA", flush=True)
+    max_data_bytes = int(spec.get("max_dataset_bytes", 30 * 1024 * 1024))
+    if not 0 < max_data_bytes <= 150 * 1024 * 1024:
+        raise ValueError("Invalid source-only corpus byte cap")
     with urlopen(Request(spec["data_url"], headers={"User-Agent": "BridgeCaption-research/1.0"}),
                  timeout=90) as stream:
-        data = stream.read(30 * 1024 * 1024 + 1)
-    if len(data) > 30 * 1024 * 1024:
+        data = stream.read(max_data_bytes + 1)
+    if len(data) > max_data_bytes:
         raise RuntimeError("Unexpectedly large corpus archive")
     corpus_digest = hashlib.sha256(data).hexdigest()
     train, dev, unique_count = parse_pairs(data, archive_name=spec["archive_name"])
