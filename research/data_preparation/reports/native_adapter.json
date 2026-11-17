@@ -1,0 +1,21 @@
+{
+  "outputs": [
+    {
+      "file": "private/magpie.normalized.train.jsonl",
+      "count": 4391,
+      "sha256": "dd733f39fad291fc12429ec17d560ac3ae8e6d58906a333cc613775300e6b673"
+    },
+    {
+      "file": "private/magpie.normalized.dev.jsonl",
+      "count": 1007,
+      "sha256": "be5a10adfc4dcaaec05c9d8ae7da84262a7f35548a73fabcbfa5e0a7e342b2f1"
+    },
+    {
+      "file": "private/magpie.normalized.test.jsonl",
+      "count": 4840,
+      "sha256": "d251508ea66780924636225362415eb0036864562235bd193cbc71433332200b"
+    }
+  ],
+  "truncation": false,
+  "automatic_training": false
+}

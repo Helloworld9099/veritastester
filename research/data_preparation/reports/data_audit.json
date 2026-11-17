@@ -1,0 +1,174 @@
+{
+  "created_utc": "2026-11-16",
+  "training_executed": false,
+  "published": false,
+  "diabla": {
+    "counts": {
+      "fr-en": 2883,
+      "en-fr": 2865
+    },
+    "dialogues": 144,
+    "rejected": {},
+    "protected_strings": 11033,
+    "files": [
+      {
+        "file": "private/diabla.fr-en.inputs.test.jsonl",
+        "count": 2883,
+        "sha256": "2ff0500cd443a736a04eef5ad5a1dd854f505f81c5d6a8a875856c9f28de81d7"
+      },
+      {
+        "file": "private/diabla.fr-en.references.test.jsonl",
+        "count": 2883,
+        "sha256": "27323023b00d7f6cea7287dc9d89a018a2f50e2affd0f47644c12d972399f7a1"
+      },
+      {
+        "file": "private/diabla.fr-en.smoke.inputs.test.jsonl",
+        "count": 40,
+        "sha256": "f3ae1ba6c27b2187df3d5c3cc245d28dfd48f6a6ad72a5c7f91317528a38df1d"
+      },
+      {
+        "file": "private/diabla.en-fr.inputs.test.jsonl",
+        "count": 2865,
+        "sha256": "15d536b3304594aa7907cda20289865ea354b3f263ca69765b28655a8dd0fe52"
+      },
+      {
+        "file": "private/diabla.en-fr.references.test.jsonl",
+        "count": 2865,
+        "sha256": "feff1311a064c28d700ab82fbae20671551d1930b3bd473819305bdc74ad04ad"
+      },
+      {
+        "file": "private/diabla.en-fr.smoke.inputs.test.jsonl",
+        "count": 40,
+        "sha256": "911966593b300a9d2ed6ed08ed5bdd5dab0923bae8234e003fade114d287eaa9"
+      },
+      {
+        "file": "private/diabla.groups.test.jsonl",
+        "count": 144,
+        "sha256": "23d1e18f03500b05cfedef0c9e6dd61f19686c078441d36145199b79e12aa893"
+      }
+    ]
+  },
+  "tatoeba": {
+    "raw_rows": 167130,
+    "accepted": {
+      "train": 133204,
+      "dev": 16584,
+      "test": 16202
+    },
+    "groups": {
+      "train": 87764,
+      "dev": 10952,
+      "test": 10785
+    },
+    "rejected": {
+      "duplicate_pair": 159,
+      "DiaBLa_overlap_connected_component": 981
+    },
+    "cross_split_component_conflicts": 0,
+    "exact_overlap_with_DiaBLa_after_filter": 0,
+    "known_limit": "Sentence-connected components are not independent authors or semantic template families.",
+    "local_research_allowed_by_publisher_notice": true,
+    "publication_rights_fully_resolved": false,
+    "files": [
+      {
+        "file": "private/tatoeba.fr-en.train.jsonl",
+        "count": 133204,
+        "sha256": "b176856d8c7a606883fcfa40234de4c4149cd5b80e100bbceb89bca421935f7b"
+      },
+      {
+        "file": "private/tatoeba.fr-en.dev.jsonl",
+        "count": 16584,
+        "sha256": "ea1300ca75bbb37a2a427ad90acbd8785a4f6288f76d38ce9807899f0a464334"
+      },
+      {
+        "file": "private/tatoeba.fr-en.test.jsonl",
+        "count": 16202,
+        "sha256": "3a9be9684b3d313d446d07b9c3bf0420cbc6b21a365d21276a128cb2b2646174"
+      },
+      {
+        "file": "private/tatoeba.fr-en.train.quick12000.jsonl",
+        "count": 12000,
+        "sha256": "c3e683d51a52c15fb478a5a4d598491da674ba780f0a528e78b9b97d4ed5d4b0"
+      }
+    ]
+  },
+  "magpie": {
+    "raw_rows": 48395,
+    "accepted": {
+      "test": 4840,
+      "dev": 1007,
+      "train": 4391
+    },
+    "label_counts": {
+      "test": {
+        "i": 3329,
+        "l": 1511
+      },
+      "dev": {
+        "i": 752,
+        "l": 255
+      },
+      "train": {
+        "i": 3261,
+        "l": 1130
+      }
+    },
+    "groups": {
+      "test": 169,
+      "dev": 97,
+      "train": 849
+    },
+    "rejected": {
+      "dev_document_overlap_with_higher_priority_split": 3635,
+      "dev_context_text_overlap_with_higher_priority_split": 198,
+      "train_document_overlap_with_higher_priority_split": 33205,
+      "train_context_text_overlap_with_higher_priority_split": 1119
+    },
+    "cross_split_document_or_idiom_conflicts": 0,
+    "label_convention_warning": "This bundle uses label=1 for idiomatic; SemEval uses source Label=0 for idiomatic. Never merge raw numeric labels.",
+    "files": [
+      {
+        "file": "private/magpie.test.jsonl",
+        "count": 4840,
+        "sha256": "8465fb381e32ec78f7fbb511f7a51468955661c1f07356fb85519d8336448f93"
+      },
+      {
+        "file": "private/magpie.dev.jsonl",
+        "count": 1007,
+        "sha256": "c8f40345437133953b05bc60611ffc14e71dd9a9b2a415dc0f9c364e1250832b"
+      },
+      {
+        "file": "private/magpie.train.jsonl",
+        "count": 4391,
+        "sha256": "b3b0d58e73b1be87de50ddef48f2417f31cef49ac2a2a4ec729b0d979890310d"
+      }
+    ]
+  },
+  "synthetic": {
+    "count": 90,
+    "counts": {
+      "train": 54,
+      "dev": 18,
+      "test": 18
+    },
+    "expression_family_disjoint": true,
+    "human_reviewed": false,
+    "files": [
+      {
+        "file": "private/synthetic.context.train.jsonl",
+        "count": 54,
+        "sha256": "d44efb0574af6bacc7730947f89f76c64ebeb017e50d2a8ef33c404de1e76e38"
+      },
+      {
+        "file": "private/synthetic.context.dev.jsonl",
+        "count": 18,
+        "sha256": "a41f6965d0f2c649db39975077f5110a4933f54aa0882a1188e4732520cbdaa3"
+      },
+      {
+        "file": "private/synthetic.context.test.jsonl",
+        "count": 18,
+        "sha256": "3f4d7bb9963815bd5f226c92cc2f7f5140adf1dcbb4312d54ff74be355ae76dc"
+      }
+    ]
+  }
+}

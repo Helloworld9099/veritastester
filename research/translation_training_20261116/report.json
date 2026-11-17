@@ -1,0 +1,166 @@
+{
+  "protocol": {
+    "task": "Genuine Spanish-English neural translation LoRA fine-tuning; not contextual translation/ASR",
+    "seed": 20261116,
+    "model": {
+      "model": "Helsinki-NLP/opus-mt-es-en",
+      "revision": "c96e2c5399ebfae4fc43d9669556b9afa74bb69d",
+      "files": [
+        ".gitattributes",
+        "README.md",
+        "config.json",
+        "generation_config.json",
+        "metadata.json",
+        "pytorch_model.bin",
+        "source.spm",
+        "target.spm",
+        "tf_model.h5",
+        "tokenizer_config.json",
+        "vocab.json"
+      ]
+    },
+    "torch": "2.7.1+cpu",
+    "device": "CPU, 4 threads",
+    "frozen_backbone": true,
+    "trainable_parameters": 294912,
+    "total_parameters": 78238208,
+    "lora": {
+      "rank": 8,
+      "alpha": 16,
+      "target_modules": [
+        "model.encoder.layers.0.self_attn.v_proj",
+        "model.encoder.layers.0.self_attn.q_proj",
+        "model.encoder.layers.1.self_attn.v_proj",
+        "model.encoder.layers.1.self_attn.q_proj",
+        "model.encoder.layers.2.self_attn.v_proj",
+        "model.encoder.layers.2.self_attn.q_proj",
+        "model.encoder.layers.3.self_attn.v_proj",
+        "model.encoder.layers.3.self_attn.q_proj",
+        "model.encoder.layers.4.self_attn.v_proj",
+        "model.encoder.layers.4.self_attn.q_proj",
+        "model.encoder.layers.5.self_attn.v_proj",
+        "model.encoder.layers.5.self_attn.q_proj",
+        "model.decoder.layers.0.self_attn.v_proj",
+        "model.decoder.layers.0.self_attn.q_proj",
+        "model.decoder.layers.0.encoder_attn.v_proj",
+        "model.decoder.layers.0.encoder_attn.q_proj",
+        "model.decoder.layers.1.self_attn.v_proj",
+        "model.decoder.layers.1.self_attn.q_proj",
+        "model.decoder.layers.1.encoder_attn.v_proj",
+        "model.decoder.layers.1.encoder_attn.q_proj",
+        "model.decoder.layers.2.self_attn.v_proj",
+        "model.decoder.layers.2.self_attn.q_proj",
+        "model.decoder.layers.2.encoder_attn.v_proj",
+        "model.decoder.layers.2.encoder_attn.q_proj",
+        "model.decoder.layers.3.self_attn.v_proj",
+        "model.decoder.layers.3.self_attn.q_proj",
+        "model.decoder.layers.3.encoder_attn.v_proj",
+        "model.decoder.layers.3.encoder_attn.q_proj",
+        "model.decoder.layers.4.self_attn.v_proj",
+        "model.decoder.layers.4.self_attn.q_proj",
+        "model.decoder.layers.4.encoder_attn.v_proj",
+        "model.decoder.layers.4.encoder_attn.q_proj",
+        "model.decoder.layers.5.self_attn.v_proj",
+        "model.decoder.layers.5.self_attn.q_proj",
+        "model.decoder.layers.5.encoder_attn.v_proj",
+        "model.decoder.layers.5.encoder_attn.q_proj"
+      ]
+    },
+    "train_rows": 1024,
+    "dev_rows": 128,
+    "test_rows": 256,
+    "batch_size": 4,
+    "gradient_accumulation": 2,
+    "optimizer": "AdamW lr=2e-4 weight_decay=.01",
+    "planned_optimizer_steps": 128,
+    "budget_seconds": 600,
+    "dev_selection": "baseline, step64 and step128; select greatest dev chrF; baseline remains eligible; NLL descriptive only",
+    "training_max_tokens": 96,
+    "decoding": "beam4, max_new_tokens96, batch8",
+    "warnings": [
+      "Block-disjoint, not verified document/speaker disjoint.",
+      "Base OPUS may have seen all Europarl or WMT in pretraining.",
+      "WMT sample below excludes prior 200 baseline rows; held out from our adapter only.",
+      "Only Spanish-English and parliamentary/news text; no multilingual or conversational slang claim."
+    ]
+  },
+  "model_load_seconds": 1.2497770769987255,
+  "steps_completed": 128,
+  "train_seconds": 142.46895448799842,
+  "selected_step": 128,
+  "initial_adapter_exact_backbone_logits": true,
+  "dev_history": [
+    {
+      "step": 0,
+      "dev_nll": 1.1021181605995596,
+      "metrics": {
+        "n": 128,
+        "chrf": 67.45279766508922,
+        "bleu": 44.874890712963996,
+        "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+        "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+      }
+    },
+    {
+      "step": 64,
+      "dev_nll": 1.0723330622098857,
+      "metrics": {
+        "n": 128,
+        "chrf": 67.4695396548239,
+        "bleu": 45.18526513189838,
+        "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+        "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+      }
+    },
+    {
+      "step": 128,
+      "dev_nll": 1.056703478246821,
+      "metrics": {
+        "n": 128,
+        "chrf": 67.51419331046795,
+        "bleu": 45.43977712805946,
+        "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+        "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+      }
+    }
+  ],
+  "peak_rss_mib": 1261.6484375,
+  "europarl_test": {
+    "baseline": {
+      "n": 256,
+      "chrf": 66.32795044685716,
+      "bleu": 43.959220367789165,
+      "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+      "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+    },
+    "selected": {
+      "n": 256,
+      "chrf": 66.20412371606098,
+      "bleu": 44.09575040731975,
+      "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+      "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+    },
+    "baseline_seconds_per_sentence": 0.2708666092226366,
+    "selected_seconds_per_sentence": 0.29869159779295273
+  },
+  "wmt_guard": {
+    "baseline": {
+      "n": 128,
+      "chrf": 59.744659102730125,
+      "bleu": 36.47981124840643,
+      "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+      "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+    },
+    "selected": {
+      "n": 128,
+      "chrf": 59.402919040784795,
+      "bleu": 35.73564926311978,
+      "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+      "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+    },
+    "baseline_seconds_per_sentence": 0.36051182599999265,
+    "selected_seconds_per_sentence": 0.38394375412499926
+  },
+  "selected_adapter_replay_exact": true,
+  "total_seconds": 415.88305572899844
+}

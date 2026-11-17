@@ -1,0 +1,28 @@
+{
+  "checks": {
+    "script_hash_matches_frozen_protocol": true,
+    "input_hashes_match": true,
+    "cross_partition_source_reference_group_disjoint": true,
+    "warm_checkpoint_unchanged": true,
+    "base_revision_matches": true,
+    "pinned_base_files_match": true,
+    "previously_used_components_excluded": true,
+    "no_prior_exact_source_or_reference_overlap": true,
+    "registered_conservative_selection_followed": true,
+    "exact_saved_checkpoint_reload": true,
+    "selected_weights_finite": true,
+    "update_log_matches_completed_count": true,
+    "test_alignment": true,
+    "warm_metrics_reproduce": true,
+    "selected_metrics_reproduce": true,
+    "selection_written_before_test_outputs": true
+  },
+  "groups": 252,
+  "corpus_chrf_delta": 0.0,
+  "corpus_bleu_delta": 0.0,
+  "paired_group_bootstrap_95pct_corpus_chrf_delta": [
+    0.0,
+    0.0
+  ],
+  "warning": "Research checks, not application or semantic readiness. Conditional bootstrap on component groups, no authorship or pretraining independence guarantee."
+}

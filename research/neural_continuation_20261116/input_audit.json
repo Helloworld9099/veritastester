@@ -1,0 +1,96 @@
+{
+  "french": {
+    "counts": {
+      "train": 4096,
+      "dev": 256,
+      "test": 512,
+      "guard": 160
+    },
+    "cross_current_partition_overlap": {
+      "train:dev:source": 0,
+      "train:dev:reference": 0,
+      "train:dev:group": 0,
+      "train:test:source": 0,
+      "train:test:reference": 0,
+      "train:test:group": 0,
+      "dev:test:source": 0,
+      "dev:test:reference": 0,
+      "dev:test:group": 0
+    },
+    "overlap_with_original_fitting_and_validation": {
+      "train:source": 0,
+      "train:reference": 0,
+      "dev:source": 0,
+      "dev:reference": 0,
+      "test:source": 0,
+      "test:reference": 0,
+      "guard:source": 0,
+      "guard:reference": 0
+    },
+    "overlap_with_previous_external_guard": {
+      "source": 0,
+      "reference": 1
+    },
+    "prepared_file_hashes_match_registration": {
+      "train.jsonl": true,
+      "test.jsonl": true,
+      "dev.jsonl": true,
+      "guard.jsonl": true
+    },
+    "previous_checkpoint_unchanged": true,
+    "old_checkpoint_hashes": {
+      "adapter_step128.safetensors": "7445651cc93617b3c8e4cd00c614371ee7af92ccf541659a9b445f8d9edf372f",
+      "adapter_initial.safetensors": "b085942aad9b11dfee3d3ed99d121472d366cee20a814dbb827868e7d7633651",
+      "adapter_last.safetensors": "7445651cc93617b3c8e4cd00c614371ee7af92ccf541659a9b445f8d9edf372f",
+      "adapter_selected.safetensors": "7445651cc93617b3c8e4cd00c614371ee7af92ccf541659a9b445f8d9edf372f",
+      "adapter_step64.safetensors": "bf495ec83d655493527fafc07551e4f27b1635d1d8c6edfb0d4a597568065bc1"
+    }
+  },
+  "spanish": {
+    "counts": {
+      "train": 2048,
+      "dev": 128,
+      "test": 256,
+      "guard": 256
+    },
+    "cross_current_partition_overlap": {
+      "train:dev:source": 0,
+      "train:dev:reference": 0,
+      "train:dev:group": 0,
+      "train:test:source": 0,
+      "train:test:reference": 0,
+      "train:test:group": 0,
+      "dev:test:source": 0,
+      "dev:test:reference": 0,
+      "dev:test:group": 0
+    },
+    "overlap_with_original_fitting_and_validation": {
+      "train:source": 0,
+      "train:reference": 0,
+      "dev:source": 0,
+      "dev:reference": 0,
+      "test:source": 0,
+      "test:reference": 0,
+      "guard:source": 0,
+      "guard:reference": 0
+    },
+    "overlap_with_previous_external_guard": {
+      "source": 0,
+      "reference": 0
+    },
+    "prepared_file_hashes_match_registration": {
+      "train.jsonl": true,
+      "test.jsonl": true,
+      "dev.jsonl": true,
+      "guard.jsonl": true
+    },
+    "previous_checkpoint_unchanged": true,
+    "old_checkpoint_hashes": {
+      "adapter_step128.safetensors": "31c33afbfc7f3e5e1e58b361c099237578f214ffd6cce5dd9781c9fe0ff3dd0a",
+      "adapter_initial.safetensors": "b085942aad9b11dfee3d3ed99d121472d366cee20a814dbb827868e7d7633651",
+      "adapter_last.safetensors": "31c33afbfc7f3e5e1e58b361c099237578f214ffd6cce5dd9781c9fe0ff3dd0a",
+      "adapter_selected.safetensors": "31c33afbfc7f3e5e1e58b361c099237578f214ffd6cce5dd9781c9fe0ff3dd0a",
+      "adapter_step64.safetensors": "a221287bc372300d870f0be7e442723d6b08a61e550379429422109cf2253815"
+    }
+  }
+}

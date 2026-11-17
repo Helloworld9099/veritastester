@@ -1,0 +1,42 @@
+{
+  "model": "Helsinki-NLP/opus-mt-fr-en",
+  "revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+  "files": [
+    {
+      "file": "config.json",
+      "size_bytes": 1416,
+      "sha256": "b3be13d046d9899d7aab8cf4ed624d9a79f5776038ba793f6b4d2ce3e02192f7"
+    },
+    {
+      "file": "source.spm",
+      "size_bytes": 802397,
+      "sha256": "78d0e717c77053f1c4b856d8661d9cb87c64f083a35418c087b9146300e4f585"
+    },
+    {
+      "file": "target.spm",
+      "size_bytes": 778395,
+      "sha256": "173e9f493a668fe396d599e28d414a201193094e6ffd7a4678e5aab0f6d3d838"
+    },
+    {
+      "file": "vocab.json",
+      "size_bytes": 1339166,
+      "sha256": "945c604346ce15ce4aff9001001e7f925e336d942c4087017f191871162cbdc4"
+    },
+    {
+      "file": "tokenizer_config.json",
+      "size_bytes": 42,
+      "sha256": "47de9ce87378593016432f8dc657202c03913ab3ce0c15d7f78d51edfc3ff9a3"
+    },
+    {
+      "file": "README.md",
+      "size_bytes": 1250,
+      "sha256": "a923263e9691f40ce7c9afe5d59f6296051439ae7776a158d18d57258be48195"
+    },
+    {
+      "file": "model.safetensors",
+      "size_bytes": 300803608,
+      "sha256": "6e3837f34b903802c3d0d670362b997cee6e87584a1108eb3fa89e4625e4424a"
+    }
+  ],
+  "license": "Apache-2.0 per upstream model card"
+}

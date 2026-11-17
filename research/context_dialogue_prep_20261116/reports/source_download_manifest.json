@@ -1,0 +1,28 @@
+{
+  "repository": "https://github.com/WMT-Chat-task/chat-task-2024-data",
+  "revision": "12a34149267dd9ae98e60e0ec2e415707fad5618",
+  "license": "CC-BY-NC-4.0; publisher restricts use to research",
+  "commercial_use_allowed": false,
+  "official_valid_test_acquired": false,
+  "max_file_bytes": 8388608,
+  "files": [
+    {
+      "file": "wmt24_README.md",
+      "url": "https://raw.githubusercontent.com/WMT-Chat-task/chat-task-2024-data/12a34149267dd9ae98e60e0ec2e415707fad5618/README.md",
+      "bytes": 4513,
+      "sha256": "cd508bb1f76d4f1a3e9b2a93dc5943c1c397f7e9e82e84491ed39afac38bdc56"
+    },
+    {
+      "file": "wmt24_LICENSE.md",
+      "url": "https://raw.githubusercontent.com/WMT-Chat-task/chat-task-2024-data/12a34149267dd9ae98e60e0ec2e415707fad5618/LICENSE.md",
+      "bytes": 19917,
+      "sha256": "98679f478515c0f5c50e720006d12b4c3800d488e8dccca4e59a657efbb86c6e"
+    },
+    {
+      "file": "wmt24_train_en-fr.csv",
+      "url": "https://raw.githubusercontent.com/WMT-Chat-task/chat-task-2024-data/12a34149267dd9ae98e60e0ec2e415707fad5618/train/en-fr.csv",
+      "bytes": 2331532,
+      "sha256": "eff96c25a2b5b5fc436ab85d573d4b2186fb8354a31763445c02e1cc80cc76ad"
+    }
+  ]
+}

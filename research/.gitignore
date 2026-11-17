@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+# The delivered experiment evidence is fixed; do not casually add raw data.
+**/raw/
+**/private/
+**/deps/

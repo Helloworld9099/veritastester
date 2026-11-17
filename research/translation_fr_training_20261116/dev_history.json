@@ -1,0 +1,35 @@
+[
+  {
+    "step": 0,
+    "dev_nll": 0.560548239709559,
+    "metrics": {
+      "n": 128,
+      "chrf": 76.87139315729796,
+      "bleu": 65.5657359777694,
+      "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+      "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+    }
+  },
+  {
+    "step": 64,
+    "dev_nll": 0.47626788671099324,
+    "metrics": {
+      "n": 128,
+      "chrf": 76.45837673673486,
+      "bleu": 65.659387162464,
+      "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+      "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+    }
+  },
+  {
+    "step": 128,
+    "dev_nll": 0.4455843980873629,
+    "metrics": {
+      "n": 128,
+      "chrf": 77.48710327937401,
+      "bleu": 66.6266421258484,
+      "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+      "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+    }
+  }
+]

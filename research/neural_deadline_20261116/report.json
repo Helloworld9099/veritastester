@@ -1,0 +1,98 @@
+{
+  "protocol": {
+    "registered_at_utc": "2026-11-16T02:28:15.136096+00:00",
+    "language": "fr-en",
+    "seed": 202611163,
+    "model_revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+    "base_model_path": "/workspace/scratch/2b30092347a7/translation_fr_training_20261116/model",
+    "warm_adapter_path": "/workspace/scratch/2b30092347a7/translation_continued_20261116/french/adapter_selected.safetensors",
+    "warm_adapter_sha256": "600990e205c1238ea1fba3a8c36e5ef199bdfc10b33e4e0068e5b9695b7e8665",
+    "script_sha256": "492b7aca5de6c293ac7ca0d5a4b3ed16c47ee04f41d662a2ec1e7ffa0b7566c0",
+    "python": "3.12.14",
+    "torch": "2.7.1+cpu",
+    "data_hashes": {
+      "train": "259d9ee5e23780ef28ccacef9737df19a7792425bcdc39872696c1087849b57c",
+      "dev": "a5c3f4b0debb100369cb36ed78c0755b4efba8c586c0af66da9805f42892c4e3",
+      "test": "7e5ebf682a1475cf0b7852f2538b3dbe6559b4363a4ab9c972e6da72cf377c99"
+    },
+    "counts": {
+      "train": 2048,
+      "dev": 128,
+      "test": 256
+    },
+    "hypothesis": "Earlier dev curve declined after a mid-run peak. Test a four-times-lower rate than previous continuation on fresh train/dev; do not use any prior test outcomes.",
+    "recipe": {
+      "lr": 2.5e-05,
+      "updates": 128,
+      "microbatch": 4,
+      "accumulation": 4,
+      "weight_decay": 0.01,
+      "lora_rank": 8,
+      "lora_alpha": 16,
+      "max_train_tokens": 96,
+      "threads": 4,
+      "train_budget_seconds": 240.0,
+      "stop_at_utc": "2026-11-16T02:40:00+00:00"
+    },
+    "selection": "Evaluate warm baseline and checkpoints64/128 on new dev only. A new checkpoint qualifies only with dev corpus chrF >= warm+.25 AND BLEU >= warm. Choose highest qualifying chrF, tie earlier. Otherwise retain warm. .25 is an operational guard, NOT a significance test. Freeze before one test comparison.",
+    "scope": "Context-free text only. No app imports, integration, activation, paid services, push or deployment. No consumed tests or parent synthetic probes used."
+  },
+  "updates_completed": 128,
+  "training_compute_seconds": 73.29615113789623,
+  "selected_step": 0,
+  "dev_history": [
+    {
+      "step": 0,
+      "metrics": {
+        "n": 128,
+        "chrf": 76.16058963158403,
+        "bleu": 64.45693810869341,
+        "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+        "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+      }
+    },
+    {
+      "step": 64,
+      "metrics": {
+        "n": 128,
+        "chrf": 75.70170608101321,
+        "bleu": 63.942462474140555,
+        "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+        "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+      },
+      "qualifies": false
+    },
+    {
+      "step": 128,
+      "metrics": {
+        "n": 128,
+        "chrf": 75.53375427122972,
+        "bleu": 63.7964146314687,
+        "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+        "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+      },
+      "qualifies": false
+    }
+  ],
+  "test": {
+    "warm": {
+      "n": 256,
+      "chrf": 75.37434298689219,
+      "bleu": 62.28894072445828,
+      "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+      "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+    },
+    "selected": {
+      "n": 256,
+      "chrf": 75.37434298689219,
+      "bleu": 62.28894072445828,
+      "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+      "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+    }
+  },
+  "stopped_by_deadline": false,
+  "peak_rss_mib": 952.98046875,
+  "elapsed_seconds": 134.37285972999962,
+  "selected_reload_exact": true,
+  "warm_checkpoint_unchanged": true
+}

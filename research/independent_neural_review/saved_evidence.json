@@ -1,0 +1,106 @@
+{
+  "es": {
+    "split_counts": {
+      "train": 1024,
+      "dev": 128,
+      "test": 256
+    },
+    "overlaps": {
+      "train/dev/source": 0,
+      "train/dev/reference": 0,
+      "train/dev/block": 0,
+      "train/test/source": 0,
+      "train/test/reference": 0,
+      "train/test/block": 0,
+      "dev/test/source": 0,
+      "dev/test/reference": 0,
+      "dev/test/block": 0
+    },
+    "evaluation": {
+      "europarl_test": {
+        "n": 256,
+        "baseline": {
+          "chrf": 66.32795044685716,
+          "bleu": 43.959220367789165
+        },
+        "selected": {
+          "chrf": 66.20412371606098,
+          "bleu": 44.09575040731975
+        }
+      },
+      "wmt_guard": {
+        "n": 128,
+        "baseline": {
+          "chrf": 59.744659102730125,
+          "bleu": 36.47981124840643
+        },
+        "selected": {
+          "chrf": 59.402919040784795,
+          "bleu": 35.73564926311978
+        }
+      }
+    },
+    "selection_consistent_with_dev": true,
+    "selected_hash_matches_step128": true,
+    "base_hashes_match_manifest": true,
+    "minimum_selected_cross_split_line_distance": 47,
+    "wmt_previous_indices_overlap": 0,
+    "wmt_exact_source_overlap_pilot": 0
+  },
+  "fr": {
+    "split_counts": {
+      "train": 1024,
+      "dev": 128,
+      "test": 256
+    },
+    "overlaps": {
+      "train/dev/source": 0,
+      "train/dev/reference": 0,
+      "train/dev/block": 0,
+      "train/test/source": 0,
+      "train/test/reference": 0,
+      "train/test/block": 0,
+      "dev/test/source": 0,
+      "dev/test/reference": 0,
+      "dev/test/block": 0
+    },
+    "evaluation": {
+      "tatoeba_test": {
+        "n": 256,
+        "baseline": {
+          "chrf": 74.24475060707964,
+          "bleu": 61.87471457522444
+        },
+        "selected": {
+          "chrf": 76.37967559514804,
+          "bleu": 66.4553491261249
+        }
+      },
+      "diabla_guard": {
+        "n": 128,
+        "baseline": {
+          "chrf": 54.928233102134186,
+          "bleu": 31.17413783587757
+        },
+        "selected": {
+          "chrf": 55.428430330464366,
+          "bleu": 30.773612428428557
+        }
+      }
+    },
+    "selection_consistent_with_dev": true,
+    "selected_hash_matches_step128": true,
+    "base_hashes_match_manifest": true,
+    "diabla_smoke_dialogue_overlap": 0,
+    "diabla_guard_dialogues": 64,
+    "pilot_exact_text_overlap_full_DiaBLa": 0
+  },
+  "archive": {
+    "sha256": "b4a52197012e7861c44251495180b9151cee5108a1ff00d30788c92cb279777f",
+    "bytes": 2255668,
+    "manifest_entries": 33,
+    "all_manifest_hashes_match": true,
+    "no_raw_jsonl": true,
+    "safe_paths": true
+  }
+}

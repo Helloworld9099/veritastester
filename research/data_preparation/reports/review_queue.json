@@ -1,0 +1,11 @@
+{
+  "count": 128,
+  "source_split": "train_only",
+  "human_labels": 0,
+  "reference_translations": 0,
+  "synthetic": false,
+  "training_ready": false,
+  "requires": "independent human scene, target/reference and memory-utility review; English only",
+  "sha256": "fcd14a46d2600ee2bf97a0d572dbf6cfe1620a801b82b6e523c530ab9407587a",
+  "checks_passed": true
+}

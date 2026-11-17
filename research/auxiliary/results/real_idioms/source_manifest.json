@@ -1,0 +1,32 @@
+{
+  "repository": "H-TayyarMadabushi/SemEval_2022_Task2-idiomaticity",
+  "revision": "872625c8f9c5d656b7866ff063a2ab0238ac4c80",
+  "files": [
+    {
+      "path": "LICENSE",
+      "git_blob_sha": "f288702d2fa16d3cdf0035b15a9fcbc552cd88e7",
+      "source_url": "https://github.com/H-TayyarMadabushi/SemEval_2022_Task2-idiomaticity/blob/872625c8f9c5d656b7866ff063a2ab0238ac4c80/LICENSE"
+    },
+    {
+      "path": "SubTaskA/Data/dev.csv",
+      "git_blob_sha": "0e7d1ef24b88f898cf11450b6592b9d030bf861c",
+      "source_url": "https://github.com/H-TayyarMadabushi/SemEval_2022_Task2-idiomaticity/blob/872625c8f9c5d656b7866ff063a2ab0238ac4c80/SubTaskA/Data/dev.csv"
+    },
+    {
+      "path": "SubTaskA/Data/dev_gold.csv",
+      "git_blob_sha": "f7c42edbb040e724bc8bc9454a36451174648569",
+      "source_url": "https://github.com/H-TayyarMadabushi/SemEval_2022_Task2-idiomaticity/blob/872625c8f9c5d656b7866ff063a2ab0238ac4c80/SubTaskA/Data/dev_gold.csv"
+    },
+    {
+      "path": "SubTaskA/Data/train_one_shot.csv",
+      "git_blob_sha": "7d01c21b32a81adfd466fe3bf58f6b3ac70905fa",
+      "source_url": "https://github.com/H-TayyarMadabushi/SemEval_2022_Task2-idiomaticity/blob/872625c8f9c5d656b7866ff063a2ab0238ac4c80/SubTaskA/Data/train_one_shot.csv"
+    },
+    {
+      "path": "SubTaskA/Data/train_zero_shot.csv",
+      "git_blob_sha": "01a5d758db5f7519b61391f3b6492bd70abd2329",
+      "source_url": "https://github.com/H-TayyarMadabushi/SemEval_2022_Task2-idiomaticity/blob/872625c8f9c5d656b7866ff063a2ab0238ac4c80/SubTaskA/Data/train_zero_shot.csv"
+    }
+  ],
+  "note": "Fetched via GitHub connector; local line endings may differ; local SHA256 recorded separately. Repository LICENSE is GPL-3.0. Raw corpus not included in delivery bundle. Licensing review required before redistribution or product deployment."
+}

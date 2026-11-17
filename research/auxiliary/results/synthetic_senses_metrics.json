@@ -1,0 +1,254 @@
+{
+  "warning": "AI-authored synthetic train/dev/test, NOT independent human labels or real-world accuracy. Same eight expressions across splits. Not translation training.",
+  "counts": {
+    "train": 48,
+    "dev": 16,
+    "test": 16
+  },
+  "arms": {
+    "current": {
+      "dev_accuracy": 0.5,
+      "test_accuracy_no_abstention": 0.5,
+      "threshold_selected_on_dev": 0.55,
+      "test_selected": 0,
+      "test_selected_correct": 0,
+      "test_n": 16,
+      "test_predictions": [
+        {
+          "case_id": "synth-sick-4-0",
+          "gold": "unwell",
+          "predicted": "impressive",
+          "confidence": 0.5,
+          "abstained": true
+        },
+        {
+          "case_id": "synth-sick-4-1",
+          "gold": "impressive",
+          "predicted": "impressive",
+          "confidence": 0.5,
+          "abstained": true
+        },
+        {
+          "case_id": "synth-cold-4-0",
+          "gold": "low_temperature",
+          "predicted": "low_temperature",
+          "confidence": 0.5,
+          "abstained": true
+        },
+        {
+          "case_id": "synth-cold-4-1",
+          "gold": "unfriendly",
+          "predicted": "low_temperature",
+          "confidence": 0.5,
+          "abstained": true
+        },
+        {
+          "case_id": "synth-fire-4-0",
+          "gold": "combustion",
+          "predicted": "combustion",
+          "confidence": 0.5,
+          "abstained": true
+        },
+        {
+          "case_id": "synth-fire-4-1",
+          "gold": "excellent",
+          "predicted": "combustion",
+          "confidence": 0.5,
+          "abstained": true
+        },
+        {
+          "case_id": "synth-crash-4-0",
+          "gold": "computer_failure",
+          "predicted": "collision",
+          "confidence": 0.5,
+          "abstained": true
+        },
+        {
+          "case_id": "synth-crash-4-1",
+          "gold": "collision",
+          "predicted": "collision",
+          "confidence": 0.5,
+          "abstained": true
+        },
+        {
+          "case_id": "synth-bug-4-0",
+          "gold": "software_defect",
+          "predicted": "insect",
+          "confidence": 0.5,
+          "abstained": true
+        },
+        {
+          "case_id": "synth-bug-4-1",
+          "gold": "insect",
+          "predicted": "insect",
+          "confidence": 0.5,
+          "abstained": true
+        },
+        {
+          "case_id": "synth-charged-4-0",
+          "gold": "battery_powered",
+          "predicted": "accused_of_offense",
+          "confidence": 0.5,
+          "abstained": true
+        },
+        {
+          "case_id": "synth-charged-4-1",
+          "gold": "accused_of_offense",
+          "predicted": "accused_of_offense",
+          "confidence": 0.5,
+          "abstained": true
+        },
+        {
+          "case_id": "synth-bright-4-0",
+          "gold": "intelligent",
+          "predicted": "intelligent",
+          "confidence": 0.5,
+          "abstained": true
+        },
+        {
+          "case_id": "synth-bright-4-1",
+          "gold": "strong_light",
+          "predicted": "intelligent",
+          "confidence": 0.5,
+          "abstained": true
+        },
+        {
+          "case_id": "synth-flat-4-0",
+          "gold": "without_air",
+          "predicted": "without_air",
+          "confidence": 0.5,
+          "abstained": true
+        },
+        {
+          "case_id": "synth-flat-4-1",
+          "gold": "without_enthusiasm",
+          "predicted": "without_air",
+          "confidence": 0.5,
+          "abstained": true
+        }
+      ]
+    },
+    "context": {
+      "dev_accuracy": 0.8125,
+      "test_accuracy_no_abstention": 0.6875,
+      "threshold_selected_on_dev": 0.5,
+      "test_selected": 16,
+      "test_selected_correct": 11,
+      "test_n": 16,
+      "test_predictions": [
+        {
+          "case_id": "synth-sick-4-0",
+          "gold": "unwell",
+          "predicted": "unwell",
+          "confidence": 0.5288623229194649,
+          "abstained": false
+        },
+        {
+          "case_id": "synth-sick-4-1",
+          "gold": "impressive",
+          "predicted": "unwell",
+          "confidence": 0.5118621061281503,
+          "abstained": false
+        },
+        {
+          "case_id": "synth-cold-4-0",
+          "gold": "low_temperature",
+          "predicted": "low_temperature",
+          "confidence": 0.5057033838762788,
+          "abstained": false
+        },
+        {
+          "case_id": "synth-cold-4-1",
+          "gold": "unfriendly",
+          "predicted": "low_temperature",
+          "confidence": 0.5221936178127131,
+          "abstained": false
+        },
+        {
+          "case_id": "synth-fire-4-0",
+          "gold": "combustion",
+          "predicted": "excellent",
+          "confidence": 0.5046455885104817,
+          "abstained": false
+        },
+        {
+          "case_id": "synth-fire-4-1",
+          "gold": "excellent",
+          "predicted": "combustion",
+          "confidence": 0.5017075045445811,
+          "abstained": false
+        },
+        {
+          "case_id": "synth-crash-4-0",
+          "gold": "computer_failure",
+          "predicted": "collision",
+          "confidence": 0.5002220576539249,
+          "abstained": false
+        },
+        {
+          "case_id": "synth-crash-4-1",
+          "gold": "collision",
+          "predicted": "collision",
+          "confidence": 0.5090500347791307,
+          "abstained": false
+        },
+        {
+          "case_id": "synth-bug-4-0",
+          "gold": "software_defect",
+          "predicted": "software_defect",
+          "confidence": 0.5066466293085461,
+          "abstained": false
+        },
+        {
+          "case_id": "synth-bug-4-1",
+          "gold": "insect",
+          "predicted": "insect",
+          "confidence": 0.515954202063009,
+          "abstained": false
+        },
+        {
+          "case_id": "synth-charged-4-0",
+          "gold": "battery_powered",
+          "predicted": "battery_powered",
+          "confidence": 0.5102619585961519,
+          "abstained": false
+        },
+        {
+          "case_id": "synth-charged-4-1",
+          "gold": "accused_of_offense",
+          "predicted": "accused_of_offense",
+          "confidence": 0.5482658529236668,
+          "abstained": false
+        },
+        {
+          "case_id": "synth-bright-4-0",
+          "gold": "intelligent",
+          "predicted": "intelligent",
+          "confidence": 0.5177782179743061,
+          "abstained": false
+        },
+        {
+          "case_id": "synth-bright-4-1",
+          "gold": "strong_light",
+          "predicted": "strong_light",
+          "confidence": 0.517638588279773,
+          "abstained": false
+        },
+        {
+          "case_id": "synth-flat-4-0",
+          "gold": "without_air",
+          "predicted": "without_air",
+          "confidence": 0.518182135832941,
+          "abstained": false
+        },
+        {
+          "case_id": "synth-flat-4-1",
+          "gold": "without_enthusiasm",
+          "predicted": "without_enthusiasm",
+          "confidence": 0.5188115359997189,
+          "abstained": false
+        }
+      ]
+    }
+  }
+}

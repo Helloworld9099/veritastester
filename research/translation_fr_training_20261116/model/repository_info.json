@@ -1,0 +1,18 @@
+{
+  "model": "Helsinki-NLP/opus-mt-fr-en",
+  "revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+  "files": [
+    ".gitattributes",
+    "README.md",
+    "config.json",
+    "flax_model.msgpack",
+    "generation_config.json",
+    "model.safetensors",
+    "pytorch_model.bin",
+    "source.spm",
+    "target.spm",
+    "tf_model.h5",
+    "tokenizer_config.json",
+    "vocab.json"
+  ]
+}

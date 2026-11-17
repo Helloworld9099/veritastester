@@ -1,0 +1,40 @@
+{
+  "warning": "Frozen models evaluated on additional one-shot training-source examples. Not official test; no further fitting, threshold changes or selection. Do not tune future models on these results.",
+  "new_evaluation_n": 140,
+  "models": {
+    "current_only": {
+      "accuracy": 0.5142857142857142,
+      "macro_f1": 0.5141865686874872,
+      "balanced_accuracy": 0.5270833333333333
+    },
+    "previous_context": {
+      "accuracy": 0.6214285714285714,
+      "macro_f1": 0.6212546577510081,
+      "balanced_accuracy": 0.63125
+    }
+  },
+  "group_overlap_with_training": 0,
+  "already_used_dev_context_perturbation": {
+    "original": {
+      "accuracy": 0.6211096075778079,
+      "macro_f1": 0.6209089976402996,
+      "balanced_accuracy": 0.6283602150537635
+    },
+    "removed": {
+      "accuracy": 0.6089309878213802,
+      "macro_f1": 0.6081014377070086,
+      "balanced_accuracy": 0.6181835637480799
+    },
+    "shuffled_within_language": {
+      "accuracy": 0.5940460081190798,
+      "macro_f1": 0.5939857885869166,
+      "balanced_accuracy": 0.5978561089448187
+    }
+  },
+  "new_evaluation_groups": 100,
+  "new_evaluation_context_delta_macro_f1": 0.10706808906352083,
+  "new_evaluation_group_bootstrap_95pct_delta": [
+    0.03346563182980309,
+    0.17873113695659762
+  ]
+}

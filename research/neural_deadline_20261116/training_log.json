@@ -1,0 +1,642 @@
+[
+  {
+    "step": 1,
+    "last_microbatch_loss": 0.35065746307373047,
+    "grad_norm": 0.6167438626289368
+  },
+  {
+    "step": 2,
+    "last_microbatch_loss": 0.25599804520606995,
+    "grad_norm": 0.5878584980964661
+  },
+  {
+    "step": 3,
+    "last_microbatch_loss": 0.3208821415901184,
+    "grad_norm": 0.5857500433921814
+  },
+  {
+    "step": 4,
+    "last_microbatch_loss": 0.2010536640882492,
+    "grad_norm": 0.4221741259098053
+  },
+  {
+    "step": 5,
+    "last_microbatch_loss": 0.43751803040504456,
+    "grad_norm": 0.4186328649520874
+  },
+  {
+    "step": 6,
+    "last_microbatch_loss": 0.8305842280387878,
+    "grad_norm": 0.5704323053359985
+  },
+  {
+    "step": 7,
+    "last_microbatch_loss": 0.7108645439147949,
+    "grad_norm": 0.7213412523269653
+  },
+  {
+    "step": 8,
+    "last_microbatch_loss": 0.6067325472831726,
+    "grad_norm": 0.5320168733596802
+  },
+  {
+    "step": 9,
+    "last_microbatch_loss": 0.6527847051620483,
+    "grad_norm": 0.701950192451477
+  },
+  {
+    "step": 10,
+    "last_microbatch_loss": 0.3409838080406189,
+    "grad_norm": 0.5407004952430725
+  },
+  {
+    "step": 11,
+    "last_microbatch_loss": 0.47768545150756836,
+    "grad_norm": 0.43631643056869507
+  },
+  {
+    "step": 12,
+    "last_microbatch_loss": 0.8497042059898376,
+    "grad_norm": 0.6413523554801941
+  },
+  {
+    "step": 13,
+    "last_microbatch_loss": 0.7101774215698242,
+    "grad_norm": 0.6165874600410461
+  },
+  {
+    "step": 14,
+    "last_microbatch_loss": 0.3374989926815033,
+    "grad_norm": 0.5930970311164856
+  },
+  {
+    "step": 15,
+    "last_microbatch_loss": 0.35719823837280273,
+    "grad_norm": 0.4263608753681183
+  },
+  {
+    "step": 16,
+    "last_microbatch_loss": 0.38423824310302734,
+    "grad_norm": 0.7061514258384705
+  },
+  {
+    "step": 17,
+    "last_microbatch_loss": 0.5413307547569275,
+    "grad_norm": 0.46433448791503906
+  },
+  {
+    "step": 18,
+    "last_microbatch_loss": 0.49067625403404236,
+    "grad_norm": 0.5749844908714294
+  },
+  {
+    "step": 19,
+    "last_microbatch_loss": 0.9098712205886841,
+    "grad_norm": 0.6903492212295532
+  },
+  {
+    "step": 20,
+    "last_microbatch_loss": 0.23458224534988403,
+    "grad_norm": 0.539108395576477
+  },
+  {
+    "step": 21,
+    "last_microbatch_loss": 1.0576175451278687,
+    "grad_norm": 0.6348384022712708
+  },
+  {
+    "step": 22,
+    "last_microbatch_loss": 0.6640157699584961,
+    "grad_norm": 0.47594302892684937
+  },
+  {
+    "step": 23,
+    "last_microbatch_loss": 0.5254111289978027,
+    "grad_norm": 0.546077311038971
+  },
+  {
+    "step": 24,
+    "last_microbatch_loss": 0.21178476512432098,
+    "grad_norm": 0.5993189811706543
+  },
+  {
+    "step": 25,
+    "last_microbatch_loss": 0.4275178015232086,
+    "grad_norm": 0.49454349279403687
+  },
+  {
+    "step": 26,
+    "last_microbatch_loss": 0.2830148935317993,
+    "grad_norm": 0.44624367356300354
+  },
+  {
+    "step": 27,
+    "last_microbatch_loss": 0.8963226079940796,
+    "grad_norm": 0.6166715025901794
+  },
+  {
+    "step": 28,
+    "last_microbatch_loss": 0.4713789224624634,
+    "grad_norm": 0.5055779218673706
+  },
+  {
+    "step": 29,
+    "last_microbatch_loss": 0.1912672519683838,
+    "grad_norm": 0.6598541140556335
+  },
+  {
+    "step": 30,
+    "last_microbatch_loss": 0.8707877397537231,
+    "grad_norm": 0.6333138942718506
+  },
+  {
+    "step": 31,
+    "last_microbatch_loss": 0.08746402710676193,
+    "grad_norm": 0.49149468541145325
+  },
+  {
+    "step": 32,
+    "last_microbatch_loss": 0.7755119800567627,
+    "grad_norm": 0.6236734986305237
+  },
+  {
+    "step": 33,
+    "last_microbatch_loss": 0.20624713599681854,
+    "grad_norm": 0.4832684099674225
+  },
+  {
+    "step": 34,
+    "last_microbatch_loss": 0.5325943231582642,
+    "grad_norm": 0.5637281537055969
+  },
+  {
+    "step": 35,
+    "last_microbatch_loss": 0.3882907032966614,
+    "grad_norm": 0.531600832939148
+  },
+  {
+    "step": 36,
+    "last_microbatch_loss": 0.24746522307395935,
+    "grad_norm": 0.6447808146476746
+  },
+  {
+    "step": 37,
+    "last_microbatch_loss": 0.3005963861942291,
+    "grad_norm": 0.4330901503562927
+  },
+  {
+    "step": 38,
+    "last_microbatch_loss": 0.8888003826141357,
+    "grad_norm": 0.7058480978012085
+  },
+  {
+    "step": 39,
+    "last_microbatch_loss": 1.0461150407791138,
+    "grad_norm": 0.5971477031707764
+  },
+  {
+    "step": 40,
+    "last_microbatch_loss": 0.25657057762145996,
+    "grad_norm": 0.5478425621986389
+  },
+  {
+    "step": 41,
+    "last_microbatch_loss": 0.4290020763874054,
+    "grad_norm": 0.45940956473350525
+  },
+  {
+    "step": 42,
+    "last_microbatch_loss": 0.489043265581131,
+    "grad_norm": 0.8297309279441833
+  },
+  {
+    "step": 43,
+    "last_microbatch_loss": 0.5703314542770386,
+    "grad_norm": 0.6962257027626038
+  },
+  {
+    "step": 44,
+    "last_microbatch_loss": 0.3589116334915161,
+    "grad_norm": 0.438896119594574
+  },
+  {
+    "step": 45,
+    "last_microbatch_loss": 0.5385527014732361,
+    "grad_norm": 0.5343887805938721
+  },
+  {
+    "step": 46,
+    "last_microbatch_loss": 0.5592992305755615,
+    "grad_norm": 0.5478687882423401
+  },
+  {
+    "step": 47,
+    "last_microbatch_loss": 0.41526371240615845,
+    "grad_norm": 0.6262333393096924
+  },
+  {
+    "step": 48,
+    "last_microbatch_loss": 0.531977653503418,
+    "grad_norm": 0.5332112312316895
+  },
+  {
+    "step": 49,
+    "last_microbatch_loss": 0.3037101924419403,
+    "grad_norm": 0.47736963629722595
+  },
+  {
+    "step": 50,
+    "last_microbatch_loss": 0.22728665173053741,
+    "grad_norm": 0.6129952669143677
+  },
+  {
+    "step": 51,
+    "last_microbatch_loss": 0.9401062726974487,
+    "grad_norm": 0.5393373370170593
+  },
+  {
+    "step": 52,
+    "last_microbatch_loss": 0.586208164691925,
+    "grad_norm": 0.6708207726478577
+  },
+  {
+    "step": 53,
+    "last_microbatch_loss": 0.7590764760971069,
+    "grad_norm": 0.5756952166557312
+  },
+  {
+    "step": 54,
+    "last_microbatch_loss": 0.6427825093269348,
+    "grad_norm": 0.7129848599433899
+  },
+  {
+    "step": 55,
+    "last_microbatch_loss": 0.25474125146865845,
+    "grad_norm": 0.486341267824173
+  },
+  {
+    "step": 56,
+    "last_microbatch_loss": 0.14109787344932556,
+    "grad_norm": 0.4669354259967804
+  },
+  {
+    "step": 57,
+    "last_microbatch_loss": 1.1301316022872925,
+    "grad_norm": 0.5231353640556335
+  },
+  {
+    "step": 58,
+    "last_microbatch_loss": 0.4839096963405609,
+    "grad_norm": 0.5062803626060486
+  },
+  {
+    "step": 59,
+    "last_microbatch_loss": 0.2601379454135895,
+    "grad_norm": 0.48710718750953674
+  },
+  {
+    "step": 60,
+    "last_microbatch_loss": 0.5114251375198364,
+    "grad_norm": 0.5078401565551758
+  },
+  {
+    "step": 61,
+    "last_microbatch_loss": 0.406521737575531,
+    "grad_norm": 0.50693279504776
+  },
+  {
+    "step": 62,
+    "last_microbatch_loss": 0.1733119636774063,
+    "grad_norm": 0.43329158425331116
+  },
+  {
+    "step": 63,
+    "last_microbatch_loss": 0.20020927488803864,
+    "grad_norm": 0.5939149856567383
+  },
+  {
+    "step": 64,
+    "last_microbatch_loss": 0.44646701216697693,
+    "grad_norm": 0.5373185873031616
+  },
+  {
+    "step": 65,
+    "last_microbatch_loss": 0.4521866738796234,
+    "grad_norm": 0.5024496912956238
+  },
+  {
+    "step": 66,
+    "last_microbatch_loss": 0.3358480930328369,
+    "grad_norm": 0.5439881682395935
+  },
+  {
+    "step": 67,
+    "last_microbatch_loss": 0.7456345558166504,
+    "grad_norm": 0.5466895699501038
+  },
+  {
+    "step": 68,
+    "last_microbatch_loss": 0.5880733728408813,
+    "grad_norm": 0.505435585975647
+  },
+  {
+    "step": 69,
+    "last_microbatch_loss": 0.4571326971054077,
+    "grad_norm": 0.5455728769302368
+  },
+  {
+    "step": 70,
+    "last_microbatch_loss": 0.35800933837890625,
+    "grad_norm": 0.49369508028030396
+  },
+  {
+    "step": 71,
+    "last_microbatch_loss": 0.3925367295742035,
+    "grad_norm": 0.5440643429756165
+  },
+  {
+    "step": 72,
+    "last_microbatch_loss": 1.0760853290557861,
+    "grad_norm": 0.6776940226554871
+  },
+  {
+    "step": 73,
+    "last_microbatch_loss": 0.3417558968067169,
+    "grad_norm": 0.5578643083572388
+  },
+  {
+    "step": 74,
+    "last_microbatch_loss": 0.51734858751297,
+    "grad_norm": 0.6091257929801941
+  },
+  {
+    "step": 75,
+    "last_microbatch_loss": 0.4459518790245056,
+    "grad_norm": 0.6220399141311646
+  },
+  {
+    "step": 76,
+    "last_microbatch_loss": 0.9924806952476501,
+    "grad_norm": 0.6365196704864502
+  },
+  {
+    "step": 77,
+    "last_microbatch_loss": 0.40128740668296814,
+    "grad_norm": 0.4738858640193939
+  },
+  {
+    "step": 78,
+    "last_microbatch_loss": 0.33464938402175903,
+    "grad_norm": 0.5128544569015503
+  },
+  {
+    "step": 79,
+    "last_microbatch_loss": 0.5678114891052246,
+    "grad_norm": 0.5958439707756042
+  },
+  {
+    "step": 80,
+    "last_microbatch_loss": 0.03905490040779114,
+    "grad_norm": 0.3681105971336365
+  },
+  {
+    "step": 81,
+    "last_microbatch_loss": 0.12299498915672302,
+    "grad_norm": 0.39898744225502014
+  },
+  {
+    "step": 82,
+    "last_microbatch_loss": 0.8887248635292053,
+    "grad_norm": 0.4911198318004608
+  },
+  {
+    "step": 83,
+    "last_microbatch_loss": 1.046712040901184,
+    "grad_norm": 0.6243428587913513
+  },
+  {
+    "step": 84,
+    "last_microbatch_loss": 0.6667582392692566,
+    "grad_norm": 0.5573771595954895
+  },
+  {
+    "step": 85,
+    "last_microbatch_loss": 0.7725169062614441,
+    "grad_norm": 0.616245687007904
+  },
+  {
+    "step": 86,
+    "last_microbatch_loss": 0.7294192910194397,
+    "grad_norm": 0.5689258575439453
+  },
+  {
+    "step": 87,
+    "last_microbatch_loss": 0.1796770840883255,
+    "grad_norm": 0.4702059328556061
+  },
+  {
+    "step": 88,
+    "last_microbatch_loss": 0.6154374480247498,
+    "grad_norm": 0.5248671770095825
+  },
+  {
+    "step": 89,
+    "last_microbatch_loss": 0.6402187943458557,
+    "grad_norm": 0.5369732975959778
+  },
+  {
+    "step": 90,
+    "last_microbatch_loss": 0.29397085309028625,
+    "grad_norm": 0.6186427474021912
+  },
+  {
+    "step": 91,
+    "last_microbatch_loss": 0.992843747138977,
+    "grad_norm": 0.636702299118042
+  },
+  {
+    "step": 92,
+    "last_microbatch_loss": 0.423392653465271,
+    "grad_norm": 0.5302370190620422
+  },
+  {
+    "step": 93,
+    "last_microbatch_loss": 0.35116344690322876,
+    "grad_norm": 0.6704162359237671
+  },
+  {
+    "step": 94,
+    "last_microbatch_loss": 0.6630951166152954,
+    "grad_norm": 0.7682087421417236
+  },
+  {
+    "step": 95,
+    "last_microbatch_loss": 1.7251763343811035,
+    "grad_norm": 0.5649711489677429
+  },
+  {
+    "step": 96,
+    "last_microbatch_loss": 0.3759620487689972,
+    "grad_norm": 0.4860514998435974
+  },
+  {
+    "step": 97,
+    "last_microbatch_loss": 0.5652236938476562,
+    "grad_norm": 0.601760983467102
+  },
+  {
+    "step": 98,
+    "last_microbatch_loss": 1.4402326345443726,
+    "grad_norm": 0.8212289214134216
+  },
+  {
+    "step": 99,
+    "last_microbatch_loss": 0.7002174854278564,
+    "grad_norm": 0.6386944651603699
+  },
+  {
+    "step": 100,
+    "last_microbatch_loss": 0.24355964362621307,
+    "grad_norm": 0.490512877702713
+  },
+  {
+    "step": 101,
+    "last_microbatch_loss": 0.3308948278427124,
+    "grad_norm": 0.6661068201065063
+  },
+  {
+    "step": 102,
+    "last_microbatch_loss": 0.8775094747543335,
+    "grad_norm": 0.636658787727356
+  },
+  {
+    "step": 103,
+    "last_microbatch_loss": 0.29888176918029785,
+    "grad_norm": 0.47100237011909485
+  },
+  {
+    "step": 104,
+    "last_microbatch_loss": 0.5961518287658691,
+    "grad_norm": 0.6222553849220276
+  },
+  {
+    "step": 105,
+    "last_microbatch_loss": 0.22921614348888397,
+    "grad_norm": 0.48410993814468384
+  },
+  {
+    "step": 106,
+    "last_microbatch_loss": 1.644598126411438,
+    "grad_norm": 0.6451325416564941
+  },
+  {
+    "step": 107,
+    "last_microbatch_loss": 0.3087031841278076,
+    "grad_norm": 0.5237838625907898
+  },
+  {
+    "step": 108,
+    "last_microbatch_loss": 0.9083698987960815,
+    "grad_norm": 0.5172125697135925
+  },
+  {
+    "step": 109,
+    "last_microbatch_loss": 0.39570242166519165,
+    "grad_norm": 0.3968141973018646
+  },
+  {
+    "step": 110,
+    "last_microbatch_loss": 0.1450050175189972,
+    "grad_norm": 0.5640071630477905
+  },
+  {
+    "step": 111,
+    "last_microbatch_loss": 0.3537137508392334,
+    "grad_norm": 0.5607017278671265
+  },
+  {
+    "step": 112,
+    "last_microbatch_loss": 0.4522363245487213,
+    "grad_norm": 0.5335705876350403
+  },
+  {
+    "step": 113,
+    "last_microbatch_loss": 0.9065937995910645,
+    "grad_norm": 0.5300267934799194
+  },
+  {
+    "step": 114,
+    "last_microbatch_loss": 0.8109948039054871,
+    "grad_norm": 0.6569190621376038
+  },
+  {
+    "step": 115,
+    "last_microbatch_loss": 0.5412281155586243,
+    "grad_norm": 0.5750517249107361
+  },
+  {
+    "step": 116,
+    "last_microbatch_loss": 0.3293266296386719,
+    "grad_norm": 0.50404292345047
+  },
+  {
+    "step": 117,
+    "last_microbatch_loss": 0.5550695657730103,
+    "grad_norm": 0.6347939372062683
+  },
+  {
+    "step": 118,
+    "last_microbatch_loss": 0.40130507946014404,
+    "grad_norm": 0.5576999187469482
+  },
+  {
+    "step": 119,
+    "last_microbatch_loss": 0.21185816824436188,
+    "grad_norm": 0.5298008918762207
+  },
+  {
+    "step": 120,
+    "last_microbatch_loss": 0.8493354320526123,
+    "grad_norm": 0.5438269376754761
+  },
+  {
+    "step": 121,
+    "last_microbatch_loss": 1.2993214130401611,
+    "grad_norm": 0.5452790260314941
+  },
+  {
+    "step": 122,
+    "last_microbatch_loss": 0.23623932898044586,
+    "grad_norm": 0.583402693271637
+  },
+  {
+    "step": 123,
+    "last_microbatch_loss": 0.6806681156158447,
+    "grad_norm": 0.5978900194168091
+  },
+  {
+    "step": 124,
+    "last_microbatch_loss": 0.2841479778289795,
+    "grad_norm": 0.48475754261016846
+  },
+  {
+    "step": 125,
+    "last_microbatch_loss": 0.5060450434684753,
+    "grad_norm": 0.4936027526855469
+  },
+  {
+    "step": 126,
+    "last_microbatch_loss": 0.691118061542511,
+    "grad_norm": 0.578705370426178
+  },
+  {
+    "step": 127,
+    "last_microbatch_loss": 0.433178573846817,
+    "grad_norm": 0.614945113658905
+  },
+  {
+    "step": 128,
+    "last_microbatch_loss": 0.3266891539096832,
+    "grad_norm": 0.5744540691375732
+  }
+]

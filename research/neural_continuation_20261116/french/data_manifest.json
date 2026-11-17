@@ -1,0 +1,21 @@
+{
+  "seed": 202611162,
+  "data": "Tatoeba human French-English training; DiaBLa evaluation only",
+  "sample_counts": {
+    "train": 4096,
+    "dev": 256,
+    "test": 512,
+    "guard": 160
+  },
+  "new_external_dialogue_groups": 40,
+  "previously_consumed_dialogue_groups_excluded": 104,
+  "warning": "All prior evaluation sets consumed, not reused here. Original component partitions retained. Base pretraining contamination unknown. New Tatoeba train excludes original fitting components; warm-start still legitimately contains their learned adapter. Tatoeba author/template independence not guaranteed.",
+  "attribution_handoff": "/workspace/scratch/2b30092347a7/veritastester-data-prep/HANDOFF_MANIFEST.json",
+  "no_context_input": true,
+  "input_hashes": {
+    "train.jsonl": "b385b137b7fba3faaad70802e17f5c90982d9ab892b55bb2957ce104225d756e",
+    "test.jsonl": "d7fd2c1019e7cd9913a7d38fc0df7d6ba208cb77610e35968eae866db1ba7fcc",
+    "dev.jsonl": "572fbe7782e510b80c7ac9a89c89dd7ebbf3b00f9ba7c7fa4516d84d01fe6e14",
+    "guard.jsonl": "d090d2f3aead2770742f3fcf1ec4e984a183cdf6d5ec1ca09a24fab339e6f4c7"
+  }
+}

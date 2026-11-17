@@ -1,0 +1,13 @@
+{
+  "candidate": "step128",
+  "dev": {
+    "n": 256,
+    "chrf": 74.22163397132776,
+    "bleu": 61.3769655264523,
+    "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+    "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+  },
+  "completed_updates": 256,
+  "planned_updates": 256,
+  "selection_frozen_before_test": true
+}

@@ -1,0 +1,55 @@
+{
+  "es": {
+    "adapter_tensor_count": 72,
+    "adapter_parameters": 294912,
+    "nonzero_B_tensors": 36,
+    "initial_zero_output_matches_base": true,
+    "replays": {
+      "europarl_test": {
+        "baseline": {
+          "n": 8,
+          "exact_output_matches": 8,
+          "mismatch_indices": [],
+          "elapsed_seconds": 2.314529794999544
+        },
+        "selected": {
+          "n": 8,
+          "exact_output_matches": 8,
+          "mismatch_indices": [],
+          "elapsed_seconds": 2.1683832429989707
+        }
+      },
+      "wmt_guard": {
+        "baseline": {
+          "n": 8,
+          "exact_output_matches": 8,
+          "mismatch_indices": [],
+          "elapsed_seconds": 2.808705257000838
+        },
+        "selected": {
+          "n": 8,
+          "exact_output_matches": 8,
+          "mismatch_indices": [],
+          "elapsed_seconds": 2.859951704998821
+        }
+      }
+    },
+    "source_truncation_counts": {
+      "train": {
+        "source_over_training96": 0,
+        "source_over_eval128": 0,
+        "reference_over_training96": 0
+      },
+      "dev": {
+        "source_over_training96": 0,
+        "source_over_eval128": 0,
+        "reference_over_training96": 0
+      },
+      "test": {
+        "source_over_training96": 0,
+        "source_over_eval128": 0,
+        "reference_over_training96": 0
+      }
+    }
+  }
+}

@@ -1,0 +1,196 @@
+{
+  "protocol": {
+    "language": "french",
+    "seed": 202611162,
+    "model": {
+      "model": "Helsinki-NLP/opus-mt-fr-en",
+      "revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+      "files": [
+        ".gitattributes",
+        "README.md",
+        "config.json",
+        "flax_model.msgpack",
+        "generation_config.json",
+        "model.safetensors",
+        "pytorch_model.bin",
+        "source.spm",
+        "target.spm",
+        "tf_model.h5",
+        "tokenizer_config.json",
+        "vocab.json"
+      ]
+    },
+    "original_checkpoint_sha256": "7445651cc93617b3c8e4cd00c614371ee7af92ccf541659a9b445f8d9edf372f",
+    "train_rows": 4096,
+    "dev_rows": 256,
+    "test_rows": 512,
+    "guard_rows": 160,
+    "data_manifest_sha256": "cde93ccfc5591d6b04f48fd38d0393f72c02f30c47dbc20647efa2d5cc1b0b2e",
+    "recipe": {
+      "optimizer": "AdamW",
+      "lr": 0.0001,
+      "weight_decay": 0.01,
+      "microbatch": 4,
+      "gradient_accumulation": 4,
+      "effective_batch": 16,
+      "planned_updates": 256,
+      "grad_clip": 1.0,
+      "max_source_target_tokens": 96,
+      "lora_rank": 8,
+      "lora_alpha": 16,
+      "cpu_threads": 4,
+      "pure_training_budget_seconds": 600
+    },
+    "warm_start": true,
+    "warm_start_detail": "Previous adapter parameters only, fresh optimizer; NOT a resumed optimizer state",
+    "selection": "Highest NEW dev corpus chrF, tie favors earliest candidate. French candidates: base, previous adapter, continued step128/256. Spanish candidates: base, new64/128; prior adapter evaluated as control, ineligible for selection. Freeze before opening test outputs. No test-based choice.",
+    "decoding": {
+      "beam_size": 4,
+      "batch": 8,
+      "max_source_tokens": 128,
+      "max_generated_tokens": 96
+    },
+    "warning": "Context-free text translation only. New project-held-out examples, not guaranteed unknown to pretrained OPUS. Prior tests and parent synthetic audit are consumed and not used for selection. No app integration, activation, paid API, push or deployment.",
+    "trainable_parameters": 294912,
+    "target_modules": [
+      "model.encoder.layers.0.self_attn.v_proj",
+      "model.encoder.layers.0.self_attn.q_proj",
+      "model.encoder.layers.1.self_attn.v_proj",
+      "model.encoder.layers.1.self_attn.q_proj",
+      "model.encoder.layers.2.self_attn.v_proj",
+      "model.encoder.layers.2.self_attn.q_proj",
+      "model.encoder.layers.3.self_attn.v_proj",
+      "model.encoder.layers.3.self_attn.q_proj",
+      "model.encoder.layers.4.self_attn.v_proj",
+      "model.encoder.layers.4.self_attn.q_proj",
+      "model.encoder.layers.5.self_attn.v_proj",
+      "model.encoder.layers.5.self_attn.q_proj",
+      "model.decoder.layers.0.self_attn.v_proj",
+      "model.decoder.layers.0.self_attn.q_proj",
+      "model.decoder.layers.0.encoder_attn.v_proj",
+      "model.decoder.layers.0.encoder_attn.q_proj",
+      "model.decoder.layers.1.self_attn.v_proj",
+      "model.decoder.layers.1.self_attn.q_proj",
+      "model.decoder.layers.1.encoder_attn.v_proj",
+      "model.decoder.layers.1.encoder_attn.q_proj",
+      "model.decoder.layers.2.self_attn.v_proj",
+      "model.decoder.layers.2.self_attn.q_proj",
+      "model.decoder.layers.2.encoder_attn.v_proj",
+      "model.decoder.layers.2.encoder_attn.q_proj",
+      "model.decoder.layers.3.self_attn.v_proj",
+      "model.decoder.layers.3.self_attn.q_proj",
+      "model.decoder.layers.3.encoder_attn.v_proj",
+      "model.decoder.layers.3.encoder_attn.q_proj",
+      "model.decoder.layers.4.self_attn.v_proj",
+      "model.decoder.layers.4.self_attn.q_proj",
+      "model.decoder.layers.4.encoder_attn.v_proj",
+      "model.decoder.layers.4.encoder_attn.q_proj",
+      "model.decoder.layers.5.self_attn.v_proj",
+      "model.decoder.layers.5.self_attn.q_proj",
+      "model.decoder.layers.5.encoder_attn.v_proj",
+      "model.decoder.layers.5.encoder_attn.q_proj"
+    ]
+  },
+  "completed_updates": 256,
+  "pure_training_seconds": 173.89302210192182,
+  "selected": "step128",
+  "dev_history": [
+    {
+      "candidate": "base",
+      "metrics": {
+        "n": 256,
+        "chrf": 73.87963042948697,
+        "bleu": 60.53823702877604,
+        "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+        "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+      }
+    },
+    {
+      "candidate": "previous",
+      "metrics": {
+        "n": 256,
+        "chrf": 73.98593734821054,
+        "bleu": 60.933622468141024,
+        "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+        "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+      }
+    },
+    {
+      "candidate": "step128",
+      "metrics": {
+        "n": 256,
+        "chrf": 74.22163397132776,
+        "bleu": 61.3769655264523,
+        "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+        "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+      }
+    },
+    {
+      "candidate": "step256",
+      "metrics": {
+        "n": 256,
+        "chrf": 74.03942920900761,
+        "bleu": 61.397058174709485,
+        "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+        "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0"
+      }
+    }
+  ],
+  "evaluations": {
+    "new_source_test": {
+      "base": {
+        "n": 512,
+        "chrf": 74.90470626891344,
+        "bleu": 62.812536334854116,
+        "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+        "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0",
+        "batch_amortized_seconds_per_sentence": 0.10478391406643084
+      },
+      "previous": {
+        "n": 512,
+        "chrf": 75.05331611198169,
+        "bleu": 62.88309835062499,
+        "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+        "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0",
+        "batch_amortized_seconds_per_sentence": 0.1138196271503773
+      },
+      "selected": {
+        "n": 512,
+        "chrf": 75.5662856123627,
+        "bleu": 64.07329171008669,
+        "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+        "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0",
+        "batch_amortized_seconds_per_sentence": 0.11093318564648058
+      }
+    },
+    "new_external_guard": {
+      "base": {
+        "n": 160,
+        "chrf": 57.58094892712391,
+        "bleu": 37.632805099999686,
+        "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+        "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0",
+        "batch_amortized_seconds_per_sentence": 0.24005790130627247
+      },
+      "previous": {
+        "n": 160,
+        "chrf": 57.43969907785883,
+        "bleu": 37.716019075092206,
+        "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+        "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0",
+        "batch_amortized_seconds_per_sentence": 0.1720931275250223
+      },
+      "selected": {
+        "n": 160,
+        "chrf": 57.88634135230279,
+        "bleu": 38.25066937787801,
+        "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+        "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0",
+        "batch_amortized_seconds_per_sentence": 0.17871916368121674
+      }
+    }
+  },
+  "selected_replay_exact": true,
+  "peak_rss_mib": 989.73828125,
+  "elapsed_seconds": 569.1293984980002
+}

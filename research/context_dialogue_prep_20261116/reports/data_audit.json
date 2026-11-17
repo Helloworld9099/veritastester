@@ -1,0 +1,39 @@
+{
+  "excluded_strings_external": 69298,
+  "history_filter": "Exact protected strings removed from previous original-source turns; gaps retain original indices. Never fills gaps with gold/MT guesses.",
+  "limitations": [
+    "conversation-disjoint; speaker identity unavailable",
+    "client/domain/template identity can recur",
+    "exact normalization cannot exclude paraphrases or base pretraining exposure",
+    "filtered data differs from official WMT distributions",
+    "bilingual source-channel history differs from DiaBLa speaker-visible MT history",
+    "WMT24 README reports15027 train turns; actual pinned CSV parsed to15026 records; use measured count"
+  ],
+  "memory_review_unlabelled_rows": 64,
+  "raw_dialogues": 264,
+  "raw_french_to_english_rows": 5093,
+  "raw_rows": 15026,
+  "rejected": {
+    "dev:no_safe_history": 24,
+    "dev:protected_exact_text": 46,
+    "train:empty_or_long": 1,
+    "train:no_safe_history": 239,
+    "train:protected_exact_text": 1023
+  },
+  "reserved_dev_dialogues": 24,
+  "sampling": "SHA256 case ranking, max16 rows per dialogue, max2048 train/max256 dev. No scores used.",
+  "splits": {
+    "dev": {
+      "groups": 24,
+      "history_items": 1339,
+      "rows": 256
+    },
+    "train": {
+      "groups": 240,
+      "history_items": 10644,
+      "rows": 2048
+    }
+  },
+  "status": "prepared",
+  "untouched_dialogue_candidate_groups": 0
+}

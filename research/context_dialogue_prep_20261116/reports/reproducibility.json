@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "artifact_files_compared": 10,
+  "byte_for_byte_identical": true,
+  "sha256": {
+    "data_audit.json": "468e341dec4102b93c77f10088ac9631b3df3c0a8818a6ee74e5a43e55eebef3",
+    "memory_review_queue.UNLABELLED.jsonl": "09ebda8d85e4db42f9088c70ef3156da235f7f7f667118c36cf415b27483ec9e",
+    "evaluation_plan.json": "8c8caa9b4b878e94d2b65cad49b0b59beef88c0faa8f098dc536f7b6d69951e5",
+    "manifest.json": "c50a9f7817e812723e6bc2f9e038ee742338895e26383baa07cc89e7f175cd84",
+    "dev.inputs.jsonl": "28841da3cac194104365b16734ab219754ceac550bb62e15961f6ae1481eb025",
+    "train.inputs.jsonl": "f39623cb82884157cb665ee290a6eb8366f335f2a5c6e654f9f762002ea700fa",
+    "train.references.jsonl": "429aed0988ef377fb932405fd430a99872af66e64b5a2274f8da69a1b4ae71fc",
+    "dev.references.jsonl": "5150f6ea5fa82b0ab2252f8389f92771ea63d367e628960ee5e1f9b4003bf92a",
+    "holdout_registry.json": "cf0ac3db511f7ebeb18e96c45f4d7ed4ec917e7826bb42178a3ff13b430a5e92",
+    "original_inputs_snapshot.json": "4aa9c84b9312f27b39a2dd5e676ef3b4866ffe15830f6f06d4d5e330c2ab0ea9"
+  },
+  "scope": "Two independent offline preparation runs from pinned inputs; no training or inference."
+}

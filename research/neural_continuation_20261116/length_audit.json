@@ -1,0 +1,70 @@
+{
+  "french": {
+    "train": {
+      "rows": 4096,
+      "source_over_training96": 0,
+      "source_over_inference128": 0,
+      "reference_over_generated96": 0,
+      "max_source_tokens": 36,
+      "max_reference_tokens": 33
+    },
+    "dev": {
+      "rows": 256,
+      "source_over_training96": 0,
+      "source_over_inference128": 0,
+      "reference_over_generated96": 0,
+      "max_source_tokens": 26,
+      "max_reference_tokens": 21
+    },
+    "test": {
+      "rows": 512,
+      "source_over_training96": 0,
+      "source_over_inference128": 0,
+      "reference_over_generated96": 0,
+      "max_source_tokens": 28,
+      "max_reference_tokens": 22
+    },
+    "guard": {
+      "rows": 160,
+      "source_over_training96": 0,
+      "source_over_inference128": 0,
+      "reference_over_generated96": 0,
+      "max_source_tokens": 49,
+      "max_reference_tokens": 44
+    }
+  },
+  "spanish": {
+    "train": {
+      "rows": 2048,
+      "source_over_training96": 0,
+      "source_over_inference128": 0,
+      "reference_over_generated96": 0,
+      "max_source_tokens": 51,
+      "max_reference_tokens": 48
+    },
+    "dev": {
+      "rows": 128,
+      "source_over_training96": 0,
+      "source_over_inference128": 0,
+      "reference_over_generated96": 0,
+      "max_source_tokens": 43,
+      "max_reference_tokens": 41
+    },
+    "test": {
+      "rows": 256,
+      "source_over_training96": 0,
+      "source_over_inference128": 0,
+      "reference_over_generated96": 0,
+      "max_source_tokens": 47,
+      "max_reference_tokens": 45
+    },
+    "guard": {
+      "rows": 256,
+      "source_over_training96": 0,
+      "source_over_inference128": 0,
+      "reference_over_generated96": 0,
+      "max_source_tokens": 76,
+      "max_reference_tokens": 65
+    }
+  }
+}

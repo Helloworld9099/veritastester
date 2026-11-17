@@ -1,0 +1,32 @@
+{
+  "europarl_test": {
+    "n": 256,
+    "groups": 217,
+    "mean_sentence_chrf_delta": 0.001006212378372423,
+    "group_bootstrap_95pct_mean_sentence_chrf_delta": [
+      -0.7799485231787736,
+      0.7893766822317769
+    ],
+    "warning": "Sentence chrF mean/interval is a different aggregation from corpus chrF. Group means reflect available block/component/dialogue groups, not proven independent speakers. No tuning based on these results.",
+    "changed_outputs": 131,
+    "empty_baseline": 0,
+    "empty_selected": 0,
+    "corpus_chrf_delta": -0.123826730796182,
+    "corpus_bleu_delta": 0.13653003953058374
+  },
+  "wmt_guard": {
+    "n": 128,
+    "groups": 128,
+    "mean_sentence_chrf_delta": -0.17197555687171268,
+    "group_bootstrap_95pct_mean_sentence_chrf_delta": [
+      -1.23751100086789,
+      0.8919123807312214
+    ],
+    "warning": "Sentence chrF mean/interval is a different aggregation from corpus chrF. Group means reflect available block/component/dialogue groups, not proven independent speakers. No tuning based on these results.",
+    "changed_outputs": 83,
+    "empty_baseline": 0,
+    "empty_selected": 0,
+    "corpus_chrf_delta": -0.34174006194533035,
+    "corpus_bleu_delta": -0.7441619852866452
+  }
+}
