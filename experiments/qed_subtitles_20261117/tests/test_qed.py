@@ -63,8 +63,11 @@ class TestQED(unittest.TestCase):
     def test_tagged_tmx_with_missing_language_fails_conservatively(self):
         payload = gzip.compress(
             b'<?xml version="1.0"?><tmx><body><tu><tuv xml:lang="en"><seg>Only English here</seg></tuv></tu></body></tmx>')
-        with self.assertRaisesRegex(RuntimeError, "Insufficient distinct"):
-            aligned_subtitles(payload, "french")
+        rows, digest, eligible = aligned_subtitles(payload, "french")
+        self.assertEqual((rows, eligible), ([], 0))
+        self.assertEqual(len(digest), 64)
+        with self.assertRaisesRegex(ValueError, "Too few distinct"):
+            select_cohorts(rows, train_count=1, dev_count=1, test_count=1)
 
 
 if __name__ == "__main__":
