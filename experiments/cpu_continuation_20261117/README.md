@@ -34,6 +34,19 @@ python experiments/cpu_continuation_20261117/train.py --language spanish --outpu
 
 The output folder must not exist in advance. Model downloads require Internet access. These steps do not need a GPU.
 
+## Run the saved custom models locally (no GPU or API key)
+
+These models are **experimental** French/Spanish to English text translators. The command downloads checksum-pinned original Marian weights to the user's local cache, verifies the existing selected adapters, and prints the model's translation. No cloud transcript provider is used, no audio is recorded, and no application setting is changed.
+
+```bash
+python experiments/cpu_continuation_20261117/local_translate.py --language french --text "Je veux reserver une table."
+python experiments/cpu_continuation_20261117/local_translate.py --language spanish --text "Quiero reservar una mesa."
+# To compare with the unchanged base model:
+python experiments/cpu_continuation_20261117/local_translate.py --language french --text "Je veux reserver une table." --baseline
+```
+
+Requires the dependencies listed above, Internet for first-time pinned base downloads, and approximately 350 MB per language in a user-owned model cache. This is **not** a live speech-recognition system or an activated BridgeCaption GUI provider. A trained LoRA adapter is not a standalone language model.
+
 ## Evidence and limits
 
 - Tatoeba/ManyThings.org English-French and English-Spanish datasets require attribution and license review before redistribution. Existing pinned Marian model cards/weights remain subject to their upstream terms.
