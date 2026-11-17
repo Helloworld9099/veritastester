@@ -1,32 +1,35 @@
-# BridgeCaption: educational lecture/subtitle adaptation (QED v2.0a)
+# BridgeCaption: QED educational subtitle adaptation (research only)
 
-**Research only.** This follows the French/Spanish checkpoint-replay and OPUS Books experiments, but begins from the **unchanged selected historical adapters** so data-domain effects can be compared. It does not replace the live Gemini provider or any existing model.
+## Why a different corpus?
 
-## Why this corpus?
+BridgeCaption's existing French->English and Spanish->English models were adapted on sentence corpora (Tatoeba, Europarl) and book-aligned text (OPUS Books). QED/AMARA is a multilingual collection of subtitles translated for educational videos and lectures, closer to BridgeCaption's intended lecture/meeting context.
 
-QED/AMARA from Qatar Computing Research Institute contains multilingual educational-video and lecture subtitles. Its transcription/translation style is closer to BridgeCaption's target use than literary books. QED is explicitly **RESEARCH-ONLY** with Qatar Computing Research Institute copyright. A future commercial distribution or deployment requires separate licensing review; no blanket reuse permission is implied.
+**Rights:** QED v2.0a is made available for RESEARCH purposes ONLY by Qatar Computing Research Institute; no production/commercial use or redistribution is assumed. Attribution: Abdelali, Guzman, Sajjad and Vogel (2014), OPUS/Tiedemann. Original source: https://opus.nlpl.eu/datasets/QED.
 
-Original source: https://opus.nlpl.eu/datasets/QED. Aligned Moses files are downloaded from OPUS QED **v2.0a** for the French-English and Spanish-English pairs, with OPUS video/document identifiers for separating fitting and evaluation groups. Cite Abdelali, Guzman, Sajjad and Vogel (LREC 2014) and OPUS (Tiedemann, LREC 2012).
+## Data integrity update
 
-The script records the full SHA-256 digest of the downloaded archive in aggregate reports. **The first experimental run is discovery, not pre-pinned provenance:** after verification, pin the observed digest in `train_qed.py` and rerun as a new experiment if source integrity needs to be independently reproduced.
+The first attempt to use OPUS Moses bitext files was aborted. Although the archive contains French/Spanish, English, and XCES alignment XML, their plain-text files contained different row counts. Silently matching those files by line number could create *incorrect bilingual training pairs*.
 
-## Controls
+This experiment therefore uses OPUS's **compressed TMX translation memory**, containing both language segments in one `<tu>` unit. Each entry is parsed with the standard library XML parser. Source/English order, lengths, exact-text duplicates and language identifiers are checked before training.
 
-- Existing pinned Marian base weights and unchanged historical LoRA adapter verified by existing checksum records.
-- 5,120 filtered aligned training pairs; **128 development** and **256 never-trained-on heldout** subtitle pairs, with independent video/document identifier groups.
-- Frozen candidate protocol: 320 optimization steps with checkpoints 64/128/192/256/320. Only development scores select the best candidate.
-- Required development gate: at least +0.25 chrF vs prior adapter and no BLEU decrease; old adapter stays preferred otherwise.
-- After selection is frozen, score base, previous adapter and selected adapter (if any) on the reserved video-group-heldout sample **once**.
-- Outputs contain only aggregate chrF/BLEU, exact-reference fraction (explicitly *not accuracy*), group hashes, and candidate adapter weights. No source sentences, generated translations, source base weights, usernames or credentials are uploaded.
-- OPUS pretrained models may already contain data from QED; video-group separation controls this experiment only, not unknown pretraining overlap. Subtitle alignment quality may vary.
-- A separate independent bilingual human adequacy review is required to establish the requested 90% correctness milestone; code and scores do not imply that it has happened.
+TMX does NOT reliably preserve source-video/speaker IDs. We reserve **128 development and 256 final evaluation translation units** disjoint by normalized exact source and English reference from 5,120 new training pairs. **Do not claim independent video/document evaluation**: near duplicates, author/topic overlap and pretraining contamination remain possible. The final test is scored only after development checkpoint selection is frozen.
 
-## Reproduce on a free Linux CPU runner
+## Model protocol
+
+Original pinned Marian base and prior saved selected adapter remain immutable and are verified by original research checksums. Each research run uses LoRA rank8/alpha16, a fresh AdamW optimizer with learning rate 2.5e-5, 320 additional updates (effective batch16), and checkpoints at 64/128/192/256/320 updates. The accepted model must improve dev chrF by at least 0.25 versus the previous adapter **and not lower dev BLEU**; otherwise the previous adapter remains preferred. The selected candidate is never activated in the BridgeCaption live app.
+
+After selecting only from development scores, compare frozen base, previous research adapter, and new candidate (if any) on the 256 held-out translation units. Report *corpus chrF and BLEU*, not percent-correct translations. Save only aggregate reports, archive SHA-256, and candidate adapter weights in GitHub Actions artifacts; raw subtitle sentences, personal data and full base weights remain excluded.
+
+This is a domain-adaptation experiment, **not evidence that the model has reached 90% semantic translation adequacy**. The separate independently rated quality rubric in `experiments/translation_quality_20261117/` defines the user-requested 90% threshold.
+
+## Reproducibility
+
+The first correctly parsed TMX archive hash is logged as `QED_TMX_SHA256`; pin its exact digest in `train_qed.py` after inspection to prevent silent source changes. The QED source URLs are fixed to `v2.0a`, but that alone is not a cryptographic pin.
 
 ```bash
 python -m unittest discover -s experiments/qed_subtitles_20261117/tests -p 'test_*.py' -v
-python experiments/qed_subtitles_20261117/train_qed.py --language french --output-dir /tmp/qed-french-1
-python experiments/qed_subtitles_20261117/train_qed.py --language spanish --output-dir /tmp/qed-spanish-1
+python experiments/qed_subtitles_20261117/train_qed.py --language french --output-dir /tmp/qed-fr-1
+python experiments/qed_subtitles_20261117/train_qed.py --language spanish --output-dir /tmp/qed-es-1
 ```
 
-Requires CPU PyTorch, sacrebleu, Transformers and huggingface_hub (see existing pinned research requirements). The GitHub Actions workflow `.github/workflows/qed-subtitles-research.yml` runs both languages and preserves results as research artifacts. **No production model is activated.**
+Use existing CPU PyTorch and pinned research requirements, plus `huggingface-hub>=0.34,<1.0`. The separate workflow `.github/workflows/qed-subtitles-research.yml` runs both languages on free GitHub Actions CPU runners.
