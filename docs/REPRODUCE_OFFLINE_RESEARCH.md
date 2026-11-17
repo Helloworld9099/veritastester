@@ -1,6 +1,6 @@
 # Reproduce or resume the offline work
 
-Use the `research/dataset-training-20261115` branch and Python >=3.10. Source
+Use a repository revision containing the offline research scripts (present on `main`) and Python >=3.10. Check [the execution receipt](OFFLINE_RESEARCH_RESULTS.md) for the historical data hashes, split rules and seed. Source
 rows and models stay under ignored `data/private/` and `results/`. Download
 scripts only retrieve pinned data; no source-supplied scripts are executed.
 

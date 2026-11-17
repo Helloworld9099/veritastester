@@ -4,6 +4,14 @@ A **visible, always-on-top Linux desktop translation overlay** for videos, onlin
 
 **Status:** Prototype code with offline tests; no claim of production readiness or verified multilingual accuracy. User-approved audio sources are processed by local Faster-Whisper. A separate provider translates text, with context selection designed to avoid misleading previous statements. Audio is not deliberately saved.
 
+## For judges
+
+**[Judge guide: demo, verified results, limits and disclosures](docs/JUDGE_GUIDE.md)** · [Full experiment report](docs/OFFLINE_RESEARCH_RESULTS.md) · [Dataset sources and licences](docs/DATASET_SOURCE_INVENTORY.md)
+
+In an offline English idiom-classification experiment on **2,301 held-out examples**, a majority-class baseline scored **0.4521 macro-F1**, a sentence-only classifier **0.6938**, and a context-added classifier **0.6878**. Additional preceding text did **not** demonstrate a reliable benefit. These scores **are not** claims about translation accuracy, speech recognition or real-time caption performance. The trained idiom classifier is not an activated translation model.
+
+The [tests](tests/), [reproduction steps](docs/REPRODUCE_OFFLINE_RESEARCH.md) and [inconclusive/negative findings](docs/SMALL_SCALE_CONTEXT_PILOT.md) remain available for inspection.
+
 ## What it does
 
 - Select microphone or PulseAudio/PipeWire **system audio monitor**; read subtitles over other desktop windows.
@@ -182,7 +190,7 @@ bridgecaption-train-idiom --help
 
 The curriculum tool can create human-review candidates for **helpful/neutral/harmful memory utility** and **slang meanings**, plus separately labelled same-dialogue versus cross-dialogue adjacency pairs for future self-supervised pretraining. No automatic labels of translation usefulness or slang meaning are fabricated. The human review CLI requires a grounded second situation description and a verified reference meaning/translation.
 
-**No dataset is downloaded, bundled, uploaded or trained in this repository revision.** Some sources (notably SlangInterp/Urban Dictionary) are restricted to research use, and DiaBLa is reserved as evaluation-only.
+**No raw third-party corpora, private review queues or training weights are committed here.** A separate auxiliary English idiomaticity classifier was trained offline, with actual metrics and limitations recorded in [the research report](docs/OFFLINE_RESEARCH_RESULTS.md); it is not enabled in the live app. Some sources (notably SlangInterp/Urban Dictionary) are restricted to research use, and DiaBLa was held out for evaluation only.
 
 ## Collecting real context and slang labels
 
@@ -224,4 +232,4 @@ The app can lag, skip audio under load, misrecognize accents or speakers, and ge
 
 ### Attribution
 
-[OpenAI Whisper](https://github.com/openai/whisper), [faster-whisper](https://github.com/SYSTRAN/faster-whisper), [Ollama](https://docs.ollama.com/api), [Groq](https://console.groq.com/docs/openai), [Gemini](https://ai.google.dev/gemini-api/docs), [Azure Translator](https://learn.microsoft.com/en-us/azure/ai-services/translator/text-translation/reference/v3/reference), and [FFmpeg](https://ffmpeg.org/) are third-party dependencies or services. Major code and documentation have been developed with ChatGPT assistance; disclose this in the competition submission. Original project code is MIT licensed.
+[OpenAI Whisper](https://github.com/openai/whisper), [faster-whisper](https://github.com/SYSTRAN/faster-whisper), [Ollama](https://docs.ollama.com/api), [Groq](https://console.groq.com/docs/openai), [Gemini](https://ai.google.dev/gemini-api/docs), [Azure Translator](https://learn.microsoft.com/en-us/azure/ai-services/translator/text-translation/reference/v3/reference), and [FFmpeg](https://ffmpeg.org/) are third-party dependencies or services. Major code and documentation have been developed with ChatGPT assistance; disclose this in the competition submission. Original project code is MIT licensed. See the [judge-facing disclosures](docs/JUDGE_GUIDE.md) and [dataset licence inventory](docs/DATASET_SOURCE_INVENTORY.md).
