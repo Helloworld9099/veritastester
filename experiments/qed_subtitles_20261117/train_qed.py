@@ -65,7 +65,8 @@ def aligned_subtitles(data: bytes, language: str):
                     raise RuntimeError("Unexpected QED archive member")
                 lookup[name] = info.filename
         if set(wanted) != set(lookup):
-            raise RuntimeError("QED archive missing source, English, or subtitle video IDs")
+            available = sorted(Path(item.filename).name for item in z.infolist())
+            raise RuntimeError("QED archive missing source, English, or subtitle video IDs. ZIP filenames: " + repr(available[:20]))
         source, english, metadata = [
             z.read(lookup[name]).decode("utf-8-sig").splitlines() for name in wanted
         ]
