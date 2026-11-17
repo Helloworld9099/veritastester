@@ -49,6 +49,14 @@ def experiment(language: str, output_dir: Path):
 
     existing_train.parse_pairs = parse
     report = existing_train.train_experiment(REPO, output_dir, language)
+    report["attribution"] = ("OPUS Books v1; aligned bilingual public-domain-era "
+                             "books by Andras Farkas, distributed by OPUS / Jorg Tiedemann; "
+                             "research and educational use only; mass redistribution restricted.")
+    report["warning"] = (
+        "Document-disjoint OPUS Books development, but possible base-pretraining overlap. "
+        "No independent bilingual human-quality evidence; never use heldout test "
+        "for checkpoint selection.")
+    (output_dir / "report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
     if not split_holder:
         raise RuntimeError("Experiment split was not recorded")
 
