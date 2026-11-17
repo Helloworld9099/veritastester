@@ -12,17 +12,22 @@ from train_qed import QED, aligned_subtitles, split_books
 def archive(language, docs=12, each=12):
     spec = QED[language]
     prefix = "QED." + spec["pair"]
-    src, en, ids = [], [], []
+    src, en, alignment_xml = [], [], ['<cesAlign version="1.0">']
     for doc in range(docs):
+        alignment_xml.append(
+            f'<linkGrp fromDoc="en/lecture{doc}.xml.gz" '
+            f'toDoc="{spec["source"]}/lecture{doc}.xml.gz">')
         for i in range(each):
             src.append(f"Traduction internationale discours numero {doc} segment {i}")
             en.append(f"International lecture sentence document {doc} number {i}")
-            ids.append(f"en/lecture{doc}.xml.gz {spec['source']}/lecture{doc}.xml.gz s{i} s{i}")
+            alignment_xml.append(f'<link xtargets="s{i};s{i}" />')
+        alignment_xml.append('</linkGrp>')
+    alignment_xml.append('</cesAlign>')
     buffer = io.BytesIO()
     with zipfile.ZipFile(buffer, "w") as z:
         z.writestr(prefix + "." + spec["source"], "\n".join(src))
         z.writestr(prefix + ".en", "\n".join(en))
-        z.writestr(prefix + ".ids", "\n".join(ids))
+        z.writestr(prefix + ".xml", "\n".join(alignment_xml))
     return buffer.getvalue()
 
 
@@ -42,7 +47,7 @@ class TestQED(unittest.TestCase):
         with zipfile.ZipFile(s, "w") as z:
             z.writestr("QED.en-fr.fr", "Bonjour longue phrase")
             z.writestr("QED.en-fr.en", "Hello long phrase")
-        with self.assertRaisesRegex(RuntimeError, "video IDs"):
+        with self.assertRaisesRegex(RuntimeError, "text/XML alignment"):
             aligned_subtitles(s.getvalue(), "french")
 
     def test_changed_archive_digest_is_rejected(self):
