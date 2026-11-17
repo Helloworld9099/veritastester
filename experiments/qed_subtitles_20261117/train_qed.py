@@ -30,12 +30,12 @@ QED = {
     "french": {
         "pair": "en-fr", "source": "fr",
         "url": "https://object.pouta.csc.fi/OPUS-QED/v2.0a/tmx/en-fr.tmx.gz",
-        "sha256": None,  # Record checksum on first verified run, then pin it.
+        "sha256": "35b4ca45f4d105976c47745a7a6b39d6f3c16403bdcebc8124a89cea262848df",
     },
     "spanish": {
         "pair": "en-es", "source": "es",
         "url": "https://object.pouta.csc.fi/OPUS-QED/v2.0a/tmx/en-es.tmx.gz",
-        "sha256": None,
+        "sha256": "6ecd8a6c1e12d767c3451b52d09860891213dbc382b00b8bfd5ba06962460ea0",
     },
 }
 SEED = 202611173
