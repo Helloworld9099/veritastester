@@ -1,0 +1,55 @@
+{
+  "experiment": "research-only CPU spanish->English LoRA continuation",
+  "language": "spanish",
+  "seed": 202611173,
+  "base_model": "Helsinki-NLP/opus-mt-es-en",
+  "base_revision": "c96e2c5399ebfae4fc43d9669556b9afa74bb69d",
+  "warm_adapter_sha256": "55d4b872a6807e0d9bc317b72ef63eddf77d5828c427f91497d5bc23ac2e65f3",
+  "corpus_source": "https://object.pouta.csc.fi/OPUS-QED/v2.0a/tmx/en-es.tmx.gz",
+  "corpus_sha256": "6ecd8a6c1e12d767c3451b52d09860891213dbc382b00b8bfd5ba06962460ea0",
+  "attribution": "QCRI Educational Domain Corpus (QED v2.0a), Abdelali, Guzman, Sajjad, Vogel; OPUS/Tiedemann. Research use ONLY.",
+  "train_rows": 5120,
+  "dev_rows": 128,
+  "unique_pairs_after_filtering": 49880,
+  "warning": "TMX has paired bilingual segments but no trustworthy video-group IDs; sample-level exact disjointness only. Pretraining contamination unknown. Neither chrF/BLEU nor reference exact-match equals human adequacy.",
+  "planned_updates": 320,
+  "learning_rate": 2.5e-05,
+  "selection": "Accept new checkpoint only if dev chrF improves >=0.25 AND dev BLEU does not fall, compared with unchanged prior adapter.",
+  "scores": {
+    "previous": {
+      "chrf": 62.1277750127411,
+      "bleu": 42.84999438634841,
+      "n": 128
+    },
+    "step64": {
+      "chrf": 62.3412730409875,
+      "bleu": 43.31640167905845,
+      "n": 128
+    },
+    "step128": {
+      "chrf": 62.5285356738329,
+      "bleu": 43.638634512258065,
+      "n": 128
+    },
+    "step192": {
+      "chrf": 62.384812680880906,
+      "bleu": 43.585541577544085,
+      "n": 128
+    },
+    "step256": {
+      "chrf": 62.55584455837378,
+      "bleu": 43.80133893963756,
+      "n": 128
+    },
+    "step320": {
+      "chrf": 62.533553630531244,
+      "bleu": 43.67353419767046,
+      "n": 128
+    }
+  },
+  "selected": "step256",
+  "completed_updates": 320,
+  "selected_candidate_sha256": "269b67cf8e49dc0da9fe13d47059c57533e61e5ef4db079ff12983e70ea62ab9",
+  "last_step_loss": 1.141251564025879,
+  "elapsed_seconds": 657.4305082469999
+}

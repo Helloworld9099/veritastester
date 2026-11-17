@@ -1,0 +1,62 @@
+{
+  "language": "french",
+  "corpus": "QED v2.0a TMX educational subtitles",
+  "corpus_sha256": "35b4ca45f4d105976c47745a7a6b39d6f3c16403bdcebc8124a89cea262848df",
+  "source_pre_pinned": false,
+  "eligible_translation_units": 602987,
+  "sampled_unique_units": 49759,
+  "train_rows": 5120,
+  "dev_rows": 128,
+  "test_rows": 256,
+  "cohorts_exact_text_disjoint": true,
+  "cohorts_video_document_disjoint": false,
+  "selection_frozen_before_test": true,
+  "selected_on_dev_only": "previous",
+  "development_scores": {
+    "previous": {
+      "chrf": 57.67215169309255,
+      "bleu": 37.30474646427605,
+      "n": 128
+    },
+    "step64": {
+      "chrf": 57.742031340548564,
+      "bleu": 37.33882372188329,
+      "n": 128
+    },
+    "step128": {
+      "chrf": 57.535094445420754,
+      "bleu": 36.78122956235283,
+      "n": 128
+    },
+    "step192": {
+      "chrf": 57.57457024150593,
+      "bleu": 36.88661107447785,
+      "n": 128
+    },
+    "step256": {
+      "chrf": 57.60670820927071,
+      "bleu": 36.930896537072826,
+      "n": 128
+    },
+    "step320": {
+      "chrf": 57.71360063258314,
+      "bleu": 37.15599318954894,
+      "n": 128
+    }
+  },
+  "heldout_tmx_test": {
+    "base": {
+      "n": 256,
+      "chrf": 55.39003170370883,
+      "bleu": 33.75962986893362,
+      "reference_exact_match_fraction_not_adequacy": 0.046875
+    },
+    "previous": {
+      "n": 256,
+      "chrf": 55.44757455833514,
+      "bleu": 33.735493011295965,
+      "reference_exact_match_fraction_not_adequacy": 0.046875
+    }
+  },
+  "limitations": "Research-only dataset. Held-out translation units may be from the same video or present in pretrained OPUS. No blinded bilingual judgments, no 90% accuracy verification, no production integration."
+}
