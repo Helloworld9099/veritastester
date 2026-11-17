@@ -97,6 +97,17 @@ def test_real_tk_expands_settings_without_hiding_start_stop(monkeypatch):
         assert app.engine_controls_frame.winfo_manager() == "pack"
         assert app.bottom_frame.winfo_manager() == "pack"
         assert app.start_button.winfo_manager() == "pack"
+        assert "Local translation" in app.engine_note.cget("text")
+        assert app.full_caption_button.winfo_ismapped()
+        app.show_full_caption()
+        root.update_idletasks()
+        assert app.caption_popup.winfo_exists()
+        old_popup = app.caption_popup
+        app.show_full_caption()
+        root.update_idletasks()
+        assert not old_popup.winfo_exists()
+        app._dismiss_full_caption()
+        assert app.caption_popup is None
         app.toggle_settings()
         root.update_idletasks()
         assert app.compact is True

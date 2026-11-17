@@ -78,6 +78,7 @@ class Application:
         self.glossary = {}
         self.devices = []
         self.last_caption = None
+        self._dismiss_full_caption()
         self._drag_xy = None
         self.is_pinned = True
         self.compact = True
@@ -165,6 +166,8 @@ class Application:
         self.start_button.pack(side="left", padx=(0, 8))
         self.settings_button = self.button(action_row, "Settings", self.toggle_settings)
         self.settings_button.pack(side="left")
+        self.full_caption_button = self.button(action_row, "Full caption", self.show_full_caption)
+        self.full_caption_button.pack(side="left", padx=(8, 0))
         for draggable in (top, title_row, title):
             draggable.bind("<ButtonPress-1>", self.drag_start)
             draggable.bind("<B1-Motion>", self.drag_move)
@@ -260,6 +263,9 @@ class Application:
         topic_group = field(engine_row, "Topic", 2, last=True)
         self.topic_box = self.picker(topic_group, TOPICS, width=18)
         self.topic_box.pack(fill="x")
+        self.engine_note = self.label(self.engine_controls_frame, "", 9, MUTED)
+        self.engine_note.configure(justify="left", wraplength=650)
+        self.engine_note.pack(fill="x", pady=(8, 0))
         self.settings_frame = tk.Frame(self.settings_content, bg=BG, padx=18, pady=7)
         self.settings_frame.pack(fill="x")
         self.label(self.settings_frame, "Preferences", 11, TEXT, True).pack(
@@ -371,6 +377,49 @@ class Application:
         error = message.startswith("error") or message.startswith("no audio")
         self.status_label.config(fg=ALERT if error else MUTED)
 
+    def _dismiss_full_caption(self):
+        popup = getattr(self, "caption_popup", None)
+        if popup is not None:
+            popup.destroy()
+        self.caption_popup = None
+
+    def show_full_caption(self):
+        """Read the complete last result without another translation request."""
+        if self.last_caption is None:
+            self.status_var.set("A completed translation will be available here after listening or a text test.")
+            return
+        original, translated, language = self.last_caption
+        self._dismiss_full_caption()
+        popup = tk.Toplevel(self.root)
+        self.caption_popup = popup
+        popup.transient(self.root)
+        popup.title("Full caption | BridgeCaption")
+        popup.geometry("720x480")
+        popup.minsize(440, 300)
+        popup.configure(bg=BG)
+        self.label(popup, "Full caption", 15, ACCENT, True).pack(anchor="w", padx=16, pady=(16, 4))
+        self.label(popup, "Snapshot of the last completed translation", 9, MUTED).pack(anchor="w", padx=16)
+        body = tk.Frame(popup, bg=PANEL)
+        body.pack(fill="both", expand=True, padx=16, pady=12)
+        scrollbar = ttk.Scrollbar(body)
+        scrollbar.pack(side="right", fill="y")
+        text = tk.Text(body, wrap="word", bg=PANEL, fg=TEXT, relief="flat",
+                       font=("DejaVu Sans", 12), padx=14, pady=14,
+                       yscrollcommand=scrollbar.set, highlightthickness=1,
+                       highlightbackground=BORDER, highlightcolor=ACCENT)
+        text.pack(fill="both", expand=True)
+        scrollbar.config(command=text.yview)
+        text.tag_configure("heading", foreground=ACCENT, font=("DejaVu Sans", 9, "bold"))
+        text.insert("end", f"ORIGINAL · {language.upper()}\n\n", "heading")
+        text.insert("end", original + "\n\n")
+        text.insert("end", "TRANSLATION\n\n", "heading")
+        text.insert("end", translated)
+        text.config(state="disabled")
+        self.button(popup, "CLOSE", self._dismiss_full_caption).pack(anchor="e", padx=16, pady=(0, 12))
+        popup.protocol("WM_DELETE_WINDOW", self._dismiss_full_caption)
+        popup.bind("<Escape>", lambda _event: self._dismiss_full_caption())
+        text.focus_set()
+
     def _apply_overlay_mode(self):
         """Collapse configuration without losing captions or Start/Stop controls."""
         for panel in (self.controls_frame, self.engine_controls_frame,
@@ -434,6 +483,7 @@ class Application:
         self.source_text.config(wraplength=width)
         self.translated_text.config(wraplength=width)
         self.status_label.config(wraplength=max(280, self.root.winfo_width() - 52))
+        self.engine_note.config(wraplength=width)
 
     def _render_caption(self, original, translated, lang):
         """Display bounded subtitles without changing the underlying translation.
@@ -459,6 +509,10 @@ class Application:
         target = LANGUAGES.get(self.target_lang(), self.target_lang())
         live = "Listening" if self.live_session is not None else "Ready"
         self.summary_var.set(f"{live}  ·  {source} → {target}  ·  {engine}")
+        self.engine_note.config(text=(
+            "Cloud translation · recognized text is sent to the selected service."
+            if needs_cloud(self.engine_box.get()) else
+            "Local translation · recognized text is sent to your Ollama service."))
 
     def _on_source_change(self):
         self.reset_history()
@@ -485,6 +539,7 @@ class Application:
 
     def reset_history(self):
         self.last_caption = None
+        self._dismiss_full_caption()
         self.text_generation += 1
         self.pipeline.reset()
         if self.live_session is not None:
@@ -525,6 +580,7 @@ class Application:
         self.pipeline.reset()
         self.pipeline = new_pipeline
         self.last_caption = None
+        self._dismiss_full_caption()
         self.engine_selected = next_engine
         self._update_overlay_summary()
         self.consent_given = False
@@ -646,6 +702,7 @@ class Application:
         if self.live_session is not None:
             self.live_session.stop()
             self.last_caption = None
+            self._dismiss_full_caption()
             self.source_text.config(text="Audio capture stopping.")
             self.translated_text.config(text="Previous captions hidden.")
             self.start_button.config(text="Stopping...", state="disabled")
@@ -704,6 +761,7 @@ class Application:
                     self.status_var.set(values[0])
                 elif kind == "heard":
                     self.last_caption = None
+                    self._dismiss_full_caption()
                     self.source_text.config(text=values[0])
                     self.translated_text.config(text="Translating…")
                 elif kind == "typed_caption":
@@ -733,6 +791,7 @@ class Application:
                     elif event == "heard":
                         original, language = data
                         self.last_caption = None
+                        self._dismiss_full_caption()
                         self.source_text.config(text=f"[{language}]  {original[:700]}")
                         self.translated_text.config(text="Translating...")
                     elif event == "caption":
@@ -748,6 +807,7 @@ class Application:
                         self.status_var.set("ERROR · " + data[0])
                     elif event == "stopped":
                         self.last_caption = None
+                        self._dismiss_full_caption()
                         self.live_session = None
                         self._update_overlay_summary()
                         self.pipeline.reset()
@@ -766,6 +826,7 @@ class Application:
 
     def close(self):
         self.closed = True
+        self._dismiss_full_caption()
         if self.live_session is not None:
             self.live_session.stop()
         self.pipeline.reset()
