@@ -1,0 +1,67 @@
+{
+  "language": "spanish",
+  "research_only": true,
+  "training_data": "OPUS Books v1 (Andras Farkas bilingual books)",
+  "domain": "literary, not live conversational speech",
+  "books_groups": 18,
+  "heldout_book_groups_hashes": {
+    "dev": [
+      "3a8c6d0a3ec62504d11f264e99d8a87d18cf76726d954fea684cd7e7b4063c16"
+    ],
+    "test": [
+      "960e2c51239c4ff015a193405e4f28bb966a46f284c21074a2231d1838aad453"
+    ]
+  },
+  "selection_frozen_before_test": true,
+  "previous_adapter_preserved": true,
+  "train_steps": 192,
+  "dev": {
+    "previous": {
+      "chrf": 37.69262370951855,
+      "bleu": 14.153135849381636,
+      "n": 128
+    },
+    "step48": {
+      "chrf": 37.95111438491387,
+      "bleu": 14.46291610129149,
+      "n": 128
+    },
+    "step96": {
+      "chrf": 38.121737157529125,
+      "bleu": 14.462689228454558,
+      "n": 128
+    },
+    "step144": {
+      "chrf": 37.968486823835526,
+      "bleu": 13.957612944411581,
+      "n": 128
+    },
+    "step192": {
+      "chrf": 37.934615369571326,
+      "bleu": 13.78384639504069,
+      "n": 128
+    }
+  },
+  "selected_on_dev": "step96",
+  "independent_book_groups_test": {
+    "base": {
+      "n": 256,
+      "chrf": 47.67125390172437,
+      "bleu": 22.653212923896113,
+      "reference_exact_match_fraction_not_adequacy": 0.00390625
+    },
+    "previous": {
+      "n": 256,
+      "chrf": 47.8018699485637,
+      "bleu": 23.018636765835968,
+      "reference_exact_match_fraction_not_adequacy": 0.00390625
+    },
+    "selected": {
+      "n": 256,
+      "chrf": 48.14262906776742,
+      "bleu": 23.549234705920163,
+      "reference_exact_match_fraction_not_adequacy": 0.00390625
+    }
+  },
+  "evaluation_limitations": "Source document separation protects against within-Books document reuse in this experiment, but pretrained OPUS models may have seen these literary sentences. Literary chrF/BLEU or reference-exact match is NOT 90% accuracy. This cohort is consumed after the frozen test. No human adequacy ratings."
+}
