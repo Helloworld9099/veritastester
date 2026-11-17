@@ -1,0 +1,57 @@
+name: Preserve successful OPUS Books research adapters
+
+on:
+  push:
+    branches: [research/opus-books-adaptation-20261117]
+    paths:
+      - .github/workflows/persist-books.yml
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  preserve:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Retrieve immutable completed research run outputs
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 44178855467
+          github-token: ${{ github.token }}
+          repository: Helloworld9099/veritastester
+          pattern: books-research-*
+          merge-multiple: false
+          path: ${{ runner.temp }}/books-artifacts
+      - name: Verify selected research adapters and persist aggregates
+        shell: bash
+        run: |
+          set -euo pipefail
+          for lang in french spanish; do
+            incoming="$RUNNER_TEMP/books-artifacts/books-research-$lang"
+            test -d "$incoming"
+            adapter=$(find "$incoming" -type f -name candidate_selected.safetensors -print -quit)
+            report=$(find "$incoming" -type f -name report.json -print -quit)
+            evaluation=$(find "$incoming" -type f -name books_evaluation.json -print -quit)
+            test -n "$adapter" && test -n "$report" && test -n "$evaluation"
+            python3 -c 'import json,sys; r=json.load(open(sys.argv[1])); e=json.load(open(sys.argv[2])); assert r["language"]==sys.argv[3]; assert r["selected"]!="previous"; assert e["language"]==sys.argv[3] and e["selection_frozen_before_test"]; assert e["selected_on_dev"]==r["selected"]; print("VERIFIED",sys.argv[3],r["selected"])' "$report" "$evaluation" "$lang"
+            target="experiments/opus_books_20261117/saved/$lang"
+            mkdir -p "$target"
+            cp "$adapter" "$target/adapter_selected.safetensors"
+            cp "$report" "$target/report.json"
+            cp "$evaluation" "$target/books_evaluation.json"
+            (
+              cd "$target"
+              sha256sum adapter_selected.safetensors report.json books_evaluation.json > SHA256SUMS.txt
+            )
+          done
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add experiments/opus_books_20261117/saved
+          git diff --cached --stat
+          git commit -m "research: preserve selected French/Spanish Books adapters and frozen evaluations [skip ci]"
+          git push origin "HEAD:refs/heads/research/opus-books-adaptation-20261117"

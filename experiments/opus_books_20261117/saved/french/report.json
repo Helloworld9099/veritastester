@@ -1,0 +1,50 @@
+{
+  "experiment": "research-only CPU french->English LoRA continuation",
+  "language": "french",
+  "seed": 202611171,
+  "base_model": "Helsinki-NLP/opus-mt-fr-en",
+  "base_revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+  "warm_adapter_sha256": "600990e205c1238ea1fba3a8c36e5ef199bdfc10b33e4e0068e5b9695b7e8665",
+  "corpus_source": "https://object.pouta.csc.fi/OPUS-Books/v1/moses/en-fr.txt.zip",
+  "corpus_sha256": "3b9eade0b11d6cc280502cbe52908ec476d9faa3bb589e70cf3ee1e44fcfc473",
+  "attribution": "OPUS Books v1; aligned bilingual public-domain-era books by Andras Farkas, distributed by OPUS / Jorg Tiedemann; research and educational use only; mass redistribution restricted.",
+  "train_rows": 3072,
+  "dev_rows": 128,
+  "unique_pairs_after_filtering": 99100,
+  "warning": "Document-disjoint OPUS Books development, but possible base-pretraining overlap. No independent bilingual human-quality evidence; never use heldout test for checkpoint selection.",
+  "planned_updates": 192,
+  "learning_rate": 2.5e-05,
+  "selection": "Accept new checkpoint only if dev chrF improves >=0.25 AND dev BLEU does not fall, compared with unchanged prior adapter.",
+  "scores": {
+    "previous": {
+      "chrf": 42.23295855352943,
+      "bleu": 16.32000305453905,
+      "n": 128
+    },
+    "step48": {
+      "chrf": 42.4501832522522,
+      "bleu": 16.3403054278128,
+      "n": 128
+    },
+    "step96": {
+      "chrf": 42.88035261558435,
+      "bleu": 16.70295140414636,
+      "n": 128
+    },
+    "step144": {
+      "chrf": 43.0802294778688,
+      "bleu": 16.97172090208039,
+      "n": 128
+    },
+    "step192": {
+      "chrf": 43.01191291283908,
+      "bleu": 16.812672181426187,
+      "n": 128
+    }
+  },
+  "selected": "step144",
+  "completed_updates": 192,
+  "selected_candidate_sha256": "8b2410003e8ead6732870d18963e03bfae45ceb3148ac442acb47917dee0f891",
+  "last_step_loss": 2.5454938411712646,
+  "elapsed_seconds": 289.713230262
+}

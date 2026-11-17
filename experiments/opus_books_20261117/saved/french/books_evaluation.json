@@ -1,0 +1,68 @@
+{
+  "language": "french",
+  "research_only": true,
+  "training_data": "OPUS Books v1 (Andras Farkas bilingual books)",
+  "domain": "literary, not live conversational speech",
+  "books_groups": 26,
+  "heldout_book_groups_hashes": {
+    "dev": [
+      "7a84c95e4a3144a3a9ad09c861f5deadbe87e987ffc77db44f80c87e0cff79e0"
+    ],
+    "test": [
+      "25fd937c615e0fb18079a6bd2f2d8fb725f1586901950d127d27797fa3f68e64",
+      "1de82555267234e919c33d898f0c44d9ed9c456fc101e9ccfb667fb1a2ee50d1"
+    ]
+  },
+  "selection_frozen_before_test": true,
+  "previous_adapter_preserved": true,
+  "train_steps": 192,
+  "dev": {
+    "previous": {
+      "chrf": 42.23295855352943,
+      "bleu": 16.32000305453905,
+      "n": 128
+    },
+    "step48": {
+      "chrf": 42.4501832522522,
+      "bleu": 16.3403054278128,
+      "n": 128
+    },
+    "step96": {
+      "chrf": 42.88035261558435,
+      "bleu": 16.70295140414636,
+      "n": 128
+    },
+    "step144": {
+      "chrf": 43.0802294778688,
+      "bleu": 16.97172090208039,
+      "n": 128
+    },
+    "step192": {
+      "chrf": 43.01191291283908,
+      "bleu": 16.812672181426187,
+      "n": 128
+    }
+  },
+  "selected_on_dev": "step144",
+  "independent_book_groups_test": {
+    "base": {
+      "n": 256,
+      "chrf": 55.57852938243663,
+      "bleu": 34.91181669177413,
+      "reference_exact_match_fraction_not_adequacy": 0.04296875
+    },
+    "previous": {
+      "n": 256,
+      "chrf": 55.43685413573408,
+      "bleu": 34.063659637493,
+      "reference_exact_match_fraction_not_adequacy": 0.046875
+    },
+    "selected": {
+      "n": 256,
+      "chrf": 56.06495880061701,
+      "bleu": 35.02339266388584,
+      "reference_exact_match_fraction_not_adequacy": 0.046875
+    }
+  },
+  "evaluation_limitations": "Source document separation protects against within-Books document reuse in this experiment, but pretrained OPUS models may have seen these literary sentences. Literary chrF/BLEU or reference-exact match is NOT 90% accuracy. This cohort is consumed after the frozen test. No human adequacy ratings."
+}
