@@ -14,6 +14,7 @@ from pathlib import Path
 import random
 import sys
 import zipfile
+import xml.etree.ElementTree as ET
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
@@ -53,7 +54,7 @@ def aligned_subtitles(data: bytes, language: str):
     if expected and digest != expected:
         raise RuntimeError("QED archive changed unexpectedly; aborting")
     prefix = "QED." + spec["pair"]
-    wanted = [prefix + "." + extension for extension in (spec["source"], "en", "ids")]
+    wanted = [prefix + "." + extension for extension in (spec["source"], "en", "xml")]
     if len(data) > 150 * 1024 * 1024:
         raise RuntimeError("Unusually large QED source archive")
     with zipfile.ZipFile(io.BytesIO(data)) as z:
@@ -66,14 +67,36 @@ def aligned_subtitles(data: bytes, language: str):
                 lookup[name] = info.filename
         if set(wanted) != set(lookup):
             available = sorted(Path(item.filename).name for item in z.infolist())
-            raise RuntimeError("QED archive missing source, English, or subtitle video IDs. ZIP filenames: " + repr(available[:20]))
-        source, english, metadata = [
-            z.read(lookup[name]).decode("utf-8-sig").splitlines() for name in wanted
-        ]
+            raise RuntimeError("QED missing text/XML alignment members: " + repr(available[:20]))
+        source = z.read(lookup[wanted[0]]).decode("utf-8-sig").splitlines()
+        english = z.read(lookup[wanted[1]]).decode("utf-8-sig").splitlines()
+        metadata = []
+        group = None
+        # OPUS QED releases include XCES document-alignment XML, NOT .ids files.
+        # Map a nonempty XCES alignment link to each aligned Moses text row.
+        with z.open(lookup[wanted[2]]) as links:
+            for event, element in ET.iterparse(links, events=("start", "end")):
+                tag = element.tag.rsplit("}", 1)[-1]
+                if event == "start" and tag == "linkGrp":
+                    from_doc = element.attrib.get("fromDoc", "")
+                    to_doc = element.attrib.get("toDoc", "")
+                    if not (from_doc and to_doc):
+                        raise RuntimeError("QED alignment lacks source/target document identity")
+                    group = from_doc + "|" + to_doc
+                elif event == "end" and tag == "link":
+                    value = element.attrib.get("xtargets", "")
+                    fields = value.split(";", 1)
+                    if group is not None and len(fields) == 2 and all(part.strip() for part in fields):
+                        metadata.append(group)
+                    element.clear()
+                elif event == "end" and tag == "linkGrp":
+                    group = None
+                    element.clear()
     if not (len(source) == len(english) == len(metadata)):
-        raise RuntimeError("QED subtitle parallel rows misaligned")
+        raise RuntimeError("QED XML aligned-link count mismatch: source=%d english=%d aligned=%d" %
+                           (len(source), len(english), len(metadata)))
     groups, seen_source, seen_target = {}, set(), set()
-    for src, tgt, meta in zip(source, english, metadata):
+    for src, tgt, doc in zip(source, english, metadata):
         src, tgt = src.strip(), tgt.strip()
         if not (3 <= len(src.split()) <= 32 and 3 <= len(tgt.split()) <= 36):
             continue
@@ -82,15 +105,12 @@ def aligned_subtitles(data: bytes, language: str):
         s, t = norm(src), norm(tgt)
         if s == t or s in seen_source or t in seen_target:
             continue
-        ids = meta.split()
-        if len(ids) < 2:
-            continue
-        doc = ids[0] + "|" + ids[1]
         groups.setdefault(doc, []).append((src, tgt))
         seen_source.add(s)
         seen_target.add(t)
     if len(groups) < 10:
         raise RuntimeError("QED source lacks enough independently identifiable videos")
+    print("QED_CORPUS_SHA256", language, digest, "video_groups", len(groups), flush=True)
     return groups, digest
 
 
