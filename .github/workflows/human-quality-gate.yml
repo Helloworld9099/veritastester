@@ -1,0 +1,23 @@
+name: 90 percent human adequacy rubric tests
+on:
+  push:
+    branches: [research/translation-quality-gate-20261117]
+    paths:
+      - experiments/translation_quality_20261117/**
+      - .github/workflows/human-quality-gate.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  quality-gate-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile rubric
+        run: python -m compileall -q experiments/translation_quality_20261117
+      - name: Run adequacy gate safeguards
+        run: python -m unittest discover -s experiments/translation_quality_20261117/tests -p 'test_*.py' -v
