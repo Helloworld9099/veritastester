@@ -1,0 +1,66 @@
+name: Verify batched offline research-model inference
+
+on:
+  push:
+    branches: [research/batched-offline-review-20261117]
+    paths:
+      - experiments/local_adapter_review_20261117/**
+      - .github/workflows/verify-batch-offline-review.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  batch-inference:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      HF_HUB_DISABLE_TELEMETRY: '1'
+      TOKENIZERS_PARALLELISM: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install free CPU inference dependencies
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'huggingface-hub>=0.34,<1.0'
+      - name: Run input validation and saved-model integrity tests
+        run: |
+          python -m compileall -q experiments/local_adapter_review_20261117
+          python -m unittest discover -s experiments/local_adapter_review_20261117/tests -p 'test_*.py' -v
+      - name: Real offline MASSIVE inference with two French inputs
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          p = Path(os.environ["RUNNER_TEMP"]) / "synthetic-review-source.jsonl"
+          rows = [
+              {"sample_id": "synthetic-001", "category": "everyday", "source_group_sha256": "0" * 64,
+               "source_text": "Mets une alarme pour demain."},
+              {"sample_id": "synthetic-002", "category": "idiom", "source_group_sha256": "1" * 64,
+               "source_text": "Je suis dans la lune."},
+          ]
+          p.write_text("".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8")
+          PY
+          python experiments/local_adapter_review_20261117/translate.py \
+            --language french --variant massive \
+            --input-jsonl "$RUNNER_TEMP/synthetic-review-source.jsonl" \
+            --output-jsonl "$RUNNER_TEMP/frozen-predictions.jsonl"
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          path = Path(os.environ["RUNNER_TEMP"]) / "frozen-predictions.jsonl"
+          rows = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
+          assert len(rows) == 2
+          assert [r["sample_id"] for r in rows] == ["synthetic-001", "synthetic-002"]
+          assert all(r["language"] == "french" and r["candidate_translation"].strip()
+                     for r in rows)
+          print("PASS: real batched French research adapter inference, 2 predictions")
+          PY
