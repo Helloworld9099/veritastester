@@ -1,4 +1,4 @@
-# TICO-19 independent-domain evaluation — research only
+> **Evaluation-integrity warning (November 18, 2026):** A qualitative audit found several unrelated French source/reference pairs in the previously scored TICO-19 cohort. The historical frozen numbers remain for reproducibility but **must not be used as reliable model-ranking evidence or a 90% adequacy claim**. See [REFERENCE_ALIGNMENT_WARNING.md](REFERENCE_ALIGNMENT_WARNING.md).\n\n# TICO-19 independent-domain evaluation — research only
 
 ## Purpose
 
