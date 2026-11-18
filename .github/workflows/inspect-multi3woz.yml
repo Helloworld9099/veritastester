@@ -1,0 +1,76 @@
+name: Inspect Multi3WOZ dialogue corpus safely before training
+on:
+  push:
+    branches: [research/multi3woz-dialogue-train-20261118]
+    paths:
+      - .github/workflows/inspect-multi3woz.yml
+permissions:
+  contents: read
+jobs:
+  inspect-dialogue:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Retrieve public pinned-source corpus without credentials
+        run: |
+          git clone --depth 1 https://github.com/cambridgeltl/multi3woz.git source
+          git -C source rev-parse HEAD
+          sha256sum source/data.zip
+      - name: Inspect zip member names and JSON structure; NO training or data publishing
+        run: |
+          python - <<'PY'
+          import io,json,zipfile
+          from pathlib import Path
+          f=Path("source/data.zip")
+          with zipfile.ZipFile(f) as z:
+              members=[x for x in z.infolist() if not x.is_dir()]
+              print("ZIP_ENTRIES",len(members))
+              for m in members[:65]: print("ENTRY",m.filename,m.file_size)
+              for member in members:
+                  if (member.filename.endswith(".json") or member.filename.endswith(".jsonl")) and any(k in member.filename.lower() for k in ("train","fr","en")):
+                      if member.file_size>30_000_000: continue
+                      print("PREVIEW_FILE", member.filename)
+                      raw=z.read(member)
+                      try:
+                          obj=json.loads(raw)
+                      except Exception as e:
+                          print("NOT_JSON",type(e).__name__)
+                          continue
+                      print("TOP_TYPE",type(obj).__name__)
+                      if isinstance(obj,dict):
+                          print("TOP_KEYS",list(obj)[:12])
+                          sample=next(iter(obj.values()),None)
+                      elif isinstance(obj,list):
+                          print("TOP_LIST_LEN",len(obj))
+                          sample=obj[0] if obj else None
+                      else: sample=None
+                      if sample is not None:
+                          print("SAMPLE_STRUCTURE",json.dumps(sample,ensure_ascii=False)[:1500])
+                      if member.filename.lower().endswith("train.json"):
+                          break
+          PY
+
+      - name: Inspect matched English/French dialogue structure
+        run: |
+          python - <<'PY'
+          import gc,json,zipfile
+          with zipfile.ZipFile("source/data.zip") as z:
+              for language in ("English","French"):
+                  file=f"data/{language}/data.json"
+                  doc=json.loads(z.read(file))
+                  print("DIALOGUES_LANG",language,"type",type(doc).__name__,"count",len(doc))
+                  if isinstance(doc,dict):
+                      key=sorted(doc)[0]
+                      obj=doc[key]
+                      print("DIALOGUE_ID",language,key)
+                  else:
+                      obj=doc[0]
+                  print("DIALOGUE_META_KEYS",language,list(obj)[:25])
+                  for key in ("log","turns","dialogue"):
+                      if key in obj:
+                          print("DIALOGUE_TURNS_KEY",language,key,"count",len(obj[key]))
+                          for turn in obj[key][:3]:
+                              print("TURN",language,json.dumps(turn,ensure_ascii=False)[:900])
+                  del doc
+                  gc.collect()
+          PY

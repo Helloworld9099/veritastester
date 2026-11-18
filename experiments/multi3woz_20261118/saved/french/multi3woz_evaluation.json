@@ -1,0 +1,52 @@
+{
+  "language": "french",
+  "dataset": "Multi3WOZ human-human conversations",
+  "training_updates": 96,
+  "train_n": 1536,
+  "dev_n": 128,
+  "test_n": 256,
+  "split_manifest": {
+    "test": {
+      "n_pairs": 256,
+      "n_dialogues": 53,
+      "dialogue_ids_sha256": "8376af6e5defda697225f7581d75f4551403e5008f92b1a7293aca6372133e10",
+      "pair_digests_sha256": "08139925f176115ed307ce28411644fc8681490231a8e4d54e51229d342a5ec9"
+    },
+    "dev": {
+      "n_pairs": 128,
+      "n_dialogues": 29,
+      "dialogue_ids_sha256": "83b64e46beb1e87ecfacbf728b40eaf78e02c7644b4da60b16eeb8f24e428a3b",
+      "pair_digests_sha256": "df955a802cf551ebe5e8af479b0a27516866dbc5d84bb3bd79520fdac6e59f3a"
+    },
+    "train": {
+      "n_pairs": 1536,
+      "n_dialogues": 385,
+      "dialogue_ids_sha256": "8eee2b517d67776ccf3aa62bea7bcca3760157942c28202f1aa7d4518c5e58c6",
+      "pair_digests_sha256": "c295c4ce4730b3e3acb271cafcfe417a50c2b480acb2ee975c1bbcaebf025ec1"
+    }
+  },
+  "test_dialogues_separate_from_train_and_dev": true,
+  "selected_on_dev_only": "step72",
+  "frozen_test_scores": {
+    "base": {
+      "n": 256,
+      "chrf": 29.60763658857506,
+      "bleu": 7.473786947328233,
+      "reference_exact_match_fraction_not_adequacy": 0.0
+    },
+    "previous": {
+      "n": 256,
+      "chrf": 29.990236590115472,
+      "bleu": 7.643444926431348,
+      "reference_exact_match_fraction_not_adequacy": 0.0
+    },
+    "selected": {
+      "n": 256,
+      "chrf": 29.992212420076914,
+      "bleu": 8.001353480875107,
+      "reference_exact_match_fraction_not_adequacy": 0.0
+    }
+  },
+  "no_human_semantic_quality_ratings": true,
+  "warnings": "Culturally adapted bilingual turns may not be exact translations, even after filtering. This is a research-only experiment and no candidate must replace previous best based on this dataset alone. Never reuse consumed official test dialogues for later tuning."
+}

@@ -1,0 +1,60 @@
+name: French Multi3WOZ conversation-domain research training (free CPU)
+on:
+  push:
+    branches: [research/multi3woz-dialogue-train-20261118]
+    paths:
+      - .github/workflows/train-multi3woz.yml
+      - experiments/multi3woz_20261118/train_dialogue.py
+      - experiments/multi3woz_20261118/tests/**
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: multi3woz-fr-research-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  french-dialogue:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    env:
+      HF_HUB_DISABLE_TELEMETRY: '1'
+      TOKENIZERS_PARALLELISM: 'false'
+      OMP_NUM_THREADS: '4'
+      MKL_NUM_THREADS: '4'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Read source provenance and correct public version
+        run: |
+          git clone --depth 1 https://github.com/cambridgeltl/multi3woz.git "$RUNNER_TEMP/multi3woz"
+          test "$(git -C "$RUNNER_TEMP/multi3woz" rev-parse HEAD)" = "c65e80fe120704125255de5cf582a51ebaa285cd"
+          echo 'da238995eed56ed76551c19d0d3fc58e039b62197514ca0d7b705880664ca65e  '"$RUNNER_TEMP"'/multi3woz/data.zip' | sha256sum -c
+      - name: Install CPU-only research runtime
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'huggingface-hub>=0.34,<1.0'
+      - name: Test alignment safeguards and official heldout separation
+        run: |
+          python -m compileall -q experiments/multi3woz_20261118
+          python -m unittest discover -s experiments/multi3woz_20261118/tests -p 'test_*.py' -v
+      - name: Train selected French stage-three checkpoint on fresh conversations
+        run: |
+          python -u experiments/multi3woz_20261118/train_dialogue.py \
+            --source-zip "$RUNNER_TEMP/multi3woz/data.zip" \
+            --output-dir "$RUNNER_TEMP/multi3woz-french-research"
+      - name: Retain only aggregate research evidence and candidate LoRA weights
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: multi3woz-french-research
+          path: |
+            ${{ runner.temp }}/multi3woz-french-research/report.json
+            ${{ runner.temp }}/multi3woz-french-research/multi3woz_evaluation.json
+            ${{ runner.temp }}/multi3woz-french-research/candidate_step*.safetensors
+            ${{ runner.temp }}/multi3woz-french-research/candidate_selected.safetensors
+          if-no-files-found: warn
+          retention-days: 30
