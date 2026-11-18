@@ -1,0 +1,55 @@
+name: Verify pinned stage-two and stage-three local model inference
+
+on:
+  push:
+    branches: [research/stage2-stage3-local-inference-20261117]
+    paths:
+      - experiments/local_adapter_review_20261117/**
+      - .github/workflows/verify-stage3-local.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  model-inference:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      HF_HUB_DISABLE_TELEMETRY: '1'
+      TOKENIZERS_PARALLELISM: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install free CPU translation dependencies
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'huggingface-hub>=0.34,<1.0'
+      - name: Verify all research adapters and their frozen selection provenance
+        run: |
+          python -m compileall -q experiments/local_adapter_review_20261117
+          python -m unittest discover -s experiments/local_adapter_review_20261117/tests -p 'test_*.py' -v
+      - name: Translate real short sentences through verified stage-three models
+        run: |
+          python experiments/local_adapter_review_20261117/translate.py --language french --variant massive3 --text 'Mets une alarme pour demain.' > "$RUNNER_TEMP/third-fr.json"
+          python experiments/local_adapter_review_20261117/translate.py --language spanish --variant massive3 --text 'Pon una alarma para manana.' > "$RUNNER_TEMP/third-es.json"
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          folder = Path(os.environ["RUNNER_TEMP"])
+          expected = {
+              "fr": "072f7f5d2d90b26991c5c62bf8ddb40f686f65e66be52717e7b121d507008ad9",
+              "es": "14dddb5040afe49f8f05a1bfba3458d3321524b53b0fc05b359ad41a1ab75a4b",
+          }
+          for language, digest in expected.items():
+              row = json.loads((folder / ("third-" + language + ".json")).read_text())
+              assert row["variant"] == "massive3" and row["research_only"] is True
+              assert row["adapter_sha256"] == digest
+              assert isinstance(row["translation"], str) and row["translation"].strip()
+              print("Verified stage-three offline inference", language, digest)
+          PY

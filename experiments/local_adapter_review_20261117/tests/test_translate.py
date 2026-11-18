@@ -61,12 +61,16 @@ class TestLocalAdapterReview(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Unsupported"):
             resolve_weights(REPO, "french", "dev_untrusted")
         self.assertEqual(MODELS, ("base", "historical", "books", "massive",
-                                  "qed", "globalvoices"))
+                                  "massive2", "massive3", "qed", "globalvoices"))
 
     def test_new_saved_adapters_are_pinned_to_evidence(self):
         expected = {
             ("french", "massive"): "5c5094a3f8dfc9d783f6e8482ae8ed2fad7e632b81b31f20f54fa8f288538ad8",
             ("spanish", "massive"): "e60fbadae2037686f9693af4be2e7e59b128aa44f4be8c287f40b7f893b0a004",
+            ("french", "massive2"): "0219365d7d51492f8319ebb8b6a8fccbf6da25ee3525505663ac52810b0cbcba",
+            ("spanish", "massive2"): "990fa755ab733a8a3a600615f2d9ed47c8ea24935cb88258e0f5a9f00888d791",
+            ("french", "massive3"): "072f7f5d2d90b26991c5c62bf8ddb40f686f65e66be52717e7b121d507008ad9",
+            ("spanish", "massive3"): "14dddb5040afe49f8f05a1bfba3458d3321524b53b0fc05b359ad41a1ab75a4b",
             ("spanish", "qed"): "269b67cf8e49dc0da9fe13d47059c57533e61e5ef4db079ff12983e70ea62ab9",
             ("french", "globalvoices"): "670c226bbe16c010940b1def0127225c0a332b7ab1ca0360dd2694f8deaa78bc",
         }
