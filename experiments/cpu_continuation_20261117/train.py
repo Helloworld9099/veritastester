@@ -100,6 +100,34 @@ def accepted_candidate(candidate: dict, baseline: dict, minimum: float = MIN_CHR
             and candidate["bleu"] >= baseline["bleu"])
 
 
+def verified_warm_adapter(repo_root: Path, research: Path, spec: dict) -> Path:
+    """Verify historical or versioned research checkpoint without rewriting either."""
+    original = spec["adapter_rel"]
+    override = spec.get("warm_adapter_override")
+    if override is None:
+        path = research / original
+        checks = json.loads((research / "CHECKSUMS.json").read_text())["files"]
+        expected = checks[original]
+        if path.stat().st_size != expected["bytes"] or sha256(path) != expected["sha256"]:
+            raise RuntimeError("Historical selected adapter does not match research checksums")
+        return path
+    if not isinstance(override, dict) or set(override) != {"path", "sha256"}:
+        raise ValueError("Warm adapter override requires an exact path and SHA-256")
+    relative = Path(override["path"])
+    digest = override["sha256"]
+    if (relative.is_absolute() or ".." in relative.parts
+            or not isinstance(digest, str) or len(digest) != 64
+            or any(char not in "0123456789abcdef" for char in digest)):
+        raise ValueError("Unsafe checkpoint path or invalid SHA-256 pin")
+    root = repo_root.resolve()
+    path = (root / relative).resolve()
+    if not path.is_relative_to(root) or not path.is_file():
+        raise ValueError("Checkpoint path is outside the repository or missing")
+    if sha256(path) != digest:
+        raise RuntimeError("Versioned warm adapter checkpoint SHA-256 mismatch")
+    return path
+
+
 def download_base(model_dir: Path, manifest: Path, spec: dict):
     """Download only the original pinned model files; reject hash mismatches."""
     from huggingface_hub import hf_hub_download
@@ -143,13 +171,8 @@ def train_experiment(repo_root: Path, output_dir: Path, language: str = "french"
         raise ValueError("Unsupported language")
     spec = LANGUAGES[language]
     research = repo_root / "research"
-    adapter_rel = spec["adapter_rel"]
-    adapter_path = research / adapter_rel
+    adapter_path = verified_warm_adapter(repo_root, research, spec)
     manifest = research / spec["manifest_rel"]
-    checks = json.loads((research / "CHECKSUMS.json").read_text())["files"]
-    record = checks[adapter_rel]
-    if adapter_path.stat().st_size != record["bytes"] or sha256(adapter_path) != record["sha256"]:
-        raise RuntimeError("Historical selected adapter does not match research checksums")
 
     output_dir.mkdir(parents=True, exist_ok=False)
     model_dir = output_dir / "pinned_base"

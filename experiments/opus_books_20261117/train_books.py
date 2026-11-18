@@ -88,7 +88,8 @@ def experiment(language: str, output_dir: Path):
     print("FROZEN BOOK-HELDOUT RESULTS", json.dumps(final, indent=2), flush=True)
 
 
-def evaluate_frozen_test(language: str, output_dir: Path, test_rows, selected: str):
+def evaluate_frozen_test(language: str, output_dir: Path, test_rows, selected: str,
+                         previous_adapter: Path | None = None):
     import torch
     from torch import nn
     from sacrebleu.metrics import BLEU, CHRF
@@ -125,7 +126,7 @@ def evaluate_frozen_test(language: str, output_dir: Path, test_rows, selected: s
 
     state = model.state_dict()
     expected = {key for key in state if ".lora_" in key}
-    original_adapter = REPO / "research" / info["adapter_rel"]
+    original_adapter = previous_adapter if previous_adapter is not None else REPO / "research" / info["adapter_rel"]
     candidates = {"base": None, "previous": original_adapter}
     if selected != "previous":
         candidates["selected"] = output_dir / "candidate_selected.safetensors"

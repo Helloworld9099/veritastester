@@ -1,0 +1,70 @@
+{
+  "experiment": "research-only CPU french->English LoRA continuation",
+  "language": "french",
+  "seed": 202611182,
+  "base_model": "Helsinki-NLP/opus-mt-fr-en",
+  "base_revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+  "warm_adapter_sha256": "5c5094a3f8dfc9d783f6e8482ae8ed2fad7e632b81b31f20f54fa8f288538ad8",
+  "corpus_source": "file:///tmp/bridgecaption-massive2-zqsqqpas/train-dev.json",
+  "corpus_sha256": "2442164f61d02367991059266c3053e7b48a99afcdc2970acf59ee26af8678cc",
+  "attribution": "Tatoeba french-English pairs via ManyThings.org; verify license and attribution before redistribution",
+  "train_rows": 5120,
+  "dev_rows": 256,
+  "unique_pairs_after_filtering": 5376,
+  "warning": "The newly downloaded corpus may overlap earlier research and base pretraining. Development-only results do not establish generalization, production readiness, or translation improvement.",
+  "planned_updates": 320,
+  "learning_rate": 2.5e-05,
+  "selection": "Accept new checkpoint only if dev chrF improves >=0.25 AND dev BLEU does not fall, compared with unchanged prior adapter.",
+  "scores": {
+    "previous": {
+      "chrf": 65.87950485165405,
+      "bleu": 42.577670317536914,
+      "n": 256
+    },
+    "step64": {
+      "chrf": 66.09740905057038,
+      "bleu": 43.48095903453348,
+      "n": 256
+    },
+    "step128": {
+      "chrf": 66.51049114962855,
+      "bleu": 44.341967472217995,
+      "n": 256
+    },
+    "step192": {
+      "chrf": 66.79988326626015,
+      "bleu": 44.87670897405367,
+      "n": 256
+    },
+    "step256": {
+      "chrf": 66.99766381420231,
+      "bleu": 44.966669312944944,
+      "n": 256
+    },
+    "step320": {
+      "chrf": 67.24792345787091,
+      "bleu": 45.52244109177177,
+      "n": 256
+    }
+  },
+  "selected": "step320",
+  "completed_updates": 320,
+  "selected_candidate_sha256": "0219365d7d51492f8319ebb8b6a8fccbf6da25ee3525505663ac52810b0cbcba",
+  "last_step_loss": 1.145707368850708,
+  "elapsed_seconds": 274.82159496099996,
+  "dataset": "AmazonScience/massive",
+  "revision": "ff6bd8e4b27c3543e4f8fe2108f32bb95a6f8740",
+  "stage": 2,
+  "prior_checkpoint_sha256": "5c5094a3f8dfc9d783f6e8482ae8ed2fad7e632b81b31f20f54fa8f288538ad8",
+  "original_stage1_ids_sha256": {
+    "test": "19fba544825e6f14b4344b87cd0127ae7aa10546d8be13df8ac6645829362539",
+    "validation": "c796ea31b5402b5b247ea7f2efe7a2d2be10c3c2039b8403d6e73aeae54c4eaf",
+    "train": "5c5c45719bdbd6ed83206e3f655b944f4e7e4a6a13e68e7664afc89d91f02dc1"
+  },
+  "fresh_cohort_ids_sha256": {
+    "test": "5df262f4150402edb7bdb0adc962edfd353da0ff2c3dfb4606c88c1a912b2dec",
+    "validation": "f4e5f58e1c063818695148e8573a2cdad7f708550bf425b6b7d71904cc721521",
+    "train": "66c0f06abd4c7b8db173b3f6c65b58c516077808437f5ab4e53ba10901655047"
+  },
+  "notes": "Second-stage optimizer from saved MASSIVE stage-one weights. No previous train, dev, or test example is reused in this run. Proprietary user recordings are not collected. chrF/BLEU are NOT percentage of correct translations."
+}
