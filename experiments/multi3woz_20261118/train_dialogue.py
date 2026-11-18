@@ -101,10 +101,18 @@ def read_dialogues(source_zip: Path):
             else:
                 converted.add(chosen)
         if missing:
-            print("OFFICIAL_PARTITION_ID_MISMATCH", kind,
-                  "missing", len(missing), "examples", sorted(missing)[:10],
-                  "available_ids_examples", sorted(french)[:5], flush=True)
-            raise ValueError("Official " + kind + " IDs do not match source dialogues")
+            print("OFFICIAL_PARTITION_IDS_ABSENT_FROM_SOURCE", kind,
+                  "missing", len(missing), "of", len(original),
+                  "examples", sorted(missing)[:10], flush=True)
+            # The published corpus omits some dialogue IDs listed in the
+            # upstream validation/test lists. They do not exist in any corpus
+            # partition and thus cannot leak into training. Never relabel
+            # any available validation/test dialogue as a training dialogue.
+            if len(missing) > len(original) // 4:
+                raise ValueError("Over 25% of official " + kind +
+                                 " IDs absent; source and split versions may differ")
+        if not converted:
+            raise ValueError("No available official " + kind + " dialogues")
         return converted
     valid = canonical_ids(valid, "validation")
     test = canonical_ids(test, "test")
