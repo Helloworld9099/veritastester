@@ -1,0 +1,47 @@
+{
+  "language": "french",
+  "source": "gmnlp/tico19",
+  "revision": "55d70dc0b1d1d0b2151c5e22815d823fedac3f2f",
+  "source_url": "https://huggingface.co/datasets/gmnlp/tico19/resolve/55d70dc0b1d1d0b2151c5e22815d823fedac3f2f/test/test.en-fr.tsv",
+  "source_archive_sha256": "824181a8c6277d7e748979c1a966b11cee97eb7ae998ab47920e1238deeff11d",
+  "license": "TICO-19 project CC0, cite Anastasopoulos et al.",
+  "frozen_test_selection": {
+    "selected_ids_sha256": "d7a532e08d90912047d588434b1e9d984a326fbe462fd5288b14cf862ecd87c8",
+    "n": 256,
+    "source_group_count": 17
+  },
+  "model_scores": {
+    "base": {
+      "chrf": 61.97778149039957,
+      "bleu": 38.72318451429201,
+      "reference_exact_match_fraction_not_adequacy": 0.01953125,
+      "n": 256
+    },
+    "massive": {
+      "chrf": 61.7583338475314,
+      "bleu": 38.01614656059447,
+      "reference_exact_match_fraction_not_adequacy": 0.01953125,
+      "n": 256
+    },
+    "massive2": {
+      "chrf": 61.76754719558257,
+      "bleu": 38.23979763191491,
+      "reference_exact_match_fraction_not_adequacy": 0.01953125,
+      "n": 256
+    },
+    "massive3": {
+      "chrf": 61.764100121961484,
+      "bleu": 38.12533850338921,
+      "reference_exact_match_fraction_not_adequacy": 0.01953125,
+      "n": 256
+    }
+  },
+  "adapter_sha256": {
+    "base": null,
+    "massive": "5c5094a3f8dfc9d783f6e8482ae8ed2fad7e632b81b31f20f54fa8f288538ad8",
+    "massive2": "0219365d7d51492f8319ebb8b6a8fccbf6da25ee3525505663ac52810b0cbcba",
+    "massive3": "072f7f5d2d90b26991c5c62bf8ddb40f686f65e66be52717e7b121d507008ad9"
+  },
+  "model_selection": "No model training or selection using TICO-19 evaluation",
+  "limitations": "Out-of-domain medical/crisis text, not dialogue or live speech. Possible original pretraining exposure. BLEU/chrF and exact-match are not percentages of correctly translated language. No real independent bilingual human adequacy ratings. This TICO-19 test selection is now consumed and must not be reused to tune."
+}
