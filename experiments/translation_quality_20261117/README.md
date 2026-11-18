@@ -69,3 +69,11 @@ python experiments/translation_quality_20261117/collect_reviews.py score \
 Omit the adjudication argument when there are no disagreements. The score is the existing pre-registered gate from `score_human.py`: at least 200 cases, coverage of all five categories, at least 20 independent source groups, and a **95% Wilson lower bound >= 0.90**. Two human raters must actually be independent; the tool cannot verify their real-world identities or the absence of overlap with any pretrained model. Passing a small artificial unit test does not constitute evidence of model quality.
 
 **Nothing in the repository currently establishes 90% independent bilingual human-rated adequacy.**
+
+## Conversational adequacy must include slang and context
+
+The project requirements in [docs/CONTEXT_SLANG_TRANSLATION_SPEC.md](../../docs/CONTEXT_SLANG_TRANSLATION_SPEC.md) now explicitly define conversational semantic fidelity. The independent 90% adequacy gate requires >=90% **observed human-rated adequacy in each of the five categories**—everyday, idiom, slang, context and technical—in addition to the >=90% 95%-Wilson overall lower bound. A larger number of literal/medical successes cannot mask failures in slang or contextual meaning.
+
+For `category="context"`, the frozen input JSONL must include `"previous_utterances": ["...", "..."]` (1-4 real preceding turns, each <=500 characters). Optional `"topic"` (<=100 characters) helps bilingual reviewers understand the conversation. These fields are included in the frozen case digest and reviewer packets; altering them invalidates the submission.
+
+**Important:** Making context visible to human reviewers does **not** prove the model was given that context. The custom Marian offline inference is currently sentence-only, unlike the context-aware Gemini provider. Record whether context was actually provided and do not call the research model context-aware until train/inference context handling and paired ablation tests are implemented and passed. Preserve strict train/development/test separation by entire conversations, not individual turns alone. Neither AI self-judgment nor BLEU/chrF is a verified human-adequacy percentage.

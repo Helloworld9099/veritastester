@@ -19,6 +19,30 @@ def jsonl(path):
     return [json.loads(s) for s in path.read_text(encoding="utf-8").splitlines() if s.strip()]
 
 
+def validated_context(row, category):
+    """Context belongs in a blinded human review, not guessed from translations."""
+    previous = row.get("previous_utterances", [])
+    topic = row.get("topic", "general")
+    if (not isinstance(previous, list) or len(previous) > 4
+            or any(not isinstance(v, str) or not v.strip() or len(v) > 500
+                   for v in previous)):
+        raise ValueError("Provide 0-4 prior utterances of at most 500 characters")
+    if not isinstance(topic, str) or len(topic) > 100:
+        raise ValueError("Context topic must be at most 100 characters")
+    if category == "context" and not previous:
+        raise ValueError("Context category requires real prior utterances")
+    return previous, topic
+
+
+def case_digest(checkpoint, case, row, language):
+    """Bind the submitted translated sentence AND context to the frozen hash."""
+    return digest([
+        checkpoint, case["sample_id"], language, case["source_group_sha256"],
+        case["category"], row["source_text"], row["candidate_translation"],
+        row.get("previous_utterances", []), row.get("topic", "general")
+    ])
+
+
 def prepare(rows, checkpoint, folder):
     if folder.exists():
         raise FileExistsError("Refusing to overwrite previous reviewer packet")
@@ -44,15 +68,22 @@ def prepare(rows, checkpoint, folder):
             raise ValueError("Different languages must have separate rating packets")
         language = lang
         seen.add(sid)
-        token = digest([checkpoint, sid, lang, group, category, source, translation])
-        cases.append({"sample_id": sid, "category": category,
-                      "source_group_sha256": group, "case_hash": token})
-        review.append({"sample_id": sid, "case_hash": token,
-                       "source_text": source, "candidate_translation": translation,
-                       "category": category, "adequate": None})
+        previous, topic = validated_context(row, category)
+        case = {"sample_id": sid, "category": category,
+                "source_group_sha256": group}
+        review_entry = {"sample_id": sid,
+                        "source_text": source, "candidate_translation": translation,
+                        "previous_utterances": previous, "topic": topic,
+                        "category": category, "adequate": None}
+        token = case_digest(checkpoint, case, review_entry, lang)
+        case["case_hash"] = token
+        review_entry["case_hash"] = token
+        cases.append(case)
+        review.append(review_entry)
     if not cases:
         raise ValueError("No cases")
-    manifest = {"language": language, "checkpoint_sha256": checkpoint,
+    manifest = {"packet_version": 2, "language": language,
+                "checkpoint_sha256": checkpoint,
                 "cases": sorted(cases, key=lambda x: x["sample_id"])}
     manifest["evaluation_manifest_sha256"] = digest(manifest)
     folder.mkdir(parents=True)
@@ -80,6 +111,14 @@ def assemble(manifest, a, b, arbitration=None):
             key = row.get("sample_id")
             if key not in cases or key in seen or row.get("case_hash") != cases[key]["case_hash"]:
                 raise ValueError("Unknown, duplicated or altered evaluation case")
+            if frozen.get("packet_version", 1) >= 2:
+                try:
+                    recomputed = case_digest(
+                        frozen["checkpoint_sha256"], cases[key], row, frozen["language"])
+                except (KeyError, TypeError, ValueError) as exc:
+                    raise ValueError("Missing or altered text/context in rating") from exc
+                if recomputed != cases[key]["case_hash"]:
+                    raise ValueError("Altered source, translation or dialogue context in rating")
             if type(row.get("adequate")) is not bool:
                 raise ValueError("Every human judgment must be a boolean")
             seen[key] = row["adequate"]
