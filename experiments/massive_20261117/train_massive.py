@@ -42,7 +42,7 @@ def canonical(value: str) -> str:
 def select_pairs(english: dict, translated: dict,
                  *, train_size: int = TRAIN_SIZE,
                  dev_size: int = DEV_SIZE, test_size: int = TEST_SIZE,
-                 seed: int = SEED):
+                 seed: int = SEED, include_ids: bool = False):
     """Select parallel utterances, never moving a test/dev example into training.
 
     english/translated: {split_name: [MASSIVE row dict, ...]}. Must align on SLURP ID.
@@ -104,6 +104,9 @@ def select_pairs(english: dict, translated: dict,
             for split in selected},
         "original_splits_preserved": True,
     }
+    if include_ids:
+        result["selected_ids"] = {key: [row[0] for row in selection]
+                                  for key, selection in selected.items()}
     return result
 
 
