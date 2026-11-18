@@ -40,8 +40,13 @@ def select_rows(payload: bytes, language: str, count=COUNT, seed=SEED):
         fields = line.split("\t")
         if len(fields) != 8:
             raise ValueError("Unexpected TICO parallel TSV schema")
-        if fields[0].strip() != "en" or fields[1].strip() != target:
-            raise ValueError("TICO source or target language does not match")
+        expected_targets = {target}
+        if language == "spanish":
+            expected_targets.update(("es", "es-419"))
+        if fields[0].strip() != "en" or fields[1].strip() not in expected_targets:
+            raise ValueError(
+                f"TICO source or target language mismatch: got {fields[0].strip()!r} -> "
+                f"{fields[1].strip()!r}; expected en -> {sorted(expected_targets)!r}")
         english, foreign, sample_id = fields[2].strip(), fields[3].strip(), fields[4].strip()
         if not sample_id or sample_id in identifiers:
             raise ValueError("Missing or duplicate TICO sample identifier")
