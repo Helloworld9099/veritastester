@@ -64,13 +64,13 @@ class StageFourSafety(unittest.TestCase):
         for language in ("french", "spanish"):
             with self.subTest(language=language):
                 self.assertEqual(len(GV_SHA256[language]), 64)
-                path = (Path(__file__).resolve().parents[3] /
+                path = (Path(__file__).resolve().parents[2] /
                         "massive_stage3_20261117" / "saved" /
                         language / "adapter_selected.safetensors")
-                if path.exists():
-                    import hashlib
-                    self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(),
-                                     STAGE3_SHA256[language])
+                import hashlib
+                self.assertTrue(path.is_file())
+                self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(),
+                                 STAGE3_SHA256[language])
         self.assertEqual(len(cohort_digest(rows(2))), 64)
 
 
