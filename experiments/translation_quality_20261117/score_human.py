@@ -15,6 +15,9 @@ from pathlib import Path
 CATEGORIES = ("everyday", "idiom", "slang", "context", "technical")
 MIN_SAMPLES = 200
 MIN_PER_CATEGORY = 20
+# An overall 90% can conceal near-total failure on slang or context cases.
+# The category-level requirement is an observed rate, NOT a 95%-confidence claim.
+MIN_CATEGORY_OBSERVED_ADEQUACY = 0.90
 MIN_GROUPS = 20
 Z = 1.959963984540054
 
@@ -32,7 +35,7 @@ def wilson_lower(successes: int, n: int) -> float:
 def score(rows: list[dict]) -> dict:
     if not rows:
         raise ValueError("No independently annotated cases")
-    seen, labels, groups = set(), Counter(), set()
+    seen, labels, category_adequate, groups = set(), Counter(), Counter(), set()
     successful, disagreements, manifest, checkpoint, language = 0, 0, None, None, None
     for number, row in enumerate(rows, start=1):
         if not isinstance(row, dict):
@@ -75,10 +78,26 @@ def score(rows: list[dict]) -> dict:
             if row.get("adjudicated_adequate") not in (None, accepted):
                 raise ValueError(f"Case {number}: contradictory adjudication")
         successful += int(accepted)
+        category_adequate[kind] += int(accepted)
 
     n = len(rows)
     lower = wilson_lower(successful, n)
     cover = all(labels[kind] >= MIN_PER_CATEGORY for kind in CATEGORIES)
+    per_category = {
+        kind: {
+            "n": labels[kind],
+            "adequate": category_adequate[kind],
+            "observed_fraction": (
+                category_adequate[kind] / labels[kind] if labels[kind] else None),
+        }
+        for kind in CATEGORIES
+    }
+    # Balanced pragmatic coverage: do not hide poor idiom/slang/context results
+    # behind a larger number of straightforward literal translations.
+    category_ok = all(
+        labels[kind] >= MIN_PER_CATEGORY and
+        category_adequate[kind] / labels[kind] >= MIN_CATEGORY_OBSERVED_ADEQUACY
+        for kind in CATEGORIES)
     size_ok = n >= MIN_SAMPLES
     groups_ok = len(groups) >= MIN_GROUPS
     report = {
@@ -86,20 +105,24 @@ def score(rows: list[dict]) -> dict:
         "evaluation_manifest_sha256": manifest,
         "n": n, "adequate": successful, "observed_fraction": successful / n,
         "wilson_lower_95": lower, "disagreements_adjudicated": disagreements,
-        "by_category_count": dict(labels), "group_count": len(groups),
+        "by_category_count": dict(labels), "by_category_quality": per_category,
+        "group_count": len(groups),
         "meets_90_percent_human_adequacy_gate": (
-            size_ok and cover and groups_ok and lower >= 0.90),
+            size_ok and cover and groups_ok and category_ok and lower >= 0.90),
         "eligibility": {
             "at_least_200_cases": size_ok,
             "at_least_20_of_each_category": cover,
+            "at_least_90_percent_observed_in_each_category": category_ok,
             "at_least_20_distinct_source_groups": groups_ok,
         },
         "warnings": (
             "Assumes genuinely independent human bilingual ratings and a locked "
             "heldout sample. A script cannot independently verify reviewer identity, "
             "pretraining contamination, or undisclosed sample selection. "
-            "The 95% Wilson bound is a descriptive uncertainty check, not proof "
-            "of full production, ASR, or spoken-dialogue accuracy."
+            "Overall 95% Wilson lower bound and >=90% observed in every category "
+            "(especially idiom, slang and context) are separate gates. Category rates "
+            "have their own uncertainty. This cannot prove full production, ASR, "
+            "spoken-dialogue or context-aware accuracy."
         ),
     }
     return report
