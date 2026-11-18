@@ -1,0 +1,49 @@
+{
+  "experiment": "research-only CPU spanish->English LoRA continuation",
+  "language": "spanish",
+  "seed": 202611176,
+  "base_model": "Helsinki-NLP/opus-mt-es-en",
+  "base_revision": "c96e2c5399ebfae4fc43d9669556b9afa74bb69d",
+  "warm_adapter_sha256": "55d4b872a6807e0d9bc317b72ef63eddf77d5828c427f91497d5bc23ac2e65f3",
+  "corpus_source": "https://object.pouta.csc.fi/OPUS-GlobalVoices/v2018q4/tmx/en-es.tmx.gz",
+  "corpus_sha256": "680eb6975a09e797ae10e9f32590a540752333b9c81477e9e1bb0b5436f72e44",
+  "attribution": "Global Voices Citizen Media translations (v2018q4), Global Voices contributors; OPUS/Tiedemann. Check per-article CC-BY attribution.",
+  "train_rows": 4096,
+  "dev_rows": 128,
+  "unique_pairs_after_filtering": 49987,
+  "warning": "TMX has paired bilingual segments but no trustworthy article-group IDs; sample-level exact disjointness only. Pretraining contamination unknown. Neither chrF/BLEU nor reference exact-match equals human adequacy.",
+  "planned_updates": 256,
+  "learning_rate": 2.5e-05,
+  "selection": "Accept new checkpoint only if dev chrF improves >=0.25 AND dev BLEU does not fall, compared with unchanged prior adapter.",
+  "scores": {
+    "previous": {
+      "chrf": 70.7195066281249,
+      "bleu": 48.25557034346764,
+      "n": 128
+    },
+    "step64": {
+      "chrf": 70.54780928569355,
+      "bleu": 48.354665086351986,
+      "n": 128
+    },
+    "step128": {
+      "chrf": 70.70199109321615,
+      "bleu": 48.11228322292512,
+      "n": 128
+    },
+    "step192": {
+      "chrf": 70.9247553649903,
+      "bleu": 48.38252269056933,
+      "n": 128
+    },
+    "step256": {
+      "chrf": 70.8037280931518,
+      "bleu": 48.02011229363872,
+      "n": 128
+    }
+  },
+  "selected": "previous",
+  "completed_updates": 256,
+  "last_step_loss": 0.8940410017967224,
+  "elapsed_seconds": 496.78827368599997
+}

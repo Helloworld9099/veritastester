@@ -1,0 +1,57 @@
+{
+  "language": "spanish",
+  "corpus": "GlobalVoices v2018q4 TMX translated citizen-media articles",
+  "corpus_sha256": "680eb6975a09e797ae10e9f32590a540752333b9c81477e9e1bb0b5436f72e44",
+  "source_pre_pinned": false,
+  "eligible_translation_units": 284409,
+  "sampled_unique_units": 49987,
+  "train_rows": 4096,
+  "dev_rows": 128,
+  "test_rows": 256,
+  "cohorts_exact_text_disjoint": true,
+  "cohorts_article_document_disjoint": false,
+  "selection_frozen_before_test": true,
+  "selected_on_dev_only": "previous",
+  "development_scores": {
+    "previous": {
+      "chrf": 70.7195066281249,
+      "bleu": 48.25557034346764,
+      "n": 128
+    },
+    "step64": {
+      "chrf": 70.54780928569355,
+      "bleu": 48.354665086351986,
+      "n": 128
+    },
+    "step128": {
+      "chrf": 70.70199109321615,
+      "bleu": 48.11228322292512,
+      "n": 128
+    },
+    "step192": {
+      "chrf": 70.9247553649903,
+      "bleu": 48.38252269056933,
+      "n": 128
+    },
+    "step256": {
+      "chrf": 70.8037280931518,
+      "bleu": 48.02011229363872,
+      "n": 128
+    }
+  },
+  "heldout_tmx_test": {
+    "base": {
+      "n": 256,
+      "chrf": 69.29459743059832,
+      "bleu": 46.56040587096966,
+      "reference_exact_match_fraction_not_adequacy": 0.05859375
+    },
+    "previous": {
+      "n": 256,
+      "chrf": 68.7059138839839,
+      "bleu": 45.74764504949364,
+      "reference_exact_match_fraction_not_adequacy": 0.0546875
+    }
+  },
+  "limitations": "Article-attributed corpus. Held-out translation units may be from the same article or present in pretrained OPUS. No blinded bilingual judgments, no 90% accuracy verification, no production integration."
+}

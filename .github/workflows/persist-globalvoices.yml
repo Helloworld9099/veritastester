@@ -1,0 +1,79 @@
+name: Preserve GlobalVoices model research and immutable evaluations
+
+on:
+  push:
+    branches: [research/globalvoices-finetune-20261117]
+    paths:
+      - .github/workflows/persist-globalvoices.yml
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  preserve:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Fetch completed GlobalVoices experiment
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 44187785337
+          github-token: ${{ github.token }}
+          repository: Helloworld9099/veritastester
+          pattern: globalvoices-research-*
+          merge-multiple: false
+          path: ${{ runner.temp }}/globalvoices-artifacts
+      - name: Verify and preserve all research-only candidate adapters
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          import shutil
+          root = Path("experiments/globalvoices_20261117/saved")
+          artifacts = Path(os.environ["RUNNER_TEMP"]) / "globalvoices-artifacts"
+          for lang in ("french", "spanish"):
+              incoming = artifacts / ("globalvoices-research-" + lang)
+              report_file = next(incoming.rglob("report.json"))
+              evaluation_file = next(incoming.rglob("globalvoices_evaluation.json"))
+              report = json.loads(report_file.read_text())
+              evaluation = json.loads(evaluation_file.read_text())
+              assert report["language"] == evaluation["language"] == lang
+              assert report["selected"] == evaluation["selected_on_dev_only"]
+              assert evaluation["selection_frozen_before_test"] is True
+              assert evaluation["cohorts_exact_text_disjoint"] is True
+              directory = root / lang
+              directory.mkdir(parents=True, exist_ok=False)
+              shutil.copy2(report_file, directory / "report.json")
+              shutil.copy2(evaluation_file, directory / "globalvoices_evaluation.json")
+              saved = sorted(incoming.rglob("candidate_step*.safetensors"))
+              assert len(saved) == 4, "Missing a training candidate"
+              for step in saved:
+                  shutil.copy2(step, directory / step.name)
+              selected = list(incoming.rglob("candidate_selected.safetensors"))
+              if report["selected"] != "previous":
+                  assert len(selected) == 1
+                  sha = hashlib.sha256(selected[0].read_bytes()).hexdigest()
+                  assert sha == report["selected_candidate_sha256"]
+                  shutil.copy2(selected[0], directory / "adapter_selected.safetensors")
+              else:
+                  assert not selected
+              with (directory / "SHA256SUMS.txt").open("w") as out:
+                  for p in sorted(directory.iterdir()):
+                      if p.is_file() and p.name != "SHA256SUMS.txt":
+                          out.write(hashlib.sha256(p.read_bytes()).hexdigest() + "  " + p.name + "\n")
+              print("Preserved", lang, report["selected"], len(saved), "steps")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add experiments/globalvoices_20261117/saved
+          git diff --cached --stat
+          git commit -m "research: preserve all GlobalVoices candidate adapters and frozen evaluations [skip ci]"
+          git push origin "HEAD:refs/heads/research/globalvoices-finetune-20261117"
