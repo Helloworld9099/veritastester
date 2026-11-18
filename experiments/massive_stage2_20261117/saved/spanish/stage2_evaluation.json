@@ -1,0 +1,76 @@
+{
+  "language": "spanish",
+  "experiment": "MASSIVE second-stage unseen-data continuation",
+  "stage": 2,
+  "base_revision": "c96e2c5399ebfae4fc43d9669556b9afa74bb69d",
+  "warm_sha256": "e60fbadae2037686f9693af4be2e7e59b128aa44f4be8c287f40b7f893b0a004",
+  "total_updates": 320,
+  "train_n": 5120,
+  "dev_n": 256,
+  "test_n": 256,
+  "prior_stage_one_ids_sha256": {
+    "test": "4c6c55d2a2e12faa163a3e9ef2d1f1c6aea6fa4e7b2b39bed3ccab2a9be1b18f",
+    "validation": "36e0025527199a563038e4e45408d13d4927d27e9623e293c80e2f083d7e3d57",
+    "train": "a485ee7d770fe51a6fc8eb8d0a1ee652f59f8b8c9522ab8085214308a7d553c9"
+  },
+  "second_stage_ids_sha256": {
+    "test": "3fee484fced58684f311e4f9eb35fe06b0bcc079c79d41b6f2b36e223dd18f3f",
+    "validation": "c23ff6f93a9c7c69127c31551233c34fe6d59eeed63a192e52f3e39f60cfd531",
+    "train": "eead3635cd177fa1d9cef4c4f602b7731ecc119a4e737f063e968e55ed332777"
+  },
+  "new_cohorts_exclude_prior_train_dev_test_exact_text": true,
+  "selected_based_on_dev_alone": "step256",
+  "dev_scores": {
+    "previous": {
+      "chrf": 64.15773539558784,
+      "bleu": 38.97202663693638,
+      "n": 256
+    },
+    "step64": {
+      "chrf": 64.77508416155923,
+      "bleu": 40.06229640829265,
+      "n": 256
+    },
+    "step128": {
+      "chrf": 65.39536450708073,
+      "bleu": 41.04581648152403,
+      "n": 256
+    },
+    "step192": {
+      "chrf": 65.59098847858425,
+      "bleu": 41.38439653594953,
+      "n": 256
+    },
+    "step256": {
+      "chrf": 66.62365350531265,
+      "bleu": 45.37820430703312,
+      "n": 256
+    },
+    "step320": {
+      "chrf": 66.57167129197201,
+      "bleu": 45.18177795613569,
+      "n": 256
+    }
+  },
+  "fresh_unseen_official_test_scores": {
+    "base": {
+      "n": 256,
+      "chrf": 60.194419264338464,
+      "bleu": 30.78355163180789,
+      "reference_exact_match_fraction_not_adequacy": 0.05859375
+    },
+    "previous": {
+      "n": 256,
+      "chrf": 63.472679844837245,
+      "bleu": 38.41401818511353,
+      "reference_exact_match_fraction_not_adequacy": 0.15234375
+    },
+    "selected": {
+      "n": 256,
+      "chrf": 64.43241024325013,
+      "bleu": 38.72688860689324,
+      "reference_exact_match_fraction_not_adequacy": 0.16796875
+    }
+  },
+  "limitations": "Held-out from our adaptation steps, but dataset/domain identical and may overlap original pretrained OPUS. This is text translation only; automatic corpus metrics do not indicate 90% semantic adequacy. The newly consumed test cohort must not be reused for subsequent tuning."
+}
