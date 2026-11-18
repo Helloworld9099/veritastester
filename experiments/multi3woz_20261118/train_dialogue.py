@@ -84,8 +84,32 @@ def read_dialogues(source_zip: Path):
             line.strip() for line in z.read("data/French/testListFile.txt").decode().splitlines()
             if line.strip()
         }
-    if not isinstance(french, dict) or not valid or not test or valid & test:
-        raise ValueError("Official dialogue partitions overlap or are absent")
+    if not isinstance(french, dict) or not valid or not test:
+        raise ValueError("Official dialogue partitions are absent")
+    aliases = {key.casefold(): key for key in french}
+    if len(aliases) != len(french):
+        raise ValueError("Ambiguous dialogue IDs differing only by case")
+    def canonical_ids(original: set[str], kind: str):
+        converted, missing = set(), []
+        for value in original:
+            filename = Path(value).name
+            if not filename.casefold().endswith(".json"):
+                filename += ".json"
+            chosen = aliases.get(filename.casefold())
+            if chosen is None:
+                missing.append(value)
+            else:
+                converted.add(chosen)
+        if missing:
+            print("OFFICIAL_PARTITION_ID_MISMATCH", kind,
+                  "missing", len(missing), "examples", sorted(missing)[:10],
+                  "available_ids_examples", sorted(french)[:5], flush=True)
+            raise ValueError("Official " + kind + " IDs do not match source dialogues")
+        return converted
+    valid = canonical_ids(valid, "validation")
+    test = canonical_ids(test, "test")
+    if valid & test:
+        raise ValueError("Official dialogue partitions overlap")
     return french, valid, test
 
 
