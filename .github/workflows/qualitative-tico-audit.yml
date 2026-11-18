@@ -1,0 +1,37 @@
+name: AI-assisted translation error audit (already-consumed CC0 cases)
+on:
+  push:
+    branches: [research/qualitative-bilingual-review-20261118]
+    paths:
+      - experiments/translation_quality_20261117/qualitative_audit.py
+      - .github/workflows/qualitative-tico-audit.yml
+permissions:
+  contents: read
+jobs:
+  examples-for-human-review:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 22
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [french, spanish]
+    env:
+      TOKENIZERS_PARALLELISM: 'false'
+      HF_HUB_DISABLE_TELEMETRY: '1'
+      OMP_NUM_THREADS: '4'
+      MKL_NUM_THREADS: '4'
+    name: Explain real ${{ matrix.language }} translation examples (diagnostic ONLY)
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install CPU-only trained model inference dependencies
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'huggingface-hub>=0.34,<1.0'
+      - name: Audit original and final models on previously evaluated CC0 test cases
+        run: |
+          python -u experiments/translation_quality_20261117/qualitative_audit.py --language '${{ matrix.language }}'
