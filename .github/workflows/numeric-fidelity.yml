@@ -1,0 +1,24 @@
+name: Test semantic-safety and numeric translation checks
+on:
+  push:
+    branches: [research/semantic-safety-checks-20261118]
+    paths:
+      - experiments/translation_quality_20261117/semantic_checks.py
+      - experiments/translation_quality_20261117/tests/test_semantic_checks.py
+      - .github/workflows/numeric-fidelity.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  numeric-fidelity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify numeric preservation and conservative uncertainty behavior
+        run: |
+          python -m compileall -q experiments/translation_quality_20261117
+          python -m unittest discover -s experiments/translation_quality_20261117/tests -p 'test_*.py' -v
