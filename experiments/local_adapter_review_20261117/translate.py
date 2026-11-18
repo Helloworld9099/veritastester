@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Research-only, local BridgeCaption LoRA inference for bilingual human review.
 
-Supports the original trained checkpoint, saved OPUS Books candidate, and
+Supports saved OPUS Books, QED, GlobalVoices and MASSIVE candidates, and
 unmodified pretrained base. Never touches the live caption provider or keys.
 """
 from __future__ import annotations
@@ -18,7 +18,55 @@ REPO = HERE.parents[1]
 sys.path.insert(0, str(REPO / "experiments/cpu_continuation_20261117"))
 from train import LANGUAGES, download_base, sha256  # noqa: E402
 
-MODELS = ("base", "historical", "books")
+MODELS = ("base", "historical", "books", "massive", "qed", "globalvoices")
+
+RESEARCH_VARIANTS = {
+    "massive": {
+        "directory": "massive_20261117",
+        "evaluation": "massive_evaluation.json",
+        "selected_field": "selected_on_dev",
+        "frozen_field": "dev_selection_frozen_before_test",
+    },
+    "qed": {
+        "directory": "qed_subtitles_20261117",
+        "evaluation": "qed_evaluation.json",
+        "selected_field": "selected_on_dev_only",
+        "frozen_field": "selection_frozen_before_test",
+    },
+    "globalvoices": {
+        "directory": "globalvoices_20261117",
+        "evaluation": "globalvoices_evaluation.json",
+        "selected_field": "selected_on_dev_only",
+        "frozen_field": "selection_frozen_before_test",
+    },
+}
+
+
+def expected_saved_sha(language: str, variant: str, repo_root: Path = REPO) -> str:
+    """Accept only selected, evidence-backed, checksum-verified research adapters."""
+    if variant not in RESEARCH_VARIANTS or language not in LANGUAGES:
+        raise ValueError("Unsupported saved adapter variant/language")
+    info = RESEARCH_VARIANTS[variant]
+    root = repo_root / "experiments" / info["directory"] / "saved" / language
+    report = json.loads((root / "report.json").read_text(encoding="utf-8"))
+    evaluation = json.loads((root / info["evaluation"]).read_text(encoding="utf-8"))
+    if (report["language"] != language or evaluation["language"] != language
+            or report["selected"] == "previous"
+            or report["selected"] != evaluation[info["selected_field"]]
+            or evaluation[info["frozen_field"]] is not True):
+        raise ValueError("Model has no accepted research checkpoint for this language")
+    if variant == "massive" and (evaluation.get("aligned_by_original_slurp_id") is not True
+                                  or evaluation.get("revision") !=
+                                  "ff6bd8e4b27c3543e4f8fe2108f32bb95a6f8740"):
+        raise ValueError("MASSIVE SLURP original-cohort provenance mismatch")
+    row = next((line for line in (root / "SHA256SUMS.txt").read_text().splitlines()
+                if line.endswith("  adapter_selected.safetensors")), None)
+    if row is None:
+        raise ValueError("No saved accepted adapter for this language")
+    digest = row.split(" ", 1)[0]
+    if digest != report["selected_candidate_sha256"]:
+        raise ValueError("Research report and adapter SHA-256 manifest disagree")
+    return digest
 
 
 def expected_book_sha(language: str, repo_root: Path = REPO) -> str:
@@ -51,6 +99,11 @@ def resolve_weights(repo_root: Path, language: str, variant: str):
         root = repo_root / "experiments/opus_books_20261117/saved" / language
         path = root / "adapter_selected.safetensors"
         expected = expected_book_sha(language, repo_root)
+    elif variant in RESEARCH_VARIANTS:
+        info = RESEARCH_VARIANTS[variant]
+        root = repo_root / "experiments" / info["directory"] / "saved" / language
+        path = root / "adapter_selected.safetensors"
+        expected = expected_saved_sha(language, variant, repo_root)
     else:
         relative = LANGUAGES[language]["adapter_rel"]
         path = repo_root / "research" / relative

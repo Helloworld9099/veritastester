@@ -5,7 +5,7 @@ import unittest
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
-from translate import MODELS, REPO, expected_book_sha, resolve_weights
+from translate import MODELS, REPO, expected_book_sha, expected_saved_sha, resolve_weights
 
 
 class TestLocalAdapterReview(unittest.TestCase):
@@ -29,7 +29,26 @@ class TestLocalAdapterReview(unittest.TestCase):
             resolve_weights(REPO, "english", "books")
         with self.assertRaisesRegex(ValueError, "Unsupported"):
             resolve_weights(REPO, "french", "dev_untrusted")
-        self.assertEqual(MODELS, ("base", "historical", "books"))
+        self.assertEqual(MODELS, ("base", "historical", "books", "massive",
+                                  "qed", "globalvoices"))
+
+    def test_new_saved_adapters_are_pinned_to_evidence(self):
+        expected = {
+            ("french", "massive"): "5c5094a3f8dfc9d783f6e8482ae8ed2fad7e632b81b31f20f54fa8f288538ad8",
+            ("spanish", "massive"): "e60fbadae2037686f9693af4be2e7e59b128aa44f4be8c287f40b7f893b0a004",
+            ("spanish", "qed"): "269b67cf8e49dc0da9fe13d47059c57533e61e5ef4db079ff12983e70ea62ab9",
+            ("french", "globalvoices"): "670c226bbe16c010940b1def0127225c0a332b7ab1ca0360dd2694f8deaa78bc",
+        }
+        for (language, variant), sha in expected.items():
+            with self.subTest(language=language, variant=variant):
+                self.assertEqual(expected_saved_sha(language, variant), sha)
+                self.assertTrue(resolve_weights(REPO, language, variant).is_file())
+
+    def test_rejected_models_are_not_implicitly_activated(self):
+        with self.assertRaisesRegex(ValueError, "no accepted"):
+            resolve_weights(REPO, "french", "qed")
+        with self.assertRaisesRegex(ValueError, "no accepted"):
+            resolve_weights(REPO, "spanish", "globalvoices")
 
 
 if __name__ == "__main__":
