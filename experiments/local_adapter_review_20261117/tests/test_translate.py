@@ -1,11 +1,14 @@
 """Checksum/provenance smoke checks without loading neural model weights."""
 import sys
+import json
+import tempfile
 from pathlib import Path
 import unittest
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
-from translate import MODELS, REPO, expected_book_sha, expected_saved_sha, resolve_weights
+from translate import (MODELS, REPO, expected_book_sha, expected_saved_sha,
+                       resolve_weights, validated_sources, validated_rows)
 
 
 class TestLocalAdapterReview(unittest.TestCase):
@@ -23,6 +26,34 @@ class TestLocalAdapterReview(unittest.TestCase):
             self.assertIsNone(resolve_weights(REPO, language, "base"))
             self.assertTrue(resolve_weights(REPO, language, "historical").is_file())
             self.assertTrue(resolve_weights(REPO, language, "books").is_file())
+
+    def test_batch_validation_does_not_require_model_load(self):
+        self.assertEqual(validated_sources("Bonjour"), (["Bonjour"], False))
+        self.assertEqual(validated_sources(["Bonjour", "Salut"]),
+                         (["Bonjour", "Salut"], True))
+        for bad in ([], ["", "salut"], [7], ["x" * 5001], ["Bonjour"] * 257):
+            with self.assertRaisesRegex(ValueError, "1-256"):
+                validated_sources(bad)
+
+    def test_private_heldout_records_require_source_group_and_category(self):
+        example = {
+            "sample_id": "speaker-01-utterance-001",
+            "category": "idiom",
+            "source_group_sha256": "0" * 64,
+            "source_text": "J'ai le cafard",
+        }
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / "sample.jsonl"
+            path.write_text(json.dumps(example) + "\n", encoding="utf-8")
+            self.assertEqual(validated_rows(path), [example])
+            path.write_text(json.dumps(example) + "\n" +
+                            json.dumps(example) + "\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "unique"):
+                validated_rows(path)
+            example["source_group_sha256"] = "not-a-sha"
+            path.write_text(json.dumps(example) + "\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "SHA-256"):
+                validated_rows(path)
 
     def test_unknown_models_fail_closed(self):
         with self.assertRaisesRegex(ValueError, "Unsupported"):
