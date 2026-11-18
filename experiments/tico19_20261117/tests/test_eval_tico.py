@@ -36,7 +36,7 @@ class TestExternalBenchmark(unittest.TestCase):
             select_rows(tsv(language="fr"), "spanish")
 
     def test_modified_parallel_schema_fails(self):
-        with self.assertRaisesRegex(ValueError, "8 fields"):
+        with self.assertRaisesRegex(ValueError, "parallel TSV schema"):
             select_rows(b"en\tfr\tonly_three_fields", "french")
         rows = tsv(count=270).decode().splitlines()
         rows[5] = rows[4]
