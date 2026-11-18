@@ -1,0 +1,79 @@
+name: Preserve TICO-19 independent-domain benchmark evidence
+on:
+  push:
+    branches: [research/tico19-external-benchmark-20261117]
+    paths:
+      - .github/workflows/persist-tico19.yml
+permissions:
+  actions: read
+  contents: write
+jobs:
+  preserve:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download immutable successful TICO-19 outputs
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 44237442364
+          github-token: ${{ github.token }}
+          repository: Helloworld9099/veritastester
+          pattern: tico19-cross-domain-*
+          merge-multiple: false
+          path: ${{ runner.temp }}/tico-results
+      - name: Verify benchmark identity and checkpoint hashes before preservation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          from shutil import copy2
+          root = Path(os.environ["RUNNER_TEMP"]) / "tico-results"
+          out = Path("experiments/tico19_20261117/saved")
+          expected = {
+              "french": {
+                  "massive": "5c5094a3f8dfc9d783f6e8482ae8ed2fad7e632b81b31f20f54fa8f288538ad8",
+                  "massive2": "0219365d7d51492f8319ebb8b6a8fccbf6da25ee3525505663ac52810b0cbcba",
+                  "massive3": "072f7f5d2d90b26991c5c62bf8ddb40f686f65e66be52717e7b121d507008ad9",
+              },
+              "spanish": {
+                  "massive": "e60fbadae2037686f9693af4be2e7e59b128aa44f4be8c287f40b7f893b0a004",
+                  "massive2": "990fa755ab733a8a3a600615f2d9ed47c8ea24935cb88258e0f5a9f00888d791",
+                  "massive3": "14dddb5040afe49f8f05a1bfba3458d3321524b53b0fc05b359ad41a1ab75a4b",
+              },
+          }
+          for lang in ("french", "spanish"):
+              found = list((root / ("tico19-cross-domain-" + lang)).rglob("external_benchmark.json"))
+              assert len(found) == 1, "Missing or duplicated frozen benchmark"
+              report = json.loads(found[0].read_text())
+              assert report["language"] == lang
+              assert report["source"] == "gmnlp/tico19"
+              assert report["revision"] == "55d70dc0b1d1d0b2151c5e22815d823fedac3f2f"
+              assert report["model_selection"].startswith("No model training or selection")
+              assert len(report["source_archive_sha256"]) == 64
+              assert len(report["frozen_test_selection"]["selected_ids_sha256"]) == 64
+              assert set(report["model_scores"]) == {"base", "massive", "massive2", "massive3"}
+              assert report["adapter_sha256"]["base"] is None
+              assert all(report["adapter_sha256"][v] == sha for v,sha in expected[lang].items())
+              assert all(report["model_scores"][v]["n"] == 256 for v in report["model_scores"])
+              folder = out / lang
+              folder.mkdir(parents=True, exist_ok=False)
+              copy2(found[0], folder / "external_benchmark.json")
+              p = folder / "external_benchmark.json"
+              (folder / "SHA256SUMS.txt").write_text(
+                  hashlib.sha256(p.read_bytes()).hexdigest() + "  external_benchmark.json\n")
+              print("PRESERVED TICO", lang,
+                    {k: round(v["chrf"],3) for k,v in report["model_scores"].items()})
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add experiments/tico19_20261117/saved
+          git diff --cached --stat
+          git commit -m "research: retain frozen TICO-19 benchmark manifests and out-of-domain metrics [skip ci]"
+          git push origin "HEAD:refs/heads/research/tico19-external-benchmark-20261117"
