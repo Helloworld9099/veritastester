@@ -1,0 +1,75 @@
+{
+  "experiment": "research-only CPU french->English LoRA continuation",
+  "language": "french",
+  "seed": 202611183,
+  "base_model": "Helsinki-NLP/opus-mt-fr-en",
+  "base_revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+  "warm_adapter_sha256": "0219365d7d51492f8319ebb8b6a8fccbf6da25ee3525505663ac52810b0cbcba",
+  "corpus_source": "file:///tmp/bridgecaption-massive3-vc63jda_/train-dev.json",
+  "corpus_sha256": "f6f8012cdb16be12ad67af9631b6d2317e239722f7c5b0f857de8a8f752266c5",
+  "attribution": "Tatoeba french-English pairs via ManyThings.org; verify license and attribution before redistribution",
+  "train_rows": 1536,
+  "dev_rows": 256,
+  "unique_pairs_after_filtering": 1792,
+  "warning": "The newly downloaded corpus may overlap earlier research and base pretraining. Development-only results do not establish generalization, production readiness, or translation improvement.",
+  "planned_updates": 96,
+  "learning_rate": 2.5e-05,
+  "selection": "Accept new checkpoint only if dev chrF improves >=0.25 AND dev BLEU does not fall, compared with unchanged prior adapter.",
+  "scores": {
+    "previous": {
+      "chrf": 68.2369197439365,
+      "bleu": 47.86634994896189,
+      "n": 256
+    },
+    "step24": {
+      "chrf": 68.4200207329452,
+      "bleu": 47.59872115841267,
+      "n": 256
+    },
+    "step48": {
+      "chrf": 68.60709639418533,
+      "bleu": 48.4332521097182,
+      "n": 256
+    },
+    "step72": {
+      "chrf": 68.74457195085341,
+      "bleu": 48.3011828351497,
+      "n": 256
+    },
+    "step96": {
+      "chrf": 68.80607994600358,
+      "bleu": 48.50599131953619,
+      "n": 256
+    }
+  },
+  "selected": "step96",
+  "completed_updates": 96,
+  "selected_candidate_sha256": "072f7f5d2d90b26991c5c62bf8ddb40f686f65e66be52717e7b121d507008ad9",
+  "last_step_loss": 1.3632986545562744,
+  "elapsed_seconds": 166.409774006,
+  "source": "AmazonScience/massive",
+  "dataset_revision": "ff6bd8e4b27c3543e4f8fe2108f32bb95a6f8740",
+  "stage": 3,
+  "previous_stage2_checkpoint_sha256": "0219365d7d51492f8319ebb8b6a8fccbf6da25ee3525505663ac52810b0cbcba",
+  "old_cohort_sha256": {
+    "old_stage1_ids_sha256": {
+      "test": "19fba544825e6f14b4344b87cd0127ae7aa10546d8be13df8ac6645829362539",
+      "validation": "c796ea31b5402b5b247ea7f2efe7a2d2be10c3c2039b8403d6e73aeae54c4eaf",
+      "train": "5c5c45719bdbd6ed83206e3f655b944f4e7e4a6a13e68e7664afc89d91f02dc1"
+    },
+    "old_stage2_ids_sha256": {
+      "test": "5df262f4150402edb7bdb0adc962edfd353da0ff2c3dfb4606c88c1a912b2dec",
+      "validation": "f4e5f58e1c063818695148e8573a2cdad7f708550bf425b6b7d71904cc721521",
+      "train": "66c0f06abd4c7b8db173b3f6c65b58c516077808437f5ab4e53ba10901655047"
+    }
+  },
+  "new_cohort_ids_sha256": {
+    "test": "b4568409a368a0288ccaa8fa7a8f40814ffed68c3dd23c7a65ddb2487e164786",
+    "validation": "4d9aac66093234b70b2e3b9c4cbf52299e62532e5cc3abd4d35144f868c1fe21",
+    "train": "0bd841ec57c5dacd70abf34a06a3b0fc1591f59676dfa63879517ee89f91ff4e"
+  },
+  "stage3_utterances_from_original_author_partitions": true,
+  "no_previous_train_dev_or_test_text_reused": true,
+  "license": "CC BY 4.0 - AmazonScience MASSIVE",
+  "caveat": "chrF/BLEU not translation-adequacy percentage; no bilingual human review."
+}
