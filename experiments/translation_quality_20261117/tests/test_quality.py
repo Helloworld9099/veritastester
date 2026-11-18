@@ -36,6 +36,35 @@ class TestQualityGate(unittest.TestCase):
         self.assertAlmostEqual(report["observed_fraction"], 0.9)
         self.assertFalse(report["meets_90_percent_human_adequacy_gate"])
 
+    def test_slanguistic_failure_cannot_hide_behind_other_categories(self):
+        # 1,000 fresh real-review-shaped records: 95% overall, but only
+        # 75% slang adequacy. Overall Wilson lower bound is above 90%.
+        rows = cases(n=1000, good=1000)
+        slang_ids = [i for i, row in enumerate(rows) if row["category"] == "slang"]
+        for i in slang_ids[:50]:
+            rows[i]["rater_a_adequate"] = False
+            rows[i]["rater_b_adequate"] = False
+        report = score(rows)
+        self.assertGreater(report["wilson_lower_95"], 0.90)
+        self.assertAlmostEqual(report["observed_fraction"], 0.95)
+        self.assertEqual(report["by_category_quality"]["slang"]["observed_fraction"], 0.75)
+        self.assertFalse(report["eligibility"]["at_least_90_percent_observed_in_each_category"])
+        self.assertFalse(report["meets_90_percent_human_adequacy_gate"])
+
+    def test_each_category_matters_including_idioms_context_and_technical(self):
+        for fail_category in ("idiom", "context", "technical", "everyday"):
+            with self.subTest(fail_category=fail_category):
+                rows = cases(n=1000, good=1000)
+                ids = [i for i, row in enumerate(rows)
+                       if row["category"] == fail_category][:50]
+                for i in ids:
+                    rows[i]["rater_a_adequate"] = False
+                    rows[i]["rater_b_adequate"] = False
+                result = score(rows)
+                self.assertFalse(result["meets_90_percent_human_adequacy_gate"])
+                self.assertEqual(
+                    result["by_category_quality"][fail_category]["observed_fraction"], 0.75)
+
     def test_insufficient_sample_not_eligible(self):
         report = score(cases(100, 100))
         self.assertFalse(report["eligibility"]["at_least_200_cases"])
