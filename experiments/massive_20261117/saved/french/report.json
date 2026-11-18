@@ -1,0 +1,57 @@
+{
+  "experiment": "research-only CPU french->English LoRA continuation",
+  "language": "french",
+  "seed": 202611179,
+  "base_model": "Helsinki-NLP/opus-mt-fr-en",
+  "base_revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+  "warm_adapter_sha256": "600990e205c1238ea1fba3a8c36e5ef199bdfc10b33e4e0068e5b9695b7e8665",
+  "corpus_source": "AmazonScience/massive",
+  "corpus_sha256": "1080bba7c4b543f0fef647d38ea9c11338f6670d2378c20cc8d58312182f2b32",
+  "attribution": "Tatoeba french-English pairs via ManyThings.org; verify license and attribution before redistribution",
+  "train_rows": 4096,
+  "dev_rows": 128,
+  "unique_pairs_after_filtering": 4224,
+  "warning": "Official MASSIVE splits and shared SLURP IDs; 90% correctness still requires independent bilingual human adequacy review. Some localization differences are intentional rather than literal translations.",
+  "planned_updates": 256,
+  "learning_rate": 2.5e-05,
+  "selection": "Accept new checkpoint only if dev chrF improves >=0.25 AND dev BLEU does not fall, compared with unchanged prior adapter.",
+  "scores": {
+    "previous": {
+      "chrf": 61.5891895447453,
+      "bleu": 33.99257799057918,
+      "n": 128
+    },
+    "step64": {
+      "chrf": 62.49999722126611,
+      "bleu": 36.63476277214517,
+      "n": 128
+    },
+    "step128": {
+      "chrf": 62.668238914759456,
+      "bleu": 37.67115863066177,
+      "n": 128
+    },
+    "step192": {
+      "chrf": 62.96132754291699,
+      "bleu": 38.52808586093246,
+      "n": 128
+    },
+    "step256": {
+      "chrf": 63.54634959955053,
+      "bleu": 39.6676033064028,
+      "n": 128
+    }
+  },
+  "selected": "step256",
+  "completed_updates": 256,
+  "selected_candidate_sha256": "5c5094a3f8dfc9d783f6e8482ae8ed2fad7e632b81b31f20f54fa8f288538ad8",
+  "last_step_loss": 1.2049288749694824,
+  "elapsed_seconds": 173.90663467,
+  "corpus_revision": "ff6bd8e4b27c3543e4f8fe2108f32bb95a6f8740",
+  "license": "CC BY 4.0 \u2014 MASSIVE Amazon Science / SLURP",
+  "split_ids_sha256": {
+    "test": "19fba544825e6f14b4344b87cd0127ae7aa10546d8be13df8ac6645829362539",
+    "validation": "c796ea31b5402b5b247ea7f2efe7a2d2be10c3c2039b8403d6e73aeae54c4eaf",
+    "train": "5c5c45719bdbd6ed83206e3f655b944f4e7e4a6a13e68e7664afc89d91f02dc1"
+  }
+}
