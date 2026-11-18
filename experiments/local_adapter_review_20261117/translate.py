@@ -114,11 +114,44 @@ def resolve_weights(repo_root: Path, language: str, variant: str):
     return path
 
 
-def translate(language: str, variant: str, text: str, cache_dir: Path, repo_root: Path):
+def validated_sources(text):
+    """Return bounded source texts; batch mode loads the weights only once."""
+    batch = not isinstance(text, str)
+    items = [text] if not batch else text
+    if (not isinstance(items, list) or not 0 < len(items) <= 256
+            or any(not isinstance(x, str) or not 0 < len(x.strip()) <= 5000
+                   for x in items)):
+        raise ValueError("Provide 1-256 nonempty texts of at most 5000 characters each")
+    return items, batch
+
+
+def validated_rows(path: Path):
+    """Read only the minimum permitted frozen evaluation fields."""
+    rows = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()
+            if line.strip()]
+    seen = set()
+    if not 0 < len(rows) <= 256:
+        raise ValueError("Batch must contain 1-256 source rows")
+    for row in rows:
+        if not isinstance(row, dict) or not isinstance(row.get("sample_id"), str):
+            raise ValueError("Every input needs an explicit sample_id")
+        if row["sample_id"] in seen or not row["sample_id"]:
+            raise ValueError("Input sample IDs must be unique and nonempty")
+        seen.add(row["sample_id"])
+        if row.get("category") not in ("everyday", "idiom", "slang", "context", "technical"):
+            raise ValueError("Missing independent human review category")
+        digest = row.get("source_group_sha256")
+        if (not isinstance(digest, str) or len(digest) != 64
+                or any(ch not in "0123456789abcdef" for ch in digest)):
+            raise ValueError("Missing source-group SHA-256")
+    validated_sources([row.get("source_text") for row in rows])
+    return rows
+
+
+def translate(language: str, variant: str, text, cache_dir: Path, repo_root: Path):
     if language not in LANGUAGES or variant not in MODELS:
         raise ValueError("Unsupported language/variant")
-    if not isinstance(text, str) or not 0 < len(text.strip()) <= 5000:
-        raise ValueError("Enter 1-5000 characters of non-empty source text")
+    sources, batch_mode = validated_sources(text)
     spec = LANGUAGES[language]
     checkpoint = resolve_weights(repo_root, language, variant)
     model_dir = cache_dir / (language + "-" + spec["revision"][:12])
@@ -177,31 +210,74 @@ def translate(language: str, variant: str, text: str, cache_dir: Path, repo_root
                     raise ValueError("Invalid research adapter weights")
                 state[key].copy_(weight)
     model.eval()
+    translations = []
     with torch.no_grad():
-        inputs = tok(text, return_tensors="pt", truncation=True, max_length=128)
-        outputs = model.generate(**inputs, num_beams=4, max_new_tokens=96)
-        result = tok.decode(outputs[0], skip_special_tokens=True)
-    return {
+        for offset in range(0, len(sources), 8):
+            chunk = sources[offset:offset + 8]
+            inputs = tok(chunk, return_tensors="pt", padding=True,
+                         truncation=True, max_length=128)
+            generated = model.generate(**inputs, num_beams=4, max_new_tokens=96)
+            translations.extend(tok.batch_decode(generated, skip_special_tokens=True))
+    if len(translations) != len(sources) or not all(isinstance(t, str) and t.strip()
+                                                    for t in translations):
+        raise RuntimeError("Translation batch output size or quality mismatch")
+    result = {
         "language": language,
         "variant": variant,
-        "translation": result,
         "adapter_sha256": sha256(checkpoint) if checkpoint else None,
         "research_only": True,
-        "limitations": "Context-free text inference; not independent quality validation or live audio.",
+        "limitations": "Text-only model, not independently verified 90% translation adequacy.",
     }
+    if batch_mode:
+        result["translations"] = translations
+    else:
+        result["translation"] = translations[0]
+    return result
 
 
 def main():
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("--language", required=True, choices=tuple(LANGUAGES))
     cli.add_argument("--variant", choices=MODELS, required=True)
-    cli.add_argument("--text", required=True)
+    text_input = cli.add_mutually_exclusive_group(required=True)
+    text_input.add_argument("--text")
+    text_input.add_argument("--input-jsonl", type=Path,
+                            help="Private sample IDs/categories/sources, no reference translations")
+    cli.add_argument("--output-jsonl", type=Path,
+                     help="Private prediction file for blind human review; never upload")
     cli.add_argument("--cache-dir", type=Path,
                      default=Path.home() / ".cache/bridgecaption/research-models")
     opts = cli.parse_args()
+    if bool(opts.input_jsonl) != bool(opts.output_jsonl):
+        cli.error("--input-jsonl requires --output-jsonl and vice versa")
+    if opts.output_jsonl and opts.output_jsonl.exists():
+        cli.error("Refusing to overwrite an existing frozen review output")
     try:
-        result = translate(opts.language, opts.variant, opts.text,
-                           opts.cache_dir, REPO)
+        if opts.input_jsonl:
+            rows = validated_rows(opts.input_jsonl)
+            result = translate(opts.language, opts.variant,
+                               [row["source_text"] for row in rows],
+                               opts.cache_dir, REPO)
+            if result["adapter_sha256"] is None:
+                cli.error("A frozen custom LoRA adapter is required for blinded review")
+            output = []
+            for row, translation in zip(rows, result["translations"]):
+                output.append({
+                    "sample_id": row["sample_id"],
+                    "language": opts.language,
+                    "category": row["category"],
+                    "source_group_sha256": row["source_group_sha256"],
+                    "source_text": row["source_text"],
+                    "candidate_translation": translation,
+                })
+            with opts.output_jsonl.open("x", encoding="utf-8") as writer:
+                for row in output:
+                    writer.write(json.dumps(row, ensure_ascii=False) + "\n")
+            print("Frozen adapter SHA-256: " + result["adapter_sha256"], file=sys.stderr)
+            print("Wrote " + str(len(output)) + " private predictions to " + str(opts.output_jsonl),
+                  file=sys.stderr)
+            return
+        result = translate(opts.language, opts.variant, opts.text, opts.cache_dir, REPO)
     except (ValueError, KeyError, OSError) as exc:
         cli.error(str(exc))
     print(json.dumps(result, ensure_ascii=False))
