@@ -1,0 +1,77 @@
+{
+  "language": "french",
+  "stage": 3,
+  "source": "AmazonScience/massive",
+  "dataset_revision": "ff6bd8e4b27c3543e4f8fe2108f32bb95a6f8740",
+  "stage2_warm_sha256": "0219365d7d51492f8319ebb8b6a8fccbf6da25ee3525505663ac52810b0cbcba",
+  "old_cohort_sha256": {
+    "old_stage1_ids_sha256": {
+      "test": "19fba544825e6f14b4344b87cd0127ae7aa10546d8be13df8ac6645829362539",
+      "validation": "c796ea31b5402b5b247ea7f2efe7a2d2be10c3c2039b8403d6e73aeae54c4eaf",
+      "train": "5c5c45719bdbd6ed83206e3f655b944f4e7e4a6a13e68e7664afc89d91f02dc1"
+    },
+    "old_stage2_ids_sha256": {
+      "test": "5df262f4150402edb7bdb0adc962edfd353da0ff2c3dfb4606c88c1a912b2dec",
+      "validation": "f4e5f58e1c063818695148e8573a2cdad7f708550bf425b6b7d71904cc721521",
+      "train": "66c0f06abd4c7b8db173b3f6c65b58c516077808437f5ab4e53ba10901655047"
+    }
+  },
+  "new_ids_sha256": {
+    "test": "b4568409a368a0288ccaa8fa7a8f40814ffed68c3dd23c7a65ddb2487e164786",
+    "validation": "4d9aac66093234b70b2e3b9c4cbf52299e62532e5cc3abd4d35144f868c1fe21",
+    "train": "0bd841ec57c5dacd70abf34a06a3b0fc1591f59676dfa63879517ee89f91ff4e"
+  },
+  "train_n": 1536,
+  "dev_n": 256,
+  "test_n": 256,
+  "no_previous_train_dev_or_test_text_reused": true,
+  "selected_using_dev_only": "step96",
+  "development_scores": {
+    "previous": {
+      "chrf": 68.2369197439365,
+      "bleu": 47.86634994896189,
+      "n": 256
+    },
+    "step24": {
+      "chrf": 68.4200207329452,
+      "bleu": 47.59872115841267,
+      "n": 256
+    },
+    "step48": {
+      "chrf": 68.60709639418533,
+      "bleu": 48.4332521097182,
+      "n": 256
+    },
+    "step72": {
+      "chrf": 68.74457195085341,
+      "bleu": 48.3011828351497,
+      "n": 256
+    },
+    "step96": {
+      "chrf": 68.80607994600358,
+      "bleu": 48.50599131953619,
+      "n": 256
+    }
+  },
+  "first_and_only_new_test_scores": {
+    "base": {
+      "n": 256,
+      "chrf": 65.39055218173793,
+      "bleu": 36.08432524760187,
+      "reference_exact_match_fraction_not_adequacy": 0.1171875
+    },
+    "previous": {
+      "n": 256,
+      "chrf": 68.66120314357265,
+      "bleu": 47.619554421999624,
+      "reference_exact_match_fraction_not_adequacy": 0.19140625
+    },
+    "selected": {
+      "n": 256,
+      "chrf": 69.30272113791536,
+      "bleu": 48.753171505472636,
+      "reference_exact_match_fraction_not_adequacy": 0.203125
+    }
+  },
+  "warning": "MASSIVE test is independent of previous adaptation examples, not necessarily independent of original Marian pretraining. Text only. Not a substitute for blind bilingual adequacy ratings / 90% evidence."
+}

@@ -1,0 +1,102 @@
+name: Preserve MASSIVE stage-three research checkpoints and evidence
+
+on:
+  push:
+    branches: [research/massive-stage3-fresh-cohorts-20261117]
+    paths:
+      - .github/workflows/persist-massive-stage3.yml
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  save:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download immutable successful stage-three artifacts
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 44235633228
+          github-token: ${{ github.token }}
+          repository: Helloworld9099/veritastester
+          pattern: massive-stage3-*
+          merge-multiple: false
+          path: ${{ runner.temp }}/massive3-artifacts
+      - name: Verify prior cohort/checkpoint provenance and preserve full research
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          from shutil import copy2
+
+          paths = Path(os.environ["RUNNER_TEMP"]) / "massive3-artifacts"
+          target = Path("experiments/massive_stage3_20261117/saved")
+          previous_hash = {
+              "french": "0219365d7d51492f8319ebb8b6a8fccbf6da25ee3525505663ac52810b0cbcba",
+              "spanish": "990fa755ab733a8a3a600615f2d9ed47c8ea24935cb88258e0f5a9f00888d791",
+          }
+          for lang in ("french", "spanish"):
+              incoming = paths / ("massive-stage3-" + lang)
+              source_report = next(incoming.rglob("report.json"))
+              source_evaluation = next(incoming.rglob("stage3_evaluation.json"))
+              report = json.loads(source_report.read_text())
+              evaluation = json.loads(source_evaluation.read_text())
+              previous = json.loads((Path("experiments/massive_stage2_20261117/saved") /
+                                     lang / "stage2_evaluation.json").read_text())
+              stage1 = json.loads((Path("experiments/massive_20261117/saved") /
+                                   lang / "massive_evaluation.json").read_text())
+              assert report["language"] == evaluation["language"] == lang
+              assert report["stage"] == evaluation["stage"] == 3
+              assert report["previous_stage2_checkpoint_sha256"] == previous_hash[lang]
+              assert evaluation["stage2_warm_sha256"] == previous_hash[lang]
+              assert report["old_cohort_sha256"]["old_stage1_ids_sha256"] == stage1["split_ids_sha256"]
+              assert report["old_cohort_sha256"]["old_stage2_ids_sha256"] == previous["second_stage_ids_sha256"]
+              assert report["new_cohort_ids_sha256"] == evaluation["new_ids_sha256"]
+              assert report["no_previous_train_dev_or_test_text_reused"] is True
+              assert evaluation["no_previous_train_dev_or_test_text_reused"] is True
+              assert report["completed_updates"] == 96
+              assert report["selected"] == evaluation["selected_using_dev_only"]
+              assert report["selected"] != "previous"
+              assert len(report["scores"]) == 5
+              dev = report["scores"]
+              assert (dev[report["selected"]]["chrf"] >= dev["previous"]["chrf"] + 0.25
+                      and dev[report["selected"]]["bleu"] >= dev["previous"]["bleu"])
+              test = evaluation["first_and_only_new_test_scores"]
+              assert test["base"]["n"] == test["previous"]["n"] == test["selected"]["n"] == 256
+
+              selected = next(incoming.rglob("candidate_selected.safetensors"))
+              sha = hashlib.sha256(selected.read_bytes()).hexdigest()
+              assert sha == report["selected_candidate_sha256"], "Saved candidate differs from experiment digest"
+              out = target / lang
+              out.mkdir(parents=True, exist_ok=False)
+              for source, filename in ((selected, "adapter_selected.safetensors"),
+                                       (source_report, "report.json"),
+                                       (source_evaluation, "stage3_evaluation.json")):
+                  copy2(source, out / filename)
+              candidates = sorted(incoming.rglob("candidate_step*.safetensors"))
+              assert len(candidates) == 4
+              for candidate in candidates:
+                  copy2(candidate, out / candidate.name)
+              with (out / "SHA256SUMS.txt").open("w", encoding="utf-8") as checksum:
+                  for path in sorted(out.iterdir()):
+                      if path.name != "SHA256SUMS.txt":
+                          checksum.write(hashlib.sha256(path.read_bytes()).hexdigest() +
+                                         "  " + path.name + "\n")
+              print("PRESERVED", lang, report["selected"], sha,
+                    "UNSEEN chrF", test["previous"]["chrf"], "->", test["selected"]["chrf"])
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add experiments/massive_stage3_20261117/saved
+          git diff --cached --stat
+          git commit -m "research: preserve stage-three checkpoints and frozen independent samples [skip ci]"
+          git push origin "HEAD:refs/heads/research/massive-stage3-fresh-cohorts-20261117"
