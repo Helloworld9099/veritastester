@@ -1,0 +1,57 @@
+{
+  "experiment": "research-only CPU spanish->English LoRA continuation",
+  "language": "spanish",
+  "seed": 202611179,
+  "base_model": "Helsinki-NLP/opus-mt-es-en",
+  "base_revision": "c96e2c5399ebfae4fc43d9669556b9afa74bb69d",
+  "warm_adapter_sha256": "55d4b872a6807e0d9bc317b72ef63eddf77d5828c427f91497d5bc23ac2e65f3",
+  "corpus_source": "AmazonScience/massive",
+  "corpus_sha256": "f8e29d47cb9b66fbca90ccfd3d3ec74855571dd5f41cdb6c6bbcfe54295c1bca",
+  "attribution": "Tatoeba spanish-English pairs via ManyThings.org; verify license and attribution before redistribution",
+  "train_rows": 4096,
+  "dev_rows": 128,
+  "unique_pairs_after_filtering": 4224,
+  "warning": "Official MASSIVE splits and shared SLURP IDs; 90% correctness still requires independent bilingual human adequacy review. Some localization differences are intentional rather than literal translations.",
+  "planned_updates": 256,
+  "learning_rate": 2.5e-05,
+  "selection": "Accept new checkpoint only if dev chrF improves >=0.25 AND dev BLEU does not fall, compared with unchanged prior adapter.",
+  "scores": {
+    "previous": {
+      "chrf": 64.01838446122657,
+      "bleu": 35.223937446832494,
+      "n": 128
+    },
+    "step64": {
+      "chrf": 65.69474901980684,
+      "bleu": 39.90873580599405,
+      "n": 128
+    },
+    "step128": {
+      "chrf": 66.40865584194306,
+      "bleu": 42.624098653455036,
+      "n": 128
+    },
+    "step192": {
+      "chrf": 65.89852710538851,
+      "bleu": 42.717567566603954,
+      "n": 128
+    },
+    "step256": {
+      "chrf": 66.67137844334479,
+      "bleu": 43.89589904395348,
+      "n": 128
+    }
+  },
+  "selected": "step256",
+  "completed_updates": 256,
+  "selected_candidate_sha256": "e60fbadae2037686f9693af4be2e7e59b128aa44f4be8c287f40b7f893b0a004",
+  "last_step_loss": 1.9649658203125,
+  "elapsed_seconds": 193.26098689199998,
+  "corpus_revision": "ff6bd8e4b27c3543e4f8fe2108f32bb95a6f8740",
+  "license": "CC BY 4.0 \u2014 MASSIVE Amazon Science / SLURP",
+  "split_ids_sha256": {
+    "test": "4c6c55d2a2e12faa163a3e9ef2d1f1c6aea6fa4e7b2b39bed3ccab2a9be1b18f",
+    "validation": "36e0025527199a563038e4e45408d13d4927d27e9623e293c80e2f083d7e3d57",
+    "train": "a485ee7d770fe51a6fc8eb8d0a1ee652f59f8b8c9522ab8085214308a7d553c9"
+  }
+}

@@ -1,0 +1,75 @@
+name: Preserve verified MASSIVE LoRA research checkpoints
+
+on:
+  push:
+    branches: [research/massive-voice-utterances-20261117]
+    paths:
+      - .github/workflows/persist-massive.yml
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  preserve:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Fetch successful frozen-training artifacts
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 44188641117
+          github-token: ${{ github.token }}
+          repository: Helloworld9099/veritastester
+          pattern: massive-research-*
+          merge-multiple: false
+          path: ${{ runner.temp }}/massive-artifacts
+      - name: Validate provenance and preserve only research outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          import shutil
+          artifacts = Path(os.environ["RUNNER_TEMP"]) / "massive-artifacts"
+          root = Path("experiments/massive_20261117/saved")
+          for lang in ("french", "spanish"):
+              source = artifacts / ("massive-research-" + lang)
+              report_path = next(source.rglob("report.json"))
+              eval_path = next(source.rglob("massive_evaluation.json"))
+              checkpoint_path = next(source.rglob("candidate_selected.safetensors"))
+              report = json.loads(report_path.read_text())
+              evaluation = json.loads(eval_path.read_text())
+              assert report["language"] == lang
+              assert evaluation["language"] == lang
+              assert report["selected"] == evaluation["selected_on_dev"]
+              assert report["selected"] != "previous"
+              assert evaluation["dev_selection_frozen_before_test"] is True
+              assert evaluation["aligned_by_original_slurp_id"] is True
+              sha = hashlib.sha256(checkpoint_path.read_bytes()).hexdigest()
+              assert sha == report["selected_candidate_sha256"], "Candidate hash mismatch"
+              d = root / lang
+              d.mkdir(parents=True, exist_ok=False)
+              shutil.copy2(checkpoint_path, d / "adapter_selected.safetensors")
+              shutil.copy2(report_path, d / "report.json")
+              shutil.copy2(eval_path, d / "massive_evaluation.json")
+              for candidate in sorted(source.rglob("candidate_step*.safetensors")):
+                  shutil.copy2(candidate, d / candidate.name)
+              with (d / "SHA256SUMS.txt").open("w") as out:
+                  for p in sorted(d.iterdir()):
+                      if p.is_file() and p.name != "SHA256SUMS.txt":
+                          out.write(hashlib.sha256(p.read_bytes()).hexdigest() + "  " + p.name + "\n")
+              print("Preserved", lang, report["selected"], sha)
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add experiments/massive_20261117/saved
+          git diff --cached --stat
+          git commit -m "research: preserve MASSIVE French and Spanish research adapters and evaluation [skip ci]"
+          git push origin "HEAD:refs/heads/research/massive-voice-utterances-20261117"

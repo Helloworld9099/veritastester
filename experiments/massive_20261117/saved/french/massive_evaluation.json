@@ -1,0 +1,66 @@
+{
+  "language": "french",
+  "source": "AmazonScience/massive",
+  "revision": "ff6bd8e4b27c3543e4f8fe2108f32bb95a6f8740",
+  "license": "CC BY 4.0",
+  "data_splits": "official MASSIVE train/dev/test",
+  "train_n": 4096,
+  "dev_n": 128,
+  "test_n": 256,
+  "aligned_by_original_slurp_id": true,
+  "split_ids_sha256": {
+    "test": "19fba544825e6f14b4344b87cd0127ae7aa10546d8be13df8ac6645829362539",
+    "validation": "c796ea31b5402b5b247ea7f2efe7a2d2be10c3c2039b8403d6e73aeae54c4eaf",
+    "train": "5c5c45719bdbd6ed83206e3f655b944f4e7e4a6a13e68e7664afc89d91f02dc1"
+  },
+  "dev_selection_frozen_before_test": true,
+  "selected_on_dev": "step256",
+  "dev_scores": {
+    "previous": {
+      "chrf": 61.5891895447453,
+      "bleu": 33.99257799057918,
+      "n": 128
+    },
+    "step64": {
+      "chrf": 62.49999722126611,
+      "bleu": 36.63476277214517,
+      "n": 128
+    },
+    "step128": {
+      "chrf": 62.668238914759456,
+      "bleu": 37.67115863066177,
+      "n": 128
+    },
+    "step192": {
+      "chrf": 62.96132754291699,
+      "bleu": 38.52808586093246,
+      "n": 128
+    },
+    "step256": {
+      "chrf": 63.54634959955053,
+      "bleu": 39.6676033064028,
+      "n": 128
+    }
+  },
+  "independent_split_test_scores": {
+    "base": {
+      "n": 256,
+      "chrf": 63.60482208550614,
+      "bleu": 33.77179515867452,
+      "reference_exact_match_fraction_not_adequacy": 0.09375
+    },
+    "previous": {
+      "n": 256,
+      "chrf": 63.768047761495,
+      "bleu": 35.66662428059829,
+      "reference_exact_match_fraction_not_adequacy": 0.08984375
+    },
+    "selected": {
+      "n": 256,
+      "chrf": 66.09128913241581,
+      "bleu": 43.771207298695956,
+      "reference_exact_match_fraction_not_adequacy": 0.1484375
+    }
+  },
+  "limitations": "This test is held out from our adaptation but could overlap original Marian pretraining. MASSIVE contains localized, not always literal utterances. chrF and BLEU do not indicate percent correct translations; these are text-only utterances, not an end-to-end speech or dialog test."
+}
