@@ -1,0 +1,47 @@
+{
+  "language": "spanish",
+  "source": "gmnlp/tico19",
+  "revision": "55d70dc0b1d1d0b2151c5e22815d823fedac3f2f",
+  "source_url": "https://huggingface.co/datasets/gmnlp/tico19/resolve/55d70dc0b1d1d0b2151c5e22815d823fedac3f2f/test/test.en-es-LA.tsv",
+  "source_archive_sha256": "a0f5488d595627d01e680fd8559f7e69c794445487f4c3e5d71fe4c2751dd220",
+  "license": "TICO-19 project CC0, cite Anastasopoulos et al.",
+  "frozen_test_selection": {
+    "selected_ids_sha256": "fa7a7168763716818ba8993b07c615b6aca8d800f7035f0f76acdd743bbd2427",
+    "n": 256,
+    "source_group_count": 17
+  },
+  "model_scores": {
+    "base": {
+      "chrf": 74.26127036931285,
+      "bleu": 49.38326175973655,
+      "reference_exact_match_fraction_not_adequacy": 0.01171875,
+      "n": 256
+    },
+    "massive": {
+      "chrf": 73.85416065041353,
+      "bleu": 48.9732680398489,
+      "reference_exact_match_fraction_not_adequacy": 0.01953125,
+      "n": 256
+    },
+    "massive2": {
+      "chrf": 73.81129591386505,
+      "bleu": 49.065710071420995,
+      "reference_exact_match_fraction_not_adequacy": 0.01953125,
+      "n": 256
+    },
+    "massive3": {
+      "chrf": 73.78599137028809,
+      "bleu": 48.98847885364927,
+      "reference_exact_match_fraction_not_adequacy": 0.01953125,
+      "n": 256
+    }
+  },
+  "adapter_sha256": {
+    "base": null,
+    "massive": "e60fbadae2037686f9693af4be2e7e59b128aa44f4be8c287f40b7f893b0a004",
+    "massive2": "990fa755ab733a8a3a600615f2d9ed47c8ea24935cb88258e0f5a9f00888d791",
+    "massive3": "14dddb5040afe49f8f05a1bfba3458d3321524b53b0fc05b359ad41a1ab75a4b"
+  },
+  "model_selection": "No model training or selection using TICO-19 evaluation",
+  "limitations": "Out-of-domain medical/crisis text, not dialogue or live speech. Possible original pretraining exposure. BLEU/chrF and exact-match are not percentages of correctly translated language. No real independent bilingual human adequacy ratings. This TICO-19 test selection is now consumed and must not be reused to tune."
+}
