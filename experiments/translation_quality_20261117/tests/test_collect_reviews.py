@@ -14,6 +14,8 @@ def examples(count=220):
     return [{"sample_id": f"sample-{i:04d}", "language": "spanish",
              "source_group_sha256": digest(f"conversation-{i // 10}"),
              "category": categories[i % 5],
+             "previous_utterances": (["¿Qué dijiste antes?"] if i % 5 == 3 else []),
+             "topic": "casual conversation",
              "source_text": f"Spanish source number {i}",
              "candidate_translation": f"English candidate number {i}"}
             for i in range(count)]
@@ -77,6 +79,38 @@ class TestHumanPacket(unittest.TestCase):
             result = assemble(folder / "manifest.json", a, b, third)
             self.assertEqual(result["disagreements_adjudicated"], 1)
             self.assertEqual(result["adequate"], 219)
+
+    def test_context_is_visible_to_bilingual_raters_and_frozen(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp) / "packet"
+            prepare(examples(220), "e" * 64, folder)
+            rater_a = folder / "rater_a.jsonl"
+            rows = jsonl(rater_a)
+            contextual = next(row for row in rows if row["category"] == "context")
+            self.assertEqual(contextual["previous_utterances"], ["¿Qué dijiste antes?"])
+            self.assertEqual(contextual["topic"], "casual conversation")
+            mark(rater_a)
+            mark(folder / "rater_b.jsonl")
+            modified = jsonl(rater_a)
+            altered = next(row for row in modified if row["category"] == "context")
+            altered["previous_utterances"] = ["¿Qué dijiste después?"]
+            rater_a.write_text("".join(json.dumps(row, ensure_ascii=False) + "\n"
+                                       for row in modified))
+            with self.assertRaisesRegex(ValueError, "Altered source, translation or dialogue context"):
+                assemble(folder / "manifest.json", rater_a, folder / "rater_b.jsonl")
+
+    def test_context_category_must_have_actual_prior_utterances(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            rows = examples(220)
+            rows[3]["previous_utterances"] = []
+            with self.assertRaisesRegex(ValueError, "Context category requires"):
+                prepare(rows, "a" * 64, Path(tmp) / "packet")
+            rows[3]["previous_utterances"] = ["x" * 501]
+            with self.assertRaisesRegex(ValueError, "0-4 prior utterances"):
+                prepare(rows, "a" * 64, Path(tmp) / "packet")
+            rows[3]["previous_utterances"] = "string is not a list"
+            with self.assertRaisesRegex(ValueError, "0-4 prior utterances"):
+                prepare(rows, "a" * 64, Path(tmp) / "packet")
 
     def test_tampered_manifest_or_case_is_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
