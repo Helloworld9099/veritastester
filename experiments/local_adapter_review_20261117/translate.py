@@ -18,7 +18,8 @@ REPO = HERE.parents[1]
 sys.path.insert(0, str(REPO / "experiments/cpu_continuation_20261117"))
 from train import LANGUAGES, download_base, sha256  # noqa: E402
 
-MODELS = ("base", "historical", "books", "massive", "qed", "globalvoices")
+MODELS = ("base", "historical", "books", "massive", "massive2", "massive3",
+          "qed", "globalvoices")
 
 RESEARCH_VARIANTS = {
     "massive": {
@@ -26,6 +27,18 @@ RESEARCH_VARIANTS = {
         "evaluation": "massive_evaluation.json",
         "selected_field": "selected_on_dev",
         "frozen_field": "dev_selection_frozen_before_test",
+    },
+    "massive2": {
+        "directory": "massive_stage2_20261117",
+        "evaluation": "stage2_evaluation.json",
+        "selected_field": "selected_based_on_dev_alone",
+        "frozen_field": None,
+    },
+    "massive3": {
+        "directory": "massive_stage3_20261117",
+        "evaluation": "stage3_evaluation.json",
+        "selected_field": "selected_using_dev_only",
+        "frozen_field": None,
     },
     "qed": {
         "directory": "qed_subtitles_20261117",
@@ -53,12 +66,35 @@ def expected_saved_sha(language: str, variant: str, repo_root: Path = REPO) -> s
     if (report["language"] != language or evaluation["language"] != language
             or report["selected"] == "previous"
             or report["selected"] != evaluation[info["selected_field"]]
-            or evaluation[info["frozen_field"]] is not True):
+            or (info["frozen_field"] is not None
+                and evaluation.get(info["frozen_field"]) is not True)):
         raise ValueError("Model has no accepted research checkpoint for this language")
     if variant == "massive" and (evaluation.get("aligned_by_original_slurp_id") is not True
                                   or evaluation.get("revision") !=
                                   "ff6bd8e4b27c3543e4f8fe2108f32bb95a6f8740"):
         raise ValueError("MASSIVE SLURP original-cohort provenance mismatch")
+    if variant == "massive2":
+        previous = json.loads((repo_root /
+            "experiments/massive_20261117/saved" / language /
+            "massive_evaluation.json").read_text(encoding="utf-8"))
+        if (report.get("stage") != 2 or evaluation.get("stage") != 2
+                or report.get("original_stage1_ids_sha256") != previous["split_ids_sha256"]
+                or evaluation.get("prior_stage_one_ids_sha256") != previous["split_ids_sha256"]
+                or evaluation.get("new_cohorts_exclude_prior_train_dev_test_exact_text") is not True
+                or report.get("fresh_cohort_ids_sha256") != evaluation.get("second_stage_ids_sha256")):
+            raise ValueError("MASSIVE stage-two checkpoint or cohort provenance mismatch")
+    if variant == "massive3":
+        previous = json.loads((repo_root /
+            "experiments/massive_stage2_20261117/saved" / language /
+            "stage2_evaluation.json").read_text(encoding="utf-8"))
+        if (report.get("stage") != 3 or evaluation.get("stage") != 3
+                or report.get("no_previous_train_dev_or_test_text_reused") is not True
+                or evaluation.get("no_previous_train_dev_or_test_text_reused") is not True
+                or report.get("old_cohort_sha256", {}).get("old_stage2_ids_sha256")
+                    != previous["second_stage_ids_sha256"]
+                or report.get("new_cohort_ids_sha256") != evaluation.get("new_ids_sha256")
+                or evaluation.get("stage2_warm_sha256") != report.get("previous_stage2_checkpoint_sha256")):
+            raise ValueError("MASSIVE stage-three checkpoint or cohort provenance mismatch")
     row = next((line for line in (root / "SHA256SUMS.txt").read_text().splitlines()
                 if line.endswith("  adapter_selected.safetensors")), None)
     if row is None:
