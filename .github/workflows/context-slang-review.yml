@@ -1,0 +1,24 @@
+name: Verify conversational semantics and human review gates
+on:
+  push:
+    branches: [research/context-slang-quality-gates-20261118]
+    paths:
+      - experiments/translation_quality_20261117/**
+      - docs/CONTEXT_SLANG_TRANSLATION_SPEC.md
+      - .github/workflows/context-slang-review.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  context-slang:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile and validate bilingual human adequacy rubric
+        run: |
+          python -m compileall -q experiments/translation_quality_20261117
+          python -m unittest discover -s experiments/translation_quality_20261117/tests -p 'test_*.py' -v
