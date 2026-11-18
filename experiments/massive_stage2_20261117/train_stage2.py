@@ -90,7 +90,7 @@ def aligned_rows(english, translated, split):
 
 def next_cohorts(english, translated, consumed, *,
                  train_n=TRAIN_COUNT, dev_n=DEV_COUNT, test_n=TEST_COUNT,
-                 seed=SEED):
+                 seed=SEED, include_ids=False):
     """Select previously UNUSED examples; never use prior test for fitting."""
     old_used_ids = {str(id) for ids in consumed["selected_ids"].values() for id in ids}
     old_source = {massive.canonical(src) for k in ("train", "dev", "test")
@@ -123,7 +123,7 @@ def next_cohorts(english, translated, consumed, *,
     hashes = {name: hashlib.sha256(
         "\n".join(item[0] for item in chosen).encode()).hexdigest()
         for name, chosen in keep.items()}
-    return {
+    result = {
         "train": [(src, en) for _, src, en in keep["train"]],
         "dev": [(src, en) for _, src, en in keep["validation"]],
         "test": [(src, en) for _, src, en in keep["test"]],
@@ -131,6 +131,10 @@ def next_cohorts(english, translated, consumed, *,
         "no_previous_training_development_or_test_id_reused": True,
         "no_previous_exact_source_or_english_reference_reused": True,
     }
+    if include_ids:
+        result["selected_ids"] = {split: [row[0] for row in rows]
+                                  for split, rows in keep.items()}
+    return result
 
 
 def run(language: str, output_dir: Path):
