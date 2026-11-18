@@ -67,3 +67,23 @@ The CLI prints the selected adapter's exact SHA-256 on **stderr**, and outputs a
 Finally, hand the predictions to `experiments/translation_quality_20261117/collect_reviews.py prepare`, passing the printed `--checkpoint-sha256`. This freezes blind review packets for two independent fluent bilingual human raters; use its `score` subcommand only after receiving actual ratings. No AI-only metric can certify the requested 90% human adequacy.
 
 This batch feature optimizes inference efficiency, **not model quality**, and does not affect the microphone/overlay or active translation provider.
+
+
+## Research: use the newer MASSIVE stage-two and stage-three models
+
+The original `--variant massive` option intentionally still points to **stage one**. To avoid silently changing which saved checkpoint you run, the newer verified adapters are explicitly named:
+
+- `massive2` — second-stage MASSIVE model, trained on 5,120 additional disjoint examples per language (French selected step 320, Spanish step 256).
+- `massive3` — third-stage MASSIVE model, trained on 1,536 additional disjoint examples per language (French selected step 96, Spanish step 48).
+
+All saved models remain available. Each variant validates its stored experiment report, frozen test-data provenance, chosen checkpoint and SHA-256 before loading any weights. **No old adapter is deleted, no live provider is replaced, and no version is automatically promoted.**
+
+Example research-only commands:
+
+```bash
+python experiments/local_adapter_review_20261117/translate.py --language french --variant massive3 --text "Mets une alarme pour demain."
+python experiments/local_adapter_review_20261117/translate.py --language spanish --variant massive3 --text "Pon una alarma para mañana."
+python experiments/local_adapter_review_20261117/translate.py --language french --variant massive2 --text "Mets une alarme pour demain."
+```
+
+Use `--input-jsonl` and `--output-jsonl` to prepare up to 256 **new, authorized** sentences efficiently for a two-rater blind evaluation. The third-stage French checkpoint improved modestly on its own held-out set, while the third-stage Spanish checkpoint was nearly tied with the second-stage model on that set. Automatic chrF/BLEU values differ across test samples and are **not percent-accurate translations**. Only a new, independent bilingual human adequacy evaluation can verify the requested 90% milestone.
