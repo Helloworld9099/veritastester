@@ -5,6 +5,8 @@ No tuning or training on this benchmark. Scores are NOT translation accuracy.
 """
 from __future__ import annotations
 import argparse
+import csv
+import io
 import hashlib
 import json
 from pathlib import Path
@@ -36,8 +38,14 @@ def select_rows(payload: bytes, language: str, count=COUNT, seed=SEED):
     target = DATA_FILES[language][1]
     identifiers, src_seen, en_seen = set(), set(), set()
     candidates = []
-    for line in payload.decode("utf-8-sig").splitlines():
-        fields = line.split("\t")
+    # The upstream TICO-19 loader uses csv.reader and explicitly skips its
+    # header. Never treat column names as a bilingual translation example.
+    reader = csv.reader(io.StringIO(payload.decode("utf-8-sig")),
+                        delimiter="\t", quotechar='"')
+    header = next(reader, None)
+    if header is None or len(header) != 8 or [v.strip().lower() for v in header[:2]] != ["sourcelang", "targetlang"]:
+        raise ValueError("Unexpected TICO parallel TSV header")
+    for fields in reader:
         if len(fields) != 8:
             raise ValueError("Unexpected TICO parallel TSV schema")
         expected_targets = {target}
