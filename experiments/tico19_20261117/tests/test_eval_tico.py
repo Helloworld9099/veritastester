@@ -8,7 +8,8 @@ from eval_tico import select_rows
 
 
 def tsv(language="fr", count=300):
-    lines = []
+    lines = ["\t".join(("sourceLang", "targetLang", "sourceString",
+                        "targetString", "stringID", "url", "license", "translator_id"))]
     for idx in range(count):
         lines.append("\t".join([
             "en", language, f"English medical text case number {idx}",
@@ -37,11 +38,32 @@ class TestExternalBenchmark(unittest.TestCase):
 
     def test_modified_parallel_schema_fails(self):
         with self.assertRaisesRegex(ValueError, "parallel TSV schema"):
-            select_rows(b"en\tfr\tonly_three_fields", "french")
+            select_rows(tsv(count=2) + b"en\tfr\tonly_three_fields\n", "french")
         rows = tsv(count=270).decode().splitlines()
         rows[5] = rows[4]
         with self.assertRaisesRegex(ValueError, "duplicate TICO"):
             select_rows(("\n".join(rows)).encode(), "french")
+
+    def test_missing_or_malformed_header_fails(self):
+        with self.assertRaisesRegex(ValueError, "TSV header"):
+            select_rows(b"en\tfr\tno header\n", "french")
+        with self.assertRaisesRegex(ValueError, "TSV header"):
+            select_rows(b"", "french")
+
+    def test_quoted_tsv_fields_are_not_split_mid_translation(self):
+        source = "English medical example with embedded tab \t marker"
+        foreign = "Phrase etrangere avec tabulation \t interne"
+        import csv
+        import io
+        stream = io.StringIO()
+        writer = csv.writer(stream, delimiter="\t", quotechar='"')
+        writer.writerow(("sourceLang", "targetLang", "sourceString", "targetString",
+                         "stringID", "url", "license", "translator_id"))
+        writer.writerow(("en", "fr", source, foreign, "special-1",
+                         "document-a", "CC0", "test"))
+        rows, info = select_rows(stream.getvalue().encode(), "french", count=1)
+        self.assertEqual(rows[0], (foreign, source))
+        self.assertEqual(info["n"], 1)
 
     def test_insufficient_unique_bilingual_data_is_rejected(self):
         with self.assertRaisesRegex(ValueError, "Insufficient unique"):
