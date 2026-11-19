@@ -64,7 +64,11 @@ def file_digest(data:bytes)->str:
 def parse_chat(content:bytes):
     reader=csv.DictReader(io.StringIO(content.decode("utf-8-sig")),
                           delimiter=",",quotechar='"')
-    if tuple(reader.fieldnames or ())!=INPUT_FIELDS:
+    fields=tuple(reader.fieldnames or ())
+    # The official TRAIN file has 7 columns; VALID adds an eighth "tags"
+    # field with discourse-phenomena metadata. Both versions are pinned
+    # to their exact Git blob SHAs above, so no arbitrary schema is allowed.
+    if fields not in (INPUT_FIELDS, INPUT_FIELDS[:-1]):
         raise ValueError("Unexpected original WMT24 chat train/validation column schema")
     parsed=[]
     for row in reader:
