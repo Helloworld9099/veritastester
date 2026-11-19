@@ -19,5 +19,8 @@
   "human_judgments_apply_only_to_older_translation_models": true,
   "not_sufficient_for_90_percent_new_model_semantic_adequacy": true,
   "verified_by_workflow_run": 44453140486,
-  "notes": "Freeze metadata BEFORE any BridgeCaption local model is evaluated on DiaBLa; no model receives these reference translations as training data. Prior Marian pretraining exposure cannot be ruled out. Real bilingual human ratings for any new model are not present."
+  "notes": "This dataset has never been used for BridgeCaption adapter training or validation, but earlier independent and continuation audits already evaluated 144 groups. Treat it as a CONSUMED external diagnostic, not a new final holdout. See research/continuation_final_audit_20261116/REPORT.md and research/independent_neural_review/NEURAL_REVIEW.md. New model 90% accuracy requires a different, previously untested corpus and independent human judgments. Marian pretraining exposure remains unknown.",
+  "prior_dialogue_evaluations_consumed": true,
+  "all_144_groups_historically_consumed_for_model_evaluation": true,
+  "eligible_as_never_evaluated_final_test": false
 }
