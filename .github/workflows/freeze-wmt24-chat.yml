@@ -1,0 +1,26 @@
+name: Freeze never-trained-on WMT24 real French conversation test
+on:
+  push:
+    branches: [research/wmt24-unseen-chat-test-20261119]
+    paths:
+      - .github/workflows/freeze-wmt24-chat.yml
+      - experiments/wmt24_chat_20261119/**
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  freeze-only:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify strict WMT24 chat human reference and dialogue tests
+        run: |
+          python -m compileall -q experiments/wmt24_chat_20261119
+          python -m unittest discover -s experiments/wmt24_chat_20261119/tests -p 'test_*.py' -v
+      - name: Freeze real French and English gold test identities BEFORE any model inference
+        run: |
+          python -u experiments/wmt24_chat_20261119/freeze_test.py

@@ -1,0 +1,30 @@
+{
+  "90_percent_human_adequacy_verified": false,
+  "all_case_hashes_sha256": "6732729dda29ca4c73b7135a1d784a2832d93f5ba21a8da92ed79cf4fea09388",
+  "all_source_hashes_sha256": "d6f97a787cc58afb2ac35e127132238dc5bd964998b19689b74a4655d3cf3d42",
+  "conversation_groups": 65,
+  "french_to_english_groups": 65,
+  "french_to_english_segments": 1026,
+  "gold_csv_sha256": "72f29acea642792837cbe0e88cf9cc013145940054608e267415fa6a5b1be2e5",
+  "group_ids_sha256": "3e46c24c318edb516a2256cf6f04b778091967460b472cb6c0dc4b89ebbd0428",
+  "human_rater_note": "Gold translations are human-written references, NOT human adequacy ratings for BridgeCaption outputs.",
+  "human_reference_commit": "394632f24291d1edcad035636b922c3e3d4dfb01",
+  "human_reference_source": "WMT-Chat-task/chat-task-2024-results",
+  "license": "CC-BY-NC-4.0; noncommercial research only; no use in production or commercial model training",
+  "model_evaluation_performed": false,
+  "original_publisher_split": "test",
+  "previous_legacy_evaluations": "No previously scored WMT24 CHAT TEST found in inspected project audits. Cannot rule out unknown original-pretraining overlap or unindexed external evaluations.",
+  "source": "WMT-Chat-task/chat-task-2024-data",
+  "source_commit": "12a34149267dd9ae98e60e0ec2e415707fad5618",
+  "source_csv_sha256": "562822f81f346e630eb526ae8ffaceed86b965bcb917465acc2730accc6033a2",
+  "test_policy": "Entire publisher WMT24 test set is frozen as final noncommercial research evaluation. NEVER train, fit, select, tune, or prompt-optimize on it. Preserve all dialogue groups and preceding turns. Do not inspect gold references or score until final checkpoint selection is frozen.",
+  "total_test_segments": 2091,
+  "translation_directions": {
+    "en-fr": 1065,
+    "fr-en": 1026
+  },
+  "verified_by_GitHub_Actions_run": 44455733863,
+  "verified_UTC": "2026-11-19",
+  "test_categories": "Real customer support conversations with contextual phenomena (pronouns, formality, ellipsis and discourse tags). It may lack sufficient slang or idiom diversity for the full five-category human 90-percent gate; complement with a separate never-used conversational corpus.",
+  "license_citation": "WMT 2024 Chat Translation Shared Task, Unbabel; research-only CC BY-NC 4.0."
+}
