@@ -1,0 +1,83 @@
+{
+  "language": "spanish",
+  "selected_using_combined_dev_only": "previous",
+  "completed_updates": 192,
+  "warm_sha256": "14dddb5040afe49f8f05a1bfba3458d3321524b53b0fc05b359ad41a1ab75a4b",
+  "cohorts": {
+    "GlobalVoices_source_sha256": "680eb6975a09e797ae10e9f32590a540752333b9c81477e9e1bb0b5436f72e44",
+    "GlobalVoices_original_eligible_pairs": 284409,
+    "old_GlobalVoices_round1_count": 4480,
+    "old_GlobalVoices_round4_count": 3456,
+    "MASSIVE": {
+      "previous_test_id_hashes": [
+        "4c6c55d2a2e12faa163a3e9ef2d1f1c6aea6fa4e7b2b39bed3ccab2a9be1b18f",
+        "3fee484fced58684f311e4f9eb35fe06b0bcc079c79d41b6f2b36e223dd18f3f",
+        "890f3936c09ec43e1cdce5c7944332a2552fe0c61b5813d4c537f6d621f786ed",
+        "319fa8a6cb2344b8d7b2be518ff59a26ce6ece44e97dd3fe8e5328f7ccddd25e"
+      ],
+      "new_test_ids_sha256": "427c516445a8fc3b4fc98a33723095b2fecc566e53450ab5d0766d721f4cde3d",
+      "new_dev_ids_sha256": "3129b456c960d63dabb8fc37e3a3a663713f4dcf8e3e63b5a6986a887b22a04a",
+      "author_split": "official MASSIVE test",
+      "source_revision": "ff6bd8e4b27c3543e4f8fe2108f32bb95a6f8740",
+      "all_previously_evaluated_and_trained_ids_excluded": true,
+      "previous_train_rows_replayed_without_reusing_any_test_row": true
+    },
+    "train": {
+      "n": 3072,
+      "MASSIVE_replay": 1536,
+      "new_GlobalVoices": 1536,
+      "sha256": "254f453f8f5cd0500d30dbc9215ed7b551bb49da08b420d8d0019a0e38026e51"
+    },
+    "dev": {
+      "n": 256,
+      "MASSIVE": 128,
+      "GlobalVoices": 128,
+      "sha256": "af85251346a20e85a8cf8c56a8f9e92e563d5b0680310b7f3cea4b8618ab20bf"
+    },
+    "test": {
+      "MASSIVE": {
+        "n": 256,
+        "pair_sha256": "731e2f1794cb2a51c62d23ef343180ea53a4e4ea5247312058b96cc900103496"
+      },
+      "GlobalVoices": {
+        "n": 256,
+        "pair_sha256": "1223043e346e5c54eede1a8030e077bc4fcdd33ef6533ac58fb577316d6619de"
+      }
+    },
+    "cross_domain_source_and_english_reference_text_disjoint": true,
+    "all_previous_MASSIVE_and_GlobalVoices_tests_excluded": true,
+    "heldout_selected_before_any_model_scoring": true
+  },
+  "first_and_only_new_GlobalVoices_test_scores": {
+    "base": {
+      "n": 256,
+      "chrf": 68.37787346765187,
+      "bleu": 44.46520171170635,
+      "reference_exact_match_fraction_not_adequacy": 0.09375
+    },
+    "previous": {
+      "n": 256,
+      "chrf": 67.26496065531111,
+      "bleu": 42.523682116790404,
+      "reference_exact_match_fraction_not_adequacy": 0.09375
+    }
+  },
+  "first_and_only_new_MASSIVE_test_scores": {
+    "base": {
+      "n": 256,
+      "chrf": 62.39289250698773,
+      "bleu": 30.668428540509442,
+      "reference_exact_match_fraction_not_adequacy": 0.0859375
+    },
+    "previous": {
+      "n": 256,
+      "chrf": 66.97378776938847,
+      "bleu": 43.59340983416221,
+      "reference_exact_match_fraction_not_adequacy": 0.17578125
+    }
+  },
+  "test_cases_excluded_from_all_local_finetuning": true,
+  "did_not_use_any_previously_evaluated_test_for_training": true,
+  "no_independent_bilingual_human_adequacy_judgments": true,
+  "limitations": "Reference overlap with Marian's original OPUS pretraining remains unknown. GlobalVoices does not provide reliable source article IDs. MASSIVE replay uses past TRAIN examples only, not any test or dev. ChrF/BLEU are corpus text-similarity diagnostics, not translation accuracy or fluent bilingual semantic adequacy on slang/context."
+}
