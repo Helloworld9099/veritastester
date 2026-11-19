@@ -71,6 +71,7 @@ def parse_chat(content:bytes):
     if fields not in (INPUT_FIELDS, INPUT_FIELDS[:-1]):
         raise ValueError("Unexpected original WMT24 chat train/validation column schema")
     parsed=[]
+    missing_reference=0
     for row in reader:
         if not isinstance(row,dict) or None in row:
             raise ValueError("Malformed chat CSV record")
@@ -78,11 +79,19 @@ def parse_chat(content:bytes):
                 ("fr","en"),("en","fr")):
             raise ValueError("Unexpected original language direction")
         if (not row.get("doc_id") or not row.get("source") or
-                not row.get("reference") or row.get("sender") not in ("customer","agent")):
-            raise ValueError("Missing WMT24 speaker, source, reference or conversation ID")
+                row.get("sender") not in ("customer","agent")):
+            raise ValueError("Missing WMT24 speaker, source or conversation ID")
+        if not row.get("reference"):
+            # The immutable official TRAIN file contains exactly ONE row
+            # missing its reference translation (row 7330 including header).
+            # It cannot be supervised. Skip it instead of inventing a target.
+            missing_reference+=1
+            continue
         parsed.append(row)
-    if len(parsed)<2500:
-        raise ValueError("WMT24 chat corpus unexpectedly small")
+    if len(parsed)<2500 or missing_reference>1:
+        raise ValueError("WMT24 chat source unexpectedly missing aligned training targets")
+    if missing_reference:
+        print("WMT24_SKIPPED_EMPTY_REFERENCE_ROWS",missing_reference,flush=True)
     return parsed
 
 
