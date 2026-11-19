@@ -6,8 +6,7 @@ import unittest
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from train_stage8 import (ROOT,WARM_REL,WARM_SHA,TATOEBA_TRAIN,
-                          MASSIVE_REPLAY,TEST_SIZE,UPDATES,SEED,
-                          sha_pairs)
+                          MASSIVE_REPLAY,TEST_SIZE,UPDATES,SEED)
 import train_stage7 as stage7
 
 
@@ -64,7 +63,7 @@ class TestStageEight(unittest.TestCase):
 
     def test_pinned_research_data_manifest_is_deterministic(self):
         self.assertEqual(SEED,202611188)
-        self.assertEqual(len(sha_pairs([("Bonjour","Hello")])),64)
+        self.assertEqual(len(stage7.sha_pairs([("Bonjour","Hello")])),64)
 
 
 if __name__=="__main__":
