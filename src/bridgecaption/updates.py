@@ -18,7 +18,8 @@ from pathlib import Path
 from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
-UPDATE_PUBLIC_KEY = ""  # Replaced at build time; never read trust roots from runtime environment.\nMAX_MANIFEST = 64 * 1024
+UPDATE_PUBLIC_KEY = ""  # Replaced at build time; never read trust roots from runtime environment.
+MAX_MANIFEST = 64 * 1024
 MAX_PACKAGE = 500 * 1024 * 1024
 DEFAULT_FEED = "https://github.com/Helloworld9099/veritastester/releases/latest/download/manifest.json"
 
@@ -134,11 +135,12 @@ def install_appimage_on_exit(update_file: Path) -> None:
     A failed replacement leaves the existing application intact.
     """
     import subprocess
-    import sys
     current = os.getenv("APPIMAGE")
     if platform.system() != "Linux" or not current:
         raise RuntimeError("Automatic installation requires the official AppImage build")
-    target = Path(current).resolve()\n    if update_file.stat().st_dev != target.parent.stat().st_dev:\n        raise RuntimeError("Update staging must be on the same filesystem as the AppImage")
+    target = Path(current).resolve()
+    if update_file.stat().st_dev != target.parent.stat().st_dev:
+        raise RuntimeError("Update staging must be on the same filesystem as the AppImage")
     if not target.is_file() or not os.access(target.parent, os.W_OK):
         raise RuntimeError("Cannot update this AppImage location; move it to a writable folder")
     # Package was checked against a signed manifest before arriving here.
