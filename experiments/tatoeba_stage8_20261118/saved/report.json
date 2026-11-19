@@ -1,0 +1,79 @@
+{
+  "experiment": "research-only CPU french->English LoRA continuation",
+  "language": "french",
+  "seed": 202611188,
+  "base_model": "Helsinki-NLP/opus-mt-fr-en",
+  "base_revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+  "warm_adapter_sha256": "5b9b136997fcc80c961542831a1dd0578018de81f1e1a069df686616a4f5d80f",
+  "corpus_source": "file:///tmp/bridgecaption-tatoeba8-dsgfwnvx/train-dev.json",
+  "corpus_sha256": "2e30fbf5364503b633f225cb4d9cdd9c162ed47507ded3ce6cf80e6a27205ae3",
+  "attribution": "Tatoeba french-English pairs via ManyThings.org; verify license and attribution before redistribution",
+  "train_rows": 8192,
+  "dev_rows": 256,
+  "unique_pairs_after_filtering": 8448,
+  "warning": "The newly downloaded corpus may overlap earlier research and base pretraining. Development-only results do not establish generalization, production readiness, or translation improvement.",
+  "planned_updates": 512,
+  "learning_rate": 2.5e-05,
+  "selection": "Accept new checkpoint only if dev chrF improves >=0.25 AND dev BLEU does not fall, compared with unchanged prior adapter.",
+  "scores": {
+    "previous": {
+      "chrf": 70.21671190189862,
+      "bleu": 53.45660789060201,
+      "n": 256
+    },
+    "step128": {
+      "chrf": 70.0027411345538,
+      "bleu": 52.99520603699236,
+      "n": 256
+    },
+    "step256": {
+      "chrf": 69.93547290995247,
+      "bleu": 52.79660960738919,
+      "n": 256
+    },
+    "step384": {
+      "chrf": 69.57687703635793,
+      "bleu": 52.59259414180377,
+      "n": 256
+    },
+    "step512": {
+      "chrf": 69.85410986765734,
+      "bleu": 53.02953113840851,
+      "n": 256
+    }
+  },
+  "selected": "previous",
+  "completed_updates": 512,
+  "last_step_loss": 0.24177893996238708,
+  "elapsed_seconds": 385.971964922,
+  "stage": 8,
+  "real_source_component_manifest": {
+    "stage7_train_and_test_groups_excluded": 2560,
+    "historic_Tatoeba_quick12000_components_excluded": true,
+    "new_tatoeba_train": {
+      "count": 6144,
+      "groups": 6144,
+      "group_sha256": "be93635ed35bf2106ed1bfb2f64a1a7629a84993df4b13c973d30e1bd38e96b2",
+      "pairs_sha256": "0efea405105cb235baa96ccebceccdddb00667e18a210a5b8559cdf76b7c0858"
+    },
+    "new_tatoeba_frozen_test": {
+      "count": 256,
+      "groups": 256,
+      "group_sha256": "938cbd1bc82143712dddcb741196eea181f323fa7ccbb245eb7f9255fc6a53f7",
+      "pairs_sha256": "28251035292223cc2544e353801b434568154f73a4e06b88ae83ba4044b80313"
+    },
+    "new_tatoeba_dev_n": 128,
+    "massive_prior_dev_n": 128,
+    "massive_old_TRAIN_only_replay": 2048,
+    "all_144_previously_evaluated_DiaBLa_dialogues_excluded_from_training": true,
+    "source_rights": "Tatoeba contributors CC BY 2.0 FR; MASSIVE CC BY 4.0",
+    "source_audit": {
+      "train": 133204,
+      "dev": 16584,
+      "test": 16202
+    },
+    "warm_stage7_adapter_sha256": "5b9b136997fcc80c961542831a1dd0578018de81f1e1a069df686616a4f5d80f"
+  },
+  "updates_planned": 512,
+  "validity": "Research only; human semantic adequacy unverified."
+}
