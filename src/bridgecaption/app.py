@@ -7,6 +7,7 @@ remains on the local computer.
 import os
 import queue
 import threading
+import time
 import tkinter as tk
 from tkinter import ttk, messagebox
 
@@ -55,7 +56,7 @@ ALERT = "#A53B2B"
 class Application:
     def __init__(self, root):
         self.root = root
-        self.root.title("BridgeCaption | Live translation")
+        self.root.title("BridgeCaption")
         self.root.geometry("760x282+220+340")
         self.root.minsize(560, 245)
         self.root.configure(bg=BG)
@@ -80,6 +81,7 @@ class Application:
         self._drag_xy = None
         self.is_pinned = True
         self.compact = True
+        self.capture_started_at = None
         self.opacity_value = tk.DoubleVar(value=opacity_percent(
             os.getenv("BRIDGE_OVERLAY_OPACITY", "92")))
         self._ui()
@@ -147,9 +149,11 @@ class Application:
 
         # Caption controls stay visible when Settings is collapsed.
         # Two rows keep primary actions from being squeezed by window buttons.
-        top = tk.Frame(self.root, bg=BG, padx=18, pady=7)
+        top = tk.Frame(self.root, bg=BG, padx=12, pady=5)
+        self.top_frame = top
         top.pack(fill="x")
         title_row = tk.Frame(top, bg=BG)
+        self.title_row = title_row
         title_row.pack(fill="x")
         title = self.label(title_row, "BridgeCaption", 15, TEXT, True)
         title.pack(side="left")
@@ -158,6 +162,7 @@ class Application:
         self.pin_button = self.button(title_row, "Pinned", self.toggle_pin)
         self.pin_button.pack(side="right", padx=(6, 0))
         action_row = tk.Frame(top, bg=BG)
+        self.action_row = action_row
         action_row.pack(fill="x", pady=(5, 0))
         self.start_button = self.button(
             action_row, "Start listening", self.toggle_capture, accent=True)
@@ -176,6 +181,8 @@ class Application:
             anchor="w", font=("DejaVu Sans", 10), padx=18, pady=4,
         )
         self.summary_label.pack(fill="x")
+        self.live_indicator = self.label(title_row, "", 10, MUTED)
+        self.live_indicator.pack(side="left", padx=(14, 0))
 
         # Scroll configuration independently so captions retain usable height.
         self.settings_workspace = tk.Frame(self.root, bg=BG)
@@ -291,18 +298,18 @@ class Application:
             font=("DejaVu Sans", 10),
         ).pack(side="left")
 
-        self.caption_panel = tk.Frame(self.root, bg=PANEL, padx=20, pady=12)
+        self.caption_panel = tk.Frame(self.root, bg=PANEL, padx=18, pady=12)
         self.caption_panel.pack(fill="both", expand=True, padx=18, pady=(6, 4))
-        self.label(self.caption_panel, "Original speech", 10, MUTED, True).pack(
-            anchor="w")
+        self.original_heading = self.label(self.caption_panel, "Original", 9, MUTED)
+        self.original_heading.pack(anchor="w")
         self.source_text = self.label(
             self.caption_panel, "Your transcript will appear here.", 12, MUTED)
         self.source_text.configure(wraplength=650, justify="left")
         self.source_text.pack(fill="x", pady=(7, 8))
-        tk.Frame(self.caption_panel, bg=BORDER, height=1).pack(
-            fill="x", pady=(0, 10))
-        self.label(self.caption_panel, "Translation", 10, TEXT, True).pack(
-            anchor="w")
+        self.caption_divider = tk.Frame(self.caption_panel, bg=BORDER, height=1)
+        self.caption_divider.pack(fill="x", pady=(0, 10))
+        self.translation_heading = self.label(self.caption_panel, "Translation", 9, MUTED)
+        self.translation_heading.pack(anchor="w")
         self.translated_text = self.label(
             self.caption_panel, "Waiting for speech or a text translation.", 20,
             TEXT, True)
@@ -412,7 +419,7 @@ class Application:
         text.focus_set()
 
     def _apply_overlay_mode(self):
-        """Collapse configuration without losing captions or Start/Stop controls."""
+        """Switch between a caption-first floating overlay and full controls."""
         for panel in (self.controls_frame, self.engine_controls_frame,
                       self.settings_frame, self.bottom_frame):
             panel.pack_forget()
@@ -423,30 +430,67 @@ class Application:
                 panel.pack(fill="x")
             self.settings_workspace.pack(fill="x", before=self.caption_panel)
             self.settings_canvas.yview_moveto(0)
-        self.settings_button.config(
-            text="Settings" if self.compact else "Hide settings")
-        self.source_text.config(
-            font=("DejaVu Sans", 12 if self.compact else 13))
-        self.translated_text.config(
-            font=("DejaVu Sans", 18 if self.compact else 21, "bold"))
+
+        dark = "#202327"
+        surface = dark if self.compact else BG
+        caption_surface = dark if self.compact else PANEL
+        primary = "#F6F4F0" if self.compact else TEXT
+        secondary = "#B8BABD" if self.compact else MUTED
+        self.root.configure(bg=surface)
+        for widget in (self.top_frame, self.title_row, self.action_row):
+            widget.configure(bg=surface)
+        for widget in self.title_row.winfo_children():
+            if isinstance(widget, tk.Label):
+                widget.configure(bg=surface, fg=primary)
+        self.caption_panel.configure(bg=caption_surface)
+        for widget in (self.original_heading, self.translation_heading,
+                       self.source_text, self.translated_text):
+            widget.configure(bg=caption_surface)
+        self.original_heading.configure(fg=secondary)
+        self.translation_heading.configure(fg=secondary)
+        self.source_text.configure(fg=secondary,
+                                   font=("DejaVu Sans", 10 if self.compact else 13))
+        self.translated_text.configure(fg=primary,
+                                       font=("DejaVu Sans", 16 if self.compact else 21))
+        self.caption_divider.configure(bg="#42464A" if self.compact else BORDER)
+        self.summary_label.pack_forget()
+        self.status_label.pack_forget()
+        if not self.compact:
+            self.summary_label.pack(fill="x", before=self.caption_panel)
+            self.status_label.pack(fill="x", side="bottom", before=self.caption_panel)
+        self.action_row.pack_forget()
+        if not self.compact:
+            self.action_row.pack(fill="x", pady=(5, 0), after=self.title_row)
+        self.settings_button.config(text="Expand" if self.compact else "Hide settings")
+        # The expanded view retains all existing capture, settings and text tools.
+        self.full_caption_button.pack_forget()
+        self.pin_button.pack_forget()
+        self.pin_button.pack(side="right", padx=(6, 0))
+        self.settings_button.pack_forget()
+        if self.compact:
+            self.settings_button.pack(in_=self.title_row, side="right", padx=(6, 0))
+            self.start_button.pack_forget()
+            self.start_button.pack(in_=self.title_row, side="right", padx=(6, 0))
+        else:
+            self.settings_button.pack(in_=self.action_row, side="left")
+            self.start_button.pack_forget()
+            self.start_button.pack(in_=self.action_row, side="left", before=self.settings_button, padx=(0, 8))
+            self.full_caption_button.pack(in_=self.action_row, side="left", padx=(8, 0))
         width, height = window_size(self.compact)
-        screen_width = self.root.winfo_screenwidth()
-        screen_height = self.root.winfo_screenheight()
-        minimum_width = 700 if self.compact else 780
-        minimum_height = 350 if self.compact else min(575, max(430, screen_height - 96))
-        # Keep the larger Settings view on-screen on shorter laptops.
-        width = min(width, max(minimum_width, screen_width - 36))
-        height = min(height, max(minimum_height, screen_height - 72))
+        sw, sh = self.root.winfo_screenwidth(), self.root.winfo_screenheight()
+        minimum_width = 420 if self.compact else 780
+        minimum_height = 180 if self.compact else min(575, max(430, sh - 96))
+        width = min(width, max(minimum_width, sw - 36))
+        height = min(height, max(minimum_height, sh - 72))
         if not self.compact:
             self.settings_canvas.config(height=min(220, max(140, height // 3)))
         self.root.minsize(minimum_width, minimum_height)
         if self.root.winfo_ismapped():
             x, y = self.root.winfo_x(), self.root.winfo_y()
         else:
-            x = (screen_width - width) // 2
-            y = (screen_height - height) // 3
-        x = max(0, min(x, max(0, screen_width - width - 24)))
-        y = max(0, min(y, max(0, screen_height - height - 48)))
+            x, y = (sw - width) // 2, max(24, sh // 5)
+        x = max(0, min(x, max(0, sw - width - 24)))
+        y = max(0, min(y, max(0, sh - height - 48)))
         self.root.geometry(f"{width}x{height}+{x}+{y}")
         self._resize_caption_wrap()
         if self.last_caption is not None:
@@ -483,13 +527,13 @@ class Application:
         reveal more of the last caption without another provider/API call.
         """
         self.last_caption = (original, translated, lang)
-        original_limit = 90 if self.compact else 700
-        translated_limit = 125 if self.compact else 900
+        original_limit = 200 if self.compact else 700
+        translated_limit = 320 if self.compact else 900
 
         def clipped(text, limit):
             return text if len(text) <= limit else text[:limit - 1].rstrip() + "…"
 
-        self.source_text.config(text=f"[{lang}]  {clipped(original, original_limit)}")
+        self.source_text.config(text=clipped(original, original_limit))
         self.translated_text.config(text=clipped(translated, translated_limit))
 
     def _update_overlay_summary(self):
@@ -710,6 +754,7 @@ class Application:
             self.status_var.set(f"Cannot start audio session: {exc}")
             return
         self.live_session = session
+        self.capture_started_at = time.monotonic()
         self._update_overlay_summary()
         self.start_button.config(text="Stop listening", state="normal")
         for selector in (self.source_box, self.source_picker,
@@ -773,6 +818,7 @@ class Application:
                         self.last_caption = None
                         self._dismiss_full_caption()
                         self.live_session = None
+                        self.capture_started_at = None
                         self._update_overlay_summary()
                         self.pipeline.reset()
                         for selector in (self.source_box, self.source_picker,
@@ -786,6 +832,11 @@ class Application:
         except queue.Empty:
             pass
         if not self.closed:
+            if self.capture_started_at is not None:
+                elapsed = int(time.monotonic() - self.capture_started_at)
+                self.live_indicator.config(text=f"●  {elapsed // 60}:{elapsed % 60:02d}")
+            else:
+                self.live_indicator.config(text="")
             self.root.after(100, self.poll)
 
     def close(self):
