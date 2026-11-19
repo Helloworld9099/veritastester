@@ -138,7 +138,7 @@ def install_appimage_on_exit(update_file: Path) -> None:
     current = os.getenv("APPIMAGE")
     if platform.system() != "Linux" or not current:
         raise RuntimeError("Automatic installation requires the official AppImage build")
-    target = Path(current).resolve()
+    target = Path(current).resolve()\n    if update_file.stat().st_dev != target.parent.stat().st_dev:\n        raise RuntimeError("Update staging must be on the same filesystem as the AppImage")
     if not target.is_file() or not os.access(target.parent, os.W_OK):
         raise RuntimeError("Cannot update this AppImage location; move it to a writable folder")
     # Package was checked against a signed manifest before arriving here.
