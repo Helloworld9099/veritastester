@@ -81,7 +81,12 @@ def choose_train_and_test(train_rows, prior_quick, protected,
         if not .45<=len(a)/max(1,len(b))<=2.3: continue
         if norm(a) in protected or norm(b) in protected:
             raise RuntimeError("DiaBLa final test sentence leaked into training pool")
-        groups.setdefault(group,[]).append((a,b))
+        # Connected components often repeat the exact same source with
+        # alternative targets. Keep ONE deterministic representative per
+        # group rather than teaching repeated/contradictory translations.
+        candidate=(a,b)
+        if group not in groups or hashlib.sha256(str(candidate).encode()).hexdigest() < hashlib.sha256(str(groups[group][0]).encode()).hexdigest():
+            groups[group]=[candidate]
     order=sorted(groups,key=lambda x:hashlib.sha256((str(SEED)+":"+x).encode()).hexdigest())
     result={}
     used=set()
@@ -122,12 +127,16 @@ def run(output:Path):
     old_quick=read_rows(private/"tatoeba.fr-en.train.quick12000.jsonl")
     chosen=choose_train_and_test(train_all,old_quick,protected)
     dev=[]
+    dev_groups=set()
     for r in sorted(dev_all,key=lambda v:hashlib.sha256(v["case_id"].encode()).hexdigest()):
+        if r["group_id"] in dev_groups:
+            continue
         a,b=r["utterance"].strip(),r["reference_translation"].strip()
         if (norm(a) in protected or norm(b) in protected
                 or not 2<=len(a.split())<=36 or not 2<=len(b.split())<=36):
             continue
         dev.append((a,b))
+        dev_groups.add(r["group_id"])
         if len(dev)==DEV_TATOEBA:break
     if len(dev)!=DEV_TATOEBA:raise ValueError("Missing real Tatoeba development pairs")
     en=massive.fetch_multipart("en-US")
@@ -149,7 +158,7 @@ def run(output:Path):
     train=chosen["train"]+rehearsal
     random.Random(SEED).shuffle(train)
     info={
-        "original_Tatoeba_component_split_sha256":source_audit["files"][0]["sha256"],
+        "original_Tatoeba_component_train_manifest_sha256":source_audit["files"][0]["sha256"],
         "Tatoeba_train":chosen["train_manifest"],
         "Tatoeba_reserved_not_used_for_selection":chosen["reserved_test_manifest"],
         "Tatoeba_dev_n":len(dev),"MASSIVE_OLD_TRAIN_replay_n":len(rehearsal),
