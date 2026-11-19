@@ -1,0 +1,79 @@
+name: Preserve French stage-six models and frozen unused-test evidence
+on:
+  push:
+    branches: [research/french-balanced-stage6-20261118]
+    paths:
+      - .github/workflows/persist-french-stage6.yml
+permissions:
+  actions: read
+  contents: write
+jobs:
+  save:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download immutable successful stage-six artifact
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 44452658492
+          github-token: ${{ github.token }}
+          repository: Helloworld9099/veritastester
+          name: french-stage6-research
+          path: ${{ runner.temp }}/stage6
+      - name: Check all research evidence, record candidate hashes, keep previous model
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          from shutil import copy2
+          incoming=Path(os.environ["RUNNER_TEMP"])/"stage6"
+          reportfile=list(incoming.rglob("report.json"))
+          evalfile=list(incoming.rglob("stage6_evaluation.json"))
+          assert len(reportfile)==len(evalfile)==1
+          report=json.loads(reportfile[0].read_text())
+          result=json.loads(evalfile[0].read_text())
+          assert report["language"]==result["language"]=="french"
+          assert report["stage"]==result["stage"]==6
+          assert report["selected"]==result["selected_using_dev_only"]=="previous"
+          assert report["completed_updates"]==result["completed_updates"]==192
+          assert report["warm_adapter_sha256"]==result["warm_adapter_sha256"]=="fba2bd78958bf0bf8a4c14dc55e601e08663633718c4c9c17f91ef9b52dcfa1c"
+          assert report["cohorts"]==result["cohorts"]
+          assert report["cohorts"]["massive"]["no_prior_stage_train_dev_test_id_used_in_test"] is True
+          assert report["cohorts"]["new_groups_source_and_reference_disjoint"] is True
+          assert report["cohorts"]["train"]["total"]==3072
+          assert report["cohorts"]["dev"]["total"]==256
+          assert result["historical_test_not_reused_for_finetuning"] is True
+          assert result["no_bilingual_human_90_accuracy_claim"] is True
+          for name in ("fresh_GlobalVoices_test","fresh_MASSIVE_official_test"):
+              arm=result[name]
+              assert set(arm)=={"base","previous"},"No selected adapter may be promoted"
+              assert all(arm[x]["n"]==256 for x in arm)
+          candidates=sorted(incoming.rglob("candidate_step*.safetensors"))
+          assert len(candidates)==4
+          assert not list(incoming.rglob("candidate_selected.safetensors"))
+          dest=Path("experiments/french_stage6_20261118/saved")
+          dest.mkdir(parents=True,exist_ok=False)
+          for source,name in ((reportfile[0],"report.json"),(evalfile[0],"stage6_evaluation.json")):
+              copy2(source,dest/name)
+          for source in candidates:
+              copy2(source,dest/source.name)
+          with (dest/"SHA256SUMS.txt").open("w") as f:
+              for file in sorted(dest.iterdir()):
+                  if file.name!="SHA256SUMS.txt":
+                      f.write(hashlib.sha256(file.read_bytes()).hexdigest()+"  "+file.name+"\n")
+          print("FRENCH_STAGE6_PRESERVED_ONLY_EXPERIMENTAL_CANDIDATES")
+          print("DEV_PREVIOUS",report["scores"]["previous"])
+          print("DEV_CANDIDATES",{name:score for name,score in report["scores"].items() if name!="previous"})
+          print("PREFERRED_CHECKPOINT_PREVIOUS_SAVED_STAGE5")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add experiments/french_stage6_20261118/saved
+          git diff --cached --stat
+          git commit -m "research: preserve stage-six rejected candidates and unseen-evaluation evidence [skip ci]"
+          git push origin "HEAD:refs/heads/research/french-balanced-stage6-20261118"

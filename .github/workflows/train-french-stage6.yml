@@ -1,0 +1,53 @@
+name: TRAIN French stage-six continuation with newly unused test cases
+on:
+  push:
+    branches: [research/french-balanced-stage6-20261118]
+    paths:
+      - .github/workflows/train-french-stage6.yml
+      - experiments/french_stage6_20261118/**
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: french-stage6-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  french-real-training:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    env:
+      HF_HUB_DISABLE_TELEMETRY: '1'
+      TOKENIZERS_PARALLELISM: 'false'
+      OMP_NUM_THREADS: '4'
+      MKL_NUM_THREADS: '4'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install CPU-only Marian training and published dataset reader
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'huggingface-hub>=0.34,<1.0' 'datasets==2.21.0'
+      - name: Check pinned checkpoint and previously consumed-split guardrails
+        run: |
+          python -m compileall -q experiments/french_stage6_20261118
+          python -m unittest discover -s experiments/french_stage6_20261118/tests -p 'test_*.py' -v
+      - name: TRAIN French LoRA for 192 additional updates; evaluate fresh heldouts once
+        run: |
+          python -u experiments/french_stage6_20261118/train_stage6.py \
+            --output-dir "$RUNNER_TEMP/french6"
+      - name: Retain research results and ALL candidate LoRA adapters
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: french-stage6-research
+          path: |
+            ${{ runner.temp }}/french6/report.json
+            ${{ runner.temp }}/french6/stage6_evaluation.json
+            ${{ runner.temp }}/french6/candidate_step*.safetensors
+            ${{ runner.temp }}/french6/candidate_selected.safetensors
+          if-no-files-found: warn
+          retention-days: 30

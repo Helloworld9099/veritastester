@@ -1,0 +1,75 @@
+{
+  "language": "french",
+  "stage": 6,
+  "selected_using_dev_only": "previous",
+  "completed_updates": 192,
+  "warm_adapter_sha256": "fba2bd78958bf0bf8a4c14dc55e601e08663633718c4c9c17f91ef9b52dcfa1c",
+  "cohorts": {
+    "source": "human-translated GlobalVoices + publisher-partitioned MASSIVE",
+    "globalvoices_source_sha256": "7f5018e2d7aca3bed1e427957bb4a9bcae80e397f2eab4cadd1659d54315da5d",
+    "globalvoices_eligible": 144258,
+    "all_earlier_globalvoices_train_dev_test_units_excluded_from_new_news": true,
+    "massive": {
+      "previous_stage5_test_id_sha256": "b6b0a144740b1e941e8abf166eca4a6877e07301b1a697f483c046695a8ffbdf",
+      "new_frozen_test_ids_sha256": "d6a96af69d3cd80118b9e04ab03491a8c22654c75b78da70ab2ab409137f1fc5",
+      "new_development_ids_sha256": "2dfff4ed06ae543068beb1f725e31ec1e0ac1b92315102d34f232d9ec663a8e5",
+      "n": 256,
+      "no_prior_stage_train_dev_test_id_used_in_test": true,
+      "official_publisher_test_split": "MASSIVE test"
+    },
+    "train": {
+      "total": 3072,
+      "historical_mas_train_replay": 1536,
+      "new_gv": 1536,
+      "sha256": "d857e940ad6c653fa59ce6b8536ef431783fe85c8023b650277967a6d19bfd14"
+    },
+    "dev": {
+      "total": 256,
+      "massive": 128,
+      "globalvoices": 128,
+      "sha256": "f18469e0edab1d2c866be2e8375a20530e5c34d45e3b1f017fc294e20ccb8a4c"
+    },
+    "tests": {
+      "massive": {
+        "n": 256,
+        "sha256": "8f0efda46a73ab38e0460617537a86523c011e0bc07f2dd0037f11f914741a03"
+      },
+      "globalvoices": {
+        "n": 256,
+        "sha256": "491efef803712404b72805936b4de7602457c229b068c7d4eda04eb5575e8201"
+      }
+    },
+    "new_groups_source_and_reference_disjoint": true
+  },
+  "fresh_GlobalVoices_test": {
+    "base": {
+      "n": 256,
+      "chrf": 61.087869496684974,
+      "bleu": 34.88735375262582,
+      "reference_exact_match_fraction_not_adequacy": 0.03515625
+    },
+    "previous": {
+      "n": 256,
+      "chrf": 60.95083602393212,
+      "bleu": 35.14012335633566,
+      "reference_exact_match_fraction_not_adequacy": 0.04296875
+    }
+  },
+  "fresh_MASSIVE_official_test": {
+    "base": {
+      "n": 256,
+      "chrf": 64.31589518427795,
+      "bleu": 36.213856783283234,
+      "reference_exact_match_fraction_not_adequacy": 0.1171875
+    },
+    "previous": {
+      "n": 256,
+      "chrf": 68.46046608488383,
+      "bleu": 47.52204819914675,
+      "reference_exact_match_fraction_not_adequacy": 0.171875
+    }
+  },
+  "historical_test_not_reused_for_finetuning": true,
+  "no_bilingual_human_90_accuracy_claim": true,
+  "limitations": "Only text similarity, original Marian pretraining exposure unknown; no independent bilingual human judge evidence for slang/context."
+}
