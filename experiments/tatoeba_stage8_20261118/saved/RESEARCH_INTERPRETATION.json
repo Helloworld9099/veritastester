@@ -1,0 +1,10 @@
+{
+  "completed_optimizer_updates": 512,
+  "selected": "previous Stage7 adapter; no Stage8 weights promoted",
+  "development_chrf_previous": 70.21671190189862,
+  "development_chrf_best_candidate": 70.0027411345538,
+  "final_test_not_used_to_select_model": true,
+  "frozen_test_now_consumed": true,
+  "human_90_percent_correctness_verified": false,
+  "unverified_upstream_pretraining_overlap": true
+}
