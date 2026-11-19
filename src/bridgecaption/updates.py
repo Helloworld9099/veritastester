@@ -1,21 +1,35 @@
-"""Non-blocking update discovery. Installation requires a trusted packaged updater.
+"""Signed update manifest and streaming package download.
 
-Never download and execute arbitrary release assets from a JSON response.
+The signing public key is baked into official builds as BRIDGECAPTION_UPDATE_PUBLIC_KEY.
+No unsigned executable may be installed.
 """
 from __future__ import annotations
 
+import base64
+import hashlib
 import json
 import os
+import platform
+import re
+import tempfile
 from dataclasses import dataclass
 from importlib.metadata import PackageNotFoundError, version
+from pathlib import Path
+from urllib.parse import urlparse
 from urllib.request import Request, urlopen
-from urllib.error import HTTPError, URLError
+
+MAX_MANIFEST = 64 * 1024
+MAX_PACKAGE = 500 * 1024 * 1024
+DEFAULT_FEED = "https://github.com/Helloworld9099/bridgecaption-updates/releases/latest/download/manifest.json"
 
 
 @dataclass(frozen=True)
 class Update:
     version: str
     url: str
+    sha256: str
+    size: int
+    signature: str
 
 
 def current_version() -> str:
@@ -25,40 +39,97 @@ def current_version() -> str:
         return "0.1.0"
 
 
-def version_tuple(value: str) -> tuple[int, ...]:
-    parts = value.strip().lstrip("v").split(".")
-    if not parts or not all(part.isdecimal() for part in parts):
-        raise ValueError("Invalid update version")
-    return tuple(int(part) for part in parts)
+def version_tuple(value: str) -> tuple[int, int, int]:
+    match = re.fullmatch(r"v?(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)", value)
+    if not match:
+        raise ValueError("Invalid semantic version")
+    return tuple(map(int, match.groups()))
+
+
+def _https(url: str) -> str:
+    parsed = urlparse(url)
+    if parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password:
+        raise ValueError("Update URLs must be HTTPS without embedded credentials")
+    return url
+
+
+def _public_key():
+    from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
+    value = os.getenv("BRIDGECAPTION_UPDATE_PUBLIC_KEY", "").strip()
+    if not value:
+        raise RuntimeError("This build has no trusted update signing key")
+    return Ed25519PublicKey.from_public_bytes(base64.b64decode(value, validate=True))
+
+
+def verify_manifest(document: dict) -> dict:
+    """Verify signature over canonical payload, not arbitrary remote instructions."""
+    if not isinstance(document, dict) or set(document) != {"payload", "signature"}:
+        raise ValueError("Malformed signed manifest")
+    payload = document["payload"]
+    if not isinstance(payload, dict):
+        raise ValueError("Malformed update payload")
+    canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode()
+    _public_key().verify(base64.b64decode(document["signature"], validate=True), canonical)
+    return payload
 
 
 def find_update(current: str | None = None) -> Update | None:
-    """Look up a release. No token or private credentials are transmitted."""
-    endpoint = os.getenv(
-        "BRIDGECAPTION_UPDATE_ENDPOINT",
-        "https://api.github.com/repos/Helloworld9099/veritastester/releases/latest",
-    )
-    if not endpoint.startswith("https://"):
-        raise ValueError("Update endpoint must use HTTPS")
-    request = Request(endpoint, headers={
-        "Accept": "application/vnd.github+json",
-        "User-Agent": "BridgeCaption-Updater",
-    })
+    feed = _https(os.getenv("BRIDGECAPTION_UPDATE_ENDPOINT", DEFAULT_FEED))
+    req = Request(feed, headers={"User-Agent": "BridgeCaption-Updater/1"})
+    with urlopen(req, timeout=10) as response:
+        raw = response.read(MAX_MANIFEST + 1)
+    if len(raw) > MAX_MANIFEST:
+        raise ValueError("Update manifest too large")
+    payload = verify_manifest(json.loads(raw))
+    latest = payload["version"]
+    version_tuple(latest)
+    if version_tuple(latest) <= version_tuple(current or current_version()):
+        return None
+    system = platform.system().lower()
+    machine = platform.machine().lower()
+    key = f"{system}-{machine}"
+    artifact = payload["artifacts"].get(key)
+    if artifact is None:
+        raise RuntimeError(f"No signed update for {key}")
+    url = _https(artifact["url"])
+    digest = artifact["sha256"]
+    size = artifact["size"]
+    if not isinstance(digest, str) or not re.fullmatch("[a-f0-9]{64}", digest):
+        raise ValueError("Invalid package checksum")
+    if type(size) is not int or not 0 < size <= MAX_PACKAGE:
+        raise ValueError("Invalid package size")
+    return Update(latest, url, digest, size, document_signature_placeholder())
+
+
+def document_signature_placeholder() -> str:
+    """Signature is verified during manifest fetch; never used as package authorization."""
+    return "verified-manifest"
+
+
+def download_update(update: Update, progress, cancel=None) -> Path:
+    """Download a verified package without running it. Caller owns returned temp path."""
+    req = Request(_https(update.url), headers={"User-Agent": "BridgeCaption-Updater/1"})
+    fd, name = tempfile.mkstemp(prefix="bridgecaption-update-", suffix=".package")
+    destination = Path(name)
+    received = 0
+    digest = hashlib.sha256()
     try:
-        with urlopen(request, timeout=8) as response:
-            if response.status != 200:
-                raise RuntimeError("Update service unavailable")
-            data = json.load(response)
-    except (HTTPError, URLError, TimeoutError, json.JSONDecodeError) as exc:
-        raise RuntimeError("Could not check for updates") from exc
-    if not isinstance(data, dict) or not isinstance(data.get("tag_name"), str):
-        raise RuntimeError("Invalid update response")
-    tag = data["tag_name"]
-    if data.get("draft") or data.get("prerelease"):
-        return None
-    if version_tuple(tag) <= version_tuple(current or current_version()):
-        return None
-    url = data.get("html_url", "")
-    if not isinstance(url, str) or not url.startswith("https://github.com/"):
-        raise RuntimeError("Invalid update destination")
-    return Update(version=tag.lstrip("v"), url=url)
+        with os.fdopen(fd, "wb") as output, urlopen(req, timeout=30) as response:
+            while True:
+                if cancel and cancel():
+                    raise RuntimeError("Update cancelled")
+                chunk = response.read(128 * 1024)
+                if not chunk:
+                    break
+                received += len(chunk)
+                if received > update.size:
+                    raise ValueError("Package exceeds declared size")
+                digest.update(chunk)
+                output.write(chunk)
+                progress(received, update.size)
+        if received != update.size or digest.hexdigest() != update.sha256:
+            raise ValueError("Package integrity verification failed")
+        return destination
+    except BaseException:
+        destination.unlink(missing_ok=True)
+        raise
