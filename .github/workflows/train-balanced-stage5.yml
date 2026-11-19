@@ -1,0 +1,58 @@
+name: TRAIN French and Spanish stage-five balanced real-data LoRA
+on:
+  push:
+    branches: [research/balanced-replay-stage5-20261118]
+    paths:
+      - .github/workflows/train-balanced-stage5.yml
+      - experiments/balanced_stage5_20261118/**
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: balanced-stage5-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  train:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [french, spanish]
+    name: Stage5 ${{ matrix.language }} balance 1536 replay MASSIVE + 1536 new GlobalVoices
+    env:
+      HF_HUB_DISABLE_TELEMETRY: '1'
+      TOKENIZERS_PARALLELISM: 'false'
+      OMP_NUM_THREADS: '4'
+      MKL_NUM_THREADS: '4'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install free CPU-only model training and Hugging Face dataset loader
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'huggingface-hub>=0.34,<1.0' 'datasets==2.21.0'
+      - name: Verify old adapter hashes and strict source/reference heldout isolation
+        run: |
+          python -m compileall -q experiments/balanced_stage5_20261118
+          python -m unittest discover -s experiments/balanced_stage5_20261118/tests -p 'test_*.py' -v
+      - name: TRAIN stage-five LoRA for 192 updates and score independent heldouts once
+        run: |
+          python -u experiments/balanced_stage5_20261118/train_stage5.py \
+            --language '${{ matrix.language }}' --output-dir "$RUNNER_TEMP/balanced5-${{ matrix.language }}"
+      - name: Preserve only candidate adapters and aggregate frozen cohort reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: balanced-stage5-${{ matrix.language }}
+          path: |
+            ${{ runner.temp }}/balanced5-${{ matrix.language }}/report.json
+            ${{ runner.temp }}/balanced5-${{ matrix.language }}/stage5_evaluation.json
+            ${{ runner.temp }}/balanced5-${{ matrix.language }}/candidate_step*.safetensors
+            ${{ runner.temp }}/balanced5-${{ matrix.language }}/candidate_selected.safetensors
+          if-no-files-found: warn
+          retention-days: 30

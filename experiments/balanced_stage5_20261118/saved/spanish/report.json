@@ -1,0 +1,100 @@
+{
+  "experiment": "Balanced 50-50 old-MASSIVE-TRAIN replay + NEW GlobalVoices",
+  "language": "spanish",
+  "seed": 202611185,
+  "base_model": "Helsinki-NLP/opus-mt-es-en",
+  "base_revision": "c96e2c5399ebfae4fc43d9669556b9afa74bb69d",
+  "warm_adapter_sha256": "14dddb5040afe49f8f05a1bfba3458d3321524b53b0fc05b359ad41a1ab75a4b",
+  "corpus_source": "file:///tmp/bridgecaption-balanced5-sfp2w8er/train-dev.json",
+  "corpus_sha256": "58319a15fbfb687584737a2d5fbaf6defc1db60b45b28a09f353513556e44266",
+  "attribution": "Tatoeba spanish-English pairs via ManyThings.org; verify license and attribution before redistribution",
+  "train_rows": 3072,
+  "dev_rows": 256,
+  "unique_pairs_after_filtering": 3328,
+  "warning": "The newly downloaded corpus may overlap earlier research and base pretraining. Development-only results do not establish generalization, production readiness, or translation improvement.",
+  "planned_updates": 192,
+  "learning_rate": 2.5e-05,
+  "selection": "Accept new checkpoint only if dev chrF improves >=0.25 AND dev BLEU does not fall, compared with unchanged prior adapter.",
+  "scores": {
+    "previous": {
+      "chrf": 68.80815977883171,
+      "bleu": 47.960146316365844,
+      "n": 256
+    },
+    "step48": {
+      "chrf": 68.75350397340165,
+      "bleu": 48.000712197881825,
+      "n": 256
+    },
+    "step96": {
+      "chrf": 68.71306439264767,
+      "bleu": 47.98712320215352,
+      "n": 256
+    },
+    "step144": {
+      "chrf": 68.95488960326529,
+      "bleu": 48.217697144108236,
+      "n": 256
+    },
+    "step192": {
+      "chrf": 68.9774170887867,
+      "bleu": 48.35678863800253,
+      "n": 256
+    }
+  },
+  "selected": "previous",
+  "completed_updates": 192,
+  "last_step_loss": 0.996021032333374,
+  "elapsed_seconds": 389.46453862500005,
+  "warm_sha256": "14dddb5040afe49f8f05a1bfba3458d3321524b53b0fc05b359ad41a1ab75a4b",
+  "cohorts": {
+    "GlobalVoices_source_sha256": "680eb6975a09e797ae10e9f32590a540752333b9c81477e9e1bb0b5436f72e44",
+    "GlobalVoices_original_eligible_pairs": 284409,
+    "old_GlobalVoices_round1_count": 4480,
+    "old_GlobalVoices_round4_count": 3456,
+    "MASSIVE": {
+      "previous_test_id_hashes": [
+        "4c6c55d2a2e12faa163a3e9ef2d1f1c6aea6fa4e7b2b39bed3ccab2a9be1b18f",
+        "3fee484fced58684f311e4f9eb35fe06b0bcc079c79d41b6f2b36e223dd18f3f",
+        "890f3936c09ec43e1cdce5c7944332a2552fe0c61b5813d4c537f6d621f786ed",
+        "319fa8a6cb2344b8d7b2be518ff59a26ce6ece44e97dd3fe8e5328f7ccddd25e"
+      ],
+      "new_test_ids_sha256": "427c516445a8fc3b4fc98a33723095b2fecc566e53450ab5d0766d721f4cde3d",
+      "new_dev_ids_sha256": "3129b456c960d63dabb8fc37e3a3a663713f4dcf8e3e63b5a6986a887b22a04a",
+      "author_split": "official MASSIVE test",
+      "source_revision": "ff6bd8e4b27c3543e4f8fe2108f32bb95a6f8740",
+      "all_previously_evaluated_and_trained_ids_excluded": true,
+      "previous_train_rows_replayed_without_reusing_any_test_row": true
+    },
+    "train": {
+      "n": 3072,
+      "MASSIVE_replay": 1536,
+      "new_GlobalVoices": 1536,
+      "sha256": "254f453f8f5cd0500d30dbc9215ed7b551bb49da08b420d8d0019a0e38026e51"
+    },
+    "dev": {
+      "n": 256,
+      "MASSIVE": 128,
+      "GlobalVoices": 128,
+      "sha256": "af85251346a20e85a8cf8c56a8f9e92e563d5b0680310b7f3cea4b8618ab20bf"
+    },
+    "test": {
+      "MASSIVE": {
+        "n": 256,
+        "pair_sha256": "731e2f1794cb2a51c62d23ef343180ea53a4e4ea5247312058b96cc900103496"
+      },
+      "GlobalVoices": {
+        "n": 256,
+        "pair_sha256": "1223043e346e5c54eede1a8030e077bc4fcdd33ef6533ac58fb577316d6619de"
+      }
+    },
+    "cross_domain_source_and_english_reference_text_disjoint": true,
+    "all_previous_MASSIVE_and_GlobalVoices_tests_excluded": true,
+    "heldout_selected_before_any_model_scoring": true
+  },
+  "source_licenses": [
+    "AmazonScience MASSIVE CC BY 4.0",
+    "Global Voices citizen-journalism attribution required"
+  ],
+  "quality_goal": "Reduce news-only catastrophic forgetting, not claim 90% correctness."
+}

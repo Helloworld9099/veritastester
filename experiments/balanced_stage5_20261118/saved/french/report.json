@@ -1,0 +1,101 @@
+{
+  "experiment": "Balanced 50-50 old-MASSIVE-TRAIN replay + NEW GlobalVoices",
+  "language": "french",
+  "seed": 202611185,
+  "base_model": "Helsinki-NLP/opus-mt-fr-en",
+  "base_revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+  "warm_adapter_sha256": "072f7f5d2d90b26991c5c62bf8ddb40f686f65e66be52717e7b121d507008ad9",
+  "corpus_source": "file:///tmp/bridgecaption-balanced5-3z09wg_q/train-dev.json",
+  "corpus_sha256": "c8d58ef21ddefbc3e4fa8165d616b4741b9c4392cca7f318b14005b7bfd16fc6",
+  "attribution": "Tatoeba french-English pairs via ManyThings.org; verify license and attribution before redistribution",
+  "train_rows": 3072,
+  "dev_rows": 256,
+  "unique_pairs_after_filtering": 3328,
+  "warning": "The newly downloaded corpus may overlap earlier research and base pretraining. Development-only results do not establish generalization, production readiness, or translation improvement.",
+  "planned_updates": 192,
+  "learning_rate": 2.5e-05,
+  "selection": "Accept new checkpoint only if dev chrF improves >=0.25 AND dev BLEU does not fall, compared with unchanged prior adapter.",
+  "scores": {
+    "previous": {
+      "chrf": 61.57920918082702,
+      "bleu": 36.71334428778343,
+      "n": 256
+    },
+    "step48": {
+      "chrf": 61.76542743039381,
+      "bleu": 37.15683549657311,
+      "n": 256
+    },
+    "step96": {
+      "chrf": 61.713364477775265,
+      "bleu": 37.04340480865854,
+      "n": 256
+    },
+    "step144": {
+      "chrf": 62.063081773595165,
+      "bleu": 37.12155769701663,
+      "n": 256
+    },
+    "step192": {
+      "chrf": 61.93385071782361,
+      "bleu": 37.24235174878167,
+      "n": 256
+    }
+  },
+  "selected": "step144",
+  "completed_updates": 192,
+  "selected_candidate_sha256": "fba2bd78958bf0bf8a4c14dc55e601e08663633718c4c9c17f91ef9b52dcfa1c",
+  "last_step_loss": 0.7816895842552185,
+  "elapsed_seconds": 373.45194978899997,
+  "warm_sha256": "072f7f5d2d90b26991c5c62bf8ddb40f686f65e66be52717e7b121d507008ad9",
+  "cohorts": {
+    "GlobalVoices_source_sha256": "7f5018e2d7aca3bed1e427957bb4a9bcae80e397f2eab4cadd1659d54315da5d",
+    "GlobalVoices_original_eligible_pairs": 144258,
+    "old_GlobalVoices_round1_count": 4480,
+    "old_GlobalVoices_round4_count": 3456,
+    "MASSIVE": {
+      "previous_test_id_hashes": [
+        "19fba544825e6f14b4344b87cd0127ae7aa10546d8be13df8ac6645829362539",
+        "5df262f4150402edb7bdb0adc962edfd353da0ff2c3dfb4606c88c1a912b2dec",
+        "b4568409a368a0288ccaa8fa7a8f40814ffed68c3dd23c7a65ddb2487e164786",
+        "1b09d1aafe2bea53859d75d3eeceef98d141a24b5a68c2ef4efe134bfa592175"
+      ],
+      "new_test_ids_sha256": "b6b0a144740b1e941e8abf166eca4a6877e07301b1a697f483c046695a8ffbdf",
+      "new_dev_ids_sha256": "ed16e21ef5e98fc5d6f56bcb94dfa516f8ca750625612bc82166ddc55f753391",
+      "author_split": "official MASSIVE test",
+      "source_revision": "ff6bd8e4b27c3543e4f8fe2108f32bb95a6f8740",
+      "all_previously_evaluated_and_trained_ids_excluded": true,
+      "previous_train_rows_replayed_without_reusing_any_test_row": true
+    },
+    "train": {
+      "n": 3072,
+      "MASSIVE_replay": 1536,
+      "new_GlobalVoices": 1536,
+      "sha256": "d1b994189b9d6adf82be5e43859fe2e6a43bfe530d2425e24597435fbe242399"
+    },
+    "dev": {
+      "n": 256,
+      "MASSIVE": 128,
+      "GlobalVoices": 128,
+      "sha256": "ff0b3cec729fde53be29010ebf971957ab63fd0c29f4b38a8d82fecd27d5f767"
+    },
+    "test": {
+      "MASSIVE": {
+        "n": 256,
+        "pair_sha256": "9233602bf6dd8fcbf10068b342f66b64d2015d06279820bdb8014746740739ad"
+      },
+      "GlobalVoices": {
+        "n": 256,
+        "pair_sha256": "83d6964a2f627f8ed9c4e3046803ff09382c0372a028efe5b65687d6cacf1ea4"
+      }
+    },
+    "cross_domain_source_and_english_reference_text_disjoint": true,
+    "all_previous_MASSIVE_and_GlobalVoices_tests_excluded": true,
+    "heldout_selected_before_any_model_scoring": true
+  },
+  "source_licenses": [
+    "AmazonScience MASSIVE CC BY 4.0",
+    "Global Voices citizen-journalism attribution required"
+  ],
+  "quality_goal": "Reduce news-only catastrophic forgetting, not claim 90% correctness."
+}

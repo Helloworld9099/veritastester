@@ -1,0 +1,102 @@
+name: Permanently preserve stage-five trained candidates and heldout evidence
+on:
+  push:
+    branches: [research/balanced-replay-stage5-20261118]
+    paths:
+      - .github/workflows/persist-balanced-stage5.yml
+permissions:
+  actions: read
+  contents: write
+jobs:
+  persist:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download successful stage-five artifact for each language
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 44447489429
+          github-token: ${{ github.token }}
+          repository: Helloworld9099/veritastester
+          pattern: balanced-stage5-*
+          merge-multiple: false
+          path: ${{ runner.temp }}/stage5
+      - name: Verify frozen test provenance, development selection and preserve models
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          from shutil import copy2
+          artifacts=Path(os.environ["RUNNER_TEMP"])/"stage5"
+          target=Path("experiments/balanced_stage5_20261118/saved")
+          warm={
+            "french":"072f7f5d2d90b26991c5c62bf8ddb40f686f65e66be52717e7b121d507008ad9",
+            "spanish":"14dddb5040afe49f8f05a1bfba3458d3321524b53b0fc05b359ad41a1ab75a4b"
+          }
+          archives={
+            "french":"7f5018e2d7aca3bed1e427957bb4a9bcae80e397f2eab4cadd1659d54315da5d",
+            "spanish":"680eb6975a09e797ae10e9f32590a540752333b9c81477e9e1bb0b5436f72e44"
+          }
+          for language in ("french","spanish"):
+            inc=artifacts/("balanced-stage5-"+language)
+            reports=list(inc.rglob("report.json"))
+            tests=list(inc.rglob("stage5_evaluation.json"))
+            assert len(reports)==len(tests)==1
+            report=json.loads(reports[0].read_text())
+            evidence=json.loads(tests[0].read_text())
+            assert report["language"]==evidence["language"]==language
+            assert report["completed_updates"]==evidence["completed_updates"]==192
+            assert report["selected"]==evidence["selected_using_combined_dev_only"]
+            assert report["warm_sha256"]==evidence["warm_sha256"]==warm[language]
+            assert report["cohorts"]==evidence["cohorts"]
+            assert report["cohorts"]["GlobalVoices_source_sha256"]==archives[language]
+            assert evidence["test_cases_excluded_from_all_local_finetuning"] is True
+            assert evidence["did_not_use_any_previously_evaluated_test_for_training"] is True
+            assert evidence["no_independent_bilingual_human_adequacy_judgments"] is True
+            c=report["cohorts"]
+            assert c["train"]["n"]==3072
+            assert c["train"]["MASSIVE_replay"]==1536
+            assert c["train"]["new_GlobalVoices"]==1536
+            assert c["dev"]["n"]==256
+            assert c["test"]["MASSIVE"]["n"]==c["test"]["GlobalVoices"]["n"]==256
+            assert c["MASSIVE"]["all_previously_evaluated_and_trained_ids_excluded"] is True
+            assert c["all_previous_MASSIVE_and_GlobalVoices_tests_excluded"] is True
+            gv=evidence["first_and_only_new_GlobalVoices_test_scores"]
+            ms=evidence["first_and_only_new_MASSIVE_test_scores"]
+            accepted=report["selected"]!="previous"
+            expected_arms={"previous","base","selected"} if accepted else {"previous","base"}
+            assert set(gv)==set(ms)==expected_arms
+            assert all(scores["n"]==256 for arm in (gv,ms) for scores in arm.values())
+            dest=target/language
+            dest.mkdir(parents=True,exist_ok=False)
+            copy2(reports[0],dest/"report.json")
+            copy2(tests[0],dest/"stage5_evaluation.json")
+            selected=list(inc.rglob("candidate_selected.safetensors"))
+            if accepted:
+              assert len(selected)==1
+              assert hashlib.sha256(selected[0].read_bytes()).hexdigest()==report["selected_candidate_sha256"]
+              copy2(selected[0],dest/"adapter_selected.safetensors")
+            else:
+              assert not selected
+            candidates=sorted(inc.rglob("candidate_step*.safetensors"))
+            assert len(candidates)==4
+            for candidate in candidates: copy2(candidate,dest/candidate.name)
+            with (dest/"SHA256SUMS.txt").open("w",encoding="utf-8") as out:
+              for p in sorted(dest.iterdir()):
+                if p.name!="SHA256SUMS.txt":
+                  out.write(hashlib.sha256(p.read_bytes()).hexdigest()+"  "+p.name+"\n")
+            print("PRESERVED",language,"dev-selected",report["selected"],
+                  "chrF GV",gv["previous"]["chrf"],gv.get("selected",gv["previous"])["chrf"],
+                  "chrF MASSIVE",ms["previous"]["chrf"],ms.get("selected",ms["previous"])["chrf"])
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add experiments/balanced_stage5_20261118/saved
+          git diff --cached --stat
+          git commit -m "research: preserve stage-five trained French/Spanish candidates and frozen tests [skip ci]"
+          git push origin "HEAD:refs/heads/research/balanced-replay-stage5-20261118"
