@@ -17,7 +17,7 @@ from .session import LiveSession
 from .context import parse_glossary
 from .pipeline import Pipeline
 from .provider import TranslationRequest
-from .providers import PROVIDERS, key_available, needs_cloud, create_translator
+from .providers import key_available, needs_cloud, create_translator
 from .overlay import apply_opacity, opacity_percent, window_size, MIN_OPACITY_PERCENT, MAX_OPACITY_PERCENT
 
 LANGUAGES = {
@@ -64,9 +64,7 @@ class Application:
         self.worker = None
         self.text_generation = 0
         self.events = queue.Queue()
-        self.engine_selected = os.getenv("BRIDGE_TRANSLATOR", "ollama").strip().lower()
-        if self.engine_selected not in PROVIDERS:
-            self.engine_selected = "ollama"
+        self.engine_selected = os.getenv("BRIDGE_TRANSLATOR", "gemini").strip().lower()
         self.pipeline = Pipeline(translator=create_translator(self.engine_selected))
         # Typed-text history is never shared with a live listening session.
         self.live_session = None
@@ -250,14 +248,7 @@ class Application:
             anchor="w", pady=(0, 8))
         engine_row = tk.Frame(self.engine_controls_frame, bg=BG)
         engine_row.pack(fill="x")
-        engine_row.grid_columnconfigure(0, weight=2)
         engine_row.grid_columnconfigure(2, weight=2)
-        engine_group = field(engine_row, "Engine", 0)
-        self.engine_box = self.picker(engine_group, PROVIDERS, width=20)
-        self.engine_box.set(self.engine_selected)
-        self.engine_box.pack(fill="x")
-        self.engine_box.bind("<<ComboboxSelected>>",
-                             lambda _event: self.change_engine())
         self.button(engine_row, "Check connection", self.check_engine).grid(
             row=0, column=1, sticky="s", padx=(0, 14))
         topic_group = field(engine_row, "Topic", 2, last=True)
@@ -338,7 +329,7 @@ class Application:
             side="right")
 
         self.status_var = tk.StringVar(
-            value="Choose an audio source and translation engine in Settings.")
+            value="Choose an audio source and languages in Settings.")
         self.status_label = tk.Label(
             self.root, textvariable=self.status_var, bg=BG, fg=MUTED,
             anchor="w", justify="left", wraplength=700, padx=18, pady=7,
@@ -504,14 +495,14 @@ class Application:
     def _update_overlay_summary(self):
         if not hasattr(self, "summary_var"):
             return
-        engine = self.engine_box.get().capitalize()
+        engine = self.engine_selected.capitalize()
         source = LANGUAGES.get(self.source_lang(), self.source_lang())
         target = LANGUAGES.get(self.target_lang(), self.target_lang())
         live = "Listening" if self.live_session is not None else "Ready"
-        self.summary_var.set(f"{live}  ·  {source} → {target}  ·  {engine}")
+        self.summary_var.set(f"{live}  ·  {source} → {target}")
         self.engine_note.config(text=(
-            "Cloud translation · recognized text is sent to the selected service."
-            if needs_cloud(self.engine_box.get()) else
+            "Cloud translation · recognized text is sent to the configured service."
+            if needs_cloud(self.engine_selected) else
             "Local translation · recognized text is sent to your Ollama service."))
 
     def _on_source_change(self):
@@ -564,39 +555,12 @@ class Application:
         self.translated_text.config(text="Context cleared.")
         self.status_var.set("Context and pending older captions cleared.")
 
-    def change_engine(self):
-        if self.live_session is not None or (self.worker and self.worker.is_alive()):
-            self.engine_box.set(self.engine_selected)
-            self.status_var.set("Stop listening or finish the current translation before changing engines.")
-            return
-        next_engine = self.engine_box.get()
-        try:
-            new_pipeline = Pipeline(translator=create_translator(next_engine))
-        except (ValueError, OSError) as exc:
-            self.engine_box.set(self.engine_selected)
-            self.status_var.set(f"Cannot select engine: {exc}")
-            return
-        self.text_generation += 1
-        self.pipeline.reset()
-        self.pipeline = new_pipeline
-        self.last_caption = None
-        self._dismiss_full_caption()
-        self.engine_selected = next_engine
-        self._update_overlay_summary()
-        self.consent_given = False
-        self.consent_provider = None
-        self.source_text.config(text="Engine changed. Prior conversation cleared.")
-        self.translated_text.config(text="Start a new authorized translation.")
-        self.status_var.set(
-            "Azure is context-free for baseline comparisons." if next_engine == "azure"
-            else f"Engine set to {next_engine}. Context selection available.")
-
     def check_engine(self):
         """Check one provider with a public synthetic phrase, never meeting text."""
         if self.live_session is not None or (self.worker and self.worker.is_alive()):
             self.status_var.set("Stop the current task before checking the engine.")
             return
-        engine = self.engine_box.get()
+        engine = self.engine_selected
         if not key_available(engine):
             self.status_var.set(f"Configure the {engine} key in .env, then restart the app.")
             return
@@ -614,7 +578,7 @@ class Application:
         self.worker.start()
 
     def check_consent(self):
-        engine = self.engine_box.get()
+        engine = self.engine_selected
         if self.consent_given and self.consent_provider == engine:
             return True
         destination = (f"the {engine.upper()} cloud service" if needs_cloud(engine)
@@ -668,8 +632,8 @@ class Application:
         text = self.test_text.get().strip()
         if not text or self.live_session is not None:
             return
-        if self.source_lang() != self.target_lang() and not key_available(self.engine_box.get()):
-            self.status_var.set(f"Configure the key for {self.engine_box.get()} in .env.")
+        if self.source_lang() != self.target_lang() and not key_available(self.engine_selected):
+            self.status_var.set(f"Configure the key for {self.engine_selected} in .env.")
             return
         if not self.check_consent():
             return
@@ -712,8 +676,8 @@ class Application:
             self.status_var.set("No audio sources found. Try REFRESH AUDIO.")
             return
         if (self.source_lang() != self.target_lang()
-                and not key_available(self.engine_box.get())):
-            self.status_var.set(f"Configure the API key for {self.engine_box.get()} in .env.")
+                and not key_available(self.engine_selected)):
+            self.status_var.set(f"Configure the API key for {self.engine_selected} in .env.")
             return
         if self.worker and self.worker.is_alive():
             self.status_var.set("Finish the current typed translation before listening.")
@@ -737,7 +701,7 @@ class Application:
                 glossary=dict(self.glossary),
                 contextual=self.context_enabled.get(),
                 pipeline_factory=lambda: Pipeline(
-                    translator=create_translator(self.engine_box.get())),
+                    translator=create_translator(self.engine_selected)),
                 chunk_seconds=duration,
                 on_event=lambda kind, *data: self.publish(
                     "live", generation, kind, *data),
@@ -749,7 +713,7 @@ class Application:
         self._update_overlay_summary()
         self.start_button.config(text="Stop listening", state="normal")
         for selector in (self.source_box, self.source_picker,
-                         self.target_picker, self.topic_box, self.engine_box):
+                         self.target_picker, self.topic_box):
             selector.config(state="disabled")
         session.start()
 
@@ -812,7 +776,7 @@ class Application:
                         self._update_overlay_summary()
                         self.pipeline.reset()
                         for selector in (self.source_box, self.source_picker,
-                                         self.target_picker, self.topic_box, self.engine_box):
+                                         self.target_picker, self.topic_box):
                             selector.config(state="readonly")
                         self.start_button.config(text="Start listening", state="normal")
                         self.source_text.config(text="Listening stopped.")
