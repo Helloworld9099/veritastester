@@ -8,7 +8,7 @@ def test_version_comparison():
     assert version_tuple("1.10.0") > version_tuple("1.9.9")
 
 
-@pytest.mark.parametrize("invalid", ["", "v1.2.beta", "1.2.3-rc1", "../bad"])
+@pytest.mark.parametrize("invalid", ["", "v1.2.beta", "1.2.3-rc1", "../bad", "1.2"])
 def test_reject_invalid_versions(invalid):
     with pytest.raises(ValueError):
         version_tuple(invalid)
