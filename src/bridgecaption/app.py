@@ -92,7 +92,7 @@ class Application:
         self.root.bind("<Configure>", self._resize_caption_wrap)
         self.root.bind("<Control-comma>", lambda _event: self.toggle_settings())
         self.root.after(100, self.poll)
-        self.root.after(5000, self.check_updates)
+        self.root.after(5000, self._scheduled_update_check)
         # On Tk/X11, alpha set before the window is mapped may silently be lost.
         self.root.after(180, lambda: self._apply_opacity(
             self.opacity_value.get(), notify=False))
@@ -726,6 +726,11 @@ class Application:
                          self.target_picker, self.topic_box):
             selector.config(state="disabled")
         session.start()
+
+    def _scheduled_update_check(self):
+        if not self.closed:
+            self.check_updates()
+            self.root.after(24 * 60 * 60 * 1000, self._scheduled_update_check)
 
     def check_updates(self, manual=False):
         """Check off the UI thread; private repositories may need a public update feed."""
