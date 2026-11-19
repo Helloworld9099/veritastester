@@ -12,6 +12,7 @@ from tkinter import ttk, messagebox
 
 from dotenv import load_dotenv
 
+from .updates import find_update, current_version
 from .audio import sources
 from .session import LiveSession
 from .context import parse_glossary
@@ -72,6 +73,8 @@ class Application:
         self.consent_given = False
         self.consent_provider = None
         self.closed = False
+        self.update_checking = False
+        self.update_popup = None
         self.context_enabled = tk.BooleanVar(value=True)
         self.glossary = {}
         self.devices = []
@@ -89,6 +92,7 @@ class Application:
         self.root.bind("<Configure>", self._resize_caption_wrap)
         self.root.bind("<Control-comma>", lambda _event: self.toggle_settings())
         self.root.after(100, self.poll)
+        self.root.after(5000, self.check_updates)
         # On Tk/X11, alpha set before the window is mapped may silently be lost.
         self.root.after(180, lambda: self._apply_opacity(
             self.opacity_value.get(), notify=False))
@@ -257,6 +261,12 @@ class Application:
         self.engine_note = self.label(self.engine_controls_frame, "", 9, MUTED)
         self.engine_note.configure(justify="left", wraplength=650)
         self.engine_note.pack(fill="x", pady=(8, 0))
+        self.updates_frame = tk.Frame(self.settings_content, bg=BG, padx=18, pady=7)
+        self.updates_frame.pack(fill="x")
+        self.label(self.updates_frame, "Application updates", 11, TEXT, True).pack(anchor="w", pady=(0, 8))
+        self.label(self.updates_frame, f"Current version: v{current_version()}", 9, MUTED).pack(side="left", padx=(0, 12))
+        self.update_button = self.button(self.updates_frame, "Check for updates", lambda: self.check_updates(manual=True))
+        self.update_button.pack(side="left")
         self.settings_frame = tk.Frame(self.settings_content, bg=BG, padx=18, pady=7)
         self.settings_frame.pack(fill="x")
         self.label(self.settings_frame, "Preferences", 11, TEXT, True).pack(
@@ -414,7 +424,7 @@ class Application:
     def _apply_overlay_mode(self):
         """Collapse configuration without losing captions or Start/Stop controls."""
         for panel in (self.controls_frame, self.engine_controls_frame,
-                      self.settings_frame, self.bottom_frame):
+                      self.settings_frame, self.updates_frame, self.bottom_frame):
             panel.pack_forget()
         self.settings_workspace.pack_forget()
         if not self.compact:
@@ -717,11 +727,65 @@ class Application:
             selector.config(state="disabled")
         session.start()
 
+    def check_updates(self, manual=False):
+        """Check off the UI thread; private repositories may need a public update feed."""
+        if self.closed or self.update_checking:
+            return
+        self.update_checking = True
+        self.update_button.config(state="disabled")
+        if manual:
+            self.status_var.set("Checking for updates...")
+        def task():
+            try:
+                self.publish("update_result", manual, find_update(), None)
+            except Exception as exc:
+                self.publish("update_result", manual, None, str(exc))
+        threading.Thread(target=task, daemon=True).start()
+
+    def _show_update(self, update):
+        if self.update_popup is not None and self.update_popup.winfo_exists():
+            return
+        popup = tk.Toplevel(self.root)
+        self.update_popup = popup
+        popup.title("BridgeCaption update")
+        popup.configure(bg=BG)
+        popup.geometry("390x180")
+        popup.resizable(False, False)
+        popup.transient(self.root)
+        self.label(popup, f"Version {update.version} is available", 13, TEXT, True).pack(
+            padx=20, pady=(22, 14))
+        self.label(popup, "Install update?", 11, MUTED).pack(padx=20)
+        actions = tk.Frame(popup, bg=BG)
+        actions.pack(pady=18)
+        self.button(actions, "No", popup.destroy).pack(side="left", padx=8)
+        self.button(actions, "Yes", lambda: self._install_update(update)).pack(side="left", padx=8)
+
+    def _install_update(self, update):
+        """Never pretend that opening a release page installed an application."""
+        messagebox.showinfo(
+            "Desktop installer required",
+            "Automatic installation is not yet available for this development build. "
+            "A signed desktop package and verified updater are required before "
+            "BridgeCaption can safely download and install updates.",
+            parent=self.update_popup or self.root,
+        )
+
     def poll(self):
         try:
             while True:
                 kind, values = self.events.get_nowait()
-                if kind == "status":
+                if kind == "update_result":
+                    manual, update, error = values
+                    self.update_checking = False
+                    self.update_button.config(state="normal")
+                    if error:
+                        if manual:
+                            self.status_var.set("Update check unavailable: " + error)
+                    elif update:
+                        self._show_update(update)
+                    elif manual:
+                        self.status_var.set("BridgeCaption is up to date.")
+                elif kind == "status":
                     self.status_var.set(values[0])
                 elif kind == "heard":
                     self.last_caption = None
@@ -791,6 +855,8 @@ class Application:
     def close(self):
         self.closed = True
         self._dismiss_full_caption()
+        if self.update_popup is not None and self.update_popup.winfo_exists():
+            self.update_popup.destroy()
         if self.live_session is not None:
             self.live_session.stop()
         self.pipeline.reset()
