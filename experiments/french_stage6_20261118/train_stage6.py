@@ -88,6 +88,16 @@ def historical_globalvoices(rows):
     return previous + sum(fifth.values(), [])
 
 
+def pre_stage5_news(previous_gv):
+    """Return exactly stage-one and stage-four rows for historical stage-five replay."""
+    n1 = gv.TRAIN_COUNT + gv.DEV_COUNT + gv.TEST_COUNT
+    n4 = stage4.TRAIN_COUNT + stage4.DEV_COUNT + stage4.GV_TEST_COUNT
+    n5 = stage5.NEW_NEWS_COUNT + stage5.GV_DEV + stage5.TEST_COUNT
+    if len(previous_gv) != n1 + n4 + n5:
+        raise RuntimeError("Historical GlobalVoices stage-count mismatch")
+    return previous_gv[:n1 + n4]
+
+
 def fresh_massive(previous_gv, *, train_n=MASSIVE_REPLAY,
                   dev_n=MASSIVE_DEV, test_n=TEST_N, seed=SEED):
     english = massive.fetch_multipart("en-US")
@@ -109,7 +119,7 @@ def fresh_massive(previous_gv, *, train_n=MASSIVE_REPLAY,
     consumed = stage5.combine_massive(first, second, third, fourth)
     fifth = stage2.next_cohorts(
         english, french,
-        {**consumed, "train": consumed["train"] + list(previous_gv[:-stage5.TRAIN_COUNT])},
+        {**consumed, "train": consumed["train"] + pre_stage5_news(previous_gv)},
         include_ids=True, train_n=1, dev_n=stage5.MASSIVE_DEV,
         test_n=stage5.TEST_COUNT, seed=stage5.SEED)
     saved5 = json.loads(
