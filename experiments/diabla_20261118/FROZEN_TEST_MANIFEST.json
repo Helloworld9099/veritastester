@@ -1,0 +1,23 @@
+{
+  "dataset": "rbawden/DiaBLa",
+  "revision": "5345895c56a601afe1a98519ce3199be60a27dba",
+  "source_file": "DiaBLa.json",
+  "source_json_sha256": "17b53905a4d1a4e7e1ee1c7b05b8f0f49c7ba1cc111accd4470faa9782e87515",
+  "license": "cc-by-sa-4.0",
+  "publisher_split": "test",
+  "n_dialogue_groups": 144,
+  "n_utterances": 5748,
+  "french_original_source_utterances": 2883,
+  "source_language_counts": {
+    "english": 2865,
+    "french": 2883
+  },
+  "frozen_group_ids_sha256": "572202acedb021fe1e5b5da418f97402dffe2ed9aa342f33e65cb07b6e837bf2",
+  "dialogue_group_digests_sha256": "d869752ff5777a08315436eaf7276181bf7aac11afd8cd29f9e8de9449b82c38",
+  "all_utterances_test_only_no_train_or_dev": true,
+  "test_group_exclusions": "All 144 publisher dialogues are reserved solely for evaluation.",
+  "human_judgments_apply_only_to_older_translation_models": true,
+  "not_sufficient_for_90_percent_new_model_semantic_adequacy": true,
+  "verified_by_workflow_run": 44453140486,
+  "notes": "Freeze metadata BEFORE any BridgeCaption local model is evaluated on DiaBLa; no model receives these reference translations as training data. Prior Marian pretraining exposure cannot be ruled out. Real bilingual human ratings for any new model are not present."
+}
