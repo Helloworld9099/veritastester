@@ -1,0 +1,7 @@
+{
+  "preservation_notice": "Preserve the original reports byte-for-byte; do not falsify prior evidence.",
+  "old_label_warning": "The original run described DiaBLa as a FINAL external test, but all 144 DiaBLa dialogues had been previously evaluated in November 2026. It is correctly excluded from training but no longer an untouched final evaluation set.",
+  "source": "research/continuation_final_audit_20261116/REPORT.md",
+  "evaluation_status": "The 256 Tatoeba samples are new to this adapter training run, but are from publisher TRAIN split and have now been scored once. Not independent human correctness.",
+  "90_percent_meaning_accuracy_verified": false
+}
