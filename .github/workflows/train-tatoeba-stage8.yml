@@ -1,0 +1,53 @@
+name: TRAIN French Stage8 LoRA on unused Tatoeba groups plus MASSIVE replay
+on:
+  push:
+    branches: [research/tatoeba-massive-stage8-20261118]
+    paths:
+      - .github/workflows/train-tatoeba-stage8.yml
+      - experiments/tatoeba_stage8_20261118/**
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: tatoeba-stage8-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  stage8-fr:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      HF_HUB_DISABLE_TELEMETRY: '1'
+      TOKENIZERS_PARALLELISM: 'false'
+      OMP_NUM_THREADS: '4'
+      MKL_NUM_THREADS: '4'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install free CPU-only Marian training dependencies
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'huggingface-hub>=0.34,<1.0' 'datasets==2.21.0'
+      - name: Verify frozen adapter, component isolation, and no final-test leakage
+        run: |
+          python -m compileall -q experiments/tatoeba_stage8_20261118
+          python -m unittest discover -s experiments/tatoeba_stage8_20261118/tests -p 'test_*.py' -v
+      - name: TRAIN 512 optimizer updates from Stage7 and score unused holdout once
+        run: |
+          python -u experiments/tatoeba_stage8_20261118/train_stage8.py \
+            --output-dir "$RUNNER_TEMP/tatoeba-stage8"
+      - name: Retain only candidate LoRA weights and frozen aggregate evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tatoeba-stage8-french-research
+          path: |
+            ${{ runner.temp }}/tatoeba-stage8/report.json
+            ${{ runner.temp }}/tatoeba-stage8/stage8_evaluation.json
+            ${{ runner.temp }}/tatoeba-stage8/candidate_step*.safetensors
+            ${{ runner.temp }}/tatoeba-stage8/candidate_selected.safetensors
+          if-no-files-found: warn
+          retention-days: 30
