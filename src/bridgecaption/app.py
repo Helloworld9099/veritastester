@@ -43,19 +43,19 @@ LANGUAGES = {
     "mt": "Maltese", "mk": "Macedonian", "be": "Belarusian",
 }
 TOPICS = ["auto", "general", "technology", "business", "education", "healthcare", "gaming", "casual"]
-BG = "#101923"
-PANEL = "#1c2b38"
-CONTROL = "#273b49"
-BORDER = "#3c5565"
-TEXT = "#f4f8fb"
-MUTED = "#bed0dd"
-ACCENT = "#5de1b3"
-ALERT = "#ffb7a8"
+BG = "#F7F3EA"
+PANEL = "#FFFFFF"
+CONTROL = "#EEE8DD"
+BORDER = "#D6D0C5"
+TEXT = "#174C52"
+MUTED = "#45686B"
+ACCENT = "#C66B4E"
+ALERT = "#A53B2B"
 
 class Application:
     def __init__(self, root):
         self.root = root
-        self.root.title("BridgeCaption | AI translation")
+        self.root.title("BridgeCaption | Live translation")
         self.root.geometry("760x282+220+340")
         self.root.minsize(560, 245)
         self.root.configure(bg=BG)
@@ -101,13 +101,13 @@ class Application:
 
     def button(self, parent, text, command, accent=False):
         background = ACCENT if accent else CONTROL
-        foreground = BG if accent else TEXT
-        hover = "#87f0ca" if accent else "#395362"
+        foreground = "#FFFFFF" if accent else TEXT
+        hover = "#AE553C" if accent else "#E2D9CB"
         return tk.Button(
             parent, text=text, command=command, relief="flat", bd=0,
             bg=background, fg=foreground, activebackground=hover,
-            activeforeground=BG if accent else TEXT,
-            disabledforeground="#35544e" if accent else MUTED,
+            activeforeground="#FFFFFF" if accent else TEXT,
+            disabledforeground="#765348" if accent else MUTED,
             font=("DejaVu Sans", 10, "bold"),
             padx=13, pady=8, cursor="hand2", takefocus=True,
             highlightthickness=1, highlightbackground=BG,
@@ -301,7 +301,7 @@ class Application:
         self.source_text.pack(fill="x", pady=(7, 8))
         tk.Frame(self.caption_panel, bg=BORDER, height=1).pack(
             fill="x", pady=(0, 10))
-        self.label(self.caption_panel, "Translation", 10, ACCENT, True).pack(
+        self.label(self.caption_panel, "Translation", 10, TEXT, True).pack(
             anchor="w")
         self.translated_text = self.label(
             self.caption_panel, "Waiting for speech or a text translation.", 20,
