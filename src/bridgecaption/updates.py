@@ -29,7 +29,6 @@ class Update:
     url: str
     sha256: str
     size: int
-    signature: str
 
 
 def current_version() -> str:
@@ -98,12 +97,7 @@ def find_update(current: str | None = None) -> Update | None:
         raise ValueError("Invalid package checksum")
     if type(size) is not int or not 0 < size <= MAX_PACKAGE:
         raise ValueError("Invalid package size")
-    return Update(latest, url, digest, size, document_signature_placeholder())
-
-
-def document_signature_placeholder() -> str:
-    """Signature is verified during manifest fetch; never used as package authorization."""
-    return "verified-manifest"
+    return Update(latest, url, digest, size)
 
 
 def download_update(update: Update, progress, cancel=None) -> Path:
@@ -133,3 +127,48 @@ def download_update(update: Update, progress, cancel=None) -> Path:
     except BaseException:
         destination.unlink(missing_ok=True)
         raise
+
+def install_appimage_on_exit(update_file: Path) -> None:
+    """Stage verified AppImage; a detached helper replaces it after this process exits.
+
+    A failed replacement leaves the existing application intact.
+    """
+    import subprocess
+    import sys
+    current = os.getenv("APPIMAGE")
+    if platform.system() != "Linux" or not current:
+        raise RuntimeError("Automatic installation requires the official AppImage build")
+    target = Path(current).resolve()
+    if not target.is_file() or not os.access(target.parent, os.W_OK):
+        raise RuntimeError("Cannot update this AppImage location; move it to a writable folder")
+    # Package was checked against a signed manifest before arriving here.
+    update_file.chmod(0o755)
+    helper = r"""
+import os, pathlib, sys, time
+pid, source, destination = int(sys.argv[1]), pathlib.Path(sys.argv[2]), pathlib.Path(sys.argv[3])
+for _ in range(300):
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        break
+    except PermissionError:
+        sys.exit(1)
+    time.sleep(.1)
+else:
+    sys.exit(1)
+backup = destination.with_name(destination.name + ".previous")
+try:
+    if destination.exists():
+        os.replace(destination, backup)
+    os.replace(source, destination)
+except OSError:
+    if backup.exists() and not destination.exists():
+        os.replace(backup, destination)
+    sys.exit(1)
+os.execv(str(destination), [str(destination)])
+"""
+    subprocess.Popen(
+        [sys.executable, "-c", helper, str(os.getpid()), str(update_file), str(target)],
+        stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        start_new_session=True,
+    )
