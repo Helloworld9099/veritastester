@@ -12,7 +12,7 @@ from tkinter import ttk, messagebox
 
 from dotenv import load_dotenv
 
-from .updates import find_update, current_version
+from .updates import find_update, current_version, download_update, install_appimage_on_exit
 from .audio import sources
 from .session import LiveSession
 from .context import parse_glossary
@@ -75,6 +75,7 @@ class Application:
         self.closed = False
         self.update_checking = False
         self.update_popup = None
+        self.update_downloading = False
         self.context_enabled = tk.BooleanVar(value=True)
         self.glossary = {}
         self.devices = []
@@ -766,20 +767,64 @@ class Application:
         self.button(actions, "Yes", lambda: self._install_update(update)).pack(side="left", padx=8)
 
     def _install_update(self, update):
-        """Never pretend that opening a release page installed an application."""
-        messagebox.showinfo(
-            "Desktop installer required",
-            "Automatic installation is not yet available for this development build. "
-            "A signed desktop package and verified updater are required before "
-            "BridgeCaption can safely download and install updates.",
-            parent=self.update_popup or self.root,
-        )
+        if self.update_downloading:
+            return
+        if not os.getenv("APPIMAGE"):
+            messagebox.showerror("Installer unavailable",
+                "Automatic installation requires an official AppImage build.",
+                parent=self.update_popup or self.root)
+            return
+        self.update_downloading = True
+        popup = self.update_popup
+        for widget in popup.winfo_children():
+            widget.destroy()
+        self.label(popup, f"Installing v{update.version}", 13, TEXT, True).pack(padx=20, pady=15)
+        self.update_progress = tk.DoubleVar(value=0)
+        ttk.Progressbar(popup, maximum=100, variable=self.update_progress).pack(fill="x", padx=20)
+        self.update_progress_label = self.label(popup, "Downloading 0%", 10, MUTED)
+        self.update_progress_label.pack(pady=10)
+        def task():
+            try:
+                package = download_update(update, lambda done, total:
+                    self.publish("update_progress", done, total))
+                self.publish("update_downloaded", package)
+            except Exception as exc:
+                self.publish("update_failed", str(exc))
+        threading.Thread(target=task, daemon=True).start()
+
+    def _finish_update(self, package):
+        if self.live_session is not None or (self.worker and self.worker.is_alive()):
+            messagebox.showinfo("Update waiting", "Stop captioning before installing.", parent=self.root)
+            return
+        try:
+            install_appimage_on_exit(package)
+        except Exception as exc:
+            messagebox.showerror("Update failed", str(exc), parent=self.root)
+            return
+        self.close()
 
     def poll(self):
         try:
             while True:
                 kind, values = self.events.get_nowait()
-                if kind == "update_result":
+                if kind == "update_progress":
+                    received, total = values
+                    percentage = int(100 * received / total)
+                    self.update_progress.set(percentage)
+                    self.update_progress_label.config(text=f"Downloading {percentage}%")
+                elif kind == "update_downloaded":
+                    self.update_downloading = False
+                    package = values[0]
+                    if self.live_session is not None or (self.worker and self.worker.is_alive()):
+                        self.update_progress_label.config(text="Verified. Stop captioning to install.")
+                        self.button(self.update_popup, "Install when idle",
+                                    lambda: self._finish_update(package)).pack(pady=5)
+                    else:
+                        self._finish_update(package)
+                elif kind == "update_failed":
+                    self.update_downloading = False
+                    messagebox.showerror("Update failed", values[0], parent=self.root)
+                elif kind == "update_result":
                     manual, update, error = values
                     self.update_checking = False
                     self.update_button.config(state="normal")
