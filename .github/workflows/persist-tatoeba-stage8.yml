@@ -1,0 +1,95 @@
+name: Save Stage8 training evidence and rejected French LoRA candidates
+on:
+  push:
+    branches: [research/tatoeba-massive-stage8-20261118]
+    paths:
+      - .github/workflows/persist-tatoeba-stage8.yml
+permissions:
+  actions: read
+  contents: write
+jobs:
+  save:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download already-completed real 512-update training artifacts
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 44454890575
+          github-token: ${{ github.token }}
+          repository: Helloworld9099/veritastester
+          name: tatoeba-stage8-french-research
+          path: ${{ runner.temp }}/stage8
+      - name: Verify untouched-group selection and retain each experimental checkpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          from shutil import copy2
+          root=Path(os.environ["RUNNER_TEMP"])/"stage8"
+          reports=list(root.rglob("report.json"))
+          evaluations=list(root.rglob("stage8_evaluation.json"))
+          assert len(reports)==len(evaluations)==1
+          report=json.loads(reports[0].read_text())
+          evidence=json.loads(evaluations[0].read_text())
+          assert report["language"]==evidence["language"]=="french"
+          assert report["stage"]==8
+          assert report["selected"]==evidence["selected_on_development_only"]=="previous"
+          assert report["completed_updates"]==evidence["completed_optimizer_steps"]==512
+          assert report["real_source_component_manifest"]==evidence["cohort_manifest"]
+          meta=evidence["cohort_manifest"]
+          assert meta["stage7_train_and_test_groups_excluded"]==2560
+          assert meta["historic_Tatoeba_quick12000_components_excluded"] is True
+          assert meta["new_tatoeba_train"]["count"]==6144
+          assert meta["new_tatoeba_train"]["groups"]==6144
+          assert meta["new_tatoeba_frozen_test"]["count"]==256
+          assert meta["new_tatoeba_frozen_test"]["groups"]==256
+          assert meta["new_tatoeba_train"]["group_sha256"]!=meta["new_tatoeba_frozen_test"]["group_sha256"]
+          assert meta["massive_old_TRAIN_only_replay"]==2048
+          assert meta["all_144_previously_evaluated_DiaBLa_dialogues_excluded_from_training"] is True
+          assert meta["warm_stage7_adapter_sha256"]=="5b9b136997fcc80c961542831a1dd0578018de81f1e1a069df686616a4f5d80f"
+          assert evidence["new_test_not_used_for_fitting_or_selection"] is True
+          assert evidence["no_final_human_90_percent_accuracy_claim"] is True
+          scores=evidence["first_and_only_new_component_disjoint_diagnostic_scores"]
+          assert set(scores)=={"base","previous"}
+          assert scores["base"]["n"]==scores["previous"]["n"]==256
+          candidates=sorted(root.rglob("candidate_step*.safetensors"))
+          assert len(candidates)==4
+          assert not list(root.rglob("candidate_selected.safetensors"))
+          destination=Path("experiments/tatoeba_stage8_20261118/saved")
+          destination.mkdir(parents=True,exist_ok=False)
+          copy2(reports[0],destination/"report.json")
+          copy2(evaluations[0],destination/"stage8_evaluation.json")
+          for candidate in candidates:
+              copy2(candidate,destination/candidate.name)
+          (destination/"RESEARCH_INTERPRETATION.json").write_text(json.dumps({
+              "completed_optimizer_updates":512,
+              "selected":"previous Stage7 adapter; no Stage8 weights promoted",
+              "development_chrf_previous":report["scores"]["previous"]["chrf"],
+              "development_chrf_best_candidate":max(
+                  report["scores"][k]["chrf"] for k in report["scores"] if k!="previous"),
+              "final_test_not_used_to_select_model":True,
+              "frozen_test_now_consumed":True,
+              "human_90_percent_correctness_verified":False,
+              "unverified_upstream_pretraining_overlap":True
+          },indent=2)+"\n")
+          with (destination/"SHA256SUMS.txt").open("w") as out:
+              for path in sorted(destination.iterdir()):
+                  if path.name!="SHA256SUMS.txt":
+                      out.write(hashlib.sha256(path.read_bytes()).hexdigest()+
+                                "  "+path.name+"\n")
+          print("PRESERVED 512 STEP RUN", report["selected"])
+          print("DEVELOPMENT",report["scores"])
+          print("TEST",scores)
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add experiments/tatoeba_stage8_20261118/saved
+          git diff --cached --stat
+          git commit -m "research: preserve Stage8 rejected LoRA weights, evidence and true non-promotion [skip ci]"
+          git push origin "HEAD:refs/heads/research/tatoeba-massive-stage8-20261118"
