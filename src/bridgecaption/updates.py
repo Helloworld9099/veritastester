@@ -18,9 +18,9 @@ from pathlib import Path
 from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
-MAX_MANIFEST = 64 * 1024
+UPDATE_PUBLIC_KEY = ""  # Replaced at build time; never read trust roots from runtime environment.\nMAX_MANIFEST = 64 * 1024
 MAX_PACKAGE = 500 * 1024 * 1024
-DEFAULT_FEED = "https://github.com/Helloworld9099/bridgecaption-updates/releases/latest/download/manifest.json"
+DEFAULT_FEED = "https://github.com/Helloworld9099/veritastester/releases/latest/download/manifest.json"
 
 
 @dataclass(frozen=True)
@@ -54,7 +54,7 @@ def _https(url: str) -> str:
 
 def _public_key():
     from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
-    value = os.getenv("BRIDGECAPTION_UPDATE_PUBLIC_KEY", "").strip()
+    value = UPDATE_PUBLIC_KEY.strip()
     if not value:
         raise RuntimeError("This build has no trusted update signing key")
     return Ed25519PublicKey.from_public_bytes(base64.b64decode(value, validate=True))
@@ -143,32 +143,27 @@ def install_appimage_on_exit(update_file: Path) -> None:
         raise RuntimeError("Cannot update this AppImage location; move it to a writable folder")
     # Package was checked against a signed manifest before arriving here.
     update_file.chmod(0o755)
+    # Use a system shell: the bundled Python executable disappears when AppImage unmounts.
     helper = r"""
-import os, pathlib, sys, time
-pid, source, destination = int(sys.argv[1]), pathlib.Path(sys.argv[2]), pathlib.Path(sys.argv[3])
-for _ in range(300):
-    try:
-        os.kill(pid, 0)
-    except ProcessLookupError:
-        break
-    except PermissionError:
-        sys.exit(1)
-    time.sleep(.1)
-else:
-    sys.exit(1)
-backup = destination.with_name(destination.name + ".previous")
-try:
-    if destination.exists():
-        os.replace(destination, backup)
-    os.replace(source, destination)
-except OSError:
-    if backup.exists() and not destination.exists():
-        os.replace(backup, destination)
-    sys.exit(1)
-os.execv(str(destination), [str(destination)])
+pid="$1"; source="$2"; destination="$3"
+count=0
+while kill -0 "$pid" 2>/dev/null; do
+  count=$((count + 1))
+  [ "$count" -lt 150 ] || exit 1
+  sleep 0.2
+done
+backup="${destination}.previous"
+if [ -e "$destination" ]; then
+  mv -f -- "$destination" "$backup" || exit 1
+fi
+if ! mv -f -- "$source" "$destination"; then
+  [ ! -e "$backup" ] || mv -f -- "$backup" "$destination"
+  exit 1
+fi
+exec "$destination"
 """
     subprocess.Popen(
-        [sys.executable, "-c", helper, str(os.getpid()), str(update_file), str(target)],
+        ["/bin/sh", "-c", helper, "bridgecaption-update", str(os.getpid()), str(update_file), str(target)],
         stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
         start_new_session=True,
     )
