@@ -1,0 +1,70 @@
+{
+  "experiment": "Stage4 fresh GlobalVoices training from saved MASSIVE3 adapter",
+  "language": "french",
+  "seed": 202611184,
+  "base_model": "Helsinki-NLP/opus-mt-fr-en",
+  "base_revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+  "warm_adapter_sha256": "072f7f5d2d90b26991c5c62bf8ddb40f686f65e66be52717e7b121d507008ad9",
+  "corpus_source": "file:///tmp/bridgecaption-gv4-71qizgxh/train_dev.json",
+  "corpus_sha256": "e2ea67995450697cd28fff588150b01b49f17c8f786c74654ea940cc5933df0f",
+  "attribution": "Tatoeba french-English pairs via ManyThings.org; verify license and attribution before redistribution",
+  "train_rows": 3072,
+  "dev_rows": 128,
+  "unique_pairs_after_filtering": 3200,
+  "warning": "The newly downloaded corpus may overlap earlier research and base pretraining. Development-only results do not establish generalization, production readiness, or translation improvement.",
+  "planned_updates": 192,
+  "learning_rate": 2.5e-05,
+  "selection": "Accept new checkpoint only if dev chrF improves >=0.25 AND dev BLEU does not fall, compared with unchanged prior adapter.",
+  "scores": {
+    "previous": {
+      "chrf": 59.30413874587891,
+      "bleu": 34.059752887766265,
+      "n": 128
+    },
+    "step48": {
+      "chrf": 60.22685845478,
+      "bleu": 35.34629407479823,
+      "n": 128
+    },
+    "step96": {
+      "chrf": 60.759407081436564,
+      "bleu": 35.77996946158569,
+      "n": 128
+    },
+    "step144": {
+      "chrf": 60.88189729438981,
+      "bleu": 35.89460278407462,
+      "n": 128
+    },
+    "step192": {
+      "chrf": 60.80979831003967,
+      "bleu": 35.628732207806976,
+      "n": 128
+    }
+  },
+  "selected": "step144",
+  "completed_updates": 192,
+  "selected_candidate_sha256": "0ddc2e5f8e329515f48652f8075b01d0516f595deaab9d5144547710b6fe5287",
+  "last_step_loss": 2.6429197788238525,
+  "elapsed_seconds": 278.83049467599994,
+  "source": "OPUS-GlobalVoices/v2018q4",
+  "source_sha256": "7f5018e2d7aca3bed1e427957bb4a9bcae80e397f2eab4cadd1659d54315da5d",
+  "old_GlobalVoices_train_dev_test_pair_count_excluded": 4480,
+  "new_GlobalVoices_cohort_hashes": {
+    "test": {
+      "n": 256,
+      "pair_sha256": "401dcb41f445ba64a4851ec1c86d0e3ff7c5c659b8abaef230ccd357397eacb0"
+    },
+    "dev": {
+      "n": 128,
+      "pair_sha256": "0173233627dff7970e878717cb664d6a16bb0d8333cb272ff867a2d5ed14bf77"
+    },
+    "train": {
+      "n": 3072,
+      "pair_sha256": "71c57ad6ab9d0712dd86827e0c61c39cd332c2f1bb8f9da7c8b5b1bb40051815"
+    }
+  },
+  "previous_adapter_sha256": "072f7f5d2d90b26991c5c62bf8ddb40f686f65e66be52717e7b121d507008ad9",
+  "rights": "Global Voices original article attribution required (usually CC BY)",
+  "known_limitations": "TMX preserves translation-unit pairing, not article-group IDs. Original Marian may contain related text. Strict literal text separation is not proof of contextual generalization. No live app promotion; chrF/BLEU are not human correctness."
+}

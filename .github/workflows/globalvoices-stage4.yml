@@ -1,0 +1,58 @@
+name: Train French and Spanish stage-four adapters on fresh real GlobalVoices
+on:
+  push:
+    branches: [research/globalvoices-stage4-from-massive3-20261118]
+    paths:
+      - .github/workflows/globalvoices-stage4.yml
+      - experiments/globalvoices_stage4_20261118/**
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: stage4-globalvoices-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  train-stage4:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [french, spanish]
+    name: Stage4 ${{ matrix.language }} fresh GlobalVoices and unseen MASSIVE test
+    env:
+      HF_HUB_DISABLE_TELEMETRY: '1'
+      TOKENIZERS_PARALLELISM: 'false'
+      OMP_NUM_THREADS: '4'
+      MKL_NUM_THREADS: '4'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install CPU-only research dependencies
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'huggingface-hub>=0.34,<1.0' 'datasets==2.21.0'
+      - name: Verify checkpoint hashes and non-reuse of historical tests
+        run: |
+          python -m compileall -q experiments/globalvoices_stage4_20261118
+          python -m unittest discover -s experiments/globalvoices_stage4_20261118/tests -p 'test_*.py' -v
+      - name: TRAIN 192 new LoRA updates on human-translated real data
+        run: |
+          python -u experiments/globalvoices_stage4_20261118/train_stage4.py \
+            --language '${{ matrix.language }}' --output-dir "$RUNNER_TEMP/globalvoices4-${{ matrix.language }}"
+      - name: Preserve all candidate adapters and aggregate-only evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: globalvoices-stage4-${{ matrix.language }}
+          path: |
+            ${{ runner.temp }}/globalvoices4-${{ matrix.language }}/report.json
+            ${{ runner.temp }}/globalvoices4-${{ matrix.language }}/stage4_evaluation.json
+            ${{ runner.temp }}/globalvoices4-${{ matrix.language }}/candidate_step*.safetensors
+            ${{ runner.temp }}/globalvoices4-${{ matrix.language }}/candidate_selected.safetensors
+          if-no-files-found: warn
+          retention-days: 30

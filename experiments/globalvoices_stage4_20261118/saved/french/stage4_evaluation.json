@@ -1,0 +1,79 @@
+{
+  "language": "french",
+  "selected_on_dev_only": "step144",
+  "completed_updates": 192,
+  "source_archive_sha256": "7f5018e2d7aca3bed1e427957bb4a9bcae80e397f2eab4cadd1659d54315da5d",
+  "training_and_dev": {
+    "test": {
+      "n": 256,
+      "pair_sha256": "401dcb41f445ba64a4851ec1c86d0e3ff7c5c659b8abaef230ccd357397eacb0"
+    },
+    "dev": {
+      "n": 128,
+      "pair_sha256": "0173233627dff7970e878717cb664d6a16bb0d8333cb272ff867a2d5ed14bf77"
+    },
+    "train": {
+      "n": 3072,
+      "pair_sha256": "71c57ad6ab9d0712dd86827e0c61c39cd332c2f1bb8f9da7c8b5b1bb40051815"
+    }
+  },
+  "fresh_heldout_GlobalVoices_test": {
+    "manifest": {
+      "n": 256,
+      "pair_sha256": "401dcb41f445ba64a4851ec1c86d0e3ff7c5c659b8abaef230ccd357397eacb0"
+    },
+    "scores": {
+      "base": {
+        "n": 256,
+        "chrf": 60.43811281750167,
+        "bleu": 36.271119655871274,
+        "reference_exact_match_fraction_not_adequacy": 0.0234375
+      },
+      "previous": {
+        "n": 256,
+        "chrf": 59.63907336192356,
+        "bleu": 34.516094012772655,
+        "reference_exact_match_fraction_not_adequacy": 0.0234375
+      },
+      "selected": {
+        "n": 256,
+        "chrf": 60.158620714632335,
+        "bleu": 35.31165207383475,
+        "reference_exact_match_fraction_not_adequacy": 0.03125
+      }
+    }
+  },
+  "fresh_heldout_MASSIVE_author_test": {
+    "manifest": {
+      "official_partition": "test",
+      "author_revision": "ff6bd8e4b27c3543e4f8fe2108f32bb95a6f8740",
+      "n": 256,
+      "test_id_sha256": "1b09d1aafe2bea53859d75d3eeceef98d141a24b5a68c2ef4efe134bfa592175",
+      "all_stage1_stage2_stage3_IDs_excluded": true,
+      "all_stage1_stage2_stage3_exact_source_and_english_text_excluded": true
+    },
+    "scores": {
+      "base": {
+        "n": 256,
+        "chrf": 63.57235634874332,
+        "bleu": 35.31337839958143,
+        "reference_exact_match_fraction_not_adequacy": 0.09765625
+      },
+      "previous": {
+        "n": 256,
+        "chrf": 67.68647625105581,
+        "bleu": 47.80966962764739,
+        "reference_exact_match_fraction_not_adequacy": 0.1875
+      },
+      "selected": {
+        "n": 256,
+        "chrf": 66.71111180647563,
+        "bleu": 45.179362980798736,
+        "reference_exact_match_fraction_not_adequacy": 0.1953125
+      }
+    }
+  },
+  "was_any_previous_GV_or_MASSIVE_test_used_for_stage4_train": false,
+  "not_validated_90_percent_human_accuracy": true,
+  "limitations": "GlobalVoices TMX lacks article IDs. MASSIVE author test was excluded from all four local training stages by ID, exact source and reference; unknown Marian upstream pretraining overlap is still possible. No real bilingual human judgments of slang/context/meaning. These test sets are now consumed and cannot tune further rounds."
+}

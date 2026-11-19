@@ -1,0 +1,93 @@
+name: Persist trained GlobalVoices stage-four checkpoints and blinded evidence
+on:
+  push:
+    branches: [research/globalvoices-stage4-from-massive3-20261118]
+    paths:
+      - .github/workflows/persist-globalvoices-stage4.yml
+permissions:
+  actions: read
+  contents: write
+jobs:
+  persist:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download immutable completed training artifacts
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 44352015588
+          github-token: ${{ github.token }}
+          repository: Helloworld9099/veritastester
+          pattern: globalvoices-stage4-*
+          merge-multiple: false
+          path: ${{ runner.temp }}/stage4
+      - name: Verify candidate identity and frozen separate test before saving
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          from shutil import copy2
+          import os,json,hashlib
+          source=Path(os.environ["RUNNER_TEMP"])/"stage4"
+          dest=Path("experiments/globalvoices_stage4_20261118/saved")
+          gv={
+            "french":"7f5018e2d7aca3bed1e427957bb4a9bcae80e397f2eab4cadd1659d54315da5d",
+            "spanish":"680eb6975a09e797ae10e9f32590a540752333b9c81477e9e1bb0b5436f72e44"
+          }
+          warm={
+            "french":"072f7f5d2d90b26991c5c62bf8ddb40f686f65e66be52717e7b121d507008ad9",
+            "spanish":"14dddb5040afe49f8f05a1bfba3458d3321524b53b0fc05b359ad41a1ab75a4b"
+          }
+          for lang in ("french","spanish"):
+            incoming=source/("globalvoices-stage4-"+lang)
+            rf=list(incoming.rglob("report.json"))
+            ef=list(incoming.rglob("stage4_evaluation.json"))
+            selected=list(incoming.rglob("candidate_selected.safetensors"))
+            assert len(rf)==len(ef)==len(selected)==1
+            report=json.loads(rf[0].read_text())
+            evaluation=json.loads(ef[0].read_text())
+            assert report["language"]==evaluation["language"]==lang
+            assert evaluation["selected_on_dev_only"]==report["selected"]
+            assert evaluation["completed_updates"]==report["completed_updates"]==192
+            assert evaluation["source_archive_sha256"]==report["source_sha256"]==gv[lang]
+            assert report["previous_adapter_sha256"]==warm[lang]
+            assert report["old_GlobalVoices_train_dev_test_pair_count_excluded"]==4480
+            assert evaluation["was_any_previous_GV_or_MASSIVE_test_used_for_stage4_train"] is False
+            assert evaluation["not_validated_90_percent_human_accuracy"] is True
+            for domain in ("fresh_heldout_GlobalVoices_test","fresh_heldout_MASSIVE_author_test"):
+              scores=evaluation[domain]["scores"]
+              assert set(scores)=={"base","previous","selected"}
+              assert all(scores[key]["n"]==256 for key in scores)
+            assert evaluation["training_and_dev"]["train"]["n"]==3072
+            assert evaluation["training_and_dev"]["dev"]["n"]==128
+            assert evaluation["training_and_dev"]["test"]["n"]==256
+            assert evaluation["fresh_heldout_GlobalVoices_test"]["manifest"]==evaluation["training_and_dev"]["test"]
+            assert evaluation["fresh_heldout_MASSIVE_author_test"]["manifest"]["all_stage1_stage2_stage3_IDs_excluded"] is True
+            digest=hashlib.sha256(selected[0].read_bytes()).hexdigest()
+            assert digest==report["selected_candidate_sha256"]
+            folder=dest/lang
+            folder.mkdir(parents=True,exist_ok=False)
+            for src,name in ((rf[0],"report.json"),(ef[0],"stage4_evaluation.json"),(selected[0],"adapter_selected.safetensors")):
+              copy2(src,folder/name)
+            candidates=sorted(incoming.rglob("candidate_step*.safetensors"))
+            assert len(candidates)==4
+            for candidate in candidates: copy2(candidate,folder/candidate.name)
+            with (folder/"SHA256SUMS.txt").open("w") as f:
+              for file in sorted(folder.iterdir()):
+                if file.name!="SHA256SUMS.txt":
+                  f.write(hashlib.sha256(file.read_bytes()).hexdigest()+"  "+file.name+"\n")
+            print("PRESERVED",lang,"selected",report["selected"],"sha",digest,
+                  "MASSIVE chrF baseline->candidate",
+                  evaluation["fresh_heldout_MASSIVE_author_test"]["scores"]["previous"]["chrf"],
+                  evaluation["fresh_heldout_MASSIVE_author_test"]["scores"]["selected"]["chrf"])
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add experiments/globalvoices_stage4_20261118/saved
+          git diff --cached --stat
+          git commit -m "research: persist full GlobalVoices stage-four training and frozen test evidence [skip ci]"
+          git push origin "HEAD:refs/heads/research/globalvoices-stage4-from-massive3-20261118"
