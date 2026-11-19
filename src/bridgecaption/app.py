@@ -458,24 +458,19 @@ class Application:
         if not self.compact:
             self.summary_label.pack(fill="x", before=self.caption_panel)
             self.status_label.pack(fill="x", side="bottom", before=self.caption_panel)
+        # Tk widgets cannot be repacked into a different parent. Keep the
+        # capture controls in their original row and hide secondary actions.
         self.action_row.pack_forget()
-        if not self.compact:
-            self.action_row.pack(fill="x", pady=(5, 0), after=self.title_row)
-        self.settings_button.config(text="Expand" if self.compact else "Hide settings")
-        # The expanded view retains all existing capture, settings and text tools.
+        self.action_row.pack(fill="x", pady=(2, 0), after=self.title_row)
         self.full_caption_button.pack_forget()
-        self.pin_button.pack_forget()
-        self.pin_button.pack(side="right", padx=(6, 0))
-        self.settings_button.pack_forget()
+        self.settings_button.config(text="Expand" if self.compact else "Hide settings")
         if self.compact:
-            self.settings_button.pack(in_=self.title_row, side="right", padx=(6, 0))
-            self.start_button.pack_forget()
-            self.start_button.pack(in_=self.title_row, side="right", padx=(6, 0))
+            self.settings_button.pack_forget()
+            self.settings_button.pack(side="left", padx=(0, 8))
         else:
-            self.settings_button.pack(in_=self.action_row, side="left")
-            self.start_button.pack_forget()
-            self.start_button.pack(in_=self.action_row, side="left", before=self.settings_button, padx=(0, 8))
-            self.full_caption_button.pack(in_=self.action_row, side="left", padx=(8, 0))
+            self.settings_button.pack_forget()
+            self.settings_button.pack(side="left")
+            self.full_caption_button.pack(side="left", padx=(8, 0))
         width, height = window_size(self.compact)
         sw, sh = self.root.winfo_screenwidth(), self.root.winfo_screenheight()
         minimum_width = 420 if self.compact else 780
