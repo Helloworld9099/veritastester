@@ -137,7 +137,9 @@ def fresh_massive(previous_gv, *, train_n=MASSIVE_REPLAY,
         include_ids=True, train_n=1, dev_n=dev_n, test_n=test_n, seed=seed)
     historical_train = first["train"] + second["train"] + third["train"]
     replay = stage5.pick_replay(
-        historical_train, forbidden=previous_gv + sixth["test"] + sixth["dev"],
+        historical_train,
+        forbidden=(previous_gv + old_rounds["dev"] + old_rounds["test"] +
+                   sixth["test"] + sixth["dev"]),
         count=train_n, seed=seed)
     if (set(sixth["selected_ids"]["test"]) &
             set(old_rounds["selected_ids"]["test"])):
