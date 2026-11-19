@@ -1,0 +1,50 @@
+{
+  "language": "french",
+  "completed_updates": 192,
+  "selected_using_dev_only": "step48",
+  "frozen_source_splits": {
+    "original_Tatoeba_component_train_manifest_sha256": "b176856d8c7a606883fcfa40234de4c4149cd5b80e100bbceb89bca421935f7b",
+    "Tatoeba_train": {
+      "count": 2304,
+      "groups": 2304,
+      "group_sha256": "ea42f481be7707d2070568125103e839a0cf763817482f7478c0c992d4f8c79f",
+      "pairs_sha256": "18104a08a59c12d421044a77aef88401202910ab738747f7fbbe41ca6e45f678"
+    },
+    "Tatoeba_reserved_not_used_for_selection": {
+      "count": 256,
+      "groups": 256,
+      "group_sha256": "6dea11a581ddb69ca71c899eab164e5bb1e1d7b2d10983216a08971426151717",
+      "pairs_sha256": "befd43d753f39249c8ae0848743f5f62b8391e310027ff08c893770fbb9f1f64"
+    },
+    "Tatoeba_dev_n": 256,
+    "MASSIVE_OLD_TRAIN_replay_n": 768,
+    "historical_Tatoeba_quick12000_entire_components_excluded": true,
+    "DiaBLa_144_dialogues_protected_as_FINAL_EXTERNAL_TEST": true,
+    "warm_model_sha256": "fba2bd78958bf0bf8a4c14dc55e601e08663633718c4c9c17f91ef9b52dcfa1c",
+    "credits": "Tatoeba contributors, CC BY 2.0 FR; MASSIVE CC BY 4.0; DiaBLa CC BY-SA 4.0 (test only)",
+    "limits": "Original Marian pretraining overlap unknown; not context-aware."
+  },
+  "fresh_component_disjoint_Tatoeba_diagnostic": {
+    "base": {
+      "n": 256,
+      "chrf": 74.21140120931028,
+      "bleu": 62.50400786144469,
+      "reference_exact_match_fraction_not_adequacy": 0.39453125
+    },
+    "previous": {
+      "n": 256,
+      "chrf": 74.56842068469201,
+      "bleu": 62.71800051936227,
+      "reference_exact_match_fraction_not_adequacy": 0.41796875
+    },
+    "selected": {
+      "n": 256,
+      "chrf": 74.67113348023,
+      "bleu": 63.18060070291521,
+      "reference_exact_match_fraction_not_adequacy": 0.421875
+    }
+  },
+  "untouched_final_DiaBLa_test_evaluated": false,
+  "human_90_percent_adequacy_verified": false,
+  "notes": "New Tatoeba test is disjoint from adaptation data but derives from the publisher TRAIN partition; not a final independent human adequacy assessment. Never use these consumed cases to tune."
+}
