@@ -5,11 +5,21 @@ from functools import lru_cache
 import shutil
 import subprocess
 import threading
+import platform
+import queue
 
 RATE = 16000
 
 def sources():
     """Return (display_name, pulse_source) pairs; monitor devices carry playback audio."""
+    if platform.system() != "Linux":
+        try:
+            import sounddevice as sd
+            return [(f"Microphone: {device['name']}", f"sd:{index}")
+                    for index, device in enumerate(sd.query_devices())
+                    if device["max_input_channels"] > 0]
+        except (ImportError, OSError, ValueError):
+            return []
     if not shutil.which("pactl"):
         return []
     try:
@@ -49,8 +59,23 @@ class AudioCapture:
         self.source, self.seconds = source, seconds
         self.process = None
         self.stopped = threading.Event()
+        self.stream = None
+        self.samples = queue.Queue(maxsize=64)
 
     def start(self):
+        if self.source.startswith("sd:"):
+            import sounddevice as sd
+            index = int(self.source.split(":", 1)[1])
+            def callback(indata, frames, time_info, status):
+                if not self.stopped.is_set():
+                    try:
+                        self.samples.put_nowait(bytes(indata))
+                    except queue.Full:
+                        pass
+            self.stream = sd.RawInputStream(samplerate=RATE, channels=1,
+                                            dtype="int16", device=index, callback=callback)
+            self.stream.start()
+            return self
         if not shutil.which("ffmpeg"):
             raise RuntimeError("Install ffmpeg to capture audio.")
         self.process = subprocess.Popen(
@@ -60,6 +85,18 @@ class AudioCapture:
         return self
 
     def chunks(self):
+        if self.stream is not None:
+            required = int(RATE * self.seconds) * 2
+            pending = bytearray()
+            while not self.stopped.is_set():
+                try:
+                    pending.extend(self.samples.get(timeout=.25))
+                except queue.Empty:
+                    continue
+                while len(pending) >= required:
+                    yield bytes(pending[:required])
+                    del pending[:required]
+            return
         if self.process is None or self.process.stdout is None:
             raise RuntimeError("Capture has not started")
         required = int(RATE * self.seconds) * 2
@@ -77,6 +114,10 @@ class AudioCapture:
 
     def stop(self):
         self.stopped.set()
+        if self.stream is not None:
+            self.stream.stop()
+            self.stream.close()
+            self.stream = None
         if self.process and self.process.poll() is None:
             self.process.terminate()
             try:
