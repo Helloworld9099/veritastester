@@ -1,0 +1,92 @@
+{
+  "experiment": "French-only conversational replay + fresh news",
+  "language": "french",
+  "seed": 202611186,
+  "base_model": "Helsinki-NLP/opus-mt-fr-en",
+  "base_revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+  "warm_adapter_sha256": "fba2bd78958bf0bf8a4c14dc55e601e08663633718c4c9c17f91ef9b52dcfa1c",
+  "corpus_source": "file:///tmp/bridgecaption-stage6-i33al196/train-dev.json",
+  "corpus_sha256": "39e71bef4db99fd7f7b27d046947cfdf18ded3301722316a489d563bb9dd68ca",
+  "attribution": "Tatoeba french-English pairs via ManyThings.org; verify license and attribution before redistribution",
+  "train_rows": 3072,
+  "dev_rows": 256,
+  "unique_pairs_after_filtering": 3328,
+  "warning": "The newly downloaded corpus may overlap earlier research and base pretraining. Development-only results do not establish generalization, production readiness, or translation improvement.",
+  "planned_updates": 192,
+  "learning_rate": 2.5e-05,
+  "selection": "Accept new checkpoint only if dev chrF improves >=0.25 AND dev BLEU does not fall, compared with unchanged prior adapter.",
+  "scores": {
+    "previous": {
+      "chrf": 62.64669930966461,
+      "bleu": 38.863370890544935,
+      "n": 256
+    },
+    "step48": {
+      "chrf": 62.678040190672114,
+      "bleu": 39.00033992728658,
+      "n": 256
+    },
+    "step96": {
+      "chrf": 62.68591847765402,
+      "bleu": 38.90602925499392,
+      "n": 256
+    },
+    "step144": {
+      "chrf": 62.701026970150465,
+      "bleu": 38.89269475979824,
+      "n": 256
+    },
+    "step192": {
+      "chrf": 62.73413310584439,
+      "bleu": 38.762610119217,
+      "n": 256
+    }
+  },
+  "selected": "previous",
+  "completed_updates": 192,
+  "last_step_loss": 1.4133802652359009,
+  "elapsed_seconds": 363.695820901,
+  "stage": 6,
+  "cohorts": {
+    "source": "human-translated GlobalVoices + publisher-partitioned MASSIVE",
+    "globalvoices_source_sha256": "7f5018e2d7aca3bed1e427957bb4a9bcae80e397f2eab4cadd1659d54315da5d",
+    "globalvoices_eligible": 144258,
+    "all_earlier_globalvoices_train_dev_test_units_excluded_from_new_news": true,
+    "massive": {
+      "previous_stage5_test_id_sha256": "b6b0a144740b1e941e8abf166eca4a6877e07301b1a697f483c046695a8ffbdf",
+      "new_frozen_test_ids_sha256": "d6a96af69d3cd80118b9e04ab03491a8c22654c75b78da70ab2ab409137f1fc5",
+      "new_development_ids_sha256": "2dfff4ed06ae543068beb1f725e31ec1e0ac1b92315102d34f232d9ec663a8e5",
+      "n": 256,
+      "no_prior_stage_train_dev_test_id_used_in_test": true,
+      "official_publisher_test_split": "MASSIVE test"
+    },
+    "train": {
+      "total": 3072,
+      "historical_mas_train_replay": 1536,
+      "new_gv": 1536,
+      "sha256": "d857e940ad6c653fa59ce6b8536ef431783fe85c8023b650277967a6d19bfd14"
+    },
+    "dev": {
+      "total": 256,
+      "massive": 128,
+      "globalvoices": 128,
+      "sha256": "f18469e0edab1d2c866be2e8375a20530e5c34d45e3b1f017fc294e20ccb8a4c"
+    },
+    "tests": {
+      "massive": {
+        "n": 256,
+        "sha256": "8f0efda46a73ab38e0460617537a86523c011e0bc07f2dd0037f11f914741a03"
+      },
+      "globalvoices": {
+        "n": 256,
+        "sha256": "491efef803712404b72805936b4de7602457c229b068c7d4eda04eb5575e8201"
+      }
+    },
+    "new_groups_source_and_reference_disjoint": true
+  },
+  "source_credits": [
+    "MASSIVE by AmazonScience, CC BY 4.0",
+    "OPUS GlobalVoices, original article author attribution"
+  ],
+  "limitations": "No context-conditioned Marian model; no human semantic adequacy ratings"
+}
