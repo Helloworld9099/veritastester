@@ -78,9 +78,32 @@ def freeze(rows, revision: str):
     }
 
 
+def flatten_public_dialogues(document):
+    """Read published JSON as DATA, never execute dataset-provided Python."""
+    if not isinstance(document, dict) or not isinstance(document.get("dialogues"), dict):
+        raise ValueError("Missing published DiaBLa dialogues JSON")
+    for name, dialogue in sorted(document["dialogues"].items()):
+        if not isinstance(dialogue, dict) or not isinstance(dialogue.get("utterances"), dict):
+            raise ValueError("Malformed published bilingual dialogue")
+        history = []
+        for identifier, source in dialogue["utterances"].items():
+            if not isinstance(source, dict):
+                raise ValueError("Malformed published bilingual utterance")
+            row = {
+                "id": f"{name}_{identifier}",
+                "orig": source.get("original_text"),
+                "ref": source.get("reference_translation"),
+                "mt": source.get("postprocessed_text"),
+                "utterance_meta": {"lang": source.get("language")},
+                "dialogue_history": list(history),
+            }
+            yield row
+            history.append({"text": source.get("original_text"),
+                            "language": source.get("language")})
+
+
 def main():
-    from datasets import load_dataset
-    from huggingface_hub import HfApi
+    from huggingface_hub import HfApi, hf_hub_download
     info = HfApi().dataset_info(REPO)
     if not isinstance(info.card_data, dict):
         license_value = getattr(info.card_data, "license", None)
@@ -88,9 +111,16 @@ def main():
         license_value = info.card_data.get("license")
     if license_value not in (LICENSE, [LICENSE]):
         raise RuntimeError("Upstream dataset license cannot be verified")
-    rows = load_dataset(REPO, split=SPLIT, revision=info.sha,
-                        trust_remote_code=False)
+    path = Path(hf_hub_download(
+        repo_id=REPO, filename="DiaBLa.json", repo_type="dataset", revision=info.sha))
+    raw = path.read_bytes()
+    if len(raw) > 20 * 1024 * 1024:
+        raise ValueError("Unexpectedly large DiaBLa source JSON")
+    document = json.loads(raw)
+    rows = flatten_public_dialogues(document)
     frozen = freeze(rows, info.sha)
+    frozen["source_json_sha256"] = hashlib.sha256(raw).hexdigest()
+    frozen["source_file"] = "DiaBLa.json"
     print("FROZEN_DIABLA_EXTERNAL_TEST_MANIFEST")
     print(json.dumps(frozen, sort_keys=True, indent=2))
     # This is only a schema/selection inspection. No raw dialogue, old MT
