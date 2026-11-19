@@ -175,7 +175,7 @@ class AzureTranslator:
 
 
 def create_translator(name: str | None = None):
-    name = (name or os.getenv("BRIDGE_TRANSLATOR", "ollama")).lower().strip()
+    name = (name or os.getenv("BRIDGE_TRANSLATOR", "gemini")).lower().strip()
     if name == "ollama":
         return OllamaTranslator()
     if name == "groq":
