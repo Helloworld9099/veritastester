@@ -1,0 +1,118 @@
+name: Train once — Spanish review-directed v2 continuation (then stop)
+
+on:
+  push:
+    branches: [train/es-en-one-final-review-20261120]
+    paths:
+      - .github/workflows/es-en-review-last-round.yml
+      - research/es_en_v2/review_directed_train_once.py
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: spanish-one-last-review-directed-training
+  cancel-in-progress: false
+
+jobs:
+  one_training_round_only:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      PYTHONPATH: ".:src"
+      OMP_NUM_THREADS: "4"
+      MKL_NUM_THREADS: "4"
+      TOKENIZERS_PARALLELISM: "false"
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      BRIDGE_NO_PAID_APIS: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install free CPU-only pinned research requirements
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'huggingface-hub>=0.34,<1.0'
+      - name: Compile and pin original learned checkpoint before work
+        run: |
+          python -m py_compile research/es_en_v2/review_directed_train_once.py
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          p=Path('experiments/es_en_v2_runs/candidate_after_three.safetensors')
+          assert p.is_file()
+          assert hashlib.sha256(p.read_bytes()).hexdigest() == '3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71'
+          print('VERIFIED_EXISTING_SPANISH_LEARNED_WEIGHTS_UNCHANGED')
+          PY
+      - name: Train exactly one bounded 64-step Spanish review-directed continuation
+        run: python -u research/es_en_v2/review_directed_train_once.py
+      - name: Verify completed training, dev-only gates, saved weights and zero human-accuracy claims
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import json,hashlib
+          folder=Path('research/es_en_v2/review_directed_round_20261120')
+          summary=json.loads((folder/'summary.json').read_text())
+          data=json.loads((folder/'dataset_manifest.json').read_text())
+          checks=json.loads((folder/'sha256_manifest.json').read_text())
+          assert summary['status']=='completed_one_real_spanish_continuation_training_round'
+          assert summary['training_updates_completed']==64
+          assert summary['training_examples']==1024
+          assert summary['new_development_examples']==128
+          assert summary['model_weights_restart_from_zero'] is False
+          assert summary['optimizer_state_continued'] is False
+          assert summary['official_final_holdout_never_accessed'] is True
+          assert summary['reviewed_500_examples_not_used_for_training'] is True
+          assert summary['no_human_95_percent_claim'] is True
+          assert summary['production_default_activated'] is False
+          assert summary['paid_spend_usd'] == 0
+          assert summary['french_training_changed'] is False
+          assert data['author_test_split_never_downloaded'] is True
+          assert data['training_split'] == 'official TRAIN'
+          assert data['previous_v2_train_pair_text_excluded'] is True
+          assert data['all_500_reviewed_prompt_text_excluded_from_training'] is True
+          assert data['historical_v2_dev_ids_excluded'] is True
+          assert (folder/'weights'/'candidate_step32.safetensors').exists()
+          assert (folder/'weights'/'candidate_step64.safetensors').exists()
+          assert not (folder/'weights'/'pinned_base').exists()
+          assert len(checks)>=4
+          for row in checks:
+              p=folder/row['path']
+              assert p.exists() and p.stat().st_size==row['bytes']
+              h=hashlib.sha256(p.read_bytes()).hexdigest()
+              assert h==row['sha256'],row['path']
+          orig=Path('experiments/es_en_v2_runs/candidate_after_three.safetensors')
+          assert hashlib.sha256(orig.read_bytes()).hexdigest() == summary['base_checkpoint_sha256']
+          print('ONE_SPANISH_TRAINING_ROUND_VERIFIED',json.dumps({
+            'steps':summary['training_updates_completed'],
+            'selected':summary['selected_for_further_research'],
+            'selected_sha256':summary['selected_sha256'],
+            'dev_only_accepted':summary['dev_only_candidate_accepted'],
+            'chrF_and_BLEU_not_accuracy':summary['dev_scores_are_automatic_similarity_not_accuracy'],
+            'human_95_verified':False,
+          }))
+          PY
+      - name: Preserve final research checkpoint on branch; do not merge or start another round
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/es_en_v2/review_directed_round_20261120
+          git commit -m 'train: preserve exactly one final Spanish feedback-directed 64-step round [skip ci]'
+          git pull --rebase origin train/es-en-one-final-review-20261120
+          git push origin HEAD:refs/heads/train/es-en-one-final-review-20261120
+      - name: Preserve result if branch push was rejected
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bridgecaption-one-final-spanish-training-round
+          path: research/es_en_v2/review_directed_round_20261120/
+          if-no-files-found: warn
+          retention-days: 30
