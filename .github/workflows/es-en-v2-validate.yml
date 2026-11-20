@@ -1,0 +1,35 @@
+name: Validate ES-EN v2 quality and human-review safety
+
+on:
+  push:
+    branches: [train/es-en-v2]
+    paths:
+      - .github/workflows/es-en-v2-validate.yml
+      - research/es_en_v2/**
+      - docs/TRAINING_V2_PHASE0.md
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile v2 training and review tools
+        run: python -m compileall -q research/es_en_v2
+      - name: Run privacy, leakage and evaluation tests
+        run: python -m unittest discover -s research/es_en_v2/tests -p 'test_*.py' -v
+      - name: No noncommercial data added to v2 approved source manifest
+        run: |
+          python - <<'PY'
+          from research.es_en_v2.quality import ALLOWED_LICENSES
+          assert 'CC-BY-NC-4.0' not in ALLOWED_LICENSES
+          assert 'CC-BY-4.0' in ALLOWED_LICENSES
+          print("LICENSE_GATE_CHECKED", sorted(ALLOWED_LICENSES))
+          PY
