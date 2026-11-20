@@ -195,7 +195,7 @@ def group_split(video_id: str) -> str:
     return "train" if bucket < 82 else ("dev" if bucket < 92 else "test")
 
 
-def select_balanced(rows: list[dict], size: int, *, split: str) -> list[dict]:
+def select_balanced(rows: list[dict], size: int, *, split: str, forbidden=()) -> list[dict]:
     """Distinct video groups first, unique Spanish and English surface across picks."""
     groups: dict[str, list[dict]] = {}
     for row in rows:
@@ -205,13 +205,15 @@ def select_balanced(rows: list[dict], size: int, *, split: str) -> list[dict]:
         groups[vid].sort(key=lambda r: sha_text(str(SEED) + str(r["cue_start"]) +
                                                      r["source"] + r["reference"]))
     chosen, used_src, used_ref = [], set(), set()
+    blocked_src = {norm(r["source"]) for r in forbidden}
+    blocked_ref = {norm(r["reference"]) for r in forbidden}
     for index in range(max(map(len, groups.values()), default=0)):
         for vid in ordered:
             if index >= len(groups[vid]):
                 continue
             row = groups[vid][index]
             s, e = norm(row["source"]), norm(row["reference"])
-            if s in used_src or e in used_ref:
+            if s in used_src or e in used_ref or s in blocked_src or e in blocked_ref:
                 continue
             used_src.add(s)
             used_ref.add(e)
@@ -250,14 +252,15 @@ def make_cohorts():
             stats["videos_with_matching_cues"] += 1
             stats["aligned_candidates"] += len(aligned)
             all_rows.extend(aligned)
+    print("SPANISH_ALIGNMENT_AUDIT", json.dumps(stats), flush=True)
     if stats["videos_with_matching_cues"] < 120 or stats["aligned_candidates"] < 5000:
         raise RuntimeError("Insufficient trustworthy SRT alignment for training: " + json.dumps(stats))
     split_rows = {key: [r for r in all_rows if group_split(r["video_id"]) == key]
                   for key in ("train", "dev", "test")}
     # Select ALL splits before a model can access even development references.
     test = select_balanced(split_rows["test"], HELDOUT_N, split="test")
-    dev = select_balanced(split_rows["dev"], DEV_N, split="dev")
-    train = select_balanced(split_rows["train"], TRAIN_DIALOGUE, split="train")
+    dev = select_balanced(split_rows["dev"], DEV_N, split="dev", forbidden=test)
+    train = select_balanced(split_rows["train"], TRAIN_DIALOGUE, split="train", forbidden=test+dev)
     assert_video_and_text_separation(("heldout", test), ("development", dev), ("train", train))
 
     en_us = massive.fetch_multipart("en-US")
@@ -395,5 +398,24 @@ def run(output: Path) -> None:
 
 if __name__ == "__main__":
     cli = argparse.ArgumentParser(description=__doc__)
-    cli.add_argument("--output-dir", required=True, type=Path)
-    run(cli.parse_args().output_dir.resolve())
+    cli.add_argument("--output-dir", required=False, type=Path)
+    cli.add_argument("--inspect-alignment", action="store_true", help="Audit source alignment only; do not train")
+    opts = cli.parse_args()
+    if opts.inspect_alignment:
+        records, files = download_records()
+        counts = {"source_records": len(records), "srt_es_records": 0, "srt_en_records": 0,
+                  "paired_videos": 0, "aligned_cues": 0, "spanish_cues": 0, "english_cues": 0}
+        for record in records:
+            es, en = parse_srt(record.get("srt_es")), parse_srt(record.get("srt_en"))
+            counts["srt_es_records"] += bool(es)
+            counts["srt_en_records"] += bool(en)
+            counts["spanish_cues"] += len(es)
+            counts["english_cues"] += len(en)
+            matches = align_video(record["video_id"], es, en)
+            counts["paired_videos"] += bool(matches)
+            counts["aligned_cues"] += len(matches)
+        print("SPANISH_ALIGNMENT_INSPECTION", json.dumps({"counts": counts, "source_files": files}), flush=True)
+    else:
+        if opts.output_dir is None:
+            cli.error("--output-dir is required without --inspect-alignment")
+        run(opts.output_dir.resolve())
