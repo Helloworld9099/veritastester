@@ -1,0 +1,53 @@
+name: TRAIN French WMT24 contextual stage-two on unused real conversation turns
+on:
+  push:
+    branches: [research/wmt24-context-stage2-new-turns-20261119]
+    paths:
+      - .github/workflows/train-wmt24-context-stage2.yml
+      - experiments/wmt24_context_stage2_20261119/**
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: wmt24-context-stage-two-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  train:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      HF_HUB_DISABLE_TELEMETRY: '1'
+      TOKENIZERS_PARALLELISM: 'false'
+      OMP_NUM_THREADS: '4'
+      MKL_NUM_THREADS: '4'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install free CPU-only Marian translation and LoRA research dependencies
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'huggingface-hub>=0.34,<1.0' 'datasets==2.21.0'
+      - name: Verify new WMT24 cohort excludes all prior training and validation utterances
+        run: |
+          python -m compileall -q experiments/wmt24_context_stage2_20261119
+          python -m unittest discover -s experiments/wmt24_context_stage2_20261119/tests -p 'test_*.py' -v
+      - name: ACTUALLY TRAIN French LoRA 96 updates from saved stage-one context model
+        run: |
+          python -u experiments/wmt24_context_stage2_20261119/train_stage2.py \
+            --output-dir "$RUNNER_TEMP/wmt24-context2"
+      - name: Retain only noncommercial research adapters and aggregate evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wmt24-context-french-stage-two-research-NC
+          path: |
+            ${{ runner.temp }}/wmt24-context2/report.json
+            ${{ runner.temp }}/wmt24-context2/stage2_evaluation.json
+            ${{ runner.temp }}/wmt24-context2/candidate_step*.safetensors
+            ${{ runner.temp }}/wmt24-context2/candidate_selected.safetensors
+          if-no-files-found: warn
+          retention-days: 30
