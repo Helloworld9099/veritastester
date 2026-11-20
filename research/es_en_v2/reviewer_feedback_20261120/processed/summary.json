@@ -1,0 +1,74 @@
+{
+  "source_status": "reviewer_reported_dev_issues_not_formal_complete_labels",
+  "input_model_responses": 500,
+  "distinct_rows_flagged_for_adjudication": 178,
+  "unflagged_not_assumed_correct": 322,
+  "by_direction_distinct_flagged": {
+    "en-es": 106,
+    "es-en": 72
+  },
+  "category_flag_counts": {
+    "critical_meaning_or_role": 21,
+    "omitted_current_utterance_content": 47,
+    "repetition_loop": 3,
+    "idiom_or_slang_interpretation": 36,
+    "wrong_lexical_sense_or_action": 49,
+    "names_brands_entities": 11,
+    "wrong_speaker_gender_person": 12,
+    "sentence_type_pragmatics": 5,
+    "punctuation_spelling": 20,
+    "register_formality": 6,
+    "grammar_fluency_or_untranslated": 18
+  },
+  "category_direction_counts": {
+    "punctuation_spelling": {
+      "en-es": 20
+    },
+    "register_formality": {
+      "en-es": 6
+    },
+    "omitted_current_utterance_content": {
+      "en-es": 28,
+      "es-en": 19
+    },
+    "grammar_fluency_or_untranslated": {
+      "en-es": 14,
+      "es-en": 4
+    },
+    "wrong_lexical_sense_or_action": {
+      "en-es": 22,
+      "es-en": 27
+    },
+    "sentence_type_pragmatics": {
+      "es-en": 2,
+      "en-es": 3
+    },
+    "idiom_or_slang_interpretation": {
+      "en-es": 20,
+      "es-en": 16
+    },
+    "names_brands_entities": {
+      "es-en": 6,
+      "en-es": 5
+    },
+    "wrong_speaker_gender_person": {
+      "en-es": 5,
+      "es-en": 7
+    },
+    "critical_meaning_or_role": {
+      "es-en": 14,
+      "en-es": 7
+    },
+    "repetition_loop": {
+      "es-en": 3
+    }
+  },
+  "requires_independent_adjudication": true,
+  "per_row_pass_fail_labels_collected": 0,
+  "independently_evaluated_95_percent": false,
+  "final_holdout_consumed": false,
+  "training_examples_added": 0,
+  "note": "Numbers are issue flags, not independent accuracy rates. Categories overlap, may include subjective translations and source errors. No examples are corrected.",
+  "source_csv_sha256": "2f789b8b69ea79ad19d64a8eeb71c3b5ccccbb03ef5494d6a336a4986b7622f2",
+  "reviewer_flagged_csv_sha256": "7761dfd5bcda65f4e7e85f9c77d64d5e6e097da9b4fb345177155b2cc084c52f"
+}
