@@ -1,0 +1,392 @@
+{
+  "archived_noncommercial": [
+    {
+      "commit": "ca755aec8f7111f03145e18ef9948cd6127aaec0",
+      "direction": "fr-en",
+      "path": "experiments/wmt24_context_20261119/saved/adapter_selected.safetensors",
+      "reason": "WMT24 Chat CC BY-NC 4.0. Do not use for commercial routing, fusion, distillation or adapter ancestry.",
+      "repository": "Helloworld9099/veritastester",
+      "routable": false,
+      "sha256": "c858eb0a369baccbc93c5289b700886df896e15535cdf0222354e25f415a8b44"
+    },
+    {
+      "commit": "ca755aec8f7111f03145e18ef9948cd6127aaec0",
+      "direction": "es-en",
+      "path": "experiments/spanish_fifteen_rounds_20261120/saved/champion_adapter.safetensors",
+      "reason": "Previous noncommercial subtitle corpus. Research archive only. Not used in compliant adapter ancestry.",
+      "repository": "Helloworld9099/veritastester",
+      "routable": false,
+      "sha256": "557838ab7823d3f7a836b5f3ccfe9a2b585b2b5733ec91a219df0e3967a49954"
+    }
+  ],
+  "cache_max_loaded_models": 1,
+  "checkpoints": {
+    "es-en-current": {
+      "bytes": 1187800,
+      "commit": "ca755aec8f7111f03145e18ef9948cd6127aaec0",
+      "compatibility_sha256": "7c0a8312becd789e4880daabbadc6925df546ec4c205e7babb73f45fead69e67",
+      "format": "safetensors",
+      "model_id": "es-en",
+      "path": "experiments/es_en_v2_runs/candidate_after_three.safetensors",
+      "repository": "Helloworld9099/veritastester",
+      "role": "current",
+      "sha256": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71"
+    },
+    "es-en-rollback": {
+      "bytes": 1187800,
+      "commit": "ca755aec8f7111f03145e18ef9948cd6127aaec0",
+      "compatibility_sha256": "7c0a8312becd789e4880daabbadc6925df546ec4c205e7babb73f45fead69e67",
+      "format": "safetensors",
+      "model_id": "es-en",
+      "path": "experiments/massive_stage3_20261117/saved/spanish/adapter_selected.safetensors",
+      "repository": "Helloworld9099/veritastester",
+      "role": "rollback",
+      "sha256": "14dddb5040afe49f8f05a1bfba3458d3321524b53b0fc05b359ad41a1ab75a4b"
+    },
+    "fr-en-current": {
+      "bytes": 1187800,
+      "commit": "ca755aec8f7111f03145e18ef9948cd6127aaec0",
+      "compatibility_sha256": "67edee9c3646d0b0c81e7ca90663602e1023204204bd8f526f9f6c6797b3450f",
+      "format": "safetensors",
+      "model_id": "fr-en",
+      "path": "experiments/balanced_stage5_20261118/saved/french/adapter_selected.safetensors",
+      "repository": "Helloworld9099/veritastester",
+      "role": "current",
+      "sha256": "fba2bd78958bf0bf8a4c14dc55e601e08663633718c4c9c17f91ef9b52dcfa1c"
+    },
+    "fr-en-rollback": {
+      "bytes": 1187800,
+      "commit": "ca755aec8f7111f03145e18ef9948cd6127aaec0",
+      "compatibility_sha256": "67edee9c3646d0b0c81e7ca90663602e1023204204bd8f526f9f6c6797b3450f",
+      "format": "safetensors",
+      "model_id": "fr-en",
+      "path": "experiments/massive_stage3_20261117/saved/french/adapter_selected.safetensors",
+      "repository": "Helloworld9099/veritastester",
+      "role": "rollback",
+      "sha256": "072f7f5d2d90b26991c5c62bf8ddb40f686f65e66be52717e7b121d507008ad9"
+    }
+  },
+  "inactive_private": {
+    "direction": "cmn-en",
+    "routable": false,
+    "status": "private_noncommercial_inactive"
+  },
+  "languages": {
+    "cmn": {
+      "code_switching": "unsupported_no_language_guess",
+      "dialects": [
+        "cmn-Hans",
+        "cmn-Hant"
+      ],
+      "name": "Mandarin",
+      "normalization": "preserve_current_case_punctuation_collapse_whitespace",
+      "script": "Hans",
+      "tokenization": "not_available",
+      "writing_direction": "ltr"
+    },
+    "en": {
+      "code_switching": "unsupported_no_language_guess",
+      "dialects": [
+        "en-US",
+        "en-GB"
+      ],
+      "name": "English",
+      "normalization": "preserve_current_case_punctuation_collapse_whitespace",
+      "script": "Latn",
+      "tokenization": "route_specific_sentencepiece",
+      "writing_direction": "ltr"
+    },
+    "es": {
+      "code_switching": "unsupported_no_language_guess",
+      "dialects": [
+        "es-ES",
+        "es-MX"
+      ],
+      "name": "Spanish",
+      "normalization": "preserve_current_case_punctuation_collapse_whitespace",
+      "script": "Latn",
+      "tokenization": "route_specific_sentencepiece",
+      "writing_direction": "ltr"
+    },
+    "fr": {
+      "code_switching": "unsupported_no_language_guess",
+      "dialects": [
+        "fr-FR",
+        "fr-CA"
+      ],
+      "name": "French",
+      "normalization": "preserve_current_case_punctuation_collapse_whitespace",
+      "script": "Latn",
+      "tokenization": "route_specific_sentencepiece",
+      "writing_direction": "ltr"
+    }
+  },
+  "models": [
+    {
+      "active_adapter": null,
+      "adapter_protocol": null,
+      "base": {
+        "architecture": "marian",
+        "files": {
+          "config.json": {
+            "file": "config.json",
+            "sha256": "666ad3c2943674b6a789e311d221e44ec23e27f1bd9727930754bf773ec8e464"
+          },
+          "generation_config.json": {
+            "file": "generation_config.json",
+            "sha256": "837839ed0534a27084f9b980fc33f47729052dd89cb26cca7ac830765ed30e49"
+          },
+          "pytorch_model.bin": {
+            "file": "pytorch_model.bin",
+            "sha256": "befce0f620e8e63f83bbb7f0818eb51d541cba28057a7cc14b00466d85c4994c"
+          },
+          "source.spm": {
+            "file": "source.spm",
+            "sha256": "4dd547c24816a335e7b0b2e63376a8f1b3cbfc671eda5ab808dd44fdadaa8791"
+          },
+          "target.spm": {
+            "file": "target.spm",
+            "sha256": "e236ee6d866b635c0142114f8647f39831f9d92534aa2aad75c942f6a78ad0e3"
+          },
+          "tokenizer_config.json": {
+            "file": "tokenizer_config.json",
+            "sha256": "9859e3f8f73e2f50ab3e5cc2de432645347432956df4772d33209a346dd97f3b"
+          },
+          "vocab.json": {
+            "file": "vocab.json",
+            "sha256": "257f346d7a6b2ecceafcca8ba05648ce2fd68dfaf105fb0e913dca7198f3f6d5"
+          }
+        },
+        "model": "Helsinki-NLP/opus-mt-en-es",
+        "revision": "5bc4493d463cf000c1f0b50f8d56886a392ed4ab",
+        "use_safetensors": false
+      },
+      "compatibility_sha256": "aed492d2f6c5016d2d80c666e9b036b3425e8e7076dc99a7f432f75e3e494d9f",
+      "human_meaning_verified": false,
+      "model_id": "en-es",
+      "noncommercial_data_in_training": false,
+      "rights_review_status": "research_only_base_provenance_audit",
+      "rollback_adapter": null,
+      "source": "en",
+      "supports_context": false,
+      "target": "es",
+      "training_origin": [
+        "Original pretrained Helsinki-NLP Marian OPUS-MT baseline"
+      ]
+    },
+    {
+      "active_adapter": "es-en-current",
+      "adapter_protocol": {
+        "alpha": 16,
+        "dtype": "F32",
+        "projection_size": 512,
+        "protocol_sha256": "d42b1b2685ba05b7413e720cd8b0d6c1d267be37976c47835daf6c3a0a4c1b93",
+        "rank": 8,
+        "target_modules": [
+          "model.decoder.layers.0.encoder_attn.q_proj",
+          "model.decoder.layers.0.encoder_attn.v_proj",
+          "model.decoder.layers.0.self_attn.q_proj",
+          "model.decoder.layers.0.self_attn.v_proj",
+          "model.decoder.layers.1.encoder_attn.q_proj",
+          "model.decoder.layers.1.encoder_attn.v_proj",
+          "model.decoder.layers.1.self_attn.q_proj",
+          "model.decoder.layers.1.self_attn.v_proj",
+          "model.decoder.layers.2.encoder_attn.q_proj",
+          "model.decoder.layers.2.encoder_attn.v_proj",
+          "model.decoder.layers.2.self_attn.q_proj",
+          "model.decoder.layers.2.self_attn.v_proj",
+          "model.decoder.layers.3.encoder_attn.q_proj",
+          "model.decoder.layers.3.encoder_attn.v_proj",
+          "model.decoder.layers.3.self_attn.q_proj",
+          "model.decoder.layers.3.self_attn.v_proj",
+          "model.decoder.layers.4.encoder_attn.q_proj",
+          "model.decoder.layers.4.encoder_attn.v_proj",
+          "model.decoder.layers.4.self_attn.q_proj",
+          "model.decoder.layers.4.self_attn.v_proj",
+          "model.decoder.layers.5.encoder_attn.q_proj",
+          "model.decoder.layers.5.encoder_attn.v_proj",
+          "model.decoder.layers.5.self_attn.q_proj",
+          "model.decoder.layers.5.self_attn.v_proj",
+          "model.encoder.layers.0.self_attn.q_proj",
+          "model.encoder.layers.0.self_attn.v_proj",
+          "model.encoder.layers.1.self_attn.q_proj",
+          "model.encoder.layers.1.self_attn.v_proj",
+          "model.encoder.layers.2.self_attn.q_proj",
+          "model.encoder.layers.2.self_attn.v_proj",
+          "model.encoder.layers.3.self_attn.q_proj",
+          "model.encoder.layers.3.self_attn.v_proj",
+          "model.encoder.layers.4.self_attn.q_proj",
+          "model.encoder.layers.4.self_attn.v_proj",
+          "model.encoder.layers.5.self_attn.q_proj",
+          "model.encoder.layers.5.self_attn.v_proj"
+        ],
+        "type": "lora_attention_projection"
+      },
+      "base": {
+        "architecture": "marian",
+        "files": {
+          "README.md": {
+            "file": "README.md",
+            "sha256": "d67ee971854b4c166da1cc281b58fbdc8596e0412441ef71fb0d422263230e0a",
+            "size_bytes": 2427
+          },
+          "config.json": {
+            "file": "config.json",
+            "sha256": "374443eacf8986c21386503e2fcd52eae6952ac09c87fd36695f5c12259a4cd1",
+            "size_bytes": 1438
+          },
+          "pytorch_model.bin": {
+            "file": "pytorch_model.bin",
+            "sha256": "586a4e69e0804459ac7c176a5dc76852652100d9af1ee0db796de719899a5deb",
+            "size_bytes": 312087523
+          },
+          "source.spm": {
+            "file": "source.spm",
+            "sha256": "e236ee6d866b635c0142114f8647f39831f9d92534aa2aad75c942f6a78ad0e3",
+            "size_bytes": 825924
+          },
+          "target.spm": {
+            "file": "target.spm",
+            "sha256": "4dd547c24816a335e7b0b2e63376a8f1b3cbfc671eda5ab808dd44fdadaa8791",
+            "size_bytes": 801636
+          },
+          "tokenizer_config.json": {
+            "file": "tokenizer_config.json",
+            "sha256": "dd009536f1cd954180a3004be20e9963eaf3d68b485d062ea1b90d3b9ded2bc5",
+            "size_bytes": 44
+          },
+          "vocab.json": {
+            "file": "vocab.json",
+            "sha256": "257f346d7a6b2ecceafcca8ba05648ce2fd68dfaf105fb0e913dca7198f3f6d5",
+            "size_bytes": 1590040
+          }
+        },
+        "model": "Helsinki-NLP/opus-mt-es-en",
+        "revision": "c96e2c5399ebfae4fc43d9669556b9afa74bb69d",
+        "use_safetensors": false
+      },
+      "compatibility_sha256": "7c0a8312becd789e4880daabbadc6925df546ec4c205e7babb73f45fead69e67",
+      "human_meaning_verified": false,
+      "model_id": "es-en",
+      "noncommercial_data_in_training": false,
+      "rights_review_status": "research_only_pending_europarl_commercial_provenance_review",
+      "rollback_adapter": "es-en-rollback",
+      "source": "es",
+      "supports_context": false,
+      "target": "en",
+      "training_origin": [
+        "Byte-linked historical Europarl continuation (55d4\u2026); source release permissions unresolved",
+        "Amazon MASSIVE CC BY 4.0 (Stage 3 and v2)",
+        "Prior draft cited Tatoeba; that description conflicts with the byte-linked training report"
+      ]
+    },
+    {
+      "active_adapter": "fr-en-current",
+      "adapter_protocol": {
+        "alpha": 16,
+        "dtype": "F32",
+        "projection_size": 512,
+        "protocol_sha256": "a6e656326bf6b1b880bbde74b6728024d1ad2b543518bd63d2139718b051772a",
+        "rank": 8,
+        "target_modules": [
+          "model.decoder.layers.0.encoder_attn.q_proj",
+          "model.decoder.layers.0.encoder_attn.v_proj",
+          "model.decoder.layers.0.self_attn.q_proj",
+          "model.decoder.layers.0.self_attn.v_proj",
+          "model.decoder.layers.1.encoder_attn.q_proj",
+          "model.decoder.layers.1.encoder_attn.v_proj",
+          "model.decoder.layers.1.self_attn.q_proj",
+          "model.decoder.layers.1.self_attn.v_proj",
+          "model.decoder.layers.2.encoder_attn.q_proj",
+          "model.decoder.layers.2.encoder_attn.v_proj",
+          "model.decoder.layers.2.self_attn.q_proj",
+          "model.decoder.layers.2.self_attn.v_proj",
+          "model.decoder.layers.3.encoder_attn.q_proj",
+          "model.decoder.layers.3.encoder_attn.v_proj",
+          "model.decoder.layers.3.self_attn.q_proj",
+          "model.decoder.layers.3.self_attn.v_proj",
+          "model.decoder.layers.4.encoder_attn.q_proj",
+          "model.decoder.layers.4.encoder_attn.v_proj",
+          "model.decoder.layers.4.self_attn.q_proj",
+          "model.decoder.layers.4.self_attn.v_proj",
+          "model.decoder.layers.5.encoder_attn.q_proj",
+          "model.decoder.layers.5.encoder_attn.v_proj",
+          "model.decoder.layers.5.self_attn.q_proj",
+          "model.decoder.layers.5.self_attn.v_proj",
+          "model.encoder.layers.0.self_attn.q_proj",
+          "model.encoder.layers.0.self_attn.v_proj",
+          "model.encoder.layers.1.self_attn.q_proj",
+          "model.encoder.layers.1.self_attn.v_proj",
+          "model.encoder.layers.2.self_attn.q_proj",
+          "model.encoder.layers.2.self_attn.v_proj",
+          "model.encoder.layers.3.self_attn.q_proj",
+          "model.encoder.layers.3.self_attn.v_proj",
+          "model.encoder.layers.4.self_attn.q_proj",
+          "model.encoder.layers.4.self_attn.v_proj",
+          "model.encoder.layers.5.self_attn.q_proj",
+          "model.encoder.layers.5.self_attn.v_proj"
+        ],
+        "type": "lora_attention_projection"
+      },
+      "base": {
+        "architecture": "marian",
+        "files": {
+          "README.md": {
+            "file": "README.md",
+            "sha256": "a923263e9691f40ce7c9afe5d59f6296051439ae7776a158d18d57258be48195",
+            "size_bytes": 1250
+          },
+          "config.json": {
+            "file": "config.json",
+            "sha256": "b3be13d046d9899d7aab8cf4ed624d9a79f5776038ba793f6b4d2ce3e02192f7",
+            "size_bytes": 1416
+          },
+          "model.safetensors": {
+            "file": "model.safetensors",
+            "sha256": "6e3837f34b903802c3d0d670362b997cee6e87584a1108eb3fa89e4625e4424a",
+            "size_bytes": 300803608
+          },
+          "source.spm": {
+            "file": "source.spm",
+            "sha256": "78d0e717c77053f1c4b856d8661d9cb87c64f083a35418c087b9146300e4f585",
+            "size_bytes": 802397
+          },
+          "target.spm": {
+            "file": "target.spm",
+            "sha256": "173e9f493a668fe396d599e28d414a201193094e6ffd7a4678e5aab0f6d3d838",
+            "size_bytes": 778395
+          },
+          "tokenizer_config.json": {
+            "file": "tokenizer_config.json",
+            "sha256": "47de9ce87378593016432f8dc657202c03913ab3ce0c15d7f78d51edfc3ff9a3",
+            "size_bytes": 42
+          },
+          "vocab.json": {
+            "file": "vocab.json",
+            "sha256": "945c604346ce15ce4aff9001001e7f925e336d942c4087017f191871162cbdc4",
+            "size_bytes": 1339166
+          }
+        },
+        "model": "Helsinki-NLP/opus-mt-fr-en",
+        "revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+        "use_safetensors": true
+      },
+      "compatibility_sha256": "67edee9c3646d0b0c81e7ca90663602e1023204204bd8f526f9f6c6797b3450f",
+      "human_meaning_verified": false,
+      "model_id": "fr-en",
+      "noncommercial_data_in_training": false,
+      "rights_review_status": "research_only_pending_global_voices_rights_and_attribution_audit",
+      "rollback_adapter": "fr-en-rollback",
+      "source": "fr",
+      "supports_context": false,
+      "target": "en",
+      "training_origin": [
+        "Tatoeba/ManyThings CC BY with attribution",
+        "Amazon MASSIVE CC BY 4.0",
+        "Global Voices CC BY subject to article-level attribution audit"
+      ]
+    }
+  ],
+  "schema_version": 2,
+  "status": "research_only_opt_in"
+}

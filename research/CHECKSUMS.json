@@ -520,6 +520,46 @@
     "continuation_final_audit_20261116/README.md": {
       "bytes": 410,
       "sha256": "b9335e10ac9498c645645f5048e5233b8099e18242561548dcd8a25289ccdd64"
+    },
+    "unified_models/README.md": {
+      "bytes": 4135,
+      "sha256": "29dab174a522382f61e8dfbd9dc72630b7faacc7c7b06c8c6eff704b3303b7a4"
+    },
+    "unified_models/__init__.py": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "unified_models/checkpoint_inventory.json": {
+      "bytes": 64498,
+      "sha256": "494b074e35cf4e6142a8bd01518170ae4c89117bd4b6cc120189abb5a89e1119"
+    },
+    "unified_models/checkpoint_inventory.py": {
+      "bytes": 10829,
+      "sha256": "0d80bf52cc4217b427f63610f37d6cb8a92568c754b22f72b43b3ef65c733d24"
+    },
+    "unified_models/datasets.py": {
+      "bytes": 28862,
+      "sha256": "92da08c05a42c3699af1198da4ce04d47b06314ba45d9e835a19ce8fab4fc1f1"
+    },
+    "unified_models/inference_safety.py": {
+      "bytes": 2921,
+      "sha256": "73d5f45738ee089f03c686c9cccb960d052bb4c8eca9ace39db8be0cc6bfb07f"
+    },
+    "unified_models/registry.json": {
+      "bytes": 15990,
+      "sha256": "f5b47b4e79b1efdd2a7e1bdd1c6ef4f7d091f5584156a7a9b7a45b6980cbbf06"
+    },
+    "unified_models/registry.py": {
+      "bytes": 19470,
+      "sha256": "b1ccb1dfb862010c8d8e7ff0f1c8fdc46f47c47945750bfbb0df4d55ad70c50c"
+    },
+    "unified_models/runtime.py": {
+      "bytes": 9637,
+      "sha256": "2dcc842e76de5ca700cc09bb8ac5f29b1269a1d50aa2784fc751620ea743caeb"
+    },
+    "unified_models/verify_baseline.py": {
+      "bytes": 14826,
+      "sha256": "0e8f7620dc3dfa18d9919f74774567ad32278328e3fdac0bc3d169e04ebcc834"
     }
   }
 }
