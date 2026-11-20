@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "AI-powered, context-aware Linux live-translation overlay"
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = ["faster-whisper>=1.1,<2", "numpy>=1.24", "python-dotenv>=1.0"]
+dependencies = ["faster-whisper>=1.1,<2", "numpy>=1.24", "python-dotenv>=1.0", "cryptography>=43,<47", "sounddevice>=0.5,<1"]
 
 [project.optional-dependencies]
 eval = ["sacrebleu>=2", "jiwer>=3"]

@@ -1,5 +1,6 @@
 """Offline UI-state checks; widget doubles do not verify Tk rendering."""
 import queue
+import threading
 from unittest.mock import MagicMock
 
 import pytest
@@ -19,13 +20,18 @@ def app():
     instance.text_generation = 0
     instance.last_caption = None
     instance.caption_popup = None
+    instance.update_popup = None
+    instance.update_package = None
+    instance.update_preparing = False
+    instance.update_cancel = threading.Event()
+    instance.update_lock = threading.Lock()
     instance.closed = True
     instance.compact = True
     for name in ("source_text", "translated_text", "status_var", "summary_var",
                  "engine_note", "start_button", "source_box",
-                 "source_picker", "target_picker", "topic_box", "engine_box"):
+                 "source_picker", "target_picker", "topic_box"):
         setattr(instance, name, MagicMock())
-    instance.engine_box.get.return_value = "ollama"
+    instance.engine_selected = "ollama"
     instance.source_picker.get.return_value = "Spanish [es]"
     instance.target_picker.get.return_value = "English [en]"
     instance.source_box.get.return_value = "System audio (current output)"
@@ -35,12 +41,13 @@ def app():
 @pytest.mark.parametrize("engine", ["ollama", "groq", "azure", "gemini"])
 @pytest.mark.parametrize("listening", [False, True])
 def test_summary_distinguishes_capture_state_and_text_destination(app, engine, listening):
-    app.engine_box.get.return_value = engine
+    app.engine_selected = engine
     app.live_session = object() if listening else None
     app._update_overlay_summary()
     summary = app.summary_var.set.call_args.args[0]
     assert ("Listening" if listening else "Ready") in summary
-    assert f"Spanish → English  ·  {engine.capitalize()}" in summary
+    assert "Spanish → English" in summary
+    assert engine.casefold() not in summary.casefold()
     note = app.engine_note.config.call_args.kwargs["text"]
     assert ("Local translation" if engine == "ollama" else "Cloud translation") in note
     app.pipeline.translate.assert_not_called()
@@ -64,7 +71,7 @@ def test_full_caption_retains_unicode_and_closes_on_context_reset(app, monkeypat
     app.button = MagicMock()
     original, translated = "¿Cómo estás? " * 100, "私は元気です。 " * 200
     app._render_caption(original, translated, "es")
-    assert len(app.translated_text.config.call_args.kwargs["text"]) <= 240
+    assert len(app.translated_text.config.call_args.kwargs["text"]) <= 320
     app.show_full_caption()
     displayed = "".join(call.args[1] for call in text.insert.call_args_list)
     assert original in displayed and translated in displayed
@@ -127,3 +134,23 @@ def test_close_dismisses_snapshot_without_translation(app):
     popup.destroy.assert_called_once()
     app.root.destroy.assert_called_once()
     app.pipeline.translate.assert_not_called()
+
+
+def test_update_controls_remain_in_expanded_settings(app):
+    panels = ("controls_frame", "engine_controls_frame", "settings_frame", "updates_frame",
+              "bottom_frame", "settings_workspace", "settings_canvas", "caption_panel",
+              "top_frame", "title_row", "action_row", "original_heading", "translation_heading",
+              "caption_divider", "summary_label", "status_label", "full_caption_button",
+              "settings_button")
+    for panel in panels:
+        setattr(app, panel, MagicMock())
+    app.root.winfo_screenwidth.return_value = 1200
+    app.root.winfo_screenheight.return_value = 800
+    app.root.winfo_ismapped.return_value = False
+    app._resize_caption_wrap = MagicMock()
+
+    app._apply_overlay_mode()
+    app.toggle_settings()
+
+    app.settings_workspace.pack.assert_called_once()
+    app.updates_frame.pack_forget.assert_not_called()

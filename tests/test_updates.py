@@ -1,0 +1,124 @@
+import pytest
+
+from bridgecaption.updates import current_version, version_tuple, find_update
+
+
+def test_version_comparison():
+    assert version_tuple("v0.2.0") > version_tuple("0.1.9")
+    assert version_tuple("1.10.0") > version_tuple("1.9.9")
+
+
+@pytest.mark.parametrize("invalid", ["", "v1.2.beta", "1.2.3-rc1", "../bad", "1.2"])
+def test_reject_invalid_versions(invalid):
+    with pytest.raises(ValueError):
+        version_tuple(invalid)
+
+
+def test_reject_insecure_endpoint(monkeypatch):
+    monkeypatch.setenv("BRIDGECAPTION_UPDATE_ENDPOINT", "http://example.com/latest")
+    with pytest.raises(ValueError, match="HTTPS"):
+        find_update("0.1.0")
+
+
+def test_current_version_is_valid():
+    assert version_tuple(current_version())
+
+
+def test_platform_aliases():
+    from bridgecaption.updates import platform_key
+    assert platform_key("Windows", "AMD64") == "windows-x86_64"
+    assert platform_key("Darwin", "aarch64") == "darwin-arm64"
+
+
+def test_signed_manifest_and_verified_download(monkeypatch):
+    import base64
+    import hashlib
+    import io
+    import json
+    from cryptography.exceptions import InvalidSignature
+    from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+    from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
+    from bridgecaption import updates
+
+    content = b"native-package"
+    key = Ed25519PrivateKey.generate()
+    monkeypatch.setattr(updates, "UPDATE_PUBLIC_KEY",
+                        base64.b64encode(key.public_key().public_bytes(Encoding.Raw, PublicFormat.Raw)).decode())
+    monkeypatch.setattr(updates, "platform_key", lambda: "windows-x86_64")
+    payload = {"version": "0.2.0", "artifacts": {"windows-x86_64": {
+        "url": "https://example.com/artifact", "sha256": hashlib.sha256(content).hexdigest(),
+        "size": len(content)}}}
+    data = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode()
+    document = {"payload": payload, "signature": base64.b64encode(key.sign(data)).decode()}
+    monkeypatch.setattr(updates, "urlopen", lambda request, timeout: io.BytesIO(json.dumps(document).encode()))
+    update = find_update("0.1.0")
+    assert update is not None and update.platform == "windows-x86_64"
+    assert find_update("0.2.0") is None
+    payload["version"] = "0.3.0"
+    with pytest.raises(InvalidSignature):
+        find_update("0.1.0")
+    monkeypatch.setattr(updates, "urlopen", lambda request, timeout: io.BytesIO(content))
+    path = updates.download_update(update, lambda done, total: None)
+    try:
+        assert path.suffix == ".exe"
+        assert path.read_bytes() == content
+    finally:
+        updates.discard_update(path)
+    assert not path.parent.exists()
+    monkeypatch.setattr(updates, "urlopen", lambda request, timeout: io.BytesIO(b"x" * len(content)))
+    with pytest.raises(ValueError, match="integrity"):
+        updates.download_update(update, lambda done, total: None)
+
+
+def test_redirect_cannot_downgrade_to_http():
+    from bridgecaption.updates import HTTPSOnlyRedirect
+    from urllib.request import Request
+    with pytest.raises(ValueError, match="HTTPS"):
+        HTTPSOnlyRedirect().redirect_request(Request("https://example.com"), None, 302, "", {}, "http://example.com")
+
+
+def test_native_helper_does_not_inherit_frozen_app_runtime(monkeypatch):
+    from bridgecaption import updates
+    monkeypatch.setenv("APPIMAGE", "/old/package.AppImage")
+    monkeypatch.setenv("APPDIR", "/old/extracted")
+    monkeypatch.setenv("LD_LIBRARY_PATH", "/old/bundled-libraries")
+    monkeypatch.setenv("LD_LIBRARY_PATH_ORIG", "/user/libraries")
+    clean = updates._native_environment()
+    assert not {"APPIMAGE", "APPDIR", "LD_LIBRARY_PATH_ORIG"}.intersection(clean)
+    assert clean["LD_LIBRARY_PATH"] == "/user/libraries"
+    assert clean["PYINSTALLER_RESET_ENVIRONMENT"] == "1"
+
+
+def test_windows_setup_starts_directly_with_explicit_target_and_current_pid(monkeypatch, tmp_path):
+    from bridgecaption import updates
+
+    monkeypatch.setattr(updates.subprocess, "CREATE_NEW_PROCESS_GROUP", 512, raising=False)
+    launches = []
+    monkeypatch.setattr(updates.subprocess, "Popen", lambda args, **kwargs: launches.append(args))
+    package = tmp_path / "update.exe"
+    target = tmp_path / "installed app" / "BridgeCaption.exe"
+    updates._install_windows(package, target)
+    assert launches[0][0] == str(package)
+    assert f"/DIR={target.parent}" in launches[0]
+    assert f"/WAITPID={updates.os.getpid()}" in launches[0]
+    assert "/RELAUNCH" in launches[0]
+
+
+def test_windows_staging_cleanup_does_not_remove_unrelated_files(monkeypatch, tmp_path):
+    from bridgecaption import updates
+
+    directory = tmp_path / "bridgecaption-update-fixture"
+    directory.mkdir()
+    package = directory / "verified-test.exe"
+    package.write_bytes(b"candidate")
+    unrelated = directory / "other.exe"
+    unrelated.write_bytes(b"another file")
+    monkeypatch.setattr(updates.tempfile, "gettempdir", lambda: str(tmp_path))
+    then = updates.time.time() - 25 * 3600
+    updates.os.utime(directory, (then, then))
+    updates._clean_windows_staging()
+    assert package.is_file() and unrelated.is_file()
+    unrelated.unlink()
+    updates.os.utime(directory, (then, then))
+    updates._clean_windows_staging()
+    assert not directory.exists()

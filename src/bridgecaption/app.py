@@ -13,6 +13,8 @@ from tkinter import ttk, messagebox
 
 from dotenv import load_dotenv
 
+from .updates import (find_update, current_version, download_update, discard_update,
+                      installed_app, install_update_on_exit)
 from .audio import sources
 from .session import LiveSession
 from .context import parse_glossary
@@ -73,6 +75,13 @@ class Application:
         self.consent_given = False
         self.consent_provider = None
         self.closed = False
+        self.update_checking = False
+        self.update_popup = None
+        self.update_downloading = False
+        self.update_preparing = False
+        self.update_package = None
+        self.update_cancel = threading.Event()
+        self.update_lock = threading.Lock()
         self.context_enabled = tk.BooleanVar(value=True)
         self.glossary = {}
         self.devices = []
@@ -91,6 +100,7 @@ class Application:
         self.root.bind("<Configure>", self._resize_caption_wrap)
         self.root.bind("<Control-comma>", lambda _event: self.toggle_settings())
         self.root.after(100, self.poll)
+        self.root.after(5000, self._scheduled_update_check)
         # On Tk/X11, alpha set before the window is mapped may silently be lost.
         self.root.after(180, lambda: self._apply_opacity(
             self.opacity_value.get(), notify=False))
@@ -264,6 +274,12 @@ class Application:
         self.engine_note = self.label(self.engine_controls_frame, "", 9, MUTED)
         self.engine_note.configure(justify="left", wraplength=650)
         self.engine_note.pack(fill="x", pady=(8, 0))
+        self.updates_frame = tk.Frame(self.settings_content, bg=BG, padx=18, pady=7)
+        self.updates_frame.pack(fill="x")
+        self.label(self.updates_frame, "Application updates", 11, TEXT, True).pack(anchor="w", pady=(0, 8))
+        self.label(self.updates_frame, f"Current version: v{current_version()}", 9, MUTED).pack(side="left", padx=(0, 12))
+        self.update_button = self.button(self.updates_frame, "Check for updates", lambda: self.check_updates(manual=True))
+        self.update_button.pack(side="left")
         self.settings_frame = tk.Frame(self.settings_content, bg=BG, padx=18, pady=7)
         self.settings_frame.pack(fill="x")
         self.label(self.settings_frame, "Preferences", 11, TEXT, True).pack(
@@ -420,6 +436,8 @@ class Application:
 
     def _apply_overlay_mode(self):
         """Switch between a caption-first floating overlay and full controls."""
+        # The updater has the same settings-content parent as the other
+        # controls and stays packed while the settings workspace is hidden.
         for panel in (self.controls_frame, self.engine_controls_frame,
                       self.settings_frame, self.bottom_frame):
             panel.pack_forget()
@@ -757,11 +775,156 @@ class Application:
             selector.config(state="disabled")
         session.start()
 
+    def _scheduled_update_check(self):
+        if not self.closed:
+            self.check_updates()
+            self.root.after(24 * 60 * 60 * 1000, self._scheduled_update_check)
+
+    def check_updates(self, manual=False):
+        """Check off the UI thread; private repositories may need a public update feed."""
+        if self.closed or self.update_checking or self.update_downloading or self.update_preparing:
+            return
+        self.update_checking = True
+        self.update_button.config(state="disabled")
+        if manual:
+            self.status_var.set("Checking for updates...")
+        def task():
+            try:
+                self.publish("update_result", manual, find_update(), None)
+            except Exception as exc:
+                self.publish("update_result", manual, None, str(exc))
+        threading.Thread(target=task, daemon=True).start()
+
+    def _show_update(self, update):
+        if self.update_popup is not None and self.update_popup.winfo_exists():
+            return
+        popup = tk.Toplevel(self.root)
+        self.update_popup = popup
+        popup.title("BridgeCaption update")
+        popup.configure(bg=BG)
+        popup.geometry("390x210")
+        popup.resizable(False, False)
+        popup.transient(self.root)
+        self.label(popup, f"Version {update.version} is available", 13, TEXT, True).pack(
+            padx=20, pady=(22, 14))
+        self.label(popup, "Install update?", 11, MUTED).pack(padx=20)
+        actions = tk.Frame(popup, bg=BG)
+        actions.pack(pady=18)
+        self.button(actions, "No", popup.destroy).pack(side="left", padx=8)
+        self.button(actions, "Yes", lambda: self._install_update(update)).pack(side="left", padx=8)
+
+    def _dismiss_update(self):
+        with self.update_lock:
+            self.update_cancel.set()
+            if self.update_package is not None:
+                discard_update(self.update_package)
+                self.update_package = None
+        if self.update_popup is not None and self.update_popup.winfo_exists():
+            self.update_popup.destroy()
+        self.update_popup = None
+
+    def _install_update(self, update):
+        if self.update_downloading or self.update_preparing:
+            return
+        try:
+            installed_app()
+        except (OSError, RuntimeError) as exc:
+            messagebox.showerror("Installer unavailable", str(exc), parent=self.update_popup or self.root)
+            return
+        self.update_downloading = True
+        self.update_cancel.clear()
+        popup = self.update_popup
+        popup.protocol("WM_DELETE_WINDOW", self._dismiss_update)
+        for widget in popup.winfo_children():
+            widget.destroy()
+        self.label(popup, f"Installing v{update.version}", 13, TEXT, True).pack(padx=20, pady=15)
+        self.update_progress = tk.DoubleVar(value=0)
+        ttk.Progressbar(popup, maximum=100, variable=self.update_progress).pack(fill="x", padx=20)
+        self.update_progress_label = self.label(popup, "Downloading 0%", 10, MUTED)
+        self.update_progress_label.pack(pady=10)
+        self.button(popup, "Cancel", self._dismiss_update).pack()
+
+        def task():
+            try:
+                package = download_update(update, lambda done, total:
+                    self.publish("update_progress", done, total), self.update_cancel.is_set)
+                with self.update_lock:
+                    if self.update_cancel.is_set():
+                        discard_update(package)
+                    else:
+                        self.update_package = package
+                self.publish("update_downloaded")
+            except Exception as exc:
+                self.publish("update_failed", str(exc))
+        threading.Thread(target=task, daemon=True).start()
+
+    def _finish_update(self):
+        if self.update_package is None or self.update_preparing:
+            return
+        if self.live_session is not None or (self.worker and self.worker.is_alive()):
+            messagebox.showinfo("Update waiting", "Stop captioning before installing.", parent=self.root)
+            return
+        self.update_preparing = True
+        self.start_button.config(state="disabled")
+        self.update_popup.protocol("WM_DELETE_WINDOW", lambda: None)
+        self.update_progress_label.config(text="Preparing update. BridgeCaption will restart.")
+        for widget in self.update_popup.winfo_children():
+            if isinstance(widget, (tk.Button, ttk.Button)):
+                widget.config(state="disabled")
+        package = self.update_package
+
+        def task():
+            try:
+                install_update_on_exit(package)
+                self.publish("update_ready")
+            except Exception as exc:
+                self.publish("update_failed", str(exc))
+        threading.Thread(target=task, daemon=True).start()
+
     def poll(self):
         try:
             while True:
                 kind, values = self.events.get_nowait()
-                if kind == "status":
+                if kind == "update_progress":
+                    if self.update_popup is not None:
+                        received, total = values
+                        percentage = int(100 * received / total)
+                        self.update_progress.set(percentage)
+                        self.update_progress_label.config(text=f"Downloading {percentage}%")
+                elif kind == "update_downloaded":
+                    self.update_downloading = False
+                    if self.update_package is None or self.update_popup is None:
+                        continue
+                    if self.live_session is not None or (self.worker and self.worker.is_alive()):
+                        self.update_progress_label.config(text="Verified. Stop captioning to install.")
+                        self.button(self.update_popup, "Install when idle", self._finish_update).pack(pady=5)
+                    else:
+                        self._finish_update()
+                elif kind == "update_ready":
+                    self.update_preparing = False
+                    self.update_package = None  # The installer now owns the verified file.
+                    self.close()
+                    return
+                elif kind == "update_failed":
+                    self.update_downloading = False
+                    if self.update_preparing:
+                        self.update_preparing = False
+                        self.start_button.config(state="normal")
+                    if not self.update_cancel.is_set():
+                        self._dismiss_update()
+                        messagebox.showerror("Update failed", values[0], parent=self.root)
+                elif kind == "update_result":
+                    manual, update, error = values
+                    self.update_checking = False
+                    self.update_button.config(state="normal")
+                    if error:
+                        if manual:
+                            self.status_var.set("Update check unavailable: " + error)
+                    elif update:
+                        self._show_update(update)
+                    elif manual:
+                        self.status_var.set("BridgeCaption is up to date.")
+                elif kind == "status":
                     self.status_var.set(values[0])
                 elif kind == "heard":
                     self.last_caption = None
@@ -835,8 +998,11 @@ class Application:
             self.root.after(100, self.poll)
 
     def close(self):
+        if self.update_preparing:
+            return
         self.closed = True
         self._dismiss_full_caption()
+        self._dismiss_update()
         if self.live_session is not None:
             self.live_session.stop()
         self.pipeline.reset()
