@@ -13,6 +13,7 @@ authorize product promotion or 95% claims. No French or app files are edited.
 """
 from __future__ import annotations
 
+import csv
 import hashlib
 import json
 import random
@@ -27,7 +28,22 @@ from tempfile import TemporaryDirectory
 ROOT = Path(__file__).resolve().parents[2]
 sys.path[:0] = [str(ROOT), str(ROOT/"research/es_en_v2")]
 from research.es_en_v2 import train_three as previous
-from research.es_en_v2.review_feedback_500 import load_review
+def load_review():
+    """Load the already generated 500 real outputs without introducing new QA dependencies."""
+    path = ROOT / "research/es_en_v2/reviewer_examples_500/BridgeCaption_500_Real_Model_Translations_Review.csv"
+    manifest_path = ROOT / "research/es_en_v2/reviewer_examples_500/manifest.json"
+    meta = json.loads(manifest_path.read_text(encoding="utf-8"))
+    expected = meta["files_sha256"]["BridgeCaption_500_Real_Model_Translations_Review.csv"]
+    with path.open(newline="", encoding="utf-8-sig") as file:
+        rows = list(csv.DictReader(file))
+    if (len(rows) != 500
+        or len({row["Case ID"] for row in rows}) != 500
+        or {row["Direction"] for row in rows} != {"es-en", "en-es"}
+        or hashlib.sha256(path.read_bytes()).hexdigest() != expected
+        or meta["actual_inference_executed"] is not True):
+        raise RuntimeError("Original 500 real model outputs changed or missing")
+    return rows
+
 
 core = previous.core
 PARENT = "experiments/es_en_v2_runs/candidate_after_three.safetensors"
