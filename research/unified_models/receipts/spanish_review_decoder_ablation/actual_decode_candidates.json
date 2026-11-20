@@ -1,0 +1,511 @@
+{
+  "status": "real_development_only_decode_comparison",
+  "tested_es_en_dev_rows": [
+    311,
+    314,
+    416,
+    33,
+    35,
+    79,
+    219,
+    220
+  ],
+  "reviewed_long_loops": [
+    311,
+    314,
+    416
+  ],
+  "tested_cases_n": 8,
+  "actual_model_predictions": [
+    {
+      "row": 311,
+      "source": "¡Guisantes verdes! ¡Delicioso!",
+      "reviewed_previous_model_output": "Yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy",
+      "archived_previous_repeated": true,
+      "variants": {
+        "untouched_original_pretrained_base": {
+          "text": "Yummy!",
+          "source_end_punctuation_count": 2,
+          "translated_end_punctuation_count": 1,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "existing_bounded_retry_ngram3": {
+          "text": "Delicious!",
+          "source_end_punctuation_count": 2,
+          "translated_end_punctuation_count": 1,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "ngram2_length1_2": {
+          "text": "Delicious!",
+          "source_end_punctuation_count": 2,
+          "translated_end_punctuation_count": 1,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "ngram2_min6": {
+          "text": "Yummy, yummy!",
+          "source_end_punctuation_count": 2,
+          "translated_end_punctuation_count": 1,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "greedy_ngram2": {
+          "text": "Green scones!",
+          "source_end_punctuation_count": 2,
+          "translated_end_punctuation_count": 1,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "previous_stage3_trained_adapter": {
+          "text": "Yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy",
+          "source_end_punctuation_count": 2,
+          "translated_end_punctuation_count": 0,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": true
+        }
+      }
+    },
+    {
+      "row": 314,
+      "source": "¡Tobogán mojado! ¡Quiero ir! \\n\\n",
+      "reviewed_previous_model_output": "i want to go! i want to go! i want to go! i want to go! i want to go! i want to go! i want to go! i want to go! i want to go! i want to go! i want to go! i want to go",
+      "archived_previous_repeated": true,
+      "variants": {
+        "untouched_original_pretrained_base": {
+          "text": "I want to go!",
+          "source_end_punctuation_count": 2,
+          "translated_end_punctuation_count": 1,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "existing_bounded_retry_ngram3": {
+          "text": "I want to go!",
+          "source_end_punctuation_count": 2,
+          "translated_end_punctuation_count": 1,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "ngram2_length1_2": {
+          "text": "I want to go!",
+          "source_end_punctuation_count": 2,
+          "translated_end_punctuation_count": 1,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "ngram2_min6": {
+          "text": "i want to go! ♪ i don't know what i'm talking about",
+          "source_end_punctuation_count": 2,
+          "translated_end_punctuation_count": 1,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "greedy_ngram2": {
+          "text": "I want to go!",
+          "source_end_punctuation_count": 2,
+          "translated_end_punctuation_count": 1,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "previous_stage3_trained_adapter": {
+          "text": "I want to go!",
+          "source_end_punctuation_count": 2,
+          "translated_end_punctuation_count": 1,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        }
+      }
+    },
+    {
+      "row": 416,
+      "source": "¡Escalar! ¡Arriba, arriba! \\n\\n",
+      "reviewed_previous_model_output": "Up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up",
+      "archived_previous_repeated": true,
+      "variants": {
+        "untouched_original_pretrained_base": {
+          "text": "Up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up",
+          "source_end_punctuation_count": 2,
+          "translated_end_punctuation_count": 0,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": true
+        },
+        "existing_bounded_retry_ngram3": {
+          "text": "Up, up, up!",
+          "source_end_punctuation_count": 2,
+          "translated_end_punctuation_count": 1,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "ngram2_length1_2": {
+          "text": "Climb! Up, up!",
+          "source_end_punctuation_count": 2,
+          "translated_end_punctuation_count": 2,
+          "possible_missing_source_clause": false,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "ngram2_min6": {
+          "text": "Climb! Up, up!",
+          "source_end_punctuation_count": 2,
+          "translated_end_punctuation_count": 2,
+          "possible_missing_source_clause": false,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "greedy_ngram2": {
+          "text": "Climb up, climb up!",
+          "source_end_punctuation_count": 2,
+          "translated_end_punctuation_count": 1,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "previous_stage3_trained_adapter": {
+          "text": "Up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up",
+          "source_end_punctuation_count": 2,
+          "translated_end_punctuation_count": 0,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": true
+        }
+      }
+    },
+    {
+      "row": 33,
+      "source": "¿El tobogán? ¡Eso suena como una elección feliz! Vamos a verlo. \\n\\n",
+      "reviewed_previous_model_output": "does that sound like a happy choice! Let's see it.",
+      "archived_previous_repeated": false,
+      "variants": {
+        "untouched_original_pretrained_base": {
+          "text": "That sounds like a happy choice! Let's see it.",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 2,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "existing_bounded_retry_ngram3": {
+          "text": "does that sound like a happy choice! Let's see it.",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 2,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "ngram2_length1_2": {
+          "text": "does that sound like a happy choice! Let's see it.",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 2,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "ngram2_min6": {
+          "text": "does that sound like a happy choice! Let's see it.",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 2,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "greedy_ngram2": {
+          "text": "does that sound like a happy choice! Let's see it.",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 2,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "previous_stage3_trained_adapter": {
+          "text": "That sounds like a happy choice! Let's see it.",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 2,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        }
+      }
+    },
+    {
+      "row": 35,
+      "source": "¡Eso suena genial! ¿Crees que tienen un hámster allí? ¡Quiero ver uno! \\n\\n",
+      "reviewed_previous_model_output": "do you think they have a hamster there? i want to see one!",
+      "archived_previous_repeated": false,
+      "variants": {
+        "untouched_original_pretrained_base": {
+          "text": "Do you think they have a hamster there?",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 1,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "existing_bounded_retry_ngram3": {
+          "text": "do you think they have a hamster there? i want to see one!",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 2,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "ngram2_length1_2": {
+          "text": "do you think they have a hamster there? i want to see one!",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 2,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "ngram2_min6": {
+          "text": "do you think they have a hamster there? i want to see one!",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 2,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "greedy_ngram2": {
+          "text": "do you think they have a hamster there? i want to see one!",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 2,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "previous_stage3_trained_adapter": {
+          "text": "do you think they have a hamster there? i want to see one!",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 2,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        }
+      }
+    },
+    {
+      "row": 79,
+      "source": "¿Gotea? ¡Qué asco! ¿Por qué tienes que decir eso? \\n\\n",
+      "reviewed_previous_model_output": "Why do you have to say that?",
+      "archived_previous_repeated": false,
+      "variants": {
+        "untouched_original_pretrained_base": {
+          "text": "Why do you have to say that?",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 1,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "existing_bounded_retry_ngram3": {
+          "text": "Why do you have to say that?",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 1,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "ngram2_length1_2": {
+          "text": "Why do you have to say that?",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 1,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "ngram2_min6": {
+          "text": "Why do you have to say that?",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 1,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "greedy_ngram2": {
+          "text": "What do you have to say that?",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 1,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "previous_stage3_trained_adapter": {
+          "text": "Why do you have to say that?",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 1,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        }
+      }
+    },
+    {
+      "row": 219,
+      "source": "¡Sí! ¡Vamos a buscarla! ¡Ya puedo sentir que mi super velocidad está activándose! \\n\\n",
+      "reviewed_previous_model_output": "let's go find her! i can already feel my super speed is going on!",
+      "archived_previous_repeated": false,
+      "variants": {
+        "untouched_original_pretrained_base": {
+          "text": "Yeah, let's go find her, I can already feel my super speed going on!",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 1,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "existing_bounded_retry_ngram3": {
+          "text": "let's go find her! i can already feel my super speed is going on!",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 2,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "ngram2_length1_2": {
+          "text": "let's go find her! i can already feel my super speed is going on!",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 2,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "ngram2_min6": {
+          "text": "let's go find her! i can already feel my super speed is going on!",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 2,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "greedy_ngram2": {
+          "text": "let's go find her! i can already feel my super speed is going on!",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 2,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "previous_stage3_trained_adapter": {
+          "text": "let's go find her! i can already feel my super speed is going on!",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 2,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        }
+      }
+    },
+    {
+      "row": 220,
+      "source": "Déjame revisar. Creo que tengo algo en mi mochila. ¿Puedes ayudarme a desabrocharla? \\n\\n",
+      "reviewed_previous_model_output": "I think I have something in my backpack. Can you help me unbutton it?",
+      "archived_previous_repeated": false,
+      "variants": {
+        "untouched_original_pretrained_base": {
+          "text": "I think I have something in my backpack. Can you help me unbutton it?",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 2,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "existing_bounded_retry_ngram3": {
+          "text": "I think I have something in my backpack. Can you help me unbutton it?",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 2,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "ngram2_length1_2": {
+          "text": "I think I have something in my backpack. Can you help me unbutton it?",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 2,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "ngram2_min6": {
+          "text": "I think I have something in my backpack. Can you help me unbutton it?",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 2,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "greedy_ngram2": {
+          "text": "I think I have something in my backpack. Can you help me unbutton it?",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 2,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        },
+        "previous_stage3_trained_adapter": {
+          "text": "I think I have something in my backpack. Can you help me unbutton it?",
+          "source_end_punctuation_count": 3,
+          "translated_end_punctuation_count": 2,
+          "possible_missing_source_clause": true,
+          "possible_short_output": false,
+          "obvious_long_generation_loop": false
+        }
+      }
+    }
+  ],
+  "diagnostic_counts_not_quality_scores": {
+    "untouched_original_pretrained_base": {
+      "nonloop_outputs": 7,
+      "possible_missing_source_clause_flags": 8,
+      "possibly_short_outputs": 0
+    },
+    "existing_bounded_retry_ngram3": {
+      "nonloop_outputs": 8,
+      "possible_missing_source_clause_flags": 8,
+      "possibly_short_outputs": 0
+    },
+    "ngram2_length1_2": {
+      "nonloop_outputs": 8,
+      "possible_missing_source_clause_flags": 7,
+      "possibly_short_outputs": 0
+    },
+    "ngram2_min6": {
+      "nonloop_outputs": 8,
+      "possible_missing_source_clause_flags": 7,
+      "possibly_short_outputs": 0
+    },
+    "greedy_ngram2": {
+      "nonloop_outputs": 8,
+      "possible_missing_source_clause_flags": 8,
+      "possibly_short_outputs": 0
+    },
+    "previous_stage3_trained_adapter": {
+      "nonloop_outputs": 6,
+      "possible_missing_source_clause_flags": 8,
+      "possibly_short_outputs": 0
+    }
+  },
+  "trained_model_sha256": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71",
+  "previous_permitted_adapter_sha256": "14dddb5040afe49f8f05a1bfba3458d3321524b53b0fc05b359ad41a1ab75a4b",
+  "no_nc_model_or_data_involved": true,
+  "human_translation_quality_verified": false,
+  "default_app_provider_changed": false,
+  "no_new_optimizer_steps": true,
+  "test_or_final_holdout_not_accessed": true,
+  "elapsed_seconds": 24.08609688300004,
+  "peak_rss_kib_linux": 1142352,
+  "limitations": "Bilingual meaning is not inferred from punctuation count or output length. Never promote a decoding variant from these already-reviewed development examples without independent validation."
+}

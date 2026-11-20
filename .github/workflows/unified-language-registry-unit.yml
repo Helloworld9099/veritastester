@@ -1,0 +1,52 @@
+name: Verify French-Spanish model consolidation safety
+
+on:
+  push:
+    branches: [feat/bridgecaption-shared-french-spanish-20261120]
+    paths:
+      - .github/workflows/unified-language-registry-unit.yml
+      - research/unified_models/**
+      - research/es_en_v2/integration.py
+      - research/es_en_v2/reviewer_feedback_20261120/run_loop_recovery.py
+      - src/bridgecaption/context.py
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  model-and-code-contract:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      PYTHONPATH: ".:src"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check shared registry and review-driven source updates compile
+        run: |
+          python -m compileall -q research/unified_models research/es_en_v2/integration.py research/es_en_v2/reviewer_feedback_20261120/run_loop_recovery.py src/bridgecaption/context.py
+      - name: Run real pinned checkpoint/rollback inspection and routing tests
+        run: |
+          python -m unittest discover -s research/unified_models/tests -p 'test_*.py' -v
+      - name: Preserve all existing 500-review and loop-detection tests
+        run: |
+          python -m unittest research.es_en_v2.tests.test_reviewer_feedback_500 research.es_en_v2.tests.test_inference_safety -v
+      - name: Confirm product's original provider factory and speech pipeline are untouched
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from bridgecaption.providers import create_translator
+          from bridgecaption.provider import GeminiTranslator
+          from research.unified_models.registry import ModelRegistry
+          registry=ModelRegistry()
+          report=registry.verify_sources()
+          assert set(report)=={'es-en','fr-en','en-es'}
+          assert report['fr-en']['active_sha256'] != report['es-en']['active_sha256']
+          assert isinstance(create_translator('gemini'), GeminiTranslator)
+          assert 'unified_models' not in Path('src/bridgecaption/providers.py').read_text()
+          assert 'unified_models' not in Path('src/bridgecaption/pipeline.py').read_text()
+          print("PRESERVED_PUBLIC_PROVIDER_FACTORY_AND_APP_DEFAULT; models routed only via research.")
+          PY

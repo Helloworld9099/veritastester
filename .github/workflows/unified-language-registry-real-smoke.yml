@@ -1,0 +1,98 @@
+name: Run real French + Spanish shared Marian inference and regression comparison
+
+on:
+  push:
+    branches: [feat/bridgecaption-shared-french-spanish-20261120]
+    paths:
+      - .github/workflows/unified-language-registry-real-smoke.yml
+      - research/unified_models/runtime.py
+      - research/unified_models/registry.py
+      - research/unified_models/registry.json
+      - research/unified_models/smoke.py
+      - src/bridgecaption/context.py
+      - research/es_en_v2/integration.py
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: french-spanish-unified-real-smoke
+  cancel-in-progress: false
+
+jobs:
+  both-trained-languages:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 28
+    env:
+      PYTHONPATH: ".:src"
+      TOKENIZERS_PARALLELISM: 'false'
+      HF_HUB_DISABLE_TELEMETRY: '1'
+      OMP_NUM_THREADS: '4'
+      MKL_NUM_THREADS: '4'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install free CPU-only old-version-compatible Marian dependencies
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'huggingface-hub>=0.34,<1.0'
+      - name: Validate all three model routes and historical checkpoint checksums
+        run: |
+          python -m unittest discover -s research/unified_models/tests -p 'test_*.py' -v
+      - name: Actually translate through app Pipeline in Spanish French and English with one model loaded
+        run: |
+          python -u research/unified_models/smoke.py
+      - name: Assert no-language-weights-blended, original provider unchanged, and no archive DEV regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          p=Path('research/unified_models/receipts/actual_multilingual_integration.json')
+          d=json.loads(p.read_text())
+          assert d['status']=='actual_shared_marian_3_direction_pipeline_smoke'
+          assert d['actual_nonempty_translation_calls']==8
+          assert set(d['models'])=={'es-en','fr-en','en-es'}
+          assert d['max_simultaneous_models_in_runtime']==1
+          assert d['default_bridgecaption_provider_unchanged'] is True
+          assert d['nc_research_models_excluded'] is True
+          assert d['independent_human_semantic_accuracy_verified'] is False
+          assert d['final_holdout_touched'] is False
+          assert d['new_training_updates']==0
+          assert d['archived_dev_comparison_count']==20
+          assert d['all_archived_dev_parity'] is True, 'Model changed archived nonloop developer outputs; leave isolated, investigate before any activation.'
+          assert d['models']['fr-en']['active_sha256']=='fba2bd78958bf0bf8a4c14dc55e601e08663633718c4c9c17f91ef9b52dcfa1c'
+          assert d['models']['es-en']['active_sha256']=='3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71'
+          assert len(d['rollback_translations'])==2
+          (p.parent/'SHA256SUMS.txt').write_text(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+p.name+'\n')
+          print('REAL_FRENCH_AND_SPANISH_PARITY_AND_ROLLBACK_VALIDATED',json.dumps({
+            'samples':d['archived_dev_comparison_count'],
+            'exact_outputs':d['archived_dev_exact_parity'],
+            'normalized_outputs':d['archived_dev_normalized_parity'],
+            'load_count':d['model_load_count'],
+            'max_rss_kib':d['max_rss_kib_linux']}))
+          PY
+      - name: Save aggregate+actual development smoke receipts on the dedicated branch only
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/unified_models/receipts
+          git commit -m 'research: preserve real Spanish French shared model smoke and rollback receipts [skip ci]'
+          git pull --rebase origin feat/bridgecaption-shared-french-spanish-20261120
+          git push origin HEAD:refs/heads/feat/bridgecaption-shared-french-spanish-20261120
+      - name: Keep model evidence even if verification fails or commits race
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: french-spanish-actual-research-model-integration
+          path: research/unified_models/receipts/
+          if-no-files-found: warn
+          retention-days: 30

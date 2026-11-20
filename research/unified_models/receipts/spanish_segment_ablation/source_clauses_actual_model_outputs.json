@@ -1,0 +1,250 @@
+{
+  "status": "actual_spanish_clause_preservation_development_ablation",
+  "model_sha256": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71",
+  "dataset": "previously reviewed 500-source development export",
+  "reviewer_rows": [
+    311,
+    314,
+    416,
+    33,
+    35,
+    79,
+    219,
+    220
+  ],
+  "examples": [
+    {
+      "excel_row": 311,
+      "case_id": "syn_12ad2a19ae66027aa831",
+      "source": "¡Guisantes verdes! ¡Delicioso!",
+      "historical_dev_prediction": "Yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy",
+      "source_current_clause_count": 2,
+      "clause_predictions": [
+        {
+          "source": "¡Guisantes verdes!",
+          "prediction": "Green stews!",
+          "loop": false
+        },
+        {
+          "source": "¡Delicioso!",
+          "prediction": "Delicious!",
+          "loop": false
+        }
+      ],
+      "combined_segmented_output": "Green stews! Delicious!",
+      "all_clauses_received_nonempty_translation": true,
+      "obvious_loop_on_final_output": false,
+      "translation_semantics_human_verified": false,
+      "status": "all_source_clauses_translated_nonempty"
+    },
+    {
+      "excel_row": 314,
+      "case_id": "syn_3928805402623f66d57f",
+      "source": "¡Tobogán mojado! ¡Quiero ir! \\n\\n",
+      "historical_dev_prediction": "i want to go! i want to go! i want to go! i want to go! i want to go! i want to go! i want to go! i want to go! i want to go! i want to go! i want to go! i want to go",
+      "source_current_clause_count": 2,
+      "clause_predictions": [
+        {
+          "source": "¡Tobogán mojado!",
+          "prediction": "wet toboggan!",
+          "loop": false
+        },
+        {
+          "source": "¡Quiero ir!",
+          "prediction": "I want to go!",
+          "loop": false
+        }
+      ],
+      "combined_segmented_output": "wet toboggan! I want to go!",
+      "all_clauses_received_nonempty_translation": true,
+      "obvious_loop_on_final_output": false,
+      "translation_semantics_human_verified": false,
+      "status": "all_source_clauses_translated_nonempty"
+    },
+    {
+      "excel_row": 416,
+      "case_id": "syn_f3f13205735175e50835",
+      "source": "¡Escalar! ¡Arriba, arriba! \\n\\n",
+      "historical_dev_prediction": "Up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up",
+      "source_current_clause_count": 2,
+      "clause_predictions": [
+        {
+          "source": "¡Escalar!",
+          "prediction": "Climb!",
+          "loop": false
+        },
+        {
+          "source": "¡Arriba, arriba!",
+          "prediction": "Get up, get up!",
+          "loop": false
+        }
+      ],
+      "combined_segmented_output": "Climb! Get up, get up!",
+      "all_clauses_received_nonempty_translation": true,
+      "obvious_loop_on_final_output": false,
+      "translation_semantics_human_verified": false,
+      "status": "all_source_clauses_translated_nonempty"
+    },
+    {
+      "excel_row": 33,
+      "case_id": "syn_e116b766e3a78a48f85c",
+      "source": "¿El tobogán? ¡Eso suena como una elección feliz! Vamos a verlo. \\n\\n",
+      "historical_dev_prediction": "does that sound like a happy choice! Let's see it.",
+      "source_current_clause_count": 3,
+      "clause_predictions": [
+        {
+          "source": "¿El tobogán?",
+          "prediction": "The slide?",
+          "loop": false
+        },
+        {
+          "source": "¡Eso suena como una elección feliz!",
+          "prediction": "That sounds like a happy choice!",
+          "loop": false
+        },
+        {
+          "source": "Vamos a verlo.",
+          "prediction": "Let's go see it.",
+          "loop": false
+        }
+      ],
+      "combined_segmented_output": "The slide? That sounds like a happy choice! Let's go see it.",
+      "all_clauses_received_nonempty_translation": true,
+      "obvious_loop_on_final_output": false,
+      "translation_semantics_human_verified": false,
+      "status": "all_source_clauses_translated_nonempty"
+    },
+    {
+      "excel_row": 35,
+      "case_id": "syn_f9fb0f817e5d97bb8594",
+      "source": "¡Eso suena genial! ¿Crees que tienen un hámster allí? ¡Quiero ver uno! \\n\\n",
+      "historical_dev_prediction": "do you think they have a hamster there? i want to see one!",
+      "source_current_clause_count": 3,
+      "clause_predictions": [
+        {
+          "source": "¡Eso suena genial!",
+          "prediction": "That sounds great!",
+          "loop": false
+        },
+        {
+          "source": "¿Crees que tienen un hámster allí?",
+          "prediction": "Do you think they have a hamster there?",
+          "loop": false
+        },
+        {
+          "source": "¡Quiero ver uno!",
+          "prediction": "I want to see one!",
+          "loop": false
+        }
+      ],
+      "combined_segmented_output": "That sounds great! Do you think they have a hamster there? I want to see one!",
+      "all_clauses_received_nonempty_translation": true,
+      "obvious_loop_on_final_output": false,
+      "translation_semantics_human_verified": false,
+      "status": "all_source_clauses_translated_nonempty"
+    },
+    {
+      "excel_row": 79,
+      "case_id": "syn_52fb271c69faa9f977e2",
+      "source": "¿Gotea? ¡Qué asco! ¿Por qué tienes que decir eso? \\n\\n",
+      "historical_dev_prediction": "Why do you have to say that?",
+      "source_current_clause_count": 3,
+      "clause_predictions": [
+        {
+          "source": "¿Gotea?",
+          "prediction": "Do I leak?",
+          "loop": false
+        },
+        {
+          "source": "¡Qué asco!",
+          "prediction": "Gross!",
+          "loop": false
+        },
+        {
+          "source": "¿Por qué tienes que decir eso?",
+          "prediction": "Why do you have to say that?",
+          "loop": false
+        }
+      ],
+      "combined_segmented_output": "Do I leak? Gross! Why do you have to say that?",
+      "all_clauses_received_nonempty_translation": true,
+      "obvious_loop_on_final_output": false,
+      "translation_semantics_human_verified": false,
+      "status": "all_source_clauses_translated_nonempty"
+    },
+    {
+      "excel_row": 219,
+      "case_id": "syn_ca90d4d4a791e82dd2d0",
+      "source": "¡Sí! ¡Vamos a buscarla! ¡Ya puedo sentir que mi super velocidad está activándose! \\n\\n",
+      "historical_dev_prediction": "let's go find her! i can already feel my super speed is going on!",
+      "source_current_clause_count": 3,
+      "clause_predictions": [
+        {
+          "source": "¡Sí!",
+          "prediction": "Yes!",
+          "loop": false
+        },
+        {
+          "source": "¡Vamos a buscarla!",
+          "prediction": "Let's go get her!",
+          "loop": false
+        },
+        {
+          "source": "¡Ya puedo sentir que mi super velocidad está activándose!",
+          "prediction": "I can already feel my super speed going on!",
+          "loop": false
+        }
+      ],
+      "combined_segmented_output": "Yes! Let's go get her! I can already feel my super speed going on!",
+      "all_clauses_received_nonempty_translation": true,
+      "obvious_loop_on_final_output": false,
+      "translation_semantics_human_verified": false,
+      "status": "all_source_clauses_translated_nonempty"
+    },
+    {
+      "excel_row": 220,
+      "case_id": "syn_6b86d8ffd12190418834",
+      "source": "Déjame revisar. Creo que tengo algo en mi mochila. ¿Puedes ayudarme a desabrocharla? \\n\\n",
+      "historical_dev_prediction": "I think I have something in my backpack. Can you help me unbutton it?",
+      "source_current_clause_count": 3,
+      "clause_predictions": [
+        {
+          "source": "Déjame revisar.",
+          "prediction": "Let me check.",
+          "loop": false
+        },
+        {
+          "source": "Creo que tengo algo en mi mochila.",
+          "prediction": "I think I have something in my backpack.",
+          "loop": false
+        },
+        {
+          "source": "¿Puedes ayudarme a desabrocharla?",
+          "prediction": "Can you help me unbutton it?",
+          "loop": false
+        }
+      ],
+      "combined_segmented_output": "Let me check. I think I have something in my backpack. Can you help me unbutton it?",
+      "all_clauses_received_nonempty_translation": true,
+      "obvious_loop_on_final_output": false,
+      "translation_semantics_human_verified": false,
+      "status": "all_source_clauses_translated_nonempty"
+    }
+  ],
+  "all_clauses_generated": 8,
+  "final_outputs_without_long_repetition": 8,
+  "source_or_target_references_used_for_training": false,
+  "final_holdout_used": false,
+  "human_adequacy_verified": false,
+  "production_enabled": false,
+  "decoder_config": {
+    "num_beams": 4,
+    "max_new_tokens": 96,
+    "no_repeat_ngram_size": 2,
+    "repetition_penalty": 1.12,
+    "length_penalty": 1.2
+  },
+  "elapsed_seconds": 12.659208911999997,
+  "peak_rss_kib_linux": 791216,
+  "warning": "Current-clause segmentation can change pronouns, context and register. Generating nonempty text per clause is NOT equivalent to retaining each clause's meaning. Independent bilingual review is necessary."
+}

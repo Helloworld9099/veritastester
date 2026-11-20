@@ -2,7 +2,7 @@ name: Real Spanish anti-loop retry ablation (previously reviewed DEV cases only)
 
 on:
   push:
-    branches: [research/es-en-human-feedback-20261120]
+    branches: [feat/bridgecaption-shared-french-spanish-20261120]
     paths:
       - .github/workflows/es-en-reviewed-loop-recovery.yml
       - research/es_en_v2/reviewer_feedback_20261120/run_loop_recovery.py
@@ -75,8 +75,8 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add research/es_en_v2/reviewer_feedback_20261120/loop_recovery
           git commit -m 'research: preserve observed Spanish generation-loop retry outputs [skip ci]'
-          git pull --rebase origin research/es-en-human-feedback-20261120
-          git push origin HEAD:refs/heads/research/es-en-human-feedback-20261120
+          git pull --rebase origin feat/bridgecaption-shared-french-spanish-20261120
+          git push origin HEAD:refs/heads/feat/bridgecaption-shared-french-spanish-20261120
       - name: Retain experimental results if branch push races
         if: always()
         uses: actions/upload-artifact@v4
