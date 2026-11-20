@@ -1,8 +1,10 @@
-"""Install the old build and apply a real native upgrade from a signed test fixture."""
+"""Apply a real native upgrade to a simulated prior version through a signed fixture."""
 from __future__ import annotations
 
 import argparse
 import base64
+import csv
+import io
 import json
 from pathlib import Path
 import platform
@@ -36,6 +38,18 @@ def read_version(executable, report):
     return report.read_text().strip()
 
 
+def running_application(system):
+    if system == "Windows":
+        listing = subprocess.run(["tasklist", "/FO", "CSV", "/NH", "/FI", "IMAGENAME eq BridgeCaption.exe"],
+                                 check=True, text=True, capture_output=True, timeout=15)
+        return any(row and row[0].casefold() == "bridgecaption.exe"
+                   for row in csv.reader(io.StringIO(listing.stdout)))
+    if system == "Darwin":
+        return subprocess.run(["/usr/bin/pgrep", "-x", "BridgeCaption"], check=False,
+                              stdout=subprocess.DEVNULL, timeout=15).returncode == 0
+    raise RuntimeError("Expected a Windows or macOS runner")
+
+
 def smoke(previous, candidate):
     key = updates.platform_key()
     system = platform.system()
@@ -53,6 +67,7 @@ def smoke(previous, candidate):
         else:
             raise RuntimeError("Expected a Windows or macOS runner")
         assert read_version(executable, report) == OLD
+        assert not running_application(system), "A BridgeCaption process was already running"
         sentinel = root / "preserve.txt"
         sentinel.write_text("keep")
         signing_key = Ed25519PrivateKey.generate()
@@ -82,9 +97,21 @@ def smoke(previous, candidate):
                 time.sleep(3)
             else:
                 raise RuntimeError("Upgraded install never reported the new version")
+            relaunch_deadline = time.monotonic() + 25
+            while time.monotonic() < relaunch_deadline:
+                if running_application(system):
+                    # The version probe has already exited; the running process
+                    # must be the copy started by the native update helper.
+                    time.sleep(1)
+                    if running_application(system):
+                        break
+                time.sleep(1)
+            else:
+                raise RuntimeError("Native updater did not relaunch BridgeCaption")
             assert sentinel.read_text() == "keep"
             assert updates.find_update(NEW) is None
-            print(f"{key}: installed {OLD}, applied verified {NEW} in place, and relaunched")
+            print(f"{key}: installed simulated prior {OLD}, applied verified {NEW} in place, "
+                  "and observed automatic relaunch (synthetic transport)")
         finally:
             # Relaunch is part of the production path; close it in the disposable
             # runner before cleanup (Windows keeps loaded libraries mapped).

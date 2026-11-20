@@ -1,7 +1,8 @@
 # Desktop packages and signed updates
 
 The desktop PR workflow builds Windows x64 and macOS Intel/Apple Silicon packages
-and exercises the installer against two actual frozen builds. It is intentionally
+and exercises the installer with two frozen builds of the same revision,
+using different versions to simulate an upgrade. It is intentionally
 read-only and never creates a public release. Linux CI uploads a portable build;
 Linux in-app installs still require an AppImage.
 
