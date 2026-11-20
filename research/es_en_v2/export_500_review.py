@@ -352,17 +352,17 @@ def save(cases, generated, timings):
         c.font = Font(name="Aptos", bold=True, color="FFFFFF", size=12)
     analysis = [
         ("Cases supplied", "=COUNTA('500 Model Outputs'!A2:A501)"),
-        ("Reviewer-rated cases", '=COUNTIF(\\'500 Model Outputs\\'!G2:G501,"Pass")+COUNTIF(\\'500 Model Outputs\\'!G2:G501,"Fail")+COUNTIF(\\'500 Model Outputs\\'!G2:G501,"Unrateable")'),
-        ("Passes", '=COUNTIF(\\'500 Model Outputs\\'!G2:G501,"Pass")'),
-        ("Fails", '=COUNTIF(\\'500 Model Outputs\\'!G2:G501,"Fail")'),
-        ("Unrateable", '=COUNTIF(\\'500 Model Outputs\\'!G2:G501,"Unrateable")'),
+        ("Reviewer-rated cases", '=COUNTIF(\'500 Model Outputs\'!G2:G501,"Pass")+COUNTIF(\'500 Model Outputs\'!G2:G501,"Fail")+COUNTIF(\'500 Model Outputs\'!G2:G501,"Unrateable")'),
+        ("Passes", '=COUNTIF(\'500 Model Outputs\'!G2:G501,"Pass")'),
+        ("Fails", '=COUNTIF(\'500 Model Outputs\'!G2:G501,"Fail")'),
+        ("Unrateable", '=COUNTIF(\'500 Model Outputs\'!G2:G501,"Unrateable")'),
         ("Overall pass rate (reviewed only)", '=IFERROR(B4/B3,"")'),
-        ("Critical errors", '=COUNTIF(\\'500 Model Outputs\\'!H2:H501,"Yes")'),
-        ("ES→EN Passes", '=COUNTIFS(\\'500 Model Outputs\\'!B2:B501,"es-en",\\'500 Model Outputs\\'!G2:G501,"Pass")'),
-        ("ES→EN Rated", '=COUNTIFS(\\'500 Model Outputs\\'!B2:B501,"es-en",\\'500 Model Outputs\\'!G2:G501,"Pass")+COUNTIFS(\\'500 Model Outputs\\'!B2:B501,"es-en",\\'500 Model Outputs\\'!G2:G501,"Fail")+COUNTIFS(\\'500 Model Outputs\\'!B2:B501,"es-en",\\'500 Model Outputs\\'!G2:G501,"Unrateable")'),
+        ("Critical errors", '=COUNTIF(\'500 Model Outputs\'!H2:H501,"Yes")'),
+        ("ES→EN Passes", '=COUNTIFS(\'500 Model Outputs\'!B2:B501,"es-en",\'500 Model Outputs\'!G2:G501,"Pass")'),
+        ("ES→EN Rated", '=COUNTIFS(\'500 Model Outputs\'!B2:B501,"es-en",\'500 Model Outputs\'!G2:G501,"Pass")+COUNTIFS(\'500 Model Outputs\'!B2:B501,"es-en",\'500 Model Outputs\'!G2:G501,"Fail")+COUNTIFS(\'500 Model Outputs\'!B2:B501,"es-en",\'500 Model Outputs\'!G2:G501,"Unrateable")'),
         ("ES→EN reviewed pass rate", '=IFERROR(B9/B10,"")'),
-        ("EN→ES Passes", '=COUNTIFS(\\'500 Model Outputs\\'!B2:B501,"en-es",\\'500 Model Outputs\\'!G2:G501,"Pass")'),
-        ("EN→ES Rated", '=COUNTIFS(\\'500 Model Outputs\\'!B2:B501,"en-es",\\'500 Model Outputs\\'!G2:G501,"Pass")+COUNTIFS(\\'500 Model Outputs\\'!B2:B501,"en-es",\\'500 Model Outputs\\'!G2:G501,"Fail")+COUNTIFS(\\'500 Model Outputs\\'!B2:B501,"en-es",\\'500 Model Outputs\\'!G2:G501,"Unrateable")'),
+        ("EN→ES Passes", '=COUNTIFS(\'500 Model Outputs\'!B2:B501,"en-es",\'500 Model Outputs\'!G2:G501,"Pass")'),
+        ("EN→ES Rated", '=COUNTIFS(\'500 Model Outputs\'!B2:B501,"en-es",\'500 Model Outputs\'!G2:G501,"Pass")+COUNTIFS(\'500 Model Outputs\'!B2:B501,"en-es",\'500 Model Outputs\'!G2:G501,"Fail")+COUNTIFS(\'500 Model Outputs\'!B2:B501,"en-es",\'500 Model Outputs\'!G2:G501,"Unrateable")'),
         ("EN→ES reviewed pass rate", '=IFERROR(B12/B13,"")'),
     ]
     for i,(name, formula) in enumerate(analysis, 2):
