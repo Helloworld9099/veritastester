@@ -1,0 +1,1482 @@
+{
+  "schema": "m0 inventory snapshot; not an authoritative runtime registry or release artifact",
+  "main_commit": "7ad5f9e0b198020cf11ce35aa269206bb34de87b",
+  "tokenizers": {
+    "es-en": {
+      "path": "research/translation_training_20261116/model/download_manifest.json",
+      "manifest_sha256": "f65878b125b933bce9847597533a6d05475941e8708cc27b1e2cbddafbf4a355",
+      "tokenizer_type": "MarianTokenizer, SentencePiece source.spm/target.spm and fixed vocabulary",
+      "tokenizer_files": {
+        "source.spm": "e236ee6d866b635c0142114f8647f39831f9d92534aa2aad75c942f6a78ad0e3",
+        "target.spm": "4dd547c24816a335e7b0b2e63376a8f1b3cbfc671eda5ab808dd44fdadaa8791",
+        "vocab.json": "257f346d7a6b2ecceafcca8ba05648ce2fd68dfaf105fb0e913dca7198f3f6d5",
+        "tokenizer_config.json": "dd009536f1cd954180a3004be20e9963eaf3d68b485d062ea1b90d3b9ded2bc5"
+      }
+    },
+    "fr-en": {
+      "path": "research/translation_fr_training_20261116/model/download_manifest.json",
+      "manifest_sha256": "b0ae20ad81357178b6924a11ac3e68ec2953017e7bb81ebef15a293309b81220",
+      "tokenizer_type": "MarianTokenizer, SentencePiece source.spm/target.spm and fixed vocabulary",
+      "tokenizer_files": {
+        "source.spm": "78d0e717c77053f1c4b856d8661d9cb87c64f083a35418c087b9146300e4f585",
+        "target.spm": "173e9f493a668fe396d599e28d414a201193094e6ffd7a4678e5aab0f6d3d838",
+        "vocab.json": "945c604346ce15ce4aff9001001e7f925e336d942c4087017f191871162cbdc4",
+        "tokenizer_config.json": "47de9ce87378593016432f8dc657202c03913ab3ce0c15d7f78d51edfc3ff9a3"
+      }
+    }
+  },
+  "main_stages": [
+    {
+      "id": "experiments/balanced_stage5_20261118/saved/french",
+      "model": "Helsinki-NLP/opus-mt-fr-en",
+      "base_revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+      "architecture": "MarianMT seq2seq; LoRA research weights",
+      "direction": "fr-en",
+      "tokenizer_manifest": "research/translation_fr_training_20261116/model/download_manifest.json",
+      "datasets": "AmazonScience MASSIVE replay plus Global Voices",
+      "dataset_evidence": "experiments/balanced_stage5_20261118/saved/french/report.json",
+      "restrictions": "MASSIVE CC BY 4.0; verify per-article Global Voices attribution and terms; parent ancestry still applies",
+      "ancestor_sha256": "072f7f5d2d90b26991c5c62bf8ddb40f686f65e66be52717e7b121d507008ad9",
+      "selected_name": "step144",
+      "selected_sha256": "fba2bd78958bf0bf8a4c14dc55e601e08663633718c4c9c17f91ef9b52dcfa1c",
+      "status": "experimental",
+      "train_updates": 192,
+      "report_sha256": "b05f3bf8ffb91debfa49da2baa864375fddcbdee09ab664af69289214d349c3d",
+      "reported_development": {
+        "previous": {
+          "chrf": 61.57920918082702,
+          "bleu": 36.71334428778343,
+          "n": 256
+        },
+        "step48": {
+          "chrf": 61.76542743039381,
+          "bleu": 37.15683549657311,
+          "n": 256
+        },
+        "step96": {
+          "chrf": 61.713364477775265,
+          "bleu": 37.04340480865854,
+          "n": 256
+        },
+        "step144": {
+          "chrf": 62.063081773595165,
+          "bleu": 37.12155769701663,
+          "n": 256
+        },
+        "step192": {
+          "chrf": 61.93385071782361,
+          "bleu": 37.24235174878167,
+          "n": 256
+        }
+      },
+      "repo_artifacts": [
+        "experiments/balanced_stage5_20261118/saved/french/adapter_selected.safetensors",
+        "experiments/balanced_stage5_20261118/saved/french/candidate_step144.safetensors",
+        "experiments/balanced_stage5_20261118/saved/french/candidate_step192.safetensors",
+        "experiments/balanced_stage5_20261118/saved/french/candidate_step48.safetensors",
+        "experiments/balanced_stage5_20261118/saved/french/candidate_step96.safetensors"
+      ]
+    },
+    {
+      "id": "experiments/balanced_stage5_20261118/saved/spanish",
+      "model": "Helsinki-NLP/opus-mt-es-en",
+      "base_revision": "c96e2c5399ebfae4fc43d9669556b9afa74bb69d",
+      "architecture": "MarianMT seq2seq; LoRA research weights",
+      "direction": "es-en",
+      "tokenizer_manifest": "research/translation_training_20261116/model/download_manifest.json",
+      "datasets": "AmazonScience MASSIVE replay plus Global Voices",
+      "dataset_evidence": "experiments/balanced_stage5_20261118/saved/spanish/report.json",
+      "restrictions": "MASSIVE CC BY 4.0; verify per-article Global Voices attribution and terms; parent ancestry still applies",
+      "ancestor_sha256": "14dddb5040afe49f8f05a1bfba3458d3321524b53b0fc05b359ad41a1ab75a4b",
+      "selected_name": "previous",
+      "selected_sha256": "14dddb5040afe49f8f05a1bfba3458d3321524b53b0fc05b359ad41a1ab75a4b",
+      "status": "experimental",
+      "train_updates": 192,
+      "report_sha256": "cf9aa0a62a3fe1f9fee7ee2a7b10847a93e92aa0ebf56b85c898f61b3b2406a4",
+      "reported_development": {
+        "previous": {
+          "chrf": 68.80815977883171,
+          "bleu": 47.960146316365844,
+          "n": 256
+        },
+        "step48": {
+          "chrf": 68.75350397340165,
+          "bleu": 48.000712197881825,
+          "n": 256
+        },
+        "step96": {
+          "chrf": 68.71306439264767,
+          "bleu": 47.98712320215352,
+          "n": 256
+        },
+        "step144": {
+          "chrf": 68.95488960326529,
+          "bleu": 48.217697144108236,
+          "n": 256
+        },
+        "step192": {
+          "chrf": 68.9774170887867,
+          "bleu": 48.35678863800253,
+          "n": 256
+        }
+      },
+      "repo_artifacts": [
+        "experiments/balanced_stage5_20261118/saved/spanish/candidate_step144.safetensors",
+        "experiments/balanced_stage5_20261118/saved/spanish/candidate_step192.safetensors",
+        "experiments/balanced_stage5_20261118/saved/spanish/candidate_step48.safetensors",
+        "experiments/balanced_stage5_20261118/saved/spanish/candidate_step96.safetensors"
+      ]
+    },
+    {
+      "id": "experiments/french_stage6_20261118/saved",
+      "model": "Helsinki-NLP/opus-mt-fr-en",
+      "base_revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+      "architecture": "MarianMT seq2seq; LoRA research weights",
+      "direction": "fr-en",
+      "tokenizer_manifest": "research/translation_fr_training_20261116/model/download_manifest.json",
+      "datasets": "AmazonScience MASSIVE replay plus Global Voices",
+      "dataset_evidence": "experiments/french_stage6_20261118/saved/report.json",
+      "restrictions": "Source credits and upstream rights retained; never treat selection as release clearance",
+      "ancestor_sha256": "fba2bd78958bf0bf8a4c14dc55e601e08663633718c4c9c17f91ef9b52dcfa1c",
+      "selected_name": "previous",
+      "selected_sha256": "fba2bd78958bf0bf8a4c14dc55e601e08663633718c4c9c17f91ef9b52dcfa1c",
+      "status": "experimental",
+      "train_updates": 192,
+      "report_sha256": "aed05e3f8f58549c5c7eeb4b133bf5f0d02bf7b5bc6e7501a6c9dd70399d1d4d",
+      "reported_development": {
+        "previous": {
+          "chrf": 62.64669930966461,
+          "bleu": 38.863370890544935,
+          "n": 256
+        },
+        "step48": {
+          "chrf": 62.678040190672114,
+          "bleu": 39.00033992728658,
+          "n": 256
+        },
+        "step96": {
+          "chrf": 62.68591847765402,
+          "bleu": 38.90602925499392,
+          "n": 256
+        },
+        "step144": {
+          "chrf": 62.701026970150465,
+          "bleu": 38.89269475979824,
+          "n": 256
+        },
+        "step192": {
+          "chrf": 62.73413310584439,
+          "bleu": 38.762610119217,
+          "n": 256
+        }
+      },
+      "repo_artifacts": [
+        "experiments/french_stage6_20261118/saved/candidate_step144.safetensors",
+        "experiments/french_stage6_20261118/saved/candidate_step192.safetensors",
+        "experiments/french_stage6_20261118/saved/candidate_step48.safetensors",
+        "experiments/french_stage6_20261118/saved/candidate_step96.safetensors"
+      ]
+    },
+    {
+      "id": "experiments/globalvoices_20261117/saved/french",
+      "model": "Helsinki-NLP/opus-mt-fr-en",
+      "base_revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+      "architecture": "MarianMT seq2seq; LoRA research weights",
+      "direction": "fr-en",
+      "tokenizer_manifest": "research/translation_fr_training_20261116/model/download_manifest.json",
+      "datasets": "OPUS Global Voices",
+      "dataset_evidence": "experiments/globalvoices_20261117/saved/french/report.json",
+      "restrictions": "Per-article licensing and attribution unresolved; research only",
+      "ancestor_sha256": "600990e205c1238ea1fba3a8c36e5ef199bdfc10b33e4e0068e5b9695b7e8665",
+      "selected_name": "step256",
+      "selected_sha256": "670c226bbe16c010940b1def0127225c0a332b7ab1ca0360dd2694f8deaa78bc",
+      "status": "experimental",
+      "train_updates": 256,
+      "report_sha256": "b7d3a3b57b35e3215285d56a119f6a3d8ca6c65c06dfdd92a14fa8628429ef09",
+      "reported_development": {
+        "previous": {
+          "chrf": 61.97134861831749,
+          "bleu": 36.71959013279867,
+          "n": 128
+        },
+        "step64": {
+          "chrf": 61.91017817096475,
+          "bleu": 36.752736933608425,
+          "n": 128
+        },
+        "step128": {
+          "chrf": 62.163441482154965,
+          "bleu": 37.02800138740944,
+          "n": 128
+        },
+        "step192": {
+          "chrf": 62.08091504651971,
+          "bleu": 37.293286191819334,
+          "n": 128
+        },
+        "step256": {
+          "chrf": 62.40236439789316,
+          "bleu": 37.409448881687446,
+          "n": 128
+        }
+      },
+      "repo_artifacts": [
+        "experiments/globalvoices_20261117/saved/french/adapter_selected.safetensors",
+        "experiments/globalvoices_20261117/saved/french/candidate_step128.safetensors",
+        "experiments/globalvoices_20261117/saved/french/candidate_step192.safetensors",
+        "experiments/globalvoices_20261117/saved/french/candidate_step256.safetensors",
+        "experiments/globalvoices_20261117/saved/french/candidate_step64.safetensors"
+      ]
+    },
+    {
+      "id": "experiments/globalvoices_20261117/saved/spanish",
+      "model": "Helsinki-NLP/opus-mt-es-en",
+      "base_revision": "c96e2c5399ebfae4fc43d9669556b9afa74bb69d",
+      "architecture": "MarianMT seq2seq; LoRA research weights",
+      "direction": "es-en",
+      "tokenizer_manifest": "research/translation_training_20261116/model/download_manifest.json",
+      "datasets": "OPUS Global Voices",
+      "dataset_evidence": "experiments/globalvoices_20261117/saved/spanish/report.json",
+      "restrictions": "Per-article licensing and attribution unresolved; research only",
+      "ancestor_sha256": "55d4b872a6807e0d9bc317b72ef63eddf77d5828c427f91497d5bc23ac2e65f3",
+      "selected_name": "previous",
+      "selected_sha256": "55d4b872a6807e0d9bc317b72ef63eddf77d5828c427f91497d5bc23ac2e65f3",
+      "status": "experimental",
+      "train_updates": 256,
+      "report_sha256": "f1619586510b6f74d19525ae10d4fea4b52937b837e9c74f1813a4d1eb645cc4",
+      "reported_development": {
+        "previous": {
+          "chrf": 70.7195066281249,
+          "bleu": 48.25557034346764,
+          "n": 128
+        },
+        "step64": {
+          "chrf": 70.54780928569355,
+          "bleu": 48.354665086351986,
+          "n": 128
+        },
+        "step128": {
+          "chrf": 70.70199109321615,
+          "bleu": 48.11228322292512,
+          "n": 128
+        },
+        "step192": {
+          "chrf": 70.9247553649903,
+          "bleu": 48.38252269056933,
+          "n": 128
+        },
+        "step256": {
+          "chrf": 70.8037280931518,
+          "bleu": 48.02011229363872,
+          "n": 128
+        }
+      },
+      "repo_artifacts": [
+        "experiments/globalvoices_20261117/saved/spanish/candidate_step128.safetensors",
+        "experiments/globalvoices_20261117/saved/spanish/candidate_step192.safetensors",
+        "experiments/globalvoices_20261117/saved/spanish/candidate_step256.safetensors",
+        "experiments/globalvoices_20261117/saved/spanish/candidate_step64.safetensors"
+      ]
+    },
+    {
+      "id": "experiments/globalvoices_stage4_20261118/saved/french",
+      "model": "Helsinki-NLP/opus-mt-fr-en",
+      "base_revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+      "architecture": "MarianMT seq2seq; LoRA research weights",
+      "direction": "fr-en",
+      "tokenizer_manifest": "research/translation_fr_training_20261116/model/download_manifest.json",
+      "datasets": "Fresh OPUS Global Voices pairs",
+      "dataset_evidence": "experiments/globalvoices_stage4_20261118/saved/french/report.json",
+      "restrictions": "Per-article licensing and attribution unresolved; research only",
+      "ancestor_sha256": "072f7f5d2d90b26991c5c62bf8ddb40f686f65e66be52717e7b121d507008ad9",
+      "selected_name": "step144",
+      "selected_sha256": "0ddc2e5f8e329515f48652f8075b01d0516f595deaab9d5144547710b6fe5287",
+      "status": "experimental",
+      "train_updates": 192,
+      "report_sha256": "b9cf351fb3eef3a6d5e5a0d7c87e89c193e615e9207ed6352dd4bc5c44332d9d",
+      "reported_development": {
+        "previous": {
+          "chrf": 59.30413874587891,
+          "bleu": 34.059752887766265,
+          "n": 128
+        },
+        "step48": {
+          "chrf": 60.22685845478,
+          "bleu": 35.34629407479823,
+          "n": 128
+        },
+        "step96": {
+          "chrf": 60.759407081436564,
+          "bleu": 35.77996946158569,
+          "n": 128
+        },
+        "step144": {
+          "chrf": 60.88189729438981,
+          "bleu": 35.89460278407462,
+          "n": 128
+        },
+        "step192": {
+          "chrf": 60.80979831003967,
+          "bleu": 35.628732207806976,
+          "n": 128
+        }
+      },
+      "repo_artifacts": [
+        "experiments/globalvoices_stage4_20261118/saved/french/adapter_selected.safetensors",
+        "experiments/globalvoices_stage4_20261118/saved/french/candidate_step144.safetensors",
+        "experiments/globalvoices_stage4_20261118/saved/french/candidate_step192.safetensors",
+        "experiments/globalvoices_stage4_20261118/saved/french/candidate_step48.safetensors",
+        "experiments/globalvoices_stage4_20261118/saved/french/candidate_step96.safetensors"
+      ]
+    },
+    {
+      "id": "experiments/globalvoices_stage4_20261118/saved/spanish",
+      "model": "Helsinki-NLP/opus-mt-es-en",
+      "base_revision": "c96e2c5399ebfae4fc43d9669556b9afa74bb69d",
+      "architecture": "MarianMT seq2seq; LoRA research weights",
+      "direction": "es-en",
+      "tokenizer_manifest": "research/translation_training_20261116/model/download_manifest.json",
+      "datasets": "Fresh OPUS Global Voices pairs",
+      "dataset_evidence": "experiments/globalvoices_stage4_20261118/saved/spanish/report.json",
+      "restrictions": "Per-article licensing and attribution unresolved; research only",
+      "ancestor_sha256": "14dddb5040afe49f8f05a1bfba3458d3321524b53b0fc05b359ad41a1ab75a4b",
+      "selected_name": "step192",
+      "selected_sha256": "3dd280a0bbb86de5d55fca09b3f4c9774c0465bd5e90556fcd7f0ba17b6596a9",
+      "status": "experimental",
+      "train_updates": 192,
+      "report_sha256": "d9a6f1125e13eb774730b72b140485c2624d99589e5ea4d145c0c929f824fbe3",
+      "reported_development": {
+        "previous": {
+          "chrf": 70.55619466886182,
+          "bleu": 49.695966432685736,
+          "n": 128
+        },
+        "step48": {
+          "chrf": 70.81376476522588,
+          "bleu": 50.03921275692864,
+          "n": 128
+        },
+        "step96": {
+          "chrf": 70.87548272479674,
+          "bleu": 49.88657572877987,
+          "n": 128
+        },
+        "step144": {
+          "chrf": 70.79292314601243,
+          "bleu": 49.73639265345943,
+          "n": 128
+        },
+        "step192": {
+          "chrf": 70.90100703622487,
+          "bleu": 49.91050884484904,
+          "n": 128
+        }
+      },
+      "repo_artifacts": [
+        "experiments/globalvoices_stage4_20261118/saved/spanish/adapter_selected.safetensors",
+        "experiments/globalvoices_stage4_20261118/saved/spanish/candidate_step144.safetensors",
+        "experiments/globalvoices_stage4_20261118/saved/spanish/candidate_step192.safetensors",
+        "experiments/globalvoices_stage4_20261118/saved/spanish/candidate_step48.safetensors",
+        "experiments/globalvoices_stage4_20261118/saved/spanish/candidate_step96.safetensors"
+      ]
+    },
+    {
+      "id": "experiments/massive_20261117/saved/french",
+      "model": "Helsinki-NLP/opus-mt-fr-en",
+      "base_revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+      "architecture": "MarianMT seq2seq; LoRA research weights",
+      "direction": "fr-en",
+      "tokenizer_manifest": "research/translation_fr_training_20261116/model/download_manifest.json",
+      "datasets": "AmazonScience MASSIVE / SLURP",
+      "dataset_evidence": "experiments/massive_20261117/saved/french/report.json",
+      "restrictions": "CC BY 4.0, with inherited ancestry restrictions",
+      "ancestor_sha256": "600990e205c1238ea1fba3a8c36e5ef199bdfc10b33e4e0068e5b9695b7e8665",
+      "selected_name": "step256",
+      "selected_sha256": "5c5094a3f8dfc9d783f6e8482ae8ed2fad7e632b81b31f20f54fa8f288538ad8",
+      "status": "experimental",
+      "train_updates": 256,
+      "report_sha256": "cea2aaee65e95bec6e4a234b173d2d88afe15ccda3918a9f83f23df728f2b218",
+      "reported_development": {
+        "previous": {
+          "chrf": 61.5891895447453,
+          "bleu": 33.99257799057918,
+          "n": 128
+        },
+        "step64": {
+          "chrf": 62.49999722126611,
+          "bleu": 36.63476277214517,
+          "n": 128
+        },
+        "step128": {
+          "chrf": 62.668238914759456,
+          "bleu": 37.67115863066177,
+          "n": 128
+        },
+        "step192": {
+          "chrf": 62.96132754291699,
+          "bleu": 38.52808586093246,
+          "n": 128
+        },
+        "step256": {
+          "chrf": 63.54634959955053,
+          "bleu": 39.6676033064028,
+          "n": 128
+        }
+      },
+      "repo_artifacts": [
+        "experiments/massive_20261117/saved/french/adapter_selected.safetensors",
+        "experiments/massive_20261117/saved/french/candidate_step128.safetensors",
+        "experiments/massive_20261117/saved/french/candidate_step192.safetensors",
+        "experiments/massive_20261117/saved/french/candidate_step256.safetensors",
+        "experiments/massive_20261117/saved/french/candidate_step64.safetensors"
+      ]
+    },
+    {
+      "id": "experiments/massive_20261117/saved/spanish",
+      "model": "Helsinki-NLP/opus-mt-es-en",
+      "base_revision": "c96e2c5399ebfae4fc43d9669556b9afa74bb69d",
+      "architecture": "MarianMT seq2seq; LoRA research weights",
+      "direction": "es-en",
+      "tokenizer_manifest": "research/translation_training_20261116/model/download_manifest.json",
+      "datasets": "AmazonScience MASSIVE / SLURP",
+      "dataset_evidence": "experiments/massive_20261117/saved/spanish/report.json",
+      "restrictions": "CC BY 4.0, with inherited ancestry restrictions",
+      "ancestor_sha256": "55d4b872a6807e0d9bc317b72ef63eddf77d5828c427f91497d5bc23ac2e65f3",
+      "selected_name": "step256",
+      "selected_sha256": "e60fbadae2037686f9693af4be2e7e59b128aa44f4be8c287f40b7f893b0a004",
+      "status": "experimental",
+      "train_updates": 256,
+      "report_sha256": "a843fc3422b531a2b719abf7b9a18993a45268780970de41bb6b354465da73b9",
+      "reported_development": {
+        "previous": {
+          "chrf": 64.01838446122657,
+          "bleu": 35.223937446832494,
+          "n": 128
+        },
+        "step64": {
+          "chrf": 65.69474901980684,
+          "bleu": 39.90873580599405,
+          "n": 128
+        },
+        "step128": {
+          "chrf": 66.40865584194306,
+          "bleu": 42.624098653455036,
+          "n": 128
+        },
+        "step192": {
+          "chrf": 65.89852710538851,
+          "bleu": 42.717567566603954,
+          "n": 128
+        },
+        "step256": {
+          "chrf": 66.67137844334479,
+          "bleu": 43.89589904395348,
+          "n": 128
+        }
+      },
+      "repo_artifacts": [
+        "experiments/massive_20261117/saved/spanish/adapter_selected.safetensors",
+        "experiments/massive_20261117/saved/spanish/candidate_step128.safetensors",
+        "experiments/massive_20261117/saved/spanish/candidate_step192.safetensors",
+        "experiments/massive_20261117/saved/spanish/candidate_step256.safetensors",
+        "experiments/massive_20261117/saved/spanish/candidate_step64.safetensors"
+      ]
+    },
+    {
+      "id": "experiments/massive_stage2_20261117/saved/french",
+      "model": "Helsinki-NLP/opus-mt-fr-en",
+      "base_revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+      "architecture": "MarianMT seq2seq; LoRA research weights",
+      "direction": "fr-en",
+      "tokenizer_manifest": "research/translation_fr_training_20261116/model/download_manifest.json",
+      "datasets": "AmazonScience MASSIVE, new cohort",
+      "dataset_evidence": "experiments/massive_stage2_20261117/saved/french/report.json",
+      "restrictions": "CC BY 4.0, with inherited ancestry restrictions",
+      "ancestor_sha256": "5c5094a3f8dfc9d783f6e8482ae8ed2fad7e632b81b31f20f54fa8f288538ad8",
+      "selected_name": "step320",
+      "selected_sha256": "0219365d7d51492f8319ebb8b6a8fccbf6da25ee3525505663ac52810b0cbcba",
+      "status": "experimental",
+      "train_updates": 320,
+      "report_sha256": "e5e32d21400ffb284ead5a4b06236dcf9c47b87a411f721fec1d452fa5a96d78",
+      "reported_development": {
+        "previous": {
+          "chrf": 65.87950485165405,
+          "bleu": 42.577670317536914,
+          "n": 256
+        },
+        "step64": {
+          "chrf": 66.09740905057038,
+          "bleu": 43.48095903453348,
+          "n": 256
+        },
+        "step128": {
+          "chrf": 66.51049114962855,
+          "bleu": 44.341967472217995,
+          "n": 256
+        },
+        "step192": {
+          "chrf": 66.79988326626015,
+          "bleu": 44.87670897405367,
+          "n": 256
+        },
+        "step256": {
+          "chrf": 66.99766381420231,
+          "bleu": 44.966669312944944,
+          "n": 256
+        },
+        "step320": {
+          "chrf": 67.24792345787091,
+          "bleu": 45.52244109177177,
+          "n": 256
+        }
+      },
+      "repo_artifacts": [
+        "experiments/massive_stage2_20261117/saved/french/adapter_selected.safetensors",
+        "experiments/massive_stage2_20261117/saved/french/candidate_step128.safetensors",
+        "experiments/massive_stage2_20261117/saved/french/candidate_step192.safetensors",
+        "experiments/massive_stage2_20261117/saved/french/candidate_step256.safetensors",
+        "experiments/massive_stage2_20261117/saved/french/candidate_step320.safetensors",
+        "experiments/massive_stage2_20261117/saved/french/candidate_step64.safetensors"
+      ]
+    },
+    {
+      "id": "experiments/massive_stage2_20261117/saved/spanish",
+      "model": "Helsinki-NLP/opus-mt-es-en",
+      "base_revision": "c96e2c5399ebfae4fc43d9669556b9afa74bb69d",
+      "architecture": "MarianMT seq2seq; LoRA research weights",
+      "direction": "es-en",
+      "tokenizer_manifest": "research/translation_training_20261116/model/download_manifest.json",
+      "datasets": "AmazonScience MASSIVE, new cohort",
+      "dataset_evidence": "experiments/massive_stage2_20261117/saved/spanish/report.json",
+      "restrictions": "CC BY 4.0, with inherited ancestry restrictions",
+      "ancestor_sha256": "e60fbadae2037686f9693af4be2e7e59b128aa44f4be8c287f40b7f893b0a004",
+      "selected_name": "step256",
+      "selected_sha256": "990fa755ab733a8a3a600615f2d9ed47c8ea24935cb88258e0f5a9f00888d791",
+      "status": "experimental",
+      "train_updates": 320,
+      "report_sha256": "e187c7ac27cbbeb05953659c02222cfeeb4251033979b5a672c1e4345d255576",
+      "reported_development": {
+        "previous": {
+          "chrf": 64.15773539558784,
+          "bleu": 38.97202663693638,
+          "n": 256
+        },
+        "step64": {
+          "chrf": 64.77508416155923,
+          "bleu": 40.06229640829265,
+          "n": 256
+        },
+        "step128": {
+          "chrf": 65.39536450708073,
+          "bleu": 41.04581648152403,
+          "n": 256
+        },
+        "step192": {
+          "chrf": 65.59098847858425,
+          "bleu": 41.38439653594953,
+          "n": 256
+        },
+        "step256": {
+          "chrf": 66.62365350531265,
+          "bleu": 45.37820430703312,
+          "n": 256
+        },
+        "step320": {
+          "chrf": 66.57167129197201,
+          "bleu": 45.18177795613569,
+          "n": 256
+        }
+      },
+      "repo_artifacts": [
+        "experiments/massive_stage2_20261117/saved/spanish/adapter_selected.safetensors",
+        "experiments/massive_stage2_20261117/saved/spanish/candidate_step128.safetensors",
+        "experiments/massive_stage2_20261117/saved/spanish/candidate_step192.safetensors",
+        "experiments/massive_stage2_20261117/saved/spanish/candidate_step256.safetensors",
+        "experiments/massive_stage2_20261117/saved/spanish/candidate_step320.safetensors",
+        "experiments/massive_stage2_20261117/saved/spanish/candidate_step64.safetensors"
+      ]
+    },
+    {
+      "id": "experiments/massive_stage3_20261117/saved/french",
+      "model": "Helsinki-NLP/opus-mt-fr-en",
+      "base_revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+      "architecture": "MarianMT seq2seq; LoRA research weights",
+      "direction": "fr-en",
+      "tokenizer_manifest": "research/translation_fr_training_20261116/model/download_manifest.json",
+      "datasets": "AmazonScience MASSIVE, fresh cohort",
+      "dataset_evidence": "experiments/massive_stage3_20261117/saved/french/report.json",
+      "restrictions": "CC BY 4.0, with inherited ancestry restrictions",
+      "ancestor_sha256": "0219365d7d51492f8319ebb8b6a8fccbf6da25ee3525505663ac52810b0cbcba",
+      "selected_name": "step96",
+      "selected_sha256": "072f7f5d2d90b26991c5c62bf8ddb40f686f65e66be52717e7b121d507008ad9",
+      "status": "experimental",
+      "train_updates": 96,
+      "report_sha256": "d99509228efd2faffb5b24795e74d518cd9f70a3aaeb165c822018ffdddfc3ba",
+      "reported_development": {
+        "previous": {
+          "chrf": 68.2369197439365,
+          "bleu": 47.86634994896189,
+          "n": 256
+        },
+        "step24": {
+          "chrf": 68.4200207329452,
+          "bleu": 47.59872115841267,
+          "n": 256
+        },
+        "step48": {
+          "chrf": 68.60709639418533,
+          "bleu": 48.4332521097182,
+          "n": 256
+        },
+        "step72": {
+          "chrf": 68.74457195085341,
+          "bleu": 48.3011828351497,
+          "n": 256
+        },
+        "step96": {
+          "chrf": 68.80607994600358,
+          "bleu": 48.50599131953619,
+          "n": 256
+        }
+      },
+      "repo_artifacts": [
+        "experiments/massive_stage3_20261117/saved/french/adapter_selected.safetensors",
+        "experiments/massive_stage3_20261117/saved/french/candidate_step24.safetensors",
+        "experiments/massive_stage3_20261117/saved/french/candidate_step48.safetensors",
+        "experiments/massive_stage3_20261117/saved/french/candidate_step72.safetensors",
+        "experiments/massive_stage3_20261117/saved/french/candidate_step96.safetensors"
+      ]
+    },
+    {
+      "id": "experiments/massive_stage3_20261117/saved/spanish",
+      "model": "Helsinki-NLP/opus-mt-es-en",
+      "base_revision": "c96e2c5399ebfae4fc43d9669556b9afa74bb69d",
+      "architecture": "MarianMT seq2seq; LoRA research weights",
+      "direction": "es-en",
+      "tokenizer_manifest": "research/translation_training_20261116/model/download_manifest.json",
+      "datasets": "AmazonScience MASSIVE, fresh cohort",
+      "dataset_evidence": "experiments/massive_stage3_20261117/saved/spanish/report.json",
+      "restrictions": "CC BY 4.0, with inherited ancestry restrictions",
+      "ancestor_sha256": "990fa755ab733a8a3a600615f2d9ed47c8ea24935cb88258e0f5a9f00888d791",
+      "selected_name": "step48",
+      "selected_sha256": "14dddb5040afe49f8f05a1bfba3458d3321524b53b0fc05b359ad41a1ab75a4b",
+      "status": "experimental",
+      "train_updates": 96,
+      "report_sha256": "dba60b6850e0dcf8da7c32aa22c462a7959c9296559816ae894ef83e7940b267",
+      "reported_development": {
+        "previous": {
+          "chrf": 66.58078441414497,
+          "bleu": 39.40344325327594,
+          "n": 256
+        },
+        "step24": {
+          "chrf": 66.83466125886804,
+          "bleu": 40.08774848634122,
+          "n": 256
+        },
+        "step48": {
+          "chrf": 67.04883025714358,
+          "bleu": 42.30630606288457,
+          "n": 256
+        },
+        "step72": {
+          "chrf": 66.88197609181043,
+          "bleu": 42.193207446864015,
+          "n": 256
+        },
+        "step96": {
+          "chrf": 66.89847694176979,
+          "bleu": 42.07230888200905,
+          "n": 256
+        }
+      },
+      "repo_artifacts": [
+        "experiments/massive_stage3_20261117/saved/spanish/adapter_selected.safetensors",
+        "experiments/massive_stage3_20261117/saved/spanish/candidate_step24.safetensors",
+        "experiments/massive_stage3_20261117/saved/spanish/candidate_step48.safetensors",
+        "experiments/massive_stage3_20261117/saved/spanish/candidate_step72.safetensors",
+        "experiments/massive_stage3_20261117/saved/spanish/candidate_step96.safetensors"
+      ]
+    },
+    {
+      "id": "experiments/multi3woz_20261118/saved/french",
+      "model": "Helsinki-NLP/opus-mt-fr-en",
+      "base_revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+      "architecture": "MarianMT seq2seq; LoRA research weights",
+      "direction": "fr-en",
+      "tokenizer_manifest": "research/translation_fr_training_20261116/model/download_manifest.json",
+      "datasets": "Multi3WOZ contextual human-labelled research pairs",
+      "dataset_evidence": "experiments/multi3woz_20261118/saved/french/report.json",
+      "restrictions": "Source repo MIT/paper CC BY 4.0 reported; attribution and ancestry review required",
+      "ancestor_sha256": "072f7f5d2d90b26991c5c62bf8ddb40f686f65e66be52717e7b121d507008ad9",
+      "selected_name": "step72",
+      "selected_sha256": "db8128e31c41562faf97e61e61660bb5496247c48c2d38e167c90f32cadde3b3",
+      "status": "experimental",
+      "train_updates": 96,
+      "report_sha256": "1c4948b963161dfeb1a2817d42fdb614ac69e16ae9f8a17d93b9c03279fcb52e",
+      "reported_development": {
+        "previous": {
+          "chrf": 30.169646363693996,
+          "bleu": 6.787485965713536,
+          "n": 128
+        },
+        "step24": {
+          "chrf": 30.89724115523821,
+          "bleu": 8.106363511846515,
+          "n": 128
+        },
+        "step48": {
+          "chrf": 30.870428164751683,
+          "bleu": 8.014779032343087,
+          "n": 128
+        },
+        "step72": {
+          "chrf": 31.196543625289596,
+          "bleu": 8.56759267515202,
+          "n": 128
+        },
+        "step96": {
+          "chrf": 31.096195558319856,
+          "bleu": 8.473369222699533,
+          "n": 128
+        }
+      },
+      "repo_artifacts": [
+        "experiments/multi3woz_20261118/saved/french/adapter_selected.safetensors",
+        "experiments/multi3woz_20261118/saved/french/candidate_step24.safetensors",
+        "experiments/multi3woz_20261118/saved/french/candidate_step48.safetensors",
+        "experiments/multi3woz_20261118/saved/french/candidate_step72.safetensors",
+        "experiments/multi3woz_20261118/saved/french/candidate_step96.safetensors"
+      ]
+    },
+    {
+      "id": "experiments/opus_books_20261117/saved/french",
+      "model": "Helsinki-NLP/opus-mt-fr-en",
+      "base_revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+      "architecture": "MarianMT seq2seq; LoRA research weights",
+      "direction": "fr-en",
+      "tokenizer_manifest": "research/translation_fr_training_20261116/model/download_manifest.json",
+      "datasets": "OPUS Books",
+      "dataset_evidence": "experiments/opus_books_20261117/saved/french/report.json",
+      "restrictions": "Document-level reuse/attribution unresolved, research only",
+      "ancestor_sha256": "600990e205c1238ea1fba3a8c36e5ef199bdfc10b33e4e0068e5b9695b7e8665",
+      "selected_name": "step144",
+      "selected_sha256": "8b2410003e8ead6732870d18963e03bfae45ceb3148ac442acb47917dee0f891",
+      "status": "experimental",
+      "train_updates": 192,
+      "report_sha256": "6edf5e292ebb137542ada2683561d2eec19a0b15feb0f9dfefa9e2b16c41b40f",
+      "reported_development": {
+        "previous": {
+          "chrf": 42.23295855352943,
+          "bleu": 16.32000305453905,
+          "n": 128
+        },
+        "step48": {
+          "chrf": 42.4501832522522,
+          "bleu": 16.3403054278128,
+          "n": 128
+        },
+        "step96": {
+          "chrf": 42.88035261558435,
+          "bleu": 16.70295140414636,
+          "n": 128
+        },
+        "step144": {
+          "chrf": 43.0802294778688,
+          "bleu": 16.97172090208039,
+          "n": 128
+        },
+        "step192": {
+          "chrf": 43.01191291283908,
+          "bleu": 16.812672181426187,
+          "n": 128
+        }
+      },
+      "repo_artifacts": [
+        "experiments/opus_books_20261117/saved/french/adapter_selected.safetensors"
+      ]
+    },
+    {
+      "id": "experiments/opus_books_20261117/saved/spanish",
+      "model": "Helsinki-NLP/opus-mt-es-en",
+      "base_revision": "c96e2c5399ebfae4fc43d9669556b9afa74bb69d",
+      "architecture": "MarianMT seq2seq; LoRA research weights",
+      "direction": "es-en",
+      "tokenizer_manifest": "research/translation_training_20261116/model/download_manifest.json",
+      "datasets": "OPUS Books",
+      "dataset_evidence": "experiments/opus_books_20261117/saved/spanish/report.json",
+      "restrictions": "Document-level reuse/attribution unresolved, research only",
+      "ancestor_sha256": "55d4b872a6807e0d9bc317b72ef63eddf77d5828c427f91497d5bc23ac2e65f3",
+      "selected_name": "step96",
+      "selected_sha256": "fabfaacddb980c47de5352ab6e13b45db326ac1d813906b11280f21a8f123554",
+      "status": "experimental",
+      "train_updates": 192,
+      "report_sha256": "22e0526f05c821976f946776ee9c1370e736c347b42539c4d58f57c500c574b1",
+      "reported_development": {
+        "previous": {
+          "chrf": 37.69262370951855,
+          "bleu": 14.153135849381636,
+          "n": 128
+        },
+        "step48": {
+          "chrf": 37.95111438491387,
+          "bleu": 14.46291610129149,
+          "n": 128
+        },
+        "step96": {
+          "chrf": 38.121737157529125,
+          "bleu": 14.462689228454558,
+          "n": 128
+        },
+        "step144": {
+          "chrf": 37.968486823835526,
+          "bleu": 13.957612944411581,
+          "n": 128
+        },
+        "step192": {
+          "chrf": 37.934615369571326,
+          "bleu": 13.78384639504069,
+          "n": 128
+        }
+      },
+      "repo_artifacts": [
+        "experiments/opus_books_20261117/saved/spanish/adapter_selected.safetensors"
+      ]
+    },
+    {
+      "id": "experiments/qed_subtitles_20261117/saved/french",
+      "model": "Helsinki-NLP/opus-mt-fr-en",
+      "base_revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+      "architecture": "MarianMT seq2seq; LoRA research weights",
+      "direction": "fr-en",
+      "tokenizer_manifest": "research/translation_fr_training_20261116/model/download_manifest.json",
+      "datasets": "QED subtitles",
+      "dataset_evidence": "experiments/qed_subtitles_20261117/saved/french/report.json",
+      "restrictions": "Restricted QED/CC noncommercial ancestry; never route into a commercial lineage",
+      "ancestor_sha256": "600990e205c1238ea1fba3a8c36e5ef199bdfc10b33e4e0068e5b9695b7e8665",
+      "selected_name": "previous",
+      "selected_sha256": "600990e205c1238ea1fba3a8c36e5ef199bdfc10b33e4e0068e5b9695b7e8665",
+      "status": "archived_restricted",
+      "train_updates": 320,
+      "report_sha256": "ceb6c3a83a155425a267f7758da796da61cff32fcbfcd9ed684c82a6cae006d6",
+      "reported_development": {
+        "previous": {
+          "chrf": 57.67215169309255,
+          "bleu": 37.30474646427605,
+          "n": 128
+        },
+        "step64": {
+          "chrf": 57.742031340548564,
+          "bleu": 37.33882372188329,
+          "n": 128
+        },
+        "step128": {
+          "chrf": 57.535094445420754,
+          "bleu": 36.78122956235283,
+          "n": 128
+        },
+        "step192": {
+          "chrf": 57.57457024150593,
+          "bleu": 36.88661107447785,
+          "n": 128
+        },
+        "step256": {
+          "chrf": 57.60670820927071,
+          "bleu": 36.930896537072826,
+          "n": 128
+        },
+        "step320": {
+          "chrf": 57.71360063258314,
+          "bleu": 37.15599318954894,
+          "n": 128
+        }
+      },
+      "repo_artifacts": []
+    },
+    {
+      "id": "experiments/qed_subtitles_20261117/saved/spanish",
+      "model": "Helsinki-NLP/opus-mt-es-en",
+      "base_revision": "c96e2c5399ebfae4fc43d9669556b9afa74bb69d",
+      "architecture": "MarianMT seq2seq; LoRA research weights",
+      "direction": "es-en",
+      "tokenizer_manifest": "research/translation_training_20261116/model/download_manifest.json",
+      "datasets": "QED subtitles",
+      "dataset_evidence": "experiments/qed_subtitles_20261117/saved/spanish/report.json",
+      "restrictions": "Restricted QED/CC noncommercial ancestry; never route into a commercial lineage",
+      "ancestor_sha256": "55d4b872a6807e0d9bc317b72ef63eddf77d5828c427f91497d5bc23ac2e65f3",
+      "selected_name": "step256",
+      "selected_sha256": "269b67cf8e49dc0da9fe13d47059c57533e61e5ef4db079ff12983e70ea62ab9",
+      "status": "archived_restricted",
+      "train_updates": 320,
+      "report_sha256": "f55b11da8e1cfa80211c52d425e2a0dcc7d4463f6318ecf5ee5cd57fe6cb346f",
+      "reported_development": {
+        "previous": {
+          "chrf": 62.1277750127411,
+          "bleu": 42.84999438634841,
+          "n": 128
+        },
+        "step64": {
+          "chrf": 62.3412730409875,
+          "bleu": 43.31640167905845,
+          "n": 128
+        },
+        "step128": {
+          "chrf": 62.5285356738329,
+          "bleu": 43.638634512258065,
+          "n": 128
+        },
+        "step192": {
+          "chrf": 62.384812680880906,
+          "bleu": 43.585541577544085,
+          "n": 128
+        },
+        "step256": {
+          "chrf": 62.55584455837378,
+          "bleu": 43.80133893963756,
+          "n": 128
+        },
+        "step320": {
+          "chrf": 62.533553630531244,
+          "bleu": 43.67353419767046,
+          "n": 128
+        }
+      },
+      "repo_artifacts": [
+        "experiments/qed_subtitles_20261117/saved/spanish/adapter_selected.safetensors"
+      ]
+    },
+    {
+      "id": "experiments/tatoeba_stage7_20261118/saved",
+      "model": "Helsinki-NLP/opus-mt-fr-en",
+      "base_revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+      "architecture": "MarianMT seq2seq; LoRA research weights",
+      "direction": "fr-en",
+      "tokenizer_manifest": "research/translation_fr_training_20261116/model/download_manifest.json",
+      "datasets": "Tatoeba and voiced-command research cohorts; exact cohorts in associated report",
+      "dataset_evidence": "experiments/tatoeba_stage7_20261118/saved/report.json",
+      "restrictions": "Tatoeba contributor attribution and inherited rights apply; research only",
+      "ancestor_sha256": "fba2bd78958bf0bf8a4c14dc55e601e08663633718c4c9c17f91ef9b52dcfa1c",
+      "selected_name": "step48",
+      "selected_sha256": "5b9b136997fcc80c961542831a1dd0578018de81f1e1a069df686616a4f5d80f",
+      "status": "experimental",
+      "train_updates": 192,
+      "report_sha256": "efbd71c262dc59029ac2cd9be58fed6334b5e983407085cce91f4751190de388",
+      "reported_development": {
+        "previous": {
+          "chrf": 76.48797925692786,
+          "bleu": 64.68479974206858,
+          "n": 256
+        },
+        "step48": {
+          "chrf": 76.75878197163053,
+          "bleu": 65.38130383695352,
+          "n": 256
+        },
+        "step96": {
+          "chrf": 76.716123038948,
+          "bleu": 65.34970797486218,
+          "n": 256
+        },
+        "step144": {
+          "chrf": 76.63864499023272,
+          "bleu": 65.15378134572764,
+          "n": 256
+        },
+        "step192": {
+          "chrf": 76.41537921136849,
+          "bleu": 64.59028283036243,
+          "n": 256
+        }
+      },
+      "repo_artifacts": [
+        "experiments/tatoeba_stage7_20261118/saved/adapter_selected.safetensors",
+        "experiments/tatoeba_stage7_20261118/saved/candidate_step144.safetensors",
+        "experiments/tatoeba_stage7_20261118/saved/candidate_step192.safetensors",
+        "experiments/tatoeba_stage7_20261118/saved/candidate_step48.safetensors",
+        "experiments/tatoeba_stage7_20261118/saved/candidate_step96.safetensors"
+      ]
+    },
+    {
+      "id": "experiments/tatoeba_stage8_20261118/saved",
+      "model": "Helsinki-NLP/opus-mt-fr-en",
+      "base_revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+      "architecture": "MarianMT seq2seq; LoRA research weights",
+      "direction": "fr-en",
+      "tokenizer_manifest": "research/translation_fr_training_20261116/model/download_manifest.json",
+      "datasets": "Tatoeba and MASSIVE components; exact strata in associated report",
+      "dataset_evidence": "experiments/tatoeba_stage8_20261118/saved/report.json",
+      "restrictions": "Contributor attribution and inherited rights apply; research only",
+      "ancestor_sha256": "5b9b136997fcc80c961542831a1dd0578018de81f1e1a069df686616a4f5d80f",
+      "selected_name": "previous",
+      "selected_sha256": "5b9b136997fcc80c961542831a1dd0578018de81f1e1a069df686616a4f5d80f",
+      "status": "experimental",
+      "train_updates": 512,
+      "report_sha256": "b14bf0b97ea0017a81b0dcd5a6d763e605597db3c26662db9bee33b010853b85",
+      "reported_development": {
+        "previous": {
+          "chrf": 70.21671190189862,
+          "bleu": 53.45660789060201,
+          "n": 256
+        },
+        "step128": {
+          "chrf": 70.0027411345538,
+          "bleu": 52.99520603699236,
+          "n": 256
+        },
+        "step256": {
+          "chrf": 69.93547290995247,
+          "bleu": 52.79660960738919,
+          "n": 256
+        },
+        "step384": {
+          "chrf": 69.57687703635793,
+          "bleu": 52.59259414180377,
+          "n": 256
+        },
+        "step512": {
+          "chrf": 69.85410986765734,
+          "bleu": 53.02953113840851,
+          "n": 256
+        }
+      },
+      "repo_artifacts": [
+        "experiments/tatoeba_stage8_20261118/saved/candidate_step128.safetensors",
+        "experiments/tatoeba_stage8_20261118/saved/candidate_step256.safetensors",
+        "experiments/tatoeba_stage8_20261118/saved/candidate_step384.safetensors",
+        "experiments/tatoeba_stage8_20261118/saved/candidate_step512.safetensors"
+      ]
+    },
+    {
+      "id": "experiments/wmt24_context_20261119/saved",
+      "model": "Helsinki-NLP/opus-mt-fr-en",
+      "base_revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+      "architecture": "MarianMT seq2seq; LoRA research weights",
+      "direction": "fr-en",
+      "tokenizer_manifest": "research/translation_fr_training_20261116/model/download_manifest.json",
+      "datasets": "WMT24 context-marked customer conversations",
+      "dataset_evidence": "experiments/wmt24_context_20261119/saved/report.json",
+      "restrictions": "CC BY-NC 4.0, private/noncommercial research lineage; WMT24 test sealed in report",
+      "ancestor_sha256": "5b9b136997fcc80c961542831a1dd0578018de81f1e1a069df686616a4f5d80f",
+      "selected_name": "step240",
+      "selected_sha256": "c858eb0a369baccbc93c5289b700886df896e15535cdf0222354e25f415a8b44",
+      "status": "archived_restricted",
+      "train_updates": 240,
+      "report_sha256": "25e71a667f16e240cb8d362283f401321ff85cd19fe8df68c4c343ff1b97da3e",
+      "reported_development": {
+        "previous": {
+          "chrf": 53.57939340619819,
+          "bleu": 16.34642573306015,
+          "n": 256
+        },
+        "step60": {
+          "chrf": 57.34591067924724,
+          "bleu": 20.077799464439938,
+          "n": 256
+        },
+        "step120": {
+          "chrf": 65.7798006483772,
+          "bleu": 31.625536242953576,
+          "n": 256
+        },
+        "step180": {
+          "chrf": 71.50865837160144,
+          "bleu": 46.13620047701198,
+          "n": 256
+        },
+        "step240": {
+          "chrf": 72.70549511521564,
+          "bleu": 50.065682003701184,
+          "n": 256
+        }
+      },
+      "repo_artifacts": [
+        "experiments/wmt24_context_20261119/saved/adapter_selected.safetensors",
+        "experiments/wmt24_context_20261119/saved/candidate_step120.safetensors",
+        "experiments/wmt24_context_20261119/saved/candidate_step180.safetensors",
+        "experiments/wmt24_context_20261119/saved/candidate_step240.safetensors",
+        "experiments/wmt24_context_20261119/saved/candidate_step60.safetensors"
+      ]
+    },
+    {
+      "id": "research/translation_training_20261116",
+      "model": "Helsinki-NLP/opus-mt-es-en",
+      "base_revision": "c96e2c5399ebfae4fc43d9669556b9afa74bb69d",
+      "architecture": "MarianMT seq2seq; LoRA",
+      "direction": "es-en",
+      "tokenizer_manifest": "research/translation_training_20261116/model/download_manifest.json",
+      "datasets": "Europarl v7; WMT guard, not taught",
+      "dataset_evidence": "research/translation_training_20261116/data_manifest.json",
+      "restrictions": "Research only; see upstream dataset attribution and inherited terms; no production approval",
+      "ancestor_sha256": null,
+      "selected_name": 128,
+      "selected_sha256": "31c33afbfc7f3e5e1e58b361c099237578f214ffd6cce5dd9781c9fe0ff3dd0a",
+      "status": "experimental",
+      "train_updates": 128,
+      "report_sha256": "53fd44f31acfa63d3d8ae0d0e6e16d16622c34b222b395cdc3bcb2023bfcf91b",
+      "reported_retrospective_metrics": {
+        "europarl_test": {
+          "baseline": {
+            "n": 256,
+            "chrf": 66.32795044685716,
+            "bleu": 43.959220367789165
+          },
+          "selected": {
+            "n": 256,
+            "chrf": 66.20412371606098,
+            "bleu": 44.09575040731975
+          },
+          "baseline_seconds_per_sentence": 0.2708666092226366,
+          "selected_seconds_per_sentence": 0.29869159779295273
+        },
+        "wmt_guard": {
+          "baseline": {
+            "n": 128,
+            "chrf": 59.744659102730125,
+            "bleu": 36.47981124840643
+          },
+          "selected": {
+            "n": 128,
+            "chrf": 59.402919040784795,
+            "bleu": 35.73564926311978
+          },
+          "baseline_seconds_per_sentence": 0.36051182599999265,
+          "selected_seconds_per_sentence": 0.38394375412499926
+        }
+      },
+      "repo_artifacts": [
+        "research/translation_training_20261116/adapter_selected.safetensors"
+      ]
+    },
+    {
+      "id": "research/translation_fr_training_20261116",
+      "model": "Helsinki-NLP/opus-mt-fr-en",
+      "base_revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+      "architecture": "MarianMT seq2seq; LoRA",
+      "direction": "fr-en",
+      "tokenizer_manifest": "research/translation_fr_training_20261116/model/download_manifest.json",
+      "datasets": "Tatoeba; DiaBLa guard, not taught",
+      "dataset_evidence": "research/translation_fr_training_20261116/data_manifest.json",
+      "restrictions": "Research only; see upstream dataset attribution and inherited terms; no production approval",
+      "ancestor_sha256": null,
+      "selected_name": 128,
+      "selected_sha256": "7445651cc93617b3c8e4cd00c614371ee7af92ccf541659a9b445f8d9edf372f",
+      "status": "experimental",
+      "train_updates": 128,
+      "report_sha256": "1c4f5c383ec6186d6df273f27f18ca6f757d47b61327d7027ed5b1ff68d283b4",
+      "reported_retrospective_metrics": {
+        "tatoeba_test": {
+          "baseline": {
+            "n": 256,
+            "chrf": 74.24475060707964,
+            "bleu": 61.87471457522444
+          },
+          "selected": {
+            "n": 256,
+            "chrf": 76.37967559514804,
+            "bleu": 66.4553491261249
+          },
+          "baseline_seconds_per_sentence": 0.18526763405468216,
+          "selected_seconds_per_sentence": 0.11767624294138557
+        },
+        "diabla_guard": {
+          "baseline": {
+            "n": 128,
+            "chrf": 54.928233102134186,
+            "bleu": 31.17413783587757
+          },
+          "selected": {
+            "n": 128,
+            "chrf": 55.428430330464366,
+            "bleu": 30.773612428428557
+          },
+          "baseline_seconds_per_sentence": 0.19811076535160055,
+          "selected_seconds_per_sentence": 0.2283223164531023
+        }
+      },
+      "repo_artifacts": [
+        "research/translation_fr_training_20261116/adapter_selected.safetensors"
+      ]
+    },
+    {
+      "id": "research/neural_continuation_20261116/french",
+      "model": "Helsinki-NLP/opus-mt-fr-en",
+      "base_revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+      "architecture": "MarianMT seq2seq; LoRA",
+      "direction": "fr-en",
+      "tokenizer_manifest": "research/translation_fr_training_20261116/model/download_manifest.json",
+      "datasets": "Tatoeba; DiaBLa eval only",
+      "dataset_evidence": "research/neural_continuation_20261116/french/data_manifest.json",
+      "restrictions": "Research only; see upstream dataset attribution and inherited terms; no production approval",
+      "ancestor_sha256": "7445651cc93617b3c8e4cd00c614371ee7af92ccf541659a9b445f8d9edf372f",
+      "selected_name": "step128",
+      "selected_sha256": "600990e205c1238ea1fba3a8c36e5ef199bdfc10b33e4e0068e5b9695b7e8665",
+      "status": "experimental",
+      "train_updates": 256,
+      "report_sha256": "d2069929fe0f4d239f368544d2a8249f37ad978b009f425ebc88559676a11b03",
+      "reported_retrospective_metrics": {
+        "evaluations": {
+          "new_source_test": {
+            "base": {
+              "n": 512,
+              "chrf": 74.90470626891344,
+              "bleu": 62.812536334854116,
+              "batch_amortized_seconds_per_sentence": 0.10478391406643084
+            },
+            "previous": {
+              "n": 512,
+              "chrf": 75.05331611198169,
+              "bleu": 62.88309835062499,
+              "batch_amortized_seconds_per_sentence": 0.1138196271503773
+            },
+            "selected": {
+              "n": 512,
+              "chrf": 75.5662856123627,
+              "bleu": 64.07329171008669,
+              "batch_amortized_seconds_per_sentence": 0.11093318564648058
+            }
+          },
+          "new_external_guard": {
+            "base": {
+              "n": 160,
+              "chrf": 57.58094892712391,
+              "bleu": 37.632805099999686,
+              "batch_amortized_seconds_per_sentence": 0.24005790130627247
+            },
+            "previous": {
+              "n": 160,
+              "chrf": 57.43969907785883,
+              "bleu": 37.716019075092206,
+              "batch_amortized_seconds_per_sentence": 0.1720931275250223
+            },
+            "selected": {
+              "n": 160,
+              "chrf": 57.88634135230279,
+              "bleu": 38.25066937787801,
+              "batch_amortized_seconds_per_sentence": 0.17871916368121674
+            }
+          }
+        }
+      },
+      "repo_artifacts": [
+        "research/neural_continuation_20261116/french/adapter_last.safetensors",
+        "research/neural_continuation_20261116/french/adapter_selected.safetensors",
+        "research/neural_continuation_20261116/french/adapter_start.safetensors"
+      ]
+    },
+    {
+      "id": "research/neural_continuation_20261116/spanish",
+      "model": "Helsinki-NLP/opus-mt-es-en",
+      "base_revision": "c96e2c5399ebfae4fc43d9669556b9afa74bb69d",
+      "architecture": "MarianMT seq2seq; LoRA",
+      "direction": "es-en",
+      "tokenizer_manifest": "research/translation_training_20261116/model/download_manifest.json",
+      "datasets": "Europarl; WMT eval only",
+      "dataset_evidence": "research/neural_continuation_20261116/spanish/data_manifest.json",
+      "restrictions": "Research only; see upstream dataset attribution and inherited terms; no production approval",
+      "ancestor_sha256": null,
+      "selected_name": "step128",
+      "selected_sha256": "55d4b872a6807e0d9bc317b72ef63eddf77d5828c427f91497d5bc23ac2e65f3",
+      "status": "experimental",
+      "train_updates": 128,
+      "report_sha256": "914fd870f7c74526b8d816ce4d57b56cf8a29b59093f3a304b475766b6a6564e",
+      "reported_retrospective_metrics": {
+        "evaluations": {
+          "new_source_test": {
+            "base": {
+              "n": 256,
+              "chrf": 66.69399911662201,
+              "bleu": 43.99808543074456,
+              "batch_amortized_seconds_per_sentence": 0.2663888059414177
+            },
+            "previous": {
+              "n": 256,
+              "chrf": 66.63902389511081,
+              "bleu": 44.07076797627466,
+              "batch_amortized_seconds_per_sentence": 0.300682859871074
+            },
+            "selected": {
+              "n": 256,
+              "chrf": 66.79619215079829,
+              "bleu": 43.90016246587415,
+              "batch_amortized_seconds_per_sentence": 0.25864283311719305
+            }
+          },
+          "new_external_guard": {
+            "base": {
+              "n": 256,
+              "chrf": 58.79141941159291,
+              "bleu": 32.149298448529144,
+              "batch_amortized_seconds_per_sentence": 0.2912410485508161
+            },
+            "previous": {
+              "n": 256,
+              "chrf": 58.98145374313704,
+              "bleu": 31.980691302777146,
+              "batch_amortized_seconds_per_sentence": 0.29932021655081087
+            },
+            "selected": {
+              "n": 256,
+              "chrf": 59.125348441438206,
+              "bleu": 32.524150616394685,
+              "batch_amortized_seconds_per_sentence": 0.3002601425703091
+            }
+          }
+        }
+      },
+      "repo_artifacts": [
+        "research/neural_continuation_20261116/spanish/adapter_last.safetensors",
+        "research/neural_continuation_20261116/spanish/adapter_selected.safetensors",
+        "research/neural_continuation_20261116/spanish/adapter_start.safetensors"
+      ]
+    },
+    {
+      "id": "research/neural_deadline_20261116",
+      "model": "Helsinki-NLP/opus-mt-fr-en",
+      "base_revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+      "architecture": "MarianMT seq2seq; LoRA",
+      "direction": "fr-en",
+      "tokenizer_manifest": "research/translation_fr_training_20261116/model/download_manifest.json",
+      "datasets": "Tatoeba; distinct declared train/dev/test groups",
+      "dataset_evidence": "research/neural_deadline_20261116/data_manifest.json",
+      "restrictions": "Research only; see upstream dataset attribution and inherited terms; no production approval",
+      "ancestor_sha256": "600990e205c1238ea1fba3a8c36e5ef199bdfc10b33e4e0068e5b9695b7e8665",
+      "selected_name": 0,
+      "selected_sha256": null,
+      "status": "experimental",
+      "train_updates": 128,
+      "report_sha256": "a36a817cbe47555069453f798cbb3a13bfb28fd297a7975f5dcfea7e89d8cbef",
+      "reported_retrospective_metrics": {
+        "test": {
+          "warm": {
+            "n": 256,
+            "chrf": 75.37434298689219,
+            "bleu": 62.28894072445828
+          },
+          "selected": {
+            "n": 256,
+            "chrf": 75.37434298689219,
+            "bleu": 62.28894072445828
+          }
+        }
+      },
+      "repo_artifacts": []
+    }
+  ],
+  "auxiliary_weights": [
+    {
+      "path": "research/auxiliary/results/real_idioms/current_only_weights.json",
+      "sha256": "dbddfd6cc28badd611f73d674c750d55ff92450853ddc0e6901af67e639c8763",
+      "status": "experimental auxiliary, not a translation direction",
+      "training_languages": [
+        "en",
+        "pt"
+      ],
+      "datasets": "SemEval idiomaticity (reported EN/PT)",
+      "definition": [
+        "format",
+        "context",
+        "analyzer",
+        "ngram_range",
+        "sublinear_tf",
+        "norm",
+        "vocabulary",
+        "idf",
+        "coef",
+        "intercept",
+        "threshold",
+        "classes",
+        "warning"
+      ],
+      "rights": "Upstream research source license and corpus rights unresolved for product",
+      "evaluation_evidence": "research/auxiliary/README.md"
+    },
+    {
+      "path": "research/auxiliary/results/real_idioms/previous_context_weights.json",
+      "sha256": "ddf361ae63ef7359e5205b036ef3dd69f24dabd1142291a4eb8e909e484ae141",
+      "status": "experimental auxiliary, not a translation direction",
+      "training_languages": [
+        "en",
+        "pt"
+      ],
+      "datasets": "SemEval idiomaticity (reported EN/PT)",
+      "definition": [
+        "format",
+        "context",
+        "analyzer",
+        "ngram_range",
+        "sublinear_tf",
+        "norm",
+        "vocabulary",
+        "idf",
+        "coef",
+        "intercept",
+        "threshold",
+        "classes",
+        "warning"
+      ],
+      "rights": "Upstream research source license and corpus rights unresolved for product",
+      "evaluation_evidence": "research/auxiliary/README.md"
+    },
+    {
+      "path": "research/auxiliary/results/synthetic_context_weights.json",
+      "sha256": "28a16bfe07d8eb5a0c4911f0732a13ce5189c7e05fc825604048bbda6a7ec0e7",
+      "status": "experimental auxiliary, not a translation direction",
+      "training_languages": [
+        "en"
+      ],
+      "datasets": "synthetic task-specific pilot",
+      "definition": [
+        "format",
+        "view",
+        "threshold",
+        "models"
+      ],
+      "rights": "Repository-produced synthetic research artifact",
+      "evaluation_evidence": "research/auxiliary/README.md"
+    },
+    {
+      "path": "research/auxiliary/results/synthetic_current_weights.json",
+      "sha256": "b192dd310f2278c86f726da7c4f129d62372becc431d7c4e8a75bce38ba5d4a4",
+      "status": "experimental auxiliary, not a translation direction",
+      "training_languages": [
+        "en"
+      ],
+      "datasets": "synthetic task-specific pilot",
+      "definition": [
+        "format",
+        "view",
+        "threshold",
+        "models"
+      ],
+      "rights": "Repository-produced synthetic research artifact",
+      "evaluation_evidence": "research/auxiliary/README.md"
+    },
+    {
+      "path": "research/auxiliary/results/topic_candidate_weights.json",
+      "sha256": "432bc226f90a11ef622cf7447c4d25990baa0bad5bba150c6ed024ed00f42a82",
+      "status": "experimental auxiliary, not a translation direction",
+      "training_languages": [
+        "en"
+      ],
+      "datasets": "synthetic task-specific pilot",
+      "definition": [
+        "format",
+        "trained_on_n",
+        "analyzer",
+        "ngram_range",
+        "sublinear_tf",
+        "norm",
+        "lowercase",
+        "vocabulary",
+        "idf",
+        "classes",
+        "coef",
+        "intercept",
+        "warning"
+      ],
+      "rights": "Repository-produced synthetic research artifact",
+      "evaluation_evidence": "research/auxiliary/README.md"
+    }
+  ],
+  "limits": "Stage and scores derived from checked-in reports, not independently replicating old evaluations. A report or path without recoverable bytes is not a checkpoint. See checkpoint inventory for SHA-256 computed from repo bytes and M0 audit for open branches/other assets. No data rows, paths from private workspaces, or holdout text."
+}

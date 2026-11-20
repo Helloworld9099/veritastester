@@ -1,0 +1,257 @@
+{
+  "base_main_at_audit": "7ad5f9e0b198020cf11ce35aa269206bb34de87b",
+  "base_main_tests_fixtures_present": false,
+  "directions": {
+    "en-es": {
+      "active_adapter_path": null,
+      "active_adapter_sha256": null,
+      "base_file_sha256": {
+        "config.json": "666ad3c2943674b6a789e311d221e44ec23e27f1bd9727930754bf773ec8e464",
+        "generation_config.json": "837839ed0534a27084f9b980fc33f47729052dd89cb26cca7ac830765ed30e49",
+        "pytorch_model.bin": "befce0f620e8e63f83bbb7f0818eb51d541cba28057a7cc14b00466d85c4994c",
+        "source.spm": "4dd547c24816a335e7b0b2e63376a8f1b3cbfc671eda5ab808dd44fdadaa8791",
+        "target.spm": "e236ee6d866b635c0142114f8647f39831f9d92534aa2aad75c942f6a78ad0e3",
+        "tokenizer_config.json": "9859e3f8f73e2f50ab3e5cc2de432645347432956df4772d33209a346dd97f3b",
+        "vocab.json": "257f346d7a6b2ecceafcca8ba05648ce2fd68dfaf105fb0e913dca7198f3f6d5"
+      },
+      "base_model": "Helsinki-NLP/opus-mt-en-es",
+      "base_revision": "5bc4493d463cf000c1f0b50f8d56886a392ed4ab",
+      "cold_load_plus_first_decode_ms": [
+        5862.59426,
+        3145.231744
+      ],
+      "exact_replay_matches": 6,
+      "expected_dev_rows": 6,
+      "fixture_rows": 6,
+      "model_card_license": "Apache-2.0",
+      "model_card_url": "https://huggingface.co/Helsinki-NLP/opus-mt-en-es/tree/5bc4493d463cf000c1f0b50f8d56886a392ed4ab",
+      "observed_dev_rows": [
+        6,
+        6
+      ],
+      "rights_status": "research_only_base_provenance_audit",
+      "status": "verified_deterministic_dev_baseline",
+      "supports_context": false,
+      "warm_cache_p50_ms": 710.413,
+      "warm_cache_p95_ms": 820.444,
+      "warm_cache_per_row_ms": {
+        "m0-en-es-01": [
+          638.360945,
+          627.894417
+        ],
+        "m0-en-es-02": [
+          653.653518,
+          604.891967
+        ],
+        "m0-en-es-03": [
+          818.583311,
+          767.173456
+        ],
+        "m0-en-es-04": [
+          816.465067,
+          782.078359
+        ],
+        "m0-en-es-05": [
+          610.919835,
+          639.463733
+        ],
+        "m0-en-es-06": [
+          820.44402,
+          784.605425
+        ]
+      }
+    },
+    "es-en": {
+      "active_adapter_path": "experiments/es_en_v2_runs/candidate_after_three.safetensors",
+      "active_adapter_sha256": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71",
+      "base_file_sha256": {
+        "README.md": "d67ee971854b4c166da1cc281b58fbdc8596e0412441ef71fb0d422263230e0a",
+        "config.json": "374443eacf8986c21386503e2fcd52eae6952ac09c87fd36695f5c12259a4cd1",
+        "pytorch_model.bin": "586a4e69e0804459ac7c176a5dc76852652100d9af1ee0db796de719899a5deb",
+        "source.spm": "e236ee6d866b635c0142114f8647f39831f9d92534aa2aad75c942f6a78ad0e3",
+        "target.spm": "4dd547c24816a335e7b0b2e63376a8f1b3cbfc671eda5ab808dd44fdadaa8791",
+        "tokenizer_config.json": "dd009536f1cd954180a3004be20e9963eaf3d68b485d062ea1b90d3b9ded2bc5",
+        "vocab.json": "257f346d7a6b2ecceafcca8ba05648ce2fd68dfaf105fb0e913dca7198f3f6d5"
+      },
+      "base_model": "Helsinki-NLP/opus-mt-es-en",
+      "base_revision": "c96e2c5399ebfae4fc43d9669556b9afa74bb69d",
+      "cold_load_plus_first_decode_ms": [
+        1482.001949,
+        1671.957499
+      ],
+      "exact_replay_matches": 6,
+      "expected_dev_rows": 6,
+      "fixture_rows": 6,
+      "model_card_license": "Apache-2.0",
+      "model_card_url": "https://huggingface.co/Helsinki-NLP/opus-mt-es-en/tree/c96e2c5399ebfae4fc43d9669556b9afa74bb69d",
+      "observed_dev_rows": [
+        6,
+        6
+      ],
+      "rights_status": "research_only_pending_commercial_provenance_review",
+      "status": "verified_deterministic_dev_baseline",
+      "supports_context": false,
+      "warm_cache_p50_ms": 776.777,
+      "warm_cache_p95_ms": 857.097,
+      "warm_cache_per_row_ms": {
+        "m0-es-en-01": [
+          857.097125,
+          781.762789
+        ],
+        "m0-es-en-02": [
+          614.463674,
+          594.161774
+        ],
+        "m0-es-en-03": [
+          830.867484,
+          824.262241
+        ],
+        "m0-es-en-04": [
+          771.791697,
+          783.280064
+        ],
+        "m0-es-en-05": [
+          761.680405,
+          795.450627
+        ],
+        "m0-es-en-06": [
+          669.266223,
+          674.82235
+        ]
+      }
+    },
+    "fr-en": {
+      "active_adapter_path": "experiments/balanced_stage5_20261118/saved/french/adapter_selected.safetensors",
+      "active_adapter_sha256": "fba2bd78958bf0bf8a4c14dc55e601e08663633718c4c9c17f91ef9b52dcfa1c",
+      "base_file_sha256": {
+        "README.md": "a923263e9691f40ce7c9afe5d59f6296051439ae7776a158d18d57258be48195",
+        "config.json": "b3be13d046d9899d7aab8cf4ed624d9a79f5776038ba793f6b4d2ce3e02192f7",
+        "model.safetensors": "6e3837f34b903802c3d0d670362b997cee6e87584a1108eb3fa89e4625e4424a",
+        "source.spm": "78d0e717c77053f1c4b856d8661d9cb87c64f083a35418c087b9146300e4f585",
+        "target.spm": "173e9f493a668fe396d599e28d414a201193094e6ffd7a4678e5aab0f6d3d838",
+        "tokenizer_config.json": "47de9ce87378593016432f8dc657202c03913ab3ce0c15d7f78d51edfc3ff9a3",
+        "vocab.json": "945c604346ce15ce4aff9001001e7f925e336d942c4087017f191871162cbdc4"
+      },
+      "base_model": "Helsinki-NLP/opus-mt-fr-en",
+      "base_revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+      "cold_load_plus_first_decode_ms": [
+        1329.893768,
+        1420.338367
+      ],
+      "exact_replay_matches": 6,
+      "expected_dev_rows": 6,
+      "fixture_rows": 6,
+      "model_card_license": "Apache-2.0",
+      "model_card_url": "https://huggingface.co/Helsinki-NLP/opus-mt-fr-en/tree/c4aed37b318c763fd177aa449b44e3b783cc6c02",
+      "observed_dev_rows": [
+        6,
+        6
+      ],
+      "rights_status": "research_only_pending_global_voices_rights_and_attribution_audit",
+      "status": "verified_deterministic_dev_baseline",
+      "supports_context": false,
+      "warm_cache_p50_ms": 735.895,
+      "warm_cache_p95_ms": 946.119,
+      "warm_cache_per_row_ms": {
+        "m0-fr-en-01": [
+          780.498481,
+          891.440377
+        ],
+        "m0-fr-en-02": [
+          626.14219,
+          752.038995
+        ],
+        "m0-fr-en-03": [
+          824.112464,
+          946.119052
+        ],
+        "m0-fr-en-04": [
+          622.864406,
+          698.36492
+        ],
+        "m0-fr-en-05": [
+          737.035593,
+          734.753747
+        ],
+        "m0-fr-en-06": [
+          670.856732,
+          634.246715
+        ]
+      }
+    }
+  },
+  "fixture_file": "multilingual_regression_v1.jsonl",
+  "fixture_origin": {
+    "input_sha256": "a633916a125db1453a845ab8b0156d9f0261da7e3b03a43f2deaacec06089028",
+    "references_are_human_gold": false,
+    "scope": "development_only",
+    "texts": "New synthetic source and explanatory reference sentences authored here before running any model. No corpus text, private prompts, model-generated references, or user data."
+  },
+  "fixture_rows": 18,
+  "fixture_sha256": "d5fce03b8c49d9dd071da0619661ea57106c6847b750101cb4d0693b3ae51a0c",
+  "limitations": {
+    "app_provider_changed": false,
+    "audio_or_asr_benchmarked": false,
+    "development_only": true,
+    "human_semantic_adequacy_verified": false,
+    "independent_holdout_opened": false,
+    "model_training_updates": 0,
+    "paid_spend_usd": 0,
+    "production_clearance": false,
+    "regression_scope": "Exact candidate-output replay is a behavioral snapshot, not a statement that each baseline answer is correct. Baseline text must not be used as a reference or training target.",
+    "rights_scope": "All three publisher pinned model cards show Apache-2.0. PR43 active ES/FR adapters remain research-only; especially French Global Voices article-level rights and attribution are not verified. Archived NC variants were never loaded. No new redistribution of weights or source corpus text."
+  },
+  "method": {
+    "attempts": "Two fresh CPU processes running sorted directions in the same order with a fresh model load for each direction. Model and tokenizer files already prepared and hashed; OS filesystem page cache was not flushed.",
+    "environment": {
+      "cpu": "AMD EPYC 9V74 80-Core Processor",
+      "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+      "python": "3.12.14"
+    },
+    "latency": "perf_counter_ns wall time around Pipeline.translate only. Each cold value includes route load/file checks and an unscored first decode; each warm value is a subsequent single-threaded request to a loaded route, executed in sequence with two internal Torch compute threads. Per-direction p50 median and nearest-rank p95 across 12 warm requests, not concurrent or end-to-end caption timings.",
+    "network_downloads_excluded": true,
+    "offline_inference": true,
+    "pipeline": "PR43 BridgeCaption Pipeline + SharedMarianResearchTranslator, only explicit route codes. Active pins, native 4-beam/non-sampling decode, 96 new token limit and single optional repetition retry. No previous context supplied or retained.",
+    "process_peak_rss_kib_linux": [
+      869736,
+      859552
+    ],
+    "rss_scope": "Linux process ru_maxrss across the complete three-direction process, including loaded packages, hashing, tokenization and translation. Not per-model or system RAM.",
+    "torch_deterministic_algorithms": true,
+    "torch_interop_threads": 1,
+    "torch_seed": 0,
+    "torch_threads": 2,
+    "versions": {
+      "huggingface-hub": "0.36.0",
+      "sacrebleu": "2.6.0",
+      "safetensors": "0.8.0",
+      "sentencepiece": "0.2.3",
+      "tokenizers": "0.22.2",
+      "torch": "2.7.1+cpu",
+      "transformers": "4.57.6"
+    }
+  },
+  "name": "multilingual_regression_v1",
+  "schema_version": 1,
+  "source_commit": "ca755aec8f7111f03145e18ef9948cd6127aaec0",
+  "source_pins": {
+    "research/es_en_v2/inference_safety.py": "73d5f45738ee089f03c686c9cccb960d052bb4c8eca9ace39db8be0cc6bfb07f",
+    "research/unified_models/registry.json": "51972cf93486a5c8a71e1d08e130e314ef134e9deb6ad57c04232c5529526a4b",
+    "research/unified_models/registry.py": "715638830eecefc20a7a5adf8d2b1829faaaa0074d9613206b7dd1a15717c0d8",
+    "research/unified_models/runtime.py": "256ff22713b5d445817dbbd7d7e1e82c298f50619c3d540f116905d2da19a8b7",
+    "src/bridgecaption/pipeline.py": "dda21ba28f4eb81bff2dd4a0e27e60dbd64a2a075c6c322bb0f64be15433c6ce"
+  },
+  "source_pull_request": 43,
+  "source_repository": "Helloworld9099/veritastester",
+  "status": "verified_dev_baseline",
+  "additional_inventory_directions_not_covered": [
+    {
+      "direction": "cmn-en",
+      "scope": "private noncommercial research, outside the draft Marian registry",
+      "status": "not_verified",
+      "checkpoint_identity": "verified privately",
+      "output_replay": "not run; exact 4.55 GB base unavailable in audit cache",
+      "inventory": "docs/audit/m0-mandarin.md"
+    }
+  ]
+}
