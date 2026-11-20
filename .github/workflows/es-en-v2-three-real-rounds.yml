@@ -1,0 +1,128 @@
+name: TRAIN ES-EN v2 — serial commercial-candidate CPU continuations
+
+on:
+  push:
+    branches: [train/es-en-v2]
+    paths:
+      - .github/workflows/es-en-v2-three-real-rounds.yml
+      - research/es_en_v2/train_three.py
+      - experiments/cpu_continuation_20261117/train.py
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: es-en-v2-three-real-serial-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  serial-continue:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      TOKENIZERS_PARALLELISM: 'false'
+      OMP_NUM_THREADS: '4'
+      MKL_NUM_THREADS: '4'
+      HF_HUB_DISABLE_TELEMETRY: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install pinned CPU-only learning libraries (no GPU or paid API)
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'datasets==2.21.0' 'huggingface-hub>=0.34,<1.0'
+      - name: Recheck audit tests and the protected starting adapter
+        run: |
+          python -m unittest discover -s research/es_en_v2/tests -p 'test_*.py' -v
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          initial=Path('experiments/massive_stage3_20261117/saved/spanish/adapter_selected.safetensors')
+          report=json.loads((initial.parent/'report.json').read_text())
+          actual=hashlib.sha256(initial.read_bytes()).hexdigest()
+          assert actual==report['selected_candidate_sha256']=='14dddb5040afe49f8f05a1bfba3458d3321524b53b0fc05b359ad41a1ab75a4b'
+          assert report['license']=='CC BY 4.0 - AmazonScience MASSIVE'
+          print('VERIFIED_COMMERCIAL_CANDIDATE_WARM_SHA256',actual)
+          PY
+      - name: Perform THREE ACTUAL serial 64-update Spanish training continuations
+        run: |
+          python -u research/es_en_v2/train_three.py
+      - name: Verify warm-start chain, save weights/report hashes and commit outcomes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          root=Path('experiments/es_en_v2_runs')
+          summary=json.loads((root/'summary.json').read_text())
+          assert summary['status']=='completed_three_serial_real_training_rounds'
+          assert summary['successful_rounds']==3
+          assert summary['total_new_optimizer_updates']==192
+          assert not summary['human_95_percent_accuracy_verified']
+          assert not summary['commercial_default_activation']
+          parent=summary['origin_adapter_sha256']
+          files=[root/'summary.json']
+          for i in range(1,4):
+              directory=root/f'round-{i}'
+              report=json.loads((directory/'report.json').read_text())
+              assert report['completed_updates']==64 and report['warm_adapter_sha256']==parent
+              assert report['parent_checkpoint_sha256']==parent
+              assert report['dataset_manifest']['test_split_never_opened']
+              assert report['production_model_promoted'] is False
+              assert report['human_semantic_pass_rate'] is None
+              candidates=sorted(directory.glob('candidate_step*.safetensors'))
+              assert len(candidates)==2
+              files.extend(candidates+[directory/'report.json'])
+              if report['selected']!='previous':
+                  candidate=directory/'candidate_selected.safetensors'
+                  assert hashlib.sha256(candidate.read_bytes()).hexdigest()==report['selected_candidate_sha256']
+                  files.append(candidate)
+                  parent=report['selected_candidate_sha256']
+              checksum=directory/'SHA256SUMS.txt'
+              checksum.write_text(''.join(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+p.name+'\n'
+                  for p in files if p.parent==directory))
+              files.append(checksum)
+          assert parent==summary['final_dev_candidate_sha256']
+          print('VERIFIED_THREE_SERIAL_INCREMENTAL_EXPERIMENTS',json.dumps({
+              'rounds':summary['successful_rounds'],
+              'updates':summary['total_new_optimizer_updates'],
+              'starting_sha':summary['origin_adapter_sha256'],
+              'final_dev_candidate_sha':parent}))
+          (root/'experiment_status.json').write_text(json.dumps({
+              'completed_rounds':3,
+              'production_approved':False,
+              'human_adequacy_verified':False,
+              'tests_consumed_for_training_or_model_selection':False,
+          },indent=2))
+          files.append(root/'experiment_status.json')
+          (root/'FILE_SHA256SUMS.txt').write_text(''.join(
+              hashlib.sha256(p.read_bytes()).hexdigest()+'  '+str(p.relative_to(root))+'\n'
+              for p in files))
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add experiments/es_en_v2_runs/summary.json experiments/es_en_v2_runs/experiment_status.json experiments/es_en_v2_runs/FILE_SHA256SUMS.txt
+          for i in 1 2 3; do
+            git add "experiments/es_en_v2_runs/round-$i/report.json" "experiments/es_en_v2_runs/round-$i/SHA256SUMS.txt"
+            git add "experiments/es_en_v2_runs/round-$i/"*.safetensors
+          done
+          git commit -m 'research: preserve three verifiable serial ES-EN v2 CPU LoRA continuations [skip ci]'
+          git push origin 'HEAD:refs/heads/train/es-en-v2'
+      - name: Retain research model candidates and reports on runner failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: es-en-v2-three-rounds-research-archive
+          path: |
+            experiments/es_en_v2_runs/summary.json
+            experiments/es_en_v2_runs/experiment_status.json
+            experiments/es_en_v2_runs/round-*/report.json
+            experiments/es_en_v2_runs/round-*/candidate_*.safetensors
+          if-no-files-found: warn
+          retention-days: 30

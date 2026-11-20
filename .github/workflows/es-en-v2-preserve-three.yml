@@ -1,0 +1,117 @@
+name: Preserve successful three serial ES-EN v2 rounds from immutable run artifact
+
+on:
+  push:
+    branches: [train/es-en-v2]
+    paths:
+      - .github/workflows/es-en-v2-preserve-three.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: es-en-v2-recover-model-44806165157
+  cancel-in-progress: false
+
+jobs:
+  recover-without-retraining:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Retrieve exact successful optimizer artifacts from run 44806165157
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 44806165157
+          github-token: ${{ github.token }}
+          repository: Helloworld9099/veritastester
+          name: es-en-v2-three-rounds-research-archive
+          path: ${{ runner.temp }}/recovered-serial
+      - name: SHA verify, reconstruct and permanently preserve without new optimization
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json,os,shutil
+          from pathlib import Path
+          source=Path(os.environ['RUNNER_TEMP'])/'recovered-serial'
+          candidates=list(source.rglob('summary.json'))
+          if len(candidates)!=1:
+              raise RuntimeError('Expected one archived summary, not '+str(len(candidates)))
+          src=candidates[0].parent
+          output=Path('experiments/es_en_v2_runs')
+          if output.exists():
+              raise FileExistsError('Must never overwrite an existing checkpoint chain')
+          summary=json.loads((src/'summary.json').read_text())
+          assert summary['status']=='completed_three_serial_real_training_rounds'
+          assert summary['successful_rounds']==3
+          assert summary['total_new_optimizer_updates']==192
+          assert summary['commercial_default_activation'] is False
+          assert summary['human_95_percent_accuracy_verified'] is False
+          first=Path('experiments/massive_stage3_20261117/saved/spanish/adapter_selected.safetensors')
+          first_sha=hashlib.sha256(first.read_bytes()).hexdigest()
+          assert summary['origin_adapter_sha256']==first_sha=='14dddb5040afe49f8f05a1bfba3458d3321524b53b0fc05b359ad41a1ab75a4b'
+          output.mkdir()
+          shutil.copy2(src/'summary.json',output/'summary.json')
+          parent=first_sha
+          files=[output/'summary.json']
+          for n in range(1,4):
+              original=src/f'round-{n}'
+              dest=output/f'round-{n:02d}'
+              dest.mkdir()
+              report=json.loads((original/'report.json').read_text())
+              assert report['round']==n
+              assert report['completed_updates']==64
+              assert report['parent_checkpoint_sha256']==report['warm_adapter_sha256']==parent
+              assert report['dataset_manifest']['test_split_never_opened']
+              assert report['production_model_promoted'] is False
+              assert report['human_semantic_pass_rate'] is None
+              assert report['dataset_manifest']['license']=='CC-BY-4.0'
+              assert report['language']=='spanish'
+              blobs=sorted(original.glob('candidate_step*.safetensors'))
+              assert len(blobs)==2
+              for file in [original/'report.json',*blobs]:
+                  shutil.copy2(file,dest/file.name)
+                  files.append(dest/file.name)
+              if report['selected']!='previous':
+                  current=original/'candidate_selected.safetensors'
+                  assert current.is_file()
+                  assert hashlib.sha256(current.read_bytes()).hexdigest()==report['selected_candidate_sha256']
+                  shutil.copy2(current,dest/current.name)
+                  files.append(dest/current.name)
+                  parent=report['selected_candidate_sha256']
+              (dest/'SHA256SUMS.txt').write_text(''.join(
+                  hashlib.sha256(p.read_bytes()).hexdigest()+'  '+p.name+'\n'
+                  for p in files if p.parent==dest))
+              files.append(dest/'SHA256SUMS.txt')
+          assert parent==summary['final_dev_candidate_sha256']
+          shutil.copy2(output/'round-02/candidate_selected.safetensors',
+                       output/'candidate_after_three.safetensors')
+          assert hashlib.sha256((output/'candidate_after_three.safetensors').read_bytes()).hexdigest()==parent
+          files.append(output/'candidate_after_three.safetensors')
+          (output/'SHA256SUMS.txt').write_text(''.join(
+              hashlib.sha256(p.read_bytes()).hexdigest()+'  '+str(p.relative_to(output))+'\n'
+              for p in files))
+          (output/'status.json').write_text(json.dumps({
+              'three_rounds_train_completed':True,
+              'actual_training_run_id':44806165157,
+              'training_failure':False,
+              'why_workflow_originally_failed':'Non-fast-forward push after training completed',
+              'recovered_without_retraining':True,
+              'research_only':True,
+              'production_promoted':False,
+              'real_bilingual_human_95_percent_verified':False,
+              'upstream_noncommercial_checkpoint_excluded':True,
+          },indent=2))
+          print('RECOVERED_THREE_REAL_SERIAL_TRAINING_ROUNDS_NO_RETRAIN',json.dumps({
+              'count':3,'completed_updates':192,'selected_sha256':parent,
+              'artifact_files_verified':len(files)}))
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add experiments/es_en_v2_runs
+          git commit -m 'research: permanently preserve already-trained v2 serial Spanish checkpoints [skip ci]'
+          git pull --rebase origin train/es-en-v2
+          git push origin HEAD:refs/heads/train/es-en-v2

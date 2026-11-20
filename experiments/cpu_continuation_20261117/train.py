@@ -168,7 +168,13 @@ def train_experiment(repo_root: Path, output_dir: Path, language: str = "french"
     torch.manual_seed(SEED)
     random.seed(SEED)
     torch.set_num_threads(4)
-    torch.set_num_interop_threads(1)
+    # PyTorch permits setting interop threads only before the first use.
+    # v2 serially runs multiple full training continuations in one process.
+    try:
+        torch.set_num_interop_threads(1)
+    except RuntimeError:
+        if torch.get_num_interop_threads() != 1:
+            raise
     os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
     if language not in LANGUAGES:

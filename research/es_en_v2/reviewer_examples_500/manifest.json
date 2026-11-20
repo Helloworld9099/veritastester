@@ -1,0 +1,34 @@
+{
+  "status": "500_actually_generated_model_predictions",
+  "cases": 500,
+  "by_direction": {
+    "en-es": 250,
+    "es-en": 250
+  },
+  "by_origin": {
+    "MIT synthetic dialogue: BabyLM dev groups": 300,
+    "Amazon MASSIVE author validation": 160,
+    "Synthetic slang/context stress test": 40
+  },
+  "unique_case_ids": 500,
+  "unique_source_context_direction": 500,
+  "unique_output_strings": 497,
+  "research_only_dev_examples": true,
+  "never_used_final_holdout": true,
+  "reference_translations_in_exports": false,
+  "actual_inference_executed": true,
+  "es_en_adapter_sha256": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71",
+  "en_es_base_revision": "5bc4493d463cf000c1f0b50f8d56886a392ed4ab",
+  "prior_context_shown_to_reviewer_not_model": true,
+  "execution_seconds_by_direction": {
+    "es-en": 79.66360836799998,
+    "en-es": 68.04527882399998
+  },
+  "peak_rss_kib_linux": 1200116,
+  "generated_utc": "2026-11-20T21:00:41.291123+00:00",
+  "files_sha256": {
+    "BridgeCaption_500_Real_Model_Translations_Review.xlsx": "16b79d0dc47c70ddec57ba27527dd29e0007bda56a30e204dceebc20986be659",
+    "BridgeCaption_500_Real_Model_Translations_Review.csv": "2f789b8b69ea79ad19d64a8eeb71c3b5ccccbb03ef5494d6a336a4986b7622f2",
+    "BridgeCaption_500_Real_Model_Translations.jsonl": "83a17246a53b99ab6a7d65a0765c39348d9eea7268435a4717b5886a9b92c8bb"
+  }
+}

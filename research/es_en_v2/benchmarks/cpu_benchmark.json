@@ -1,0 +1,37 @@
+{
+  "status": "real_cpu_translation_only_benchmark",
+  "base_model": "Helsinki-NLP/opus-mt-es-en",
+  "revision": "c96e2c5399ebfae4fc43d9669556b9afa74bb69d",
+  "license_compatible_adapter_sha256": "14dddb5040afe49f8f05a1bfba3458d3321524b53b0fc05b359ad41a1ab75a4b",
+  "model_load_seconds": 5.1215701510000144,
+  "base": {
+    "requests": 16,
+    "p50_seconds": 0.27828401799996527,
+    "p95_seconds": 0.3391473120000228,
+    "mean_seconds": 0.276250883187501,
+    "max_seconds": 0.36292418200002885,
+    "generated_tokens_total": 174
+  },
+  "stage3_adapter": {
+    "requests": 16,
+    "p50_seconds": 0.2945861549999904,
+    "p95_seconds": 0.36695505199998024,
+    "mean_seconds": 0.2853500633749988,
+    "max_seconds": 0.3707544069999926,
+    "generated_tokens_total": 175
+  },
+  "prompts": 16,
+  "warm_cache": true,
+  "num_beams": 4,
+  "max_new_tokens": 96,
+  "torch_version": "2.7.1+cpu",
+  "cpu_threads": 4,
+  "cpu_interop_threads": 1,
+  "peak_resident_set_size_kib_linux": 792504,
+  "model_parameters": 78238208,
+  "adapter_trainable_parameters": 294912,
+  "paid_compute_cost_usd": 0,
+  "complete_audio_to_captions_latency_measured": false,
+  "meaning_preservation_accuracy_measured": false,
+  "hardware_note": "Ephemeral GitHub Actions ubuntu-24.04 CPU runner; not proof of identical local Windows/Mac performance."
+}

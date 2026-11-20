@@ -1,0 +1,91 @@
+{
+  "source": "lindazeng979/bilingual-babyLM",
+  "dataset_license_claim": "MIT",
+  "upstream_content_origin": "synthetic GPT-4",
+  "inspected_group_count": 1500,
+  "counts": {
+    "candidate_for_review": 1453,
+    "candidate_turns": 12288,
+    "train_groups": 1316,
+    "dev_groups": 137,
+    "quarantined": 47,
+    "turn_count_or_marker_mismatch": 47
+  },
+  "representative_group_hashes_not_text": [
+    {
+      "group_hash": "7161f7d8343384446d370e0d85b07629b51ae44b19df042486b1fbed17476516",
+      "turns": 11,
+      "split": "train"
+    },
+    {
+      "group_hash": "3b9e633577977c2b63a2817fde1a16830ca6f092c074a96c4b0b5f45e88c7f18",
+      "turns": 10,
+      "split": "train"
+    },
+    {
+      "group_hash": "b68ddc6921b16ebbf65e24218e608b27a3d88b5c6adebf4b05173ad287794f5a",
+      "turns": 11,
+      "split": "train"
+    },
+    {
+      "group_hash": "c659fc879dcb6887bc1be1dbc8bce65f67550d18106e5a0956a1ef6c539e1140",
+      "turns": 12,
+      "split": "train"
+    },
+    {
+      "group_hash": "772be1c2121681a3f46f3650b9681e2d6446e74f83dcea685edf9e87335e3305",
+      "turns": 11,
+      "split": "dev"
+    },
+    {
+      "group_hash": "4277c421f76d819bee0889608d3435ce6ed59ac17738c48bff4eb403f1ee01ff",
+      "turns": 15,
+      "split": "train"
+    },
+    {
+      "group_hash": "f85150fd3dbd44e24d10f0f1944fdd74729719153fe4e34fa21e79582e1a441a",
+      "turns": 11,
+      "split": "train"
+    },
+    {
+      "group_hash": "fc16fbfcf4b0e7da1a3f0a5c1eeaf780a7346393efe44805a276d8ba1881655a",
+      "turns": 11,
+      "split": "dev"
+    },
+    {
+      "group_hash": "d91c9b2e7adadc0dcbff389ab68d828e690baab0cebf8cad5b5c72a9baa6ec57",
+      "turns": 13,
+      "split": "train"
+    },
+    {
+      "group_hash": "7b5e9de77c75017bf3e26a24719e1f02d56cf660444d8f70e41ee8b6e5092f32",
+      "turns": 5,
+      "split": "train"
+    },
+    {
+      "group_hash": "174a351e7df96f21cb9ec9740e912277ac03798de054c9c907f2c11227ecd654",
+      "turns": 10,
+      "split": "train"
+    },
+    {
+      "group_hash": "b3bfb0751b2dcc4ee7233e6860b024250fb6507c797722f0dac69106871491df",
+      "turns": 11,
+      "split": "dev"
+    }
+  ],
+  "eligible_for_training_without_bilingual_quality_review": 0,
+  "human_gold_examples": 0,
+  "allowed_final_holdout_examples": 0,
+  "no_final_holdout_accessed": true,
+  "source_exact_revision": "1093ed2c348313c86b5c4c22563226b65a9b11d1",
+  "source_repo": "lindazeng979/bilingual-babyLM",
+  "source_file": "bilingual-babyLM.jsonl",
+  "inspected_bytes_cap": 8388608,
+  "received_bytes": 8388608,
+  "received_prefix_sha256": "1a9eaf0ce3a5ee5dd37aa622a4571b0ac38ae7ab0da68333c5b50ff175a9d6c8",
+  "elapsed_seconds": 1.3453095670000152,
+  "new_human_verified_parallel_pairs": 0,
+  "model_training_started_from_synthetic_data": false,
+  "no_actual_source_text_saved": true,
+  "next_boundary": "Any synthetic candidate requires license, utterance alignment and independent bilingual meaning review before supervised training."
+}

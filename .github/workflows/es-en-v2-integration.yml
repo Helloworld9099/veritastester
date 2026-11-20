@@ -1,0 +1,71 @@
+name: Verify isolated local Spanish research adapter in REAL BridgeCaption Pipeline
+
+on:
+  push:
+    branches: [train/es-en-v2]
+    paths:
+      - .github/workflows/es-en-v2-integration.yml
+      - research/es_en_v2/integration.py
+      - research/es_en_v2/integration_smoke.py
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  integration:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      TOKENIZERS_PARALLELISM: 'false'
+      HF_HUB_DISABLE_TELEMETRY: '1'
+      OMP_NUM_THREADS: '4'
+      MKL_NUM_THREADS: '4'
+      PYTHONPATH: src
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install optional research-only CPU dependencies (NOT app defaults)
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'huggingface-hub>=0.34,<1.0'
+      - name: Invoke actual Pipeline with pinned local ES-EN adapter and rollback model
+        run: python -u research/es_en_v2/integration_smoke.py
+      - name: Verify integration provenance, error handling and non-production status
+        shell: bash
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          p=Path('research/es_en_v2/integration_receipt/real_pipeline_smoke.json')
+          d=json.loads(p.read_text())
+          assert d['status']=='real_bridgecaption_text_pipeline_smoke_passed'
+          assert d['new_adapter_sha256']=='3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71'
+          assert d['fallback_adapter_sha256']=='14dddb5040afe49f8f05a1bfba3458d3321524b53b0fc05b359ad41a1ab75a4b'
+          assert d['text_captions_returned']==6 and d['cloud_used'] is False
+          assert d['live_app_default_changed'] is False
+          assert d['independent_human_95_percent_verified'] is False
+          assert d['past_context_rejected_for_untrained_model'] is True
+          (p.parent/'SHA256SUMS.txt').write_text(
+              hashlib.sha256(p.read_bytes()).hexdigest()+'  '+p.name+'\n')
+          print('REAL_PIPELINE_INTEGRATION_VERIFIED',json.dumps({
+              'warm_p95_seconds':d['warm_p95_seconds'],
+              'peak_rss_kib_linux':d['peak_rss_kib_linux']}))
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/es_en_v2/integration_receipt
+          git commit -m 'research: preserve actual Spanish Pipeline text integration/rollback evidence [skip ci]'
+          git pull --rebase origin train/es-en-v2
+          git push origin HEAD:refs/heads/train/es-en-v2
+      - name: Retain evidence if branch push races
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: es-en-v2-real-application-text-pipeline-check
+          path: research/es_en_v2/integration_receipt/real_pipeline_smoke.json
+          if-no-files-found: warn
+          retention-days: 30

@@ -1,0 +1,53 @@
+name: Inspect original UTEP CC0 DRAL transcript metadata within 16MiB cap
+
+on:
+  push:
+    branches: [train/es-en-v2]
+    paths:
+      - .github/workflows/es-en-v2-dral-probe.yml
+      - research/es_en_v2/inspect_dral_metadata.py
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  original-public-domain-probe:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Probe only the beginning of author-distributed CC0 archive
+        run: python -u research/es_en_v2/inspect_dral_metadata.py
+      - name: Save only nontext metadata and inspect size/rights safeguards
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          p=Path('research/es_en_v2/dataset_receipts/dral/metadata_probe.json')
+          x=json.loads(p.read_text())
+          assert x['compressed_read_cap_bytes']==16777216
+          assert x['actual_bytes_read']<=x['compressed_read_cap_bytes']
+          assert x['full_archive_downloaded'] is False
+          assert x['text_transcripts_saved']==0
+          assert x['safe_to_train_without_manual_source_rights_check'] is False
+          (p.parent/'SHA256SUMS.txt').write_text(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+p.name+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/es_en_v2/dataset_receipts/dral
+          git commit -m 'research: preserve bounded original CC0 DRAL metadata-access receipt [skip ci]'
+          git pull --rebase origin train/es-en-v2
+          git push origin HEAD:refs/heads/train/es-en-v2
+      - name: Preserve report if push fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: es-en-v2-original-dral-metadata-probe
+          path: research/es_en_v2/dataset_receipts/dral/metadata_probe.json
+          if-no-files-found: warn
+          retention-days: 30

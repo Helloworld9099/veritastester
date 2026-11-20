@@ -1,0 +1,69 @@
+name: Evaluate REAL slang/context dev ablations (40 explicitly synthetic cases)
+
+on:
+  push:
+    branches: [train/es-en-v2]
+    paths:
+      - .github/workflows/es-en-v2-context-stress.yml
+      - research/es_en_v2/stress_eval.py
+      - research/es_en_v2/dev_stress_slang_context.jsonl
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  stress:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      TOKENIZERS_PARALLELISM: 'false'
+      HF_HUB_DISABLE_TELEMETRY: '1'
+      OMP_NUM_THREADS: '4'
+      MKL_NUM_THREADS: '4'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pinned CPU-only evaluation runtime
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'huggingface-hub>=0.34,<1.0'
+      - name: Run source-only versus past-context-injected inference ablation
+        run: python -u research/es_en_v2/stress_eval.py
+      - name: Verify model SHA, category metrics, and false accuracy claims absent
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          p=Path('research/es_en_v2/context_stress_receipt/stress_development_report.json')
+          x=json.loads(p.read_text())
+          assert x['total_synthetic_development_cases']==40
+          assert x['human_adequacy_95_verified'] is False
+          assert x['test_or_final_holdout_used'] is False
+          assert x['source_human_authored'] is False
+          assert set(x['scores'])=={'es-en','en-es'}
+          assert x['scores']['es-en']['trained_v2_context_injected']['n']==20
+          assert x['scores']['en-es']['original_base_no_context']['n']==20
+          (p.parent/'SHA256SUMS.txt').write_text(
+              hashlib.sha256(p.read_bytes()).hexdigest()+'  '+p.name+'\n')
+          print('DEV_STRESS_TRANSLATIONS_VERIFIED',json.dumps({
+              'es-en':x['scores']['es-en'],'en-es':x['scores']['en-es']}))
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/es_en_v2/context_stress_receipt
+          git commit -m 'research: preserve real synthetic slang/context dev ablation outputs [skip ci]'
+          git pull --rebase origin train/es-en-v2
+          git push origin HEAD:refs/heads/train/es-en-v2
+      - name: Retain report if push fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: es-en-v2-context-slang-development-ablation
+          path: research/es_en_v2/context_stress_receipt/stress_development_report.json
+          if-no-files-found: warn
+          retention-days: 30

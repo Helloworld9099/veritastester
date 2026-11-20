@@ -1,0 +1,39 @@
+{
+  "status": "measured_real_en_to_es_original_marian_baseline",
+  "model": "Helsinki-NLP/opus-mt-en-es",
+  "model_sha": "5bc4493d463cf000c1f0b50f8d56886a392ed4ab",
+  "source_dataset": "AmazonScience/massive",
+  "dataset_revision": "ff6bd8e4b27c3543e4f8fe2108f32bb95a6f8740",
+  "source_license": "CC-BY-4.0",
+  "model_license": "Apache-2.0",
+  "direction": "en-es",
+  "development_split": "publisher_validation_not_test",
+  "development_case_count": 128,
+  "development_id_sha256": "0a58ca3b43dffaff21e09bd46ca795dc1bd56a9b37a81dba80fac6b9231b6c7a",
+  "dev_chrf_not_accuracy": 60.23324442752687,
+  "dev_bleu_not_accuracy": 32.48251164998071,
+  "synthetic_translation_only_latency": {
+    "n": 16,
+    "mean_seconds": 0.2432217041875191,
+    "p50_seconds": 0.24700107299997853,
+    "p95_seconds": 0.2907031710000183
+  },
+  "model_load_seconds": 3.299049212,
+  "peak_resident_set_size_kib_linux": 1001436,
+  "model_parameters": 77943296,
+  "torch_version": "2.7.1+cpu",
+  "model_file_sha256": {
+    "config.json": "666ad3c2943674b6a789e311d221e44ec23e27f1bd9727930754bf773ec8e464",
+    "generation_config.json": "837839ed0534a27084f9b980fc33f47729052dd89cb26cca7ac830765ed30e49",
+    "pytorch_model.bin": "befce0f620e8e63f83bbb7f0818eb51d541cba28057a7cc14b00466d85c4994c",
+    "source.spm": "4dd547c24816a335e7b0b2e63376a8f1b3cbfc671eda5ab808dd44fdadaa8791",
+    "target.spm": "e236ee6d866b635c0142114f8647f39831f9d92534aa2aad75c942f6a78ad0e3",
+    "tokenizer_config.json": "9859e3f8f73e2f50ab3e5cc2de432645347432956df4772d33209a346dd97f3b",
+    "vocab.json": "257f346d7a6b2ecceafcca8ba05648ce2fd68dfaf105fb0e913dca7198f3f6d5"
+  },
+  "paid_spend_usd": 0,
+  "human_95_percent_adequacy_verified": false,
+  "test_or_final_holdout_accessed": false,
+  "live_full_audio_pipeline_benchmarked": false,
+  "note": "Publisher validation references can be culturally localized, not literal. The baseline is a controlled original-weight comparator, never a new training round."
+}

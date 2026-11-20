@@ -1,0 +1,1 @@
+8b9e802ddf9e9ad3b45bd73a38d94a8bf84282fb2312cf601205d799864f166c  source_sample_manifest.json

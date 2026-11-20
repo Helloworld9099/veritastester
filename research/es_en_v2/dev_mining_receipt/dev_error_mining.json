@@ -1,0 +1,65 @@
+{
+  "status": "actual_dev_only_translation_mining",
+  "parent_sha256": "14dddb5040afe49f8f05a1bfba3458d3321524b53b0fc05b359ad41a1ab75a4b",
+  "candidate_sha256": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71",
+  "development_origin": "MASSIVE official validation CC BY 4.0",
+  "development_group_id_sha256": "3fb83c98316e3542aba82e1dfae29833ffb82f1c66eeb63c593aaee53199c2d5",
+  "development_cases": 128,
+  "model_scores": {
+    "parent": {
+      "chrf_not_accuracy": 64.85569033479717,
+      "bleu_not_accuracy": 42.63593877739787,
+      "suspected_error_tag_counts": {
+        "number_disagreement": 5
+      },
+      "suspected_flagged_rows": 44,
+      "human_confirmed_error_count": 0,
+      "worst_case_id_hashes": [
+        "f36e412aea00d7c622f3d331c5ceec42eaf18bda2d0374971a09fc79d7d9f293",
+        "b0cd949d2a173a3991c80f14d32158ee2379e304c8839a052d921b6f08f5ebf0",
+        "ef3a964d3d8ae468c6b113e818076557eccf0b51ca9e056164ca8642ec2f05d6",
+        "10328971ea9db3098028d3c05f0c79e840925cfc8a583f544e839832dfedb984",
+        "95af09711f8d31b36e9e3e86f8fd40d302e6963050af4c1a9a91ed3b025bfe30",
+        "458035f81320db64e7c669e4712b84225afb3f397722f07927664cd9598404ad",
+        "2c69bc9b34fb0800a44a702e45019c107dfdc8273b9feb62c9615addc7138bde",
+        "4459b2909cef1e99ddfb4be233208753a4ed2f43343df6d5b4561c5e9ead51c9",
+        "038e94382201a2f4b7edb39d700d70e97b126f572004f2968ddc095b3f2a9c9b",
+        "70583edbedbf81d0d3ed9b1fd31fa7ce0feca32343473f32289a591296abb57a",
+        "826aaa9db20b9fae1e6f9a1e79607e0f119d0908edefe7210981749507d82c0b",
+        "00e2c609b4339c40455281ce1793c5e2158dd90d163ff4d64bc0795b715b6393"
+      ]
+    },
+    "after_three": {
+      "chrf_not_accuracy": 65.85316632892064,
+      "bleu_not_accuracy": 43.95521000371109,
+      "suspected_error_tag_counts": {
+        "number_disagreement": 5
+      },
+      "suspected_flagged_rows": 40,
+      "human_confirmed_error_count": 0,
+      "worst_case_id_hashes": [
+        "f36e412aea00d7c622f3d331c5ceec42eaf18bda2d0374971a09fc79d7d9f293",
+        "b0cd949d2a173a3991c80f14d32158ee2379e304c8839a052d921b6f08f5ebf0",
+        "ef3a964d3d8ae468c6b113e818076557eccf0b51ca9e056164ca8642ec2f05d6",
+        "10328971ea9db3098028d3c05f0c79e840925cfc8a583f544e839832dfedb984",
+        "95af09711f8d31b36e9e3e86f8fd40d302e6963050af4c1a9a91ed3b025bfe30",
+        "458035f81320db64e7c669e4712b84225afb3f397722f07927664cd9598404ad",
+        "2c69bc9b34fb0800a44a702e45019c107dfdc8273b9feb62c9615addc7138bde",
+        "4459b2909cef1e99ddfb4be233208753a4ed2f43343df6d5b4561c5e9ead51c9",
+        "038e94382201a2f4b7edb39d700d70e97b126f572004f2968ddc095b3f2a9c9b",
+        "70583edbedbf81d0d3ed9b1fd31fa7ce0feca32343473f32289a591296abb57a",
+        "826aaa9db20b9fae1e6f9a1e79607e0f119d0908edefe7210981749507d82c0b",
+        "00e2c609b4339c40455281ce1793c5e2158dd90d163ff4d64bc0795b715b6393"
+      ]
+    }
+  },
+  "changed_translations_n": 11,
+  "changed_reference_similarity_improved_n": 8,
+  "changed_reference_similarity_worsened_n": 2,
+  "elapsed_seconds": 35.736948739,
+  "rss_peak_kib_linux": 1045416,
+  "heldout_or_test_read": false,
+  "human_semantic_error_labels": 0,
+  "research_only": true,
+  "warning": "No true contextual group/dialogue or slang human evaluation exists in this author validation set. Error flags are heuristics."
+}
