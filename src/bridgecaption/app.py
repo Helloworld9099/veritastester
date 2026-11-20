@@ -436,8 +436,10 @@ class Application:
 
     def _apply_overlay_mode(self):
         """Switch between a caption-first floating overlay and full controls."""
+        # The updater has the same settings-content parent as the other
+        # controls and stays packed while the settings workspace is hidden.
         for panel in (self.controls_frame, self.engine_controls_frame,
-                      self.settings_frame, self.updates_frame, self.bottom_frame):
+                      self.settings_frame, self.bottom_frame):
             panel.pack_forget()
         self.settings_workspace.pack_forget()
         if not self.compact:
@@ -800,7 +802,7 @@ class Application:
         self.update_popup = popup
         popup.title("BridgeCaption update")
         popup.configure(bg=BG)
-        popup.geometry("390x180")
+        popup.geometry("390x210")
         popup.resizable(False, False)
         popup.transient(self.root)
         self.label(popup, f"Version {update.version} is available", 13, TEXT, True).pack(

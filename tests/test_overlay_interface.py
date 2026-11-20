@@ -134,3 +134,23 @@ def test_close_dismisses_snapshot_without_translation(app):
     popup.destroy.assert_called_once()
     app.root.destroy.assert_called_once()
     app.pipeline.translate.assert_not_called()
+
+
+def test_update_controls_remain_in_expanded_settings(app):
+    panels = ("controls_frame", "engine_controls_frame", "settings_frame", "updates_frame",
+              "bottom_frame", "settings_workspace", "settings_canvas", "caption_panel",
+              "top_frame", "title_row", "action_row", "original_heading", "translation_heading",
+              "caption_divider", "summary_label", "status_label", "full_caption_button",
+              "settings_button")
+    for panel in panels:
+        setattr(app, panel, MagicMock())
+    app.root.winfo_screenwidth.return_value = 1200
+    app.root.winfo_screenheight.return_value = 800
+    app.root.winfo_ismapped.return_value = False
+    app._resize_caption_wrap = MagicMock()
+
+    app._apply_overlay_mode()
+    app.toggle_settings()
+
+    app.settings_workspace.pack.assert_called_once()
+    app.updates_frame.pack_forget.assert_not_called()
