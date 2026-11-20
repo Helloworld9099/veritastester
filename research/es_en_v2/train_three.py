@@ -19,7 +19,7 @@ import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path[:0] = [str(ROOT / "experiments/" + p) for p in (
+sys.path[:0] = [str(ROOT / "experiments" / p) for p in (
     "cpu_continuation_20261117", "massive_20261117",
 )]
 import train as core
