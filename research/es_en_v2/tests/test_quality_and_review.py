@@ -110,7 +110,10 @@ class TestReviewPacket(unittest.TestCase):
              "frozen_system_outputs": {"baseline": "Rómpete una pierna", "trained": "Mucha suerte"}},
         ]
         with tempfile.TemporaryDirectory() as tmp:
-            packet = Path(tmp)/"packets"
+            packet = Path(tmp)/"data/private/packets"
+            with self.assertRaisesRegex(ValueError, "private"):
+                create_blank_review_packet(cases, ("baseline", "trained"),
+                                           Path(tmp)/"public-pack")
             info = create_blank_review_packet(cases, ("baseline", "trained"), packet)
             self.assertEqual(info["human_labels_written"], 0)
             self.assertEqual(info["rows_per_reviewer"], 4)
