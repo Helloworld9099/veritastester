@@ -1,0 +1,29 @@
+{
+  "status": "real_bridgecaption_text_pipeline_smoke_passed",
+  "new_adapter_sha256": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71",
+  "fallback_adapter_sha256": "14dddb5040afe49f8f05a1bfba3458d3321524b53b0fc05b359ad41a1ab75a4b",
+  "source_only_not_falsely_context_aware": true,
+  "text_captions_returned": 6,
+  "model_cached_after_first_request": true,
+  "live_app_default_changed": false,
+  "cloud_used": false,
+  "history_reset_confirmed": true,
+  "invalid_target_rejected": true,
+  "past_context_rejected_for_untrained_model": true,
+  "fallback_loaded_and_translated": true,
+  "cold_first_request_seconds": 6.348018429999996,
+  "warm_p50_seconds": 0.21672139999998308,
+  "warm_p95_seconds": 0.24923506000001794,
+  "peak_rss_kib_linux": 1115812,
+  "total_seconds": 8.256651530999989,
+  "text_only_no_microphone_or_asr": true,
+  "independent_human_95_percent_verified": false,
+  "translations_for_research_debug": [
+    "Hi, can you help me?",
+    "I want to confirm my reservation tomorrow.",
+    "It's not fifteen, it's fifty.",
+    "Can you repeat the last part?",
+    "I need to talk to the person in charge.",
+    "Thank you, that clears up my question."
+  ]
+}
