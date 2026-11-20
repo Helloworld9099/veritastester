@@ -1,0 +1,93 @@
+{
+  "experiment": "research-only CPU spanish->English LoRA continuation",
+  "language": "spanish",
+  "seed": 2026113413,
+  "base_model": "Helsinki-NLP/opus-mt-es-en",
+  "base_revision": "c96e2c5399ebfae4fc43d9669556b9afa74bb69d",
+  "warm_adapter_sha256": "410947653612b57c17f4ad77c4bfbb6c2b321595e28d113700667788122089c1",
+  "corpus_source": "file:///tmp/spanish-15fullrounds-f0x288w5/train_dev.json",
+  "corpus_sha256": "979109d6b89369acbb330aaa8fc557f27350c880a13d10043d8d455c6e60b27f",
+  "attribution": "Tatoeba spanish-English pairs via ManyThings.org; verify license and attribution before redistribution",
+  "train_rows": 3840,
+  "dev_rows": 128,
+  "unique_pairs_after_filtering": 3968,
+  "warning": "The newly downloaded corpus may overlap earlier research and base pretraining. Development-only results do not establish generalization, production readiness, or translation improvement.",
+  "planned_updates": 240,
+  "learning_rate": 3.5e-05,
+  "length_bucket_size": 64,
+  "selection": "Accept new checkpoint only if dev chrF improves >=0.25 AND dev BLEU does not fall, compared with unchanged prior adapter.",
+  "scores": {
+    "previous": {
+      "chrf": 63.31161957241586,
+      "bleu": 36.943920889133395,
+      "n": 128
+    },
+    "step80": {
+      "chrf": 65.10884267867091,
+      "bleu": 42.724908034818725,
+      "n": 128
+    },
+    "step160": {
+      "chrf": 66.83514454077101,
+      "bleu": 47.3465377585549,
+      "n": 128
+    },
+    "step240": {
+      "chrf": 67.1188140840148,
+      "bleu": 47.28422587831109,
+      "n": 128
+    }
+  },
+  "selected": "step240",
+  "completed_updates": 240,
+  "selected_candidate_sha256": "51a770215f3f87a282705b0ec0fcd55ecb304f069e956a7fa4015321b0b44d3c",
+  "last_step_loss": 1.1073054075241089,
+  "elapsed_seconds": 289.053238321,
+  "fifteen_rounds_version": "parallel-independent-v1",
+  "sweep_round": 13,
+  "completed_optimizer_updates": 240,
+  "data_manifest": {
+    "round": 13,
+    "seed": 2026113413,
+    "updates": 240,
+    "learning_rate": 3.5e-05,
+    "context_fraction": 0.75,
+    "massive_train_only_replay_count": 1280,
+    "length_bucket_size": 64,
+    "strict_length_quality_filter": false,
+    "selected_new_subtitle_train_n": 2560,
+    "current_development_n": 128,
+    "train_pairs_sha256": "581275d66dd7db43dfbec33d1b3570199620f06ecf3422c4668ba515653a1156",
+    "dev_pairs_sha256": "4f731857f2e0cd4e456ad342aebd3c84415254e6a04a10824c9f4e3c728d6a72",
+    "original_stage_development_sha256": "8a95faa2be8d84e4d24710601a714a98ce85a70d132570e9a71e03c158afd5f5",
+    "consumed_old_test_sha256_exclusion_only": "012ae617df158c0ba2302fa07d8be723fd01dd6f229d760f5cf3e8a5e03f6138",
+    "source_revision": "48a47d4af401b44624975d8b5e940abd70879937",
+    "source_blob_hashes": {
+      "samuel-y-audrey-youtube-transcripts-es-en.part-01.jsonl.gz": {
+        "bytes": 19902245,
+        "git_blob_sha1": "ad7345d16f37631e00a6c8ff7f4c318a57ed1dbe",
+        "sha256": "e7f2439d8f9c39639dc7fc8cef153243edc1b7a3265d46f8fc0ccfc36590d7ea"
+      },
+      "samuel-y-audrey-youtube-transcripts-es-en.part-02.jsonl.gz": {
+        "bytes": 12903665,
+        "git_blob_sha1": "72c49c690dcf5d7f590b9b5e846d84a8e256d1bc",
+        "sha256": "6866a8d1338243fec6856a6d36d6f00a921bad6cdfd26e99fc740925c51acf7a"
+      }
+    },
+    "video_group_counts": {
+      "train": 521,
+      "dev": 59,
+      "test": 56
+    },
+    "all_heldout_test_videos_excluded_from_model": true,
+    "test_never_used_for_model_selection": true,
+    "independent_bilingual_human_95_percent_accuracy_verified": false,
+    "usage": "Research only. Source CC BY-NC 4.0. No commercial/live use.",
+    "limitations": "Automatic subtitle timestamp alignment is not human-verified; 15 runs share one development domain; downstream human assessment on genuinely unseen material is still required."
+  },
+  "initial_selected_warm_sha256": "410947653612b57c17f4ad77c4bfbb6c2b321595e28d113700667788122089c1",
+  "research_only": true,
+  "commercial_deployment_allowed": false,
+  "human_semantic_accuracy_95_percent_verified": false,
+  "final_test_was_not_evaluated_in_sweep": true
+}

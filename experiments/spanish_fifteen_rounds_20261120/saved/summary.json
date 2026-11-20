@@ -1,0 +1,177 @@
+{
+  "number_of_completed_full_rounds": 15,
+  "optimizer_updates_per_round": 240,
+  "verified_total_optimizer_updates": 3600,
+  "training_strategy": "15 independent full training experiments in parallel; all warm-started from the same 240-step Spanish LoRA",
+  "selection": "development only (shared 128 examples); never on heldout test",
+  "old_original_test_re_evaluated": false,
+  "dev_pair_sha256": "4f731857f2e0cd4e456ad342aebd3c84415254e6a04a10824c9f4e3c728d6a72",
+  "baseline_dev_chrf": 63.31161957241586,
+  "baseline_dev_bleu": 36.943920889133395,
+  "winner": {
+    "round": 10,
+    "selected": "step240",
+    "dev_chrf": 67.67070251629367,
+    "dev_bleu": 47.76067247574759,
+    "completed_updates": 240,
+    "warm_sha256": "410947653612b57c17f4ad77c4bfbb6c2b321595e28d113700667788122089c1",
+    "adapter_sha256": "557838ab7823d3f7a836b5f3ccfe9a2b585b2b5733ec91a219df0e3967a49954",
+    "elapsed_seconds": 301.165552699
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "selected": "step240",
+      "dev_chrf": 67.12362446965213,
+      "dev_bleu": 47.844493368736565,
+      "completed_updates": 240,
+      "warm_sha256": "410947653612b57c17f4ad77c4bfbb6c2b321595e28d113700667788122089c1",
+      "adapter_sha256": "7f15a52d7c545f011e56b1fec28236b62ff9a28c74ddaa0cb32b21d5778107f3",
+      "elapsed_seconds": 437.62997691400005
+    },
+    {
+      "round": 2,
+      "selected": "step240",
+      "dev_chrf": 67.21613691988162,
+      "dev_bleu": 47.85362719453091,
+      "completed_updates": 240,
+      "warm_sha256": "410947653612b57c17f4ad77c4bfbb6c2b321595e28d113700667788122089c1",
+      "adapter_sha256": "f4bbe0adc553151221c26777eff0be1bcd41d1387f848d9660c0a44b3673aa4f",
+      "elapsed_seconds": 290.773913399
+    },
+    {
+      "round": 3,
+      "selected": "step240",
+      "dev_chrf": 67.65050660996064,
+      "dev_bleu": 47.992199005543334,
+      "completed_updates": 240,
+      "warm_sha256": "410947653612b57c17f4ad77c4bfbb6c2b321595e28d113700667788122089c1",
+      "adapter_sha256": "5e08af6a6e97b40b3a2aea3b23c21e273f85178d44cb86146b234ce7b34970cf",
+      "elapsed_seconds": 452.679334
+    },
+    {
+      "round": 4,
+      "selected": "step80",
+      "dev_chrf": 67.63104938741515,
+      "dev_bleu": 48.248105081894394,
+      "completed_updates": 240,
+      "warm_sha256": "410947653612b57c17f4ad77c4bfbb6c2b321595e28d113700667788122089c1",
+      "adapter_sha256": "df704b182a8e085c17c7fc937f657558425b1e3b5382375cb2aa7af13e674325",
+      "elapsed_seconds": 276.326872438
+    },
+    {
+      "round": 5,
+      "selected": "step240",
+      "dev_chrf": 66.66168271820683,
+      "dev_bleu": 47.36482449470901,
+      "completed_updates": 240,
+      "warm_sha256": "410947653612b57c17f4ad77c4bfbb6c2b321595e28d113700667788122089c1",
+      "adapter_sha256": "2e85840ab40a80e46cf2d2c2740cb862cfe9b8992a7a2881ae27f5f7d63a3e09",
+      "elapsed_seconds": 465.64903057799995
+    },
+    {
+      "round": 6,
+      "selected": "step240",
+      "dev_chrf": 67.34111622556055,
+      "dev_bleu": 47.49808168733437,
+      "completed_updates": 240,
+      "warm_sha256": "410947653612b57c17f4ad77c4bfbb6c2b321595e28d113700667788122089c1",
+      "adapter_sha256": "15417b74dc222b2e4fadae9c924f23ccd543af2006f284b8c4cf8d887c55420e",
+      "elapsed_seconds": 278.875436474
+    },
+    {
+      "round": 7,
+      "selected": "step240",
+      "dev_chrf": 67.37929982839432,
+      "dev_bleu": 47.833451540312396,
+      "completed_updates": 240,
+      "warm_sha256": "410947653612b57c17f4ad77c4bfbb6c2b321595e28d113700667788122089c1",
+      "adapter_sha256": "9b190c6de5d5013b79c3baff4ef4c5cb46740b35805020ec048074c852c9b209",
+      "elapsed_seconds": 284.342530593
+    },
+    {
+      "round": 8,
+      "selected": "step240",
+      "dev_chrf": 67.24801834851738,
+      "dev_bleu": 47.75211912631092,
+      "completed_updates": 240,
+      "warm_sha256": "410947653612b57c17f4ad77c4bfbb6c2b321595e28d113700667788122089c1",
+      "adapter_sha256": "1dacf46fd8aa5cc852f64b0947371f4b4441460ec74c326d3ca3dee12df635a0",
+      "elapsed_seconds": 480.160789211
+    },
+    {
+      "round": 9,
+      "selected": "step80",
+      "dev_chrf": 67.18380437526486,
+      "dev_bleu": 47.59110068727733,
+      "completed_updates": 240,
+      "warm_sha256": "410947653612b57c17f4ad77c4bfbb6c2b321595e28d113700667788122089c1",
+      "adapter_sha256": "84680544c2e810dcb5596f3272f2e68f15cc7cb482cc8033ec9febfb78c1cf43",
+      "elapsed_seconds": 281.449013077
+    },
+    {
+      "round": 10,
+      "selected": "step240",
+      "dev_chrf": 67.67070251629367,
+      "dev_bleu": 47.76067247574759,
+      "completed_updates": 240,
+      "warm_sha256": "410947653612b57c17f4ad77c4bfbb6c2b321595e28d113700667788122089c1",
+      "adapter_sha256": "557838ab7823d3f7a836b5f3ccfe9a2b585b2b5733ec91a219df0e3967a49954",
+      "elapsed_seconds": 301.165552699
+    },
+    {
+      "round": 11,
+      "selected": "step240",
+      "dev_chrf": 65.85477061370136,
+      "dev_bleu": 45.97631324346818,
+      "completed_updates": 240,
+      "warm_sha256": "410947653612b57c17f4ad77c4bfbb6c2b321595e28d113700667788122089c1",
+      "adapter_sha256": "20f83e84fc32d6c866384b2a5c8fb95c230088ca6ef46e7107a1de3bd1ac4e14",
+      "elapsed_seconds": 344.078326112
+    },
+    {
+      "round": 12,
+      "selected": "step240",
+      "dev_chrf": 67.00226069632227,
+      "dev_bleu": 47.63441125668971,
+      "completed_updates": 240,
+      "warm_sha256": "410947653612b57c17f4ad77c4bfbb6c2b321595e28d113700667788122089c1",
+      "adapter_sha256": "8ccb962984d2f29d95c65ffb0f9fe6c307aa5280b7fd4685978ed5499a8e7a7c",
+      "elapsed_seconds": 446.058798793
+    },
+    {
+      "round": 13,
+      "selected": "step240",
+      "dev_chrf": 67.1188140840148,
+      "dev_bleu": 47.28422587831109,
+      "completed_updates": 240,
+      "warm_sha256": "410947653612b57c17f4ad77c4bfbb6c2b321595e28d113700667788122089c1",
+      "adapter_sha256": "51a770215f3f87a282705b0ec0fcd55ecb304f069e956a7fa4015321b0b44d3c",
+      "elapsed_seconds": 289.053238321
+    },
+    {
+      "round": 14,
+      "selected": "step240",
+      "dev_chrf": 65.47574041140798,
+      "dev_bleu": 40.81867203167268,
+      "completed_updates": 240,
+      "warm_sha256": "410947653612b57c17f4ad77c4bfbb6c2b321595e28d113700667788122089c1",
+      "adapter_sha256": "65ca45137cf890c945ed8dfb9a1d67ea5666b9c5d79d9963132dc58b88f92e7a",
+      "elapsed_seconds": 309.405848591
+    },
+    {
+      "round": 15,
+      "selected": "previous",
+      "dev_chrf": 63.31161957241586,
+      "dev_bleu": 36.943920889133395,
+      "completed_updates": 240,
+      "warm_sha256": "410947653612b57c17f4ad77c4bfbb6c2b321595e28d113700667788122089c1",
+      "adapter_sha256": "410947653612b57c17f4ad77c4bfbb6c2b321595e28d113700667788122089c1",
+      "elapsed_seconds": 340.39104453500005
+    }
+  ],
+  "human_95_percent_semantic_accuracy_verified": false,
+  "commercial_use_allowed": false,
+  "rights": "Samuel y Audrey corpus CC BY-NC 4.0; only noncommercial research",
+  "limitation": "Video subtitle alignments and semantic meaning are NOT independently human-reviewed; dev selection over 15 trials may overfit dev. New heldout human review required."
+}

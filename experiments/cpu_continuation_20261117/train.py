@@ -45,6 +45,10 @@ CHECKPOINTS = (48, 96)
 TRAIN_COUNT = TOTAL_UPDATES * 16
 DEV_COUNT = 128
 MIN_CHRF_GAIN = 0.25
+# Optional, backwards-compatible research performance knobs. The defaults
+# reproduce every previously published training experiment.
+LEARNING_RATE = 2.5e-5
+LENGTH_BUCKET_SIZE = 0
 
 
 def sha256(path: Path) -> str:
@@ -268,7 +272,8 @@ def train_experiment(repo_root: Path, output_dir: Path, language: str = "french"
         "train_rows": len(train), "dev_rows": len(dev),
         "unique_pairs_after_filtering": unique_count,
         "warning": "The newly downloaded corpus may overlap earlier research and base pretraining. Development-only results do not establish generalization, production readiness, or translation improvement.",
-        "planned_updates": TOTAL_UPDATES, "learning_rate": 2.5e-5,
+        "planned_updates": TOTAL_UPDATES, "learning_rate": LEARNING_RATE,
+        "length_bucket_size": LENGTH_BUCKET_SIZE,
         "selection": "Accept new checkpoint only if dev chrF improves >=0.25 AND dev BLEU does not fall, compared with unchanged prior adapter.",
         "scores": {}, "selected": "previous", "completed_updates": 0,
     }
@@ -276,12 +281,27 @@ def train_experiment(repo_root: Path, output_dir: Path, language: str = "french"
     report["scores"]["previous"] = score(dev)
     print("DEV previous", report["scores"]["previous"], flush=True)
     model.config.use_cache = False
-    optimizer = torch.optim.AdamW(trainable, lr=2.5e-5, weight_decay=0.01)
+    optimizer = torch.optim.AdamW(trainable, lr=LEARNING_RATE, weight_decay=0.01)
     optimizer.zero_grad(set_to_none=True)
     selected = "previous"
     best = report["scores"]["previous"]
     indices = list(range(len(train)))
     random.Random(SEED).shuffle(indices)
+    # Group similarly sized examples within pre-shuffled local windows. This
+    # reduces padded tokens without dropping, shortening, or duplicating any
+    # training cases; opt-in only, all legacy results retain original order.
+    if LENGTH_BUCKET_SIZE:
+        if (LENGTH_BUCKET_SIZE < 16 or LENGTH_BUCKET_SIZE % 16
+                or len(indices) % 16):
+            raise ValueError("Length bucket must contain complete 16-case updates")
+        lengths = [max(len(tok.encode(s, truncation=True, max_length=96)),
+                       len(tok.encode(t, truncation=True, max_length=96)))
+                   for s, t in train]
+        indices = [item for p in range(0, len(indices), LENGTH_BUCKET_SIZE)
+                   for item in sorted(indices[p:p + LENGTH_BUCKET_SIZE],
+                                      key=lambda i: lengths[i])]
+        print("LENGTH_BUCKET_TRAINING", LENGTH_BUCKET_SIZE,
+              "sample_count", len(indices), flush=True)
     losses = []
     for step in range(1, TOTAL_UPDATES + 1):
         model.train()

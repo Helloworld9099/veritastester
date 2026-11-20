@@ -1,0 +1,230 @@
+name: TRAIN fifteen full Spanish LoRA rounds (independent controlled sweep, NC research)
+
+on:
+  push:
+    branches: [research/spanish-fifteen-full-rounds-20261120]
+    paths:
+      - .github/workflows/train-spanish-15-full-rounds.yml
+      - experiments/spanish_fifteen_rounds_20261120/**
+      - experiments/cpu_continuation_20261117/train.py
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: spanish-15-real-rounds-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  train:
+    name: Full training + development selection Spanish round ${{ matrix.round }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 80
+    strategy:
+      fail-fast: false
+      max-parallel: 15
+      matrix:
+        round: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    env:
+      HF_HUB_DISABLE_TELEMETRY: '1'
+      TOKENIZERS_PARALLELISM: 'false'
+      OMP_NUM_THREADS: '4'
+      MKL_NUM_THREADS: '4'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install CPU-only free model training dependencies
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'huggingface-hub>=0.34,<1.0' 'datasets==2.21.0'
+      - name: Verify real training scripts compile and pure-Python guards pass
+        run: |
+          python -m compileall -q experiments/spanish_fifteen_rounds_20261120
+          python -m unittest discover -s experiments/spanish_fifteen_rounds_20261120/tests -p 'test_*.py' -v
+          python -m unittest discover -s experiments/spanish_context_20261120/tests -p 'test_*.py' -v
+      - name: Retrieve successful ORIGINAL 240-step Spanish contextual adapter
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 44778001505
+          github-token: ${{ github.token }}
+          repository: Helloworld9099/veritastester
+          name: spanish-context-noncommercial-research
+          path: ${{ runner.temp }}/spanish-original
+      - name: Verify warm model against original training report and mount locally
+        run: |
+          mkdir -p experiments/spanish_context_20261120/saved
+          cp "${{ runner.temp }}/spanish-original/report.json" \
+            experiments/spanish_context_20261120/saved/report.json
+          cp "${{ runner.temp }}/spanish-original/spanish_context_evaluation.json" \
+            experiments/spanish_context_20261120/saved/spanish_context_evaluation.json
+          cp "${{ runner.temp }}/spanish-original/candidate_selected.safetensors" \
+            experiments/spanish_context_20261120/saved/adapter_selected.safetensors
+          python - <<'PY'
+          import sys
+          sys.path.insert(0, 'experiments/spanish_fifteen_rounds_20261120')
+          from train_sweep import verify_warm
+          print('PINNED_FIRST_ROUND_CHECKPOINT_SHA256', verify_warm())
+          PY
+      - name: ACTUALLY TRAIN full 240 updates and select by dev only
+        run: |
+          python -u experiments/spanish_fifteen_rounds_20261120/train_sweep.py \
+            --round '${{ matrix.round }}' \
+            --output-dir "${{ runner.temp }}/spanish-round-${{ matrix.round }}"
+      - name: Preserve round model candidates and manifest (NO test re-scoring)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spanish-sweep-round-${{ matrix.round }}
+          path: |
+            ${{ runner.temp }}/spanish-round-${{ matrix.round }}/report.json
+            ${{ runner.temp }}/spanish-round-${{ matrix.round }}/candidate_step*.safetensors
+            ${{ runner.temp }}/spanish-round-${{ matrix.round }}/candidate_selected.safetensors
+          if-no-files-found: warn
+          retention-days: 30
+
+  preserve:
+    name: Verify ALL fifteen completed rounds and preserve dev-selected champion
+    needs: [train]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: spanish-sweep-round-*
+          path: ${{ runner.temp }}/spanish-sweep-all
+          merge-multiple: false
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 44778001505
+          github-token: ${{ github.token }}
+          repository: Helloworld9099/veritastester
+          name: spanish-context-noncommercial-research
+          path: ${{ runner.temp }}/spanish-original
+      - name: Verify fifteen actual optimizer histories and preserve experiment evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import csv,hashlib,json,os,shutil
+          from pathlib import Path
+          base=Path(os.environ['RUNNER_TEMP'])
+          root=base/'spanish-sweep-all'
+          original=base/'spanish-original'
+          old=json.loads((original/'report.json').read_text())
+          initial=original/'candidate_selected.safetensors'
+          assert old['completed_updates']==240 and old['selected']=='step240'
+          assert hashlib.sha256(initial.read_bytes()).hexdigest()==old['selected_candidate_sha256']
+          dest=Path('experiments/spanish_fifteen_rounds_20261120/saved')
+          dest.mkdir(parents=True,exist_ok=False)
+          heads=[]
+          previous_chrf=None
+          previous_bleu=None
+          olddev='8a95faa2be8d84e4d24710601a714a98ce85a70d132570e9a71e03c158afd5f5'
+          oldtest='012ae617df158c0ba2302fa07d8be723fd01dd6f229d760f5cf3e8a5e03f6138'
+          dev_hashes=set()
+          for i in range(1,16):
+              path=root/f'spanish-sweep-round-{i}'
+              report=json.loads((path/'report.json').read_text())
+              meta=report['data_manifest']
+              assert report['language']=='spanish'
+              assert report['sweep_round']==meta['round']==i
+              assert report['completed_updates']==report['completed_optimizer_updates']==240
+              assert report['warm_adapter_sha256']==old['selected_candidate_sha256']
+              assert report['initial_selected_warm_sha256']==old['selected_candidate_sha256']
+              assert report['final_test_was_not_evaluated_in_sweep'] is True
+              assert report['commercial_deployment_allowed'] is False
+              assert report['human_semantic_accuracy_95_percent_verified'] is False
+              assert meta['original_stage_development_sha256']==olddev
+              assert meta['consumed_old_test_sha256_exclusion_only']==oldtest
+              assert meta['all_heldout_test_videos_excluded_from_model'] is True
+              assert meta['test_never_used_for_model_selection'] is True
+              assert len(meta['train_pairs_sha256'])==64
+              assert len(meta['dev_pairs_sha256'])==64
+              assert report['train_rows']==3840 and report['dev_rows']==128
+              assert set(report['scores'])=={'previous','step80','step160','step240'}
+              assert all(int(report['scores'][k]['n'])==128 for k in report['scores'])
+              assert all((path/f'candidate_step{n}.safetensors').is_file() for n in (80,160,240))
+              dev_hashes.add(meta['dev_pairs_sha256'])
+              prior=report['scores']['previous']
+              if previous_chrf is None:
+                  previous_chrf,previous_bleu=prior['chrf'],prior['bleu']
+              else:
+                  assert abs(prior['chrf']-previous_chrf)<0.001
+                  assert abs(prior['bleu']-previous_bleu)<0.001
+              selected=report['selected']
+              score=prior if selected=='previous' else report['scores'][selected]
+              if selected!='previous':
+                  adapter=path/'candidate_selected.safetensors'
+                  assert adapter.is_file()
+                  assert hashlib.sha256(adapter.read_bytes()).hexdigest()==report['selected_candidate_sha256']
+                  assert score['chrf']>=prior['chrf']+0.25 and score['bleu']>=prior['bleu']
+              else:
+                  adapter=initial
+              per_round=dest/f'round-{i:02d}'
+              per_round.mkdir()
+              shutil.copy2(path/'report.json',per_round/'report.json')
+              shutil.copy2(adapter,per_round/'adapter_selected.safetensors')
+              (per_round/'SHA256SUMS.txt').write_text(''.join(
+                  hashlib.sha256(item.read_bytes()).hexdigest()+'  '+item.name+'\n'
+                  for item in sorted(per_round.iterdir()) if item.is_file()))
+              heads.append({'round':i,'selected':selected,'dev_chrf':score['chrf'],
+                            'dev_bleu':score['bleu'],'completed_updates':240,
+                            'warm_sha256':report['warm_adapter_sha256'],
+                            'adapter_sha256':hashlib.sha256(adapter.read_bytes()).hexdigest(),
+                            'elapsed_seconds':report['elapsed_seconds']})
+          assert len(dev_hashes)==1, 'Round validation sets differ'
+          best=max(heads,key=lambda x:(x['dev_chrf'],x['dev_bleu'],-x['round']))
+          assert len(heads)==15 and sum(x['completed_updates'] for x in heads)==3600
+          shutil.copy2(dest/f"round-{best['round']:02d}"/'adapter_selected.safetensors',
+                       dest/'champion_adapter.safetensors')
+          summary={
+            'number_of_completed_full_rounds':15,
+            'optimizer_updates_per_round':240,
+            'verified_total_optimizer_updates':3600,
+            'training_strategy':'15 independent full training experiments in parallel; '
+                                'all warm-started from the same 240-step Spanish LoRA',
+            'selection':'development only (shared 128 examples); never on heldout test',
+            'old_original_test_re_evaluated':False,
+            'dev_pair_sha256':next(iter(dev_hashes)),
+            'baseline_dev_chrf':previous_chrf,
+            'baseline_dev_bleu':previous_bleu,
+            'winner':best,
+            'rounds':heads,
+            'human_95_percent_semantic_accuracy_verified':False,
+            'commercial_use_allowed':False,
+            'rights':'Samuel y Audrey corpus CC BY-NC 4.0; only noncommercial research',
+            'limitation':'Video subtitle alignments and semantic meaning are NOT '
+                         'independently human-reviewed; dev selection over 15 trials '
+                         'may overfit dev. New heldout human review required.'
+          }
+          (dest/'summary.json').write_text(json.dumps(summary,indent=2))
+          with (dest/'leaderboard.csv').open('w',newline='') as f:
+              writer=csv.DictWriter(f,fieldnames=list(heads[0]))
+              writer.writeheader();writer.writerows(heads)
+          print('VERIFIED_ALL_FIFTEEN_ROUNDS',json.dumps(summary))
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add experiments/spanish_fifteen_rounds_20261120/saved
+          git commit -m 'research: preserve all fifteen Spanish training rounds, checksums and dev-only champion [skip ci]'
+          git push origin 'HEAD:refs/heads/research/spanish-fifteen-full-rounds-20261120'
+      - name: Retain compact aggregate validation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spanish-fifteen-rounds-verified-summary
+          path: |
+            experiments/spanish_fifteen_rounds_20261120/saved/summary.json
+            experiments/spanish_fifteen_rounds_20261120/saved/leaderboard.csv
+          if-no-files-found: warn
+          retention-days: 30

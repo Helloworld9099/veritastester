@@ -1,0 +1,2 @@
+20f83e84fc32d6c866384b2a5c8fb95c230088ca6ef46e7107a1de3bd1ac4e14  adapter_selected.safetensors
+15adb74486ab6d878bedaea0fe7564bc9b639a0fd9bc4a167ef111d950c06c16  report.json
