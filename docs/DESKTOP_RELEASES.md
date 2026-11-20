@@ -23,10 +23,22 @@ a portable Windows folder won't enable in-app replacement.
    credential storage. Never commit it or pass it to the build matrix. Supply
    only its base64 raw public key via `BRIDGECAPTION_UPDATE_PUBLIC_KEY` during
    official builds; the packaged client never reads a runtime public key.
-2. Distribute appropriately platform-signed packages. For macOS, use
-   `BRIDGECAPTION_MACOS_SIGNING_IDENTITY`, sign with Developer ID, notarize,
-   staple the app, and recreate the final ZIP after stapling. Sign the Windows
-   installer with Authenticode. No updater private key is needed for these steps.
+2. Run the native builder with `--official` and a new local output directory.
+   The official mode fails if validation fails; it never publishes a release.
+
+       python scripts/build_desktop.py --version 0.2.0 --output release --official
+
+   - **Windows x64:** set `BRIDGECAPTION_WINDOWS_CERT_THUMBPRINT` to the thumbprint of
+     the existing code-signing certificate in the Windows user store; install
+     SignTool via the Windows SDK and put it on PATH or set `BRIDGECAPTION_SIGNTOOL`.
+     The builder signs and verifies the application and setup EXE. An optional
+     `BRIDGECAPTION_TIMESTAMP_URL` overrides the default HTTPS timestamp service.
+   - **macOS (each architecture):** set `BRIDGECAPTION_MACOS_SIGNING_IDENTITY` to
+     your installed **Developer ID Application** identity and
+     `BRIDGECAPTION_NOTARY_PROFILE` to an existing keychain profile. This mode
+     submits the app to Apple for notarization, staples its ticket, checks it,
+     and creates the distributable ZIP. No notarization occurs in PR checks.
+   - The updater private key is not needed for either native build.
 3. Produce one signed manifest from the final, immutable package bytes:
 
        python scripts/sign_update.py 0.2.0 \
