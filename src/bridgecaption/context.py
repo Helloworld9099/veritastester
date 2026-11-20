@@ -42,7 +42,7 @@ SLANG = {
         "lowkey": "quietly or somewhat",
         "mid": "mediocre, not necessarily a spatial middle",
         "sus": "suspicious",
-        "i'm down": "with an invitation may mean I agree/I'm interested; in mental-health context may mean I feel low",
+        "i'm down": "with an invitation may mean I agree/I'm interested; in mental-health context may indicate sadness or feeling low",
         "i’m down": "with an invitation may mean agreement; in other contexts may describe sadness or physical position",
         "cooked": "colloquial: I am in trouble or done for; may also literally mean cooked food",
         "slaps": "of a song or performance: it's excellent or impressive; may otherwise literally mean hits",
