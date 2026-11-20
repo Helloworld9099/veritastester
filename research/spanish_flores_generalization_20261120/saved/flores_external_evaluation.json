@@ -1,0 +1,50 @@
+{
+  "test_used_once_only": true,
+  "test_used_for_training": false,
+  "test_used_for_checkpoint_selection": false,
+  "frozen_winner_selected_on_dev_only": 10,
+  "model_base_identity": "Helsinki-NLP/opus-mt-es-en",
+  "base_sha256": null,
+  "starting_spanish_adapter_sha256": "410947653612b57c17f4ad77c4bfbb6c2b321595e28d113700667788122089c1",
+  "champion_spanish_adapter_sha256": "557838ab7823d3f7a836b5f3ccfe9a2b585b2b5733ec91a219df0e3967a49954",
+  "dataset": {
+    "publisher": "FLORES-200 (Meta); DGME public mirror",
+    "publisher_license": "CC BY-SA 4.0",
+    "mirror_repo": "DGME/FLORES-200",
+    "mirror_revision": "3cb4c84",
+    "official_split": "devtest",
+    "language_direction": "spa_Latn -> eng_Latn",
+    "source_sha256": "40fcb836b49b0a461a14c00b8bce1f03113f8d2668132af424e74b2421d18ce9",
+    "reference_sha256": "612e9fbe87997617c0fa8fa8929654a4f49b728d96738112c2b86ef6a1d78d88",
+    "selection_seed": 2026112051,
+    "rows_evaluated": 256,
+    "chosen_row_ids_sha256": "c8e71e3a9b046154c6f5f68ba652183a4676ea1777fa55ff5d027a1e46cc9a86",
+    "pair_sha256": "437fee0ed32579cf1f2b0b735b4a74c78a5695393f7583b913b2b741b58dbeaf",
+    "no_training_or_dev_model_selection_using_this_flores_split": true,
+    "not_slang_or_dialogue": true,
+    "original_marian_upstream_pretraining_overlap_not_known": true
+  },
+  "scores": {
+    "unadapted_marian_base": {
+      "n": 256,
+      "chrf": 58.85213229647086,
+      "bleu": 27.862940339751244,
+      "reference_exact_match_fraction_not_adequacy": 0.0
+    },
+    "first_spanish_context_checkpoint": {
+      "n": 256,
+      "chrf": 58.4611881507591,
+      "bleu": 27.352275885211174,
+      "reference_exact_match_fraction_not_adequacy": 0.0
+    },
+    "winner_after_15_rounds": {
+      "n": 256,
+      "chrf": 58.50576660299288,
+      "bleu": 27.260753656447047,
+      "reference_exact_match_fraction_not_adequacy": 0.0
+    }
+  },
+  "human_95_percent_semantic_accuracy_verified": false,
+  "commercial_use_allowed": false,
+  "limitations": "Published FLORES devtest is an external broad-domain diagnostic not natural spoken dialogue, context or slang; source model may have seen it upstream. chrF and BLEU are not human meaning accuracy."
+}
