@@ -9,6 +9,7 @@ on:
       - research/unified_models/registry.py
       - research/unified_models/registry.json
       - research/unified_models/smoke.py
+      - src/bridgecaption/context.py
       - research/es_en_v2/integration.py
   workflow_dispatch:
 
