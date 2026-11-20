@@ -11,16 +11,20 @@ import json
 import os
 import platform
 import re
+import shutil
+import subprocess
+import sys
 import tempfile
 from dataclasses import dataclass
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 from urllib.parse import urlparse
-from urllib.request import Request, urlopen
+from urllib.request import HTTPRedirectHandler, Request, build_opener
 
-UPDATE_PUBLIC_KEY = ""  # Replaced at build time; never read trust roots from runtime environment.
+from ._update_build import BUILD_VERSION, UPDATE_PUBLIC_KEY
+
 MAX_MANIFEST = 64 * 1024
-MAX_PACKAGE = 500 * 1024 * 1024
+MAX_PACKAGE = 1024 * 1024 * 1024
 DEFAULT_FEED = "https://github.com/Helloworld9099/veritastester/releases/latest/download/manifest.json"
 
 
@@ -30,9 +34,12 @@ class Update:
     url: str
     sha256: str
     size: int
+    platform: str
 
 
 def current_version() -> str:
+    if BUILD_VERSION:
+        return BUILD_VERSION
     try:
         return version("bridgecaption")
     except PackageNotFoundError:
@@ -51,6 +58,26 @@ def _https(url: str) -> str:
     if parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password:
         raise ValueError("Update URLs must be HTTPS without embedded credentials")
     return url
+
+
+class HTTPSOnlyRedirect(HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return super().redirect_request(req, fp, code, msg, headers, _https(newurl))
+
+
+def urlopen(request, *, timeout):
+    # Do not allow urllib to follow an HTTPS -> HTTP redirect.
+    return build_opener(HTTPSOnlyRedirect()).open(request, timeout=timeout)
+
+
+def platform_key(system=None, machine=None):
+    system = (system or platform.system()).lower()
+    machine = (machine or platform.machine()).lower()
+    machine = {"amd64": "x86_64", "aarch64": "arm64"}.get(machine, machine)
+    return f"{system}-{machine}"
+
+
+PACKAGE_SUFFIXES = {"windows": ".exe", "darwin": ".zip", "linux": ".AppImage"}
 
 
 def _public_key():
@@ -85,10 +112,12 @@ def find_update(current: str | None = None) -> Update | None:
     version_tuple(latest)
     if version_tuple(latest) <= version_tuple(current or current_version()):
         return None
-    system = platform.system().lower()
-    machine = platform.machine().lower()
-    key = f"{system}-{machine}"
-    artifact = payload["artifacts"].get(key)
+    key = platform_key()
+    artifacts = payload["artifacts"]
+    artifact = artifacts.get(key)
+    # Version 1 manifests used the unnormalized platform identifiers.
+    if artifact is None:
+        artifact = artifacts.get(f"{platform.system().lower()}-{platform.machine().lower()}")
     if artifact is None:
         raise RuntimeError(f"No signed update for {key}")
     url = _https(artifact["url"])
@@ -98,13 +127,21 @@ def find_update(current: str | None = None) -> Update | None:
         raise ValueError("Invalid package checksum")
     if type(size) is not int or not 0 < size <= MAX_PACKAGE:
         raise ValueError("Invalid package size")
-    return Update(latest, url, digest, size)
+    return Update(latest.removeprefix("v"), url, digest, size, key)
 
 
 def download_update(update: Update, progress, cancel=None) -> Path:
     """Download a verified package without running it. Caller owns returned temp path."""
     req = Request(_https(update.url), headers={"User-Agent": "BridgeCaption-Updater/1"})
-    fd, name = tempfile.mkstemp(prefix="bridgecaption-update-", suffix=".package")
+    if update.platform != platform_key():
+        raise ValueError("Package is not for this platform")
+    suffix = PACKAGE_SUFFIXES.get(update.platform.split("-", 1)[0])
+    if suffix is None:
+        raise RuntimeError("This operating system has no supported update package")
+    # A private directory prevents another process from writing a lookalike package
+    # into a shared temp filename between verification and installer startup.
+    temp_dir = Path(tempfile.mkdtemp(prefix="bridgecaption-update-"))
+    fd, name = tempfile.mkstemp(dir=temp_dir, prefix="verified-", suffix=suffix)
     destination = Path(name)
     received = 0
     digest = hashlib.sha256()
@@ -124,48 +161,154 @@ def download_update(update: Update, progress, cancel=None) -> Path:
                 progress(received, update.size)
         if received != update.size or digest.hexdigest() != update.sha256:
             raise ValueError("Package integrity verification failed")
+        if cancel and cancel():
+            raise RuntimeError("Update cancelled")
         return destination
     except BaseException:
-        destination.unlink(missing_ok=True)
+        discard_update(destination)
         raise
 
-def install_appimage_on_exit(update_file: Path) -> None:
-    """Stage verified AppImage; a detached helper replaces it after this process exits.
+def discard_update(package: Path):
+    package.unlink(missing_ok=True)
+    if package.parent.name.startswith("bridgecaption-update-"):
+        try:
+            package.parent.rmdir()
+        except OSError:
+            pass
 
-    A failed replacement leaves the existing application intact.
-    """
-    import subprocess
-    current = os.getenv("APPIMAGE")
-    if platform.system() != "Linux" or not current:
-        raise RuntimeError("Automatic installation requires the official AppImage build")
-    target = Path(current).resolve()
-    if update_file.stat().st_dev != target.parent.stat().st_dev:
-        raise RuntimeError("Update staging must be on the same filesystem as the AppImage")
-    if not target.is_file() or not os.access(target.parent, os.W_OK):
-        raise RuntimeError("Cannot update this AppImage location; move it to a writable folder")
-    # Package was checked against a signed manifest before arriving here.
-    update_file.chmod(0o755)
-    # Use a system shell: the bundled Python executable disappears when AppImage unmounts.
-    helper = r"""
-pid="$1"; source="$2"; destination="$3"
+
+def installed_app():
+    """Return the actual target of an official writable install, never a source app."""
+    if not getattr(sys, "frozen", False):
+        raise RuntimeError("Install a packaged BridgeCaption desktop build to enable updates.")
+    system = platform.system()
+    executable = Path(sys.executable).resolve()
+    if system == "Linux" and os.getenv("APPIMAGE"):
+        target = Path(os.environ["APPIMAGE"]).resolve()
+        if target.is_file() and os.access(target.parent, os.W_OK):
+            return target
+    if system == "Darwin" and len(executable.parents) >= 3:
+        target = executable.parents[2]
+        if (executable.parts[-3:-1] == ("Contents", "MacOS")
+                and target.name == "BridgeCaption.app" and os.access(target.parent, os.W_OK)
+                and "AppTranslocation" not in target.parts and target.parts[:2] != ("/", "Volumes")):
+            return target
+        raise RuntimeError("Move BridgeCaption.app to a writable Applications folder, then reopen it.")
+    if system == "Windows":
+        import winreg
+        try:
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\BridgeCaption\Desktop") as key:
+                location, kind = winreg.QueryValueEx(key, "InstallPath")
+            if kind == winreg.REG_SZ and Path(location, "BridgeCaption.exe").resolve() == executable:
+                return executable
+        except (OSError, TypeError):
+            pass
+        raise RuntimeError("Run the official BridgeCaption Windows installer first.")
+    raise RuntimeError("Install BridgeCaption in a writable location to enable updates.")
+
+
+_UNIX_SWAP = r"""
+pid="$1"; source="$2"; destination="$3"; format="$4"; stage="$5"
+cleanup() { rm -rf -- "$stage"; }
+trap cleanup EXIT
 count=0
 while kill -0 "$pid" 2>/dev/null; do
   count=$((count + 1))
   [ "$count" -lt 150 ] || exit 1
   sleep 0.2
 done
-backup="${destination}.previous"
-if [ -e "$destination" ]; then
-  mv -f -- "$destination" "$backup" || exit 1
+backup="$stage/previous"
+if [ "$format" = linux ]; then
+  # Keep the original path in place through the atomic file replacement.
+  ln -- "$destination" "$backup" || exit 1
+else
+  mv -- "$destination" "$backup" || exit 1
 fi
 if ! mv -f -- "$source" "$destination"; then
-  [ ! -e "$backup" ] || mv -f -- "$backup" "$destination"
+  if [ "$format" = darwin ] && ! mv -- "$backup" "$destination"; then
+    trap - EXIT    # Preserve the previous bundle if the rollback cannot complete.
+  fi
   exit 1
 fi
-exec "$destination"
+if [ "$format" = darwin ]; then
+  if ! /usr/bin/open -n "$destination"; then
+    if ! mv -- "$destination" "$stage/failed" || ! mv -- "$backup" "$destination"; then
+      trap - EXIT
+    fi
+    exit 1
+  fi
+else
+  "$destination" </dev/null >/dev/null 2>&1 &
+fi
+"""
+
+
+def _install_windows(package):
+    import ctypes
+    buf = ctypes.create_unicode_buffer(32768)
+    length = ctypes.windll.kernel32.GetSystemDirectoryW(buf, len(buf))
+    if not 0 < length < len(buf):
+        raise OSError("Could not find the Windows system directory")
+    powershell = Path(buf.value, "WindowsPowerShell", "v1.0", "powershell.exe")
+
+    def literal(text):
+        return "'" + str(text).replace("'", "''") + "'"
+
+    # The detached OS helper waits before Inno overwrites any running binaries.
+    # Inno restarts the app when invoked with the updater-only /RELAUNCH flag.
+    command = f"""
+$ErrorActionPreference = 'Stop'
+$p = Get-Process -Id {os.getpid()} -ErrorAction SilentlyContinue
+try {{
+    if ($p) {{ Wait-Process -InputObject $p -Timeout 30 }}
+    $setup = Start-Process -FilePath {literal(package)} -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/RELAUNCH' -Wait -PassThru
+    exit $setup.ExitCode
+}} finally {{
+    Remove-Item -LiteralPath {literal(package)} -Force -ErrorAction SilentlyContinue
+    Remove-Item -LiteralPath {literal(package.parent)} -ErrorAction SilentlyContinue
+}}
 """
     subprocess.Popen(
-        ["/bin/sh", "-c", helper, "bridgecaption-update", str(os.getpid()), str(update_file), str(target)],
+        [str(powershell), "-NoProfile", "-NoLogo", "-NonInteractive", "-EncodedCommand",
+         base64.b64encode(command.encode("utf-16le")).decode("ascii")],
         stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-        start_new_session=True,
+        creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP,
     )
+
+
+def install_update_on_exit(package: Path) -> None:
+    """Stage an already-verified artifact and start a native detached installer."""
+    target = installed_app()
+    system = platform.system().lower()
+    if package.suffix != PACKAGE_SUFFIXES[system] or not package.is_file():
+        raise ValueError("Unexpected update package format")
+    if system == "windows":
+        _install_windows(package)
+        return
+
+    # Stage under the installation's parent so both the rename and rollback are
+    # on the same volume even if your temp directory lives on a separate disk.
+    stage = Path(tempfile.mkdtemp(prefix=".bridgecaption-upgrade-", dir=target.parent))
+    try:
+        if system == "darwin":
+            subprocess.run(["/usr/bin/ditto", "-x", "-k", str(package), str(stage)],
+                           check=True, capture_output=True, timeout=120)
+            staged = stage / "BridgeCaption.app"
+            if staged.is_symlink() or not (staged / "Contents/MacOS/BridgeCaption").is_file():
+                raise ValueError("Update archive does not contain BridgeCaption.app")
+            subprocess.run(["/usr/bin/codesign", "--verify", "--deep", "--strict", str(staged)],
+                           check=True, capture_output=True, timeout=120)
+        else:
+            staged = stage / "replacement.AppImage"
+            shutil.copyfile(package, staged)
+            staged.chmod(0o755)
+        subprocess.Popen(
+            ["/bin/sh", "-c", _UNIX_SWAP, "bridgecaption-update", str(os.getpid()),
+             str(staged), str(target), system, str(stage)],
+            stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            start_new_session=True,
+        )
+    except BaseException:
+        shutil.rmtree(stage, ignore_errors=True)
+        raise
+    discard_update(package)
