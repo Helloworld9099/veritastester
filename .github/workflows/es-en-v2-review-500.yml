@@ -1,0 +1,115 @@
+name: Build 500 REAL model translation outputs — no answer key
+
+on:
+  push:
+    branches: [train/es-en-v2]
+    paths:
+      - .github/workflows/es-en-v2-review-500.yml
+      - research/es_en_v2/export_500_review.py
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: es-en-v2-five-hundred-real-responses
+  cancel-in-progress: false
+
+jobs:
+  evaluate-500:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 28
+    env:
+      TOKENIZERS_PARALLELISM: 'false'
+      HF_HUB_DISABLE_TELEMETRY: '1'
+      OMP_NUM_THREADS: '4'
+      MKL_NUM_THREADS: '4'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install free CPU-only pinned inference and spreadsheet dependencies
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'datasets==2.21.0' 'huggingface-hub>=0.34,<1.0' 'openpyxl==3.1.5'
+      - name: Verify fixed scripts and pinned training candidate before inference
+        run: |
+          python -m compileall -q research/es_en_v2/export_500_review.py
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          x=Path('experiments/es_en_v2_runs/candidate_after_three.safetensors')
+          assert hashlib.sha256(x.read_bytes()).hexdigest()=='3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71'
+          summary=json.loads(Path('experiments/es_en_v2_runs/summary.json').read_text())
+          assert summary['final_dev_candidate_sha256']==hashlib.sha256(x.read_bytes()).hexdigest()
+          assert summary['human_95_percent_accuracy_verified'] is False
+          print('PINNED_ACTUAL_ES_EN_CHECKPOINT_SHA256', summary['final_dev_candidate_sha256'])
+          PY
+      - name: Actually generate 500 model translations (250 each direction)
+        run: python -u research/es_en_v2/export_500_review.py
+      - name: Verify 500 spreadsheet responses, blank review fields and NO answer key
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import csv,json,hashlib
+          from pathlib import Path
+          from openpyxl import load_workbook
+          root=Path('research/es_en_v2/reviewer_examples_500')
+          meta=json.loads((root/'manifest.json').read_text())
+          assert meta['status']=='500_actually_generated_model_predictions'
+          assert meta['actual_inference_executed'] is True
+          assert meta['cases']==500 and meta['by_direction']=={'es-en':250,'en-es':250}
+          assert meta['reference_translations_in_exports'] is False
+          assert meta['never_used_final_holdout'] is True
+          assert meta['es_en_adapter_sha256']=='3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71'
+          assert meta['en_es_base_revision']=='5bc4493d463cf000c1f0b50f8d56886a392ed4ab'
+          assert len(meta['files_sha256'])==3
+          for file,sha in meta['files_sha256'].items():
+              assert hashlib.sha256((root/file).read_bytes()).hexdigest()==sha
+          csvfile=root/'BridgeCaption_500_Real_Model_Translations_Review.csv'
+          with csvfile.open(encoding='utf-8-sig',newline='') as f:
+              reader=csv.DictReader(f)
+              names=reader.fieldnames
+              assert names is not None and 'reference' not in ' '.join(names).lower()
+              entries=list(reader)
+          assert len(entries)==500
+          assert sum(bool(r['Actual model translation'].strip()) for r in entries)==500
+          for row in entries:
+              assert all(row[k]=='' for k in ('Meaning preserved?','Critical error?','Error type(s)','Reviewer notes','Reviewer ID'))
+          w=load_workbook(root/'BridgeCaption_500_Real_Model_Translations_Review.xlsx')
+          assert w.sheetnames==['READ ME','500 Model Outputs','Reviewer Summary']
+          assert w['500 Model Outputs'].max_row==501
+          assert w['500 Model Outputs']['G501'].value is None
+          assert w['Reviewer Summary']['B11'].value=='=IFERROR(B9/B10,"")'
+          assert w['Reviewer Summary']['B14'].value=='=IFERROR(B12/B13,"")'
+          print('REAL_500_TRANSLATION_OUTPUTS_VERIFIED',json.dumps({
+              'total':len(entries),'directions':meta['by_direction'],
+              'origin':meta['by_origin'],
+              'unique_outputs':meta['unique_output_strings']}))
+          PY
+      - name: Permanently save reviewer-ready spreadsheet, CSV and prediction manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/es_en_v2/reviewer_examples_500
+          git commit -m 'eval: preserve 500 actual Spanish-English model translations with no answer key [skip ci]'
+          git pull --rebase origin train/es-en-v2
+          git push origin HEAD:refs/heads/train/es-en-v2
+      - name: Retain downloadable reviewer XLSX and CSV even if commit fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bridgecaption-500-real-model-outputs-no-key
+          path: |
+            research/es_en_v2/reviewer_examples_500/*.xlsx
+            research/es_en_v2/reviewer_examples_500/*.csv
+            research/es_en_v2/reviewer_examples_500/*.json
+            research/es_en_v2/reviewer_examples_500/*.jsonl
+          if-no-files-found: warn
+          retention-days: 30
