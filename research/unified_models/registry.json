@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "status": "research_only_opt_in",
+  "generated_for": "BridgeCaption ES/FR shared local translation research",
+  "source_of_truth": "Research model registry; no changes to application's BRIDGE_TRANSLATOR default",
+  "cache_max_loaded_models": 1,
+  "models": [
+    {
+      "model_id": "es-en",
+      "source": "es",
+      "target": "en",
+      "base_model": "Helsinki-NLP/opus-mt-es-en",
+      "base_revision": "c96e2c5399ebfae4fc43d9669556b9afa74bb69d",
+      "base_manifest": "research/translation_training_20261116/model/download_manifest.json",
+      "adapter_protocol": "research/neural_continuation_20261116/spanish/protocol.json",
+      "use_safetensors": false,
+      "active_adapter": {
+        "path": "experiments/es_en_v2_runs/candidate_after_three.safetensors",
+        "sha256": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71"
+      },
+      "rollback_adapter": {
+        "path": "experiments/massive_stage3_20261117/saved/spanish/adapter_selected.safetensors",
+        "sha256": "14dddb5040afe49f8f05a1bfba3458d3321524b53b0fc05b359ad41a1ab75a4b"
+      },
+      "training_origin": [
+        "Tatoeba/ManyThings CC BY with attribution",
+        "Amazon MASSIVE CC BY 4.0"
+      ],
+      "noncommercial_data_in_training": false,
+      "human_meaning_verified": false,
+      "supports_context": false,
+      "rights_review_status": "research_only_pending_commercial_provenance_review"
+    },
+    {
+      "model_id": "fr-en",
+      "source": "fr",
+      "target": "en",
+      "base_model": "Helsinki-NLP/opus-mt-fr-en",
+      "base_revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+      "base_manifest": "research/translation_fr_training_20261116/model/download_manifest.json",
+      "adapter_protocol": "research/neural_continuation_20261116/french/protocol.json",
+      "use_safetensors": true,
+      "active_adapter": {
+        "path": "experiments/balanced_stage5_20261118/saved/french/adapter_selected.safetensors",
+        "sha256": "fba2bd78958bf0bf8a4c14dc55e601e08663633718c4c9c17f91ef9b52dcfa1c"
+      },
+      "rollback_adapter": {
+        "path": "experiments/massive_stage3_20261117/saved/french/adapter_selected.safetensors",
+        "sha256": "072f7f5d2d90b26991c5c62bf8ddb40f686f65e66be52717e7b121d507008ad9"
+      },
+      "training_origin": [
+        "Tatoeba/ManyThings CC BY with attribution",
+        "Amazon MASSIVE CC BY 4.0",
+        "Global Voices CC BY subject to article-level attribution audit"
+      ],
+      "noncommercial_data_in_training": false,
+      "human_meaning_verified": false,
+      "supports_context": false,
+      "rights_review_status": "research_only_pending_global_voices_rights_and_attribution_audit"
+    },
+    {
+      "model_id": "en-es",
+      "source": "en",
+      "target": "es",
+      "base_model": "Helsinki-NLP/opus-mt-en-es",
+      "base_revision": "5bc4493d463cf000c1f0b50f8d56886a392ed4ab",
+      "base_report": "research/es_en_v2/benchmarks/en_es/en_es_original_baseline.json",
+      "active_adapter": null,
+      "rollback_adapter": null,
+      "use_safetensors": false,
+      "training_origin": [
+        "Original pretrained Helsinki-NLP Marian OPUS-MT baseline"
+      ],
+      "noncommercial_data_in_training": false,
+      "human_meaning_verified": false,
+      "supports_context": false,
+      "rights_review_status": "research_only_base_provenance_audit"
+    }
+  ],
+  "archived_noncommercial": [
+    {
+      "direction": "fr-en",
+      "path": "experiments/wmt24_context_20261119/saved/adapter_selected.safetensors",
+      "sha256": "c858eb0a369baccbc93c5289b700886df896e15535cdf0222354e25f415a8b44",
+      "reason": "WMT24 Chat CC BY-NC 4.0. Do not use for commercial routing, fusion, distillation or adapter ancestry."
+    },
+    {
+      "direction": "es-en",
+      "path": "experiments/spanish_fifteen_rounds_20261120/saved/champion_adapter.safetensors",
+      "sha256": "557838ab7823d3f7a836b5f3ccfe9a2b585b2b5733ec91a219df0e3967a49954",
+      "reason": "Previous noncommercial subtitle corpus. Research archive only. Not used in compliant adapter ancestry."
+    }
+  ],
+  "never_merge_weights_between_language_specific_tokenizers": true,
+  "never_use_final_holdout_for_routing_or_checkpoint_selection": true
+}
