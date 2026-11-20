@@ -27,7 +27,7 @@ from research.unified_models.registry import ModelRegistry
 
 OUT = ROOT / "research/unified_models/receipts/spanish_review_decoder_ablation"
 LOOPS = (311, 314, 416)
-OTHER_OMISSIONS = (98, 103, 220, 381, 450)
+OTHER_OMISSIONS = (33, 35, 79, 219, 220)
 TRIALS = {
     "existing_bounded_retry_ngram3": {
         "num_beams":4, "max_new_tokens":96, "no_repeat_ngram_size":3,
