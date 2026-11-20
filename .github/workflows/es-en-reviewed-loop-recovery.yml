@@ -1,0 +1,87 @@
+name: Real Spanish anti-loop retry ablation (previously reviewed DEV cases only)
+
+on:
+  push:
+    branches: [research/es-en-human-feedback-20261120]
+    paths:
+      - .github/workflows/es-en-reviewed-loop-recovery.yml
+      - research/es_en_v2/reviewer_feedback_20261120/run_loop_recovery.py
+      - research/es_en_v2/inference_safety.py
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: es-en-20261120-real-loop-retry
+  cancel-in-progress: false
+
+jobs:
+  actual-retry:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      TOKENIZERS_PARALLELISM: 'false'
+      HF_HUB_DISABLE_TELEMETRY: '1'
+      OMP_NUM_THREADS: '4'
+      MKL_NUM_THREADS: '4'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install permitted free CPU research runtime
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'huggingface-hub>=0.34,<1.0'
+      - name: Verify pinned trained model and anti-loop unit tests
+        run: |
+          python -m unittest research.es_en_v2.tests.test_inference_safety -v
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          p=Path('experiments/es_en_v2_runs/candidate_after_three.safetensors')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71'
+          PY
+      - name: Run actual trained Spanish model once per observed loop with constrained regeneration
+        run: python -u research/es_en_v2/reviewer_feedback_20261120/run_loop_recovery.py
+      - name: Preserve real output examples without promoting unverified translations
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import json,hashlib
+          path=Path('research/es_en_v2/reviewer_feedback_20261120/loop_recovery/actual_loop_retry_results.json')
+          obj=json.loads(path.read_text())
+          assert obj['status']=='real_es_en_one_retry_development_ablation'
+          assert obj['original_repetition_loops_checked']==3
+          assert [x['excel_row'] for x in obj['tested_cases']]==[311,314,416]
+          assert obj['final_holdout_accessed'] is False
+          assert obj['trained_on_reviewer_examples'] is False
+          assert obj['production_provider_modified'] is False
+          assert obj['automatic_metric_or_human_accuracy_claim'] is False
+          assert obj['unchanged_nonloop_control'] is True
+          (path.parent/'SHA256SUMS.txt').write_text(
+              hashlib.sha256(path.read_bytes()).hexdigest()+'  '+path.name+'\n')
+          print('VERIFIED_REAL_SPANISH_LOOP_ABLATION',json.dumps({
+            'resolved':obj['loops_no_longer_detected_after_retry'],
+            'unresolved':obj['still_unresolved_loops'],
+            'seconds':obj['elapsed_seconds']}))
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/es_en_v2/reviewer_feedback_20261120/loop_recovery
+          git commit -m 'research: preserve observed Spanish generation-loop retry outputs [skip ci]'
+          git pull --rebase origin research/es-en-human-feedback-20261120
+          git push origin HEAD:refs/heads/research/es-en-human-feedback-20261120
+      - name: Retain experimental results if branch push races
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: es-en-real-spanish-reviewer-loop-retry
+          path: research/es_en_v2/reviewer_feedback_20261120/loop_recovery/
+          if-no-files-found: warn
+          retention-days: 30
