@@ -1,0 +1,44 @@
+{
+  "status": "completed_one_real_spanish_continuation_training_round",
+  "checkpoint_ancestry": "WARM_STARTED from accepted v2 learned weights; fresh optimizer state",
+  "base_checkpoint_sha256": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71",
+  "parent_unchanged": true,
+  "selected_for_further_research": "experiments/es_en_v2_runs/candidate_after_three.safetensors",
+  "selected_sha256": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71",
+  "dev_only_candidate_accepted": false,
+  "training_updates_completed": 64,
+  "training_examples": 1024,
+  "new_development_examples": 128,
+  "dev_scores_are_automatic_similarity_not_accuracy": {
+    "previous": {
+      "chrf": 67.5199042405869,
+      "bleu": 42.357690894909204,
+      "n": 128
+    },
+    "step32": {
+      "chrf": 67.6830256222481,
+      "bleu": 42.7234996402489,
+      "n": 128
+    },
+    "step64": {
+      "chrf": 67.69179057765922,
+      "bleu": 43.14557217424303,
+      "n": 128
+    }
+  },
+  "train_dataset_sha256": "f8f3d4373ce55248a21223c95415e3105df29489b2dde5f6d79f83b1a4ce52f2",
+  "dev_dataset_sha256": "38a755dec9024e7e87819ca12761dc92b02c7a313043b1a4ca5ef7e284fbb6c7",
+  "model_weights_restart_from_zero": false,
+  "optimizer_state_continued": false,
+  "reviewed_500_examples_not_used_for_training": true,
+  "official_final_holdout_never_accessed": true,
+  "no_human_95_percent_claim": true,
+  "no_context_or_slang_quality_claim": true,
+  "french_training_changed": false,
+  "production_default_activated": false,
+  "paid_spend_usd": 0,
+  "elapsed_seconds": 72.967003535,
+  "peak_rss_kib_linux": 1226372,
+  "next_actions_automatically_started": false,
+  "message": "One bounded real Spanish training round finished. Stop after preserving its verified artifacts."
+}

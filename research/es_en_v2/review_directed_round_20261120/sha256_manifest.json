@@ -1,0 +1,27 @@
+[
+  {
+    "path": "dataset_manifest.json",
+    "sha256": "10965c649b9384ec97d1e05a343957c8f8d3ec93995c251883bf5d62b92b611b",
+    "bytes": 2615
+  },
+  {
+    "path": "summary.json",
+    "sha256": "c7e35cd36452c7452b7e1ae95df1800e9058ff77b6f3c5b40df304a04a35485a",
+    "bytes": 1774
+  },
+  {
+    "path": "weights/candidate_step32.safetensors",
+    "sha256": "16091608417301f6862bf29d66a6a8e25580678b04b7e22e05135ef5dd90d5e3",
+    "bytes": 1187800
+  },
+  {
+    "path": "weights/candidate_step64.safetensors",
+    "sha256": "1a6ac23bc5c17839988a4d2b2ae862089f71a35ca86f9a6a42f07ef9fe3605f8",
+    "bytes": 1187800
+  },
+  {
+    "path": "weights/report.json",
+    "sha256": "4b0448481fe57e225a6aa31b38f159e7caf581097b1e93a00b5894641bb97167",
+    "bytes": 1599
+  }
+]

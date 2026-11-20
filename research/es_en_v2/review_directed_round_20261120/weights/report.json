@@ -1,0 +1,40 @@
+{
+  "experiment": "research-only CPU spanish->English LoRA continuation",
+  "language": "spanish",
+  "seed": 2026112098,
+  "base_model": "Helsinki-NLP/opus-mt-es-en",
+  "base_revision": "c96e2c5399ebfae4fc43d9669556b9afa74bb69d",
+  "warm_adapter_sha256": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71",
+  "corpus_source": "file:///tmp/bridgecaption-review-directed-xz0_t12j/source-licensed-pairs.json",
+  "corpus_sha256": "2f1136a77a2622715d356362f06298fba5467e46b473737f55c06e7d04dfe424",
+  "attribution": "Tatoeba spanish-English pairs via ManyThings.org; verify license and attribution before redistribution",
+  "train_rows": 1024,
+  "dev_rows": 128,
+  "unique_pairs_after_filtering": 1152,
+  "warning": "The newly downloaded corpus may overlap earlier research and base pretraining. Development-only results do not establish generalization, production readiness, or translation improvement.",
+  "planned_updates": 64,
+  "learning_rate": 1e-05,
+  "length_bucket_size": 64,
+  "selection": "Accept new checkpoint only if dev chrF improves >=0.25 AND dev BLEU does not fall, compared with unchanged prior adapter.",
+  "scores": {
+    "previous": {
+      "chrf": 67.5199042405869,
+      "bleu": 42.357690894909204,
+      "n": 128
+    },
+    "step32": {
+      "chrf": 67.6830256222481,
+      "bleu": 42.7234996402489,
+      "n": 128
+    },
+    "step64": {
+      "chrf": 67.69179057765922,
+      "bleu": 43.14557217424303,
+      "n": 128
+    }
+  },
+  "selected": "previous",
+  "completed_updates": 64,
+  "last_step_loss": 2.1366913318634033,
+  "elapsed_seconds": 70.90780017199998
+}
