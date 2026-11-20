@@ -277,5 +277,13 @@
     "436": "ordinal became cardinal",
     "457": "10 p.m. became diez de la tarde"
   },
-  "reviewer_annotation_policy": "Suspected issues provided by a reviewer; do not count all other rows as correct, assert adjudication, train on this development set, or reuse it as final holdout."
+  "reviewer_annotation_policy": "Suspected issues provided by a reviewer; do not count all other rows as correct, assert adjudication, train on this development set, or reuse it as final holdout.",
+  "potential_review_discrepancies": [
+    {
+      "row": 360,
+      "reason": "The review mentions omission of an opening worried clause, but the pinned workbook source at Excel row 360 begins '¡Oh, vamos! Todos tienen miedo...' and the translation includes its major clauses. Verify the intended row before recording a confirmed omission.",
+      "status": "requires_row_id_reconciliation"
+    }
+  ],
+  "annotation_readiness": "development_feedback_flags_only_no_formal_pass_fail"
 }
