@@ -1,0 +1,98 @@
+{
+  "status": "completed_three_serial_real_training_rounds",
+  "origin_adapter_sha256": "14dddb5040afe49f8f05a1bfba3458d3321524b53b0fc05b359ad41a1ab75a4b",
+  "final_dev_candidate_sha256": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71",
+  "total_new_optimizer_updates": 192,
+  "total_elapsed_seconds": 198.002955616,
+  "successful_rounds": 3,
+  "results": [
+    {
+      "round": 1,
+      "hypothesis": "quality_screen",
+      "parent": "14dddb5040afe49f8f05a1bfba3458d3321524b53b0fc05b359ad41a1ab75a4b",
+      "accepted_on_dev_only": true,
+      "selected": "step64",
+      "dev_scores": {
+        "previous": {
+          "chrf": 64.85569033479717,
+          "bleu": 42.63593877739787,
+          "n": 128
+        },
+        "step32": {
+          "chrf": 65.00411734843755,
+          "bleu": 42.83426313954145,
+          "n": 128
+        },
+        "step64": {
+          "chrf": 65.22730963770458,
+          "bleu": 43.24143301188417,
+          "n": 128
+        }
+      },
+      "elapsed_seconds": 66.201612452,
+      "optimizer_updates": 64,
+      "result_checkpoint_sha256": "219e3e9801157ba82ae7b1fb0ade6ff059a7375bef42c5cd8c3ec57fc26df743",
+      "production_approval": "blocked_pending_independent_human_evaluation"
+    },
+    {
+      "round": 2,
+      "hypothesis": "strict_alignment",
+      "parent": "219e3e9801157ba82ae7b1fb0ade6ff059a7375bef42c5cd8c3ec57fc26df743",
+      "accepted_on_dev_only": true,
+      "selected": "step64",
+      "dev_scores": {
+        "previous": {
+          "chrf": 65.22730963770458,
+          "bleu": 43.24143301188417,
+          "n": 128
+        },
+        "step32": {
+          "chrf": 65.6290018782827,
+          "bleu": 43.56305261768864,
+          "n": 128
+        },
+        "step64": {
+          "chrf": 65.85316632892064,
+          "bleu": 43.95521000371109,
+          "n": 128
+        }
+      },
+      "elapsed_seconds": 65.09752144399997,
+      "optimizer_updates": 64,
+      "result_checkpoint_sha256": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71",
+      "production_approval": "blocked_pending_independent_human_evaluation"
+    },
+    {
+      "round": 3,
+      "hypothesis": "asr_punctuation",
+      "parent": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71",
+      "accepted_on_dev_only": false,
+      "selected": "previous",
+      "dev_scores": {
+        "previous": {
+          "chrf": 65.85316632892064,
+          "bleu": 43.95521000371109,
+          "n": 128
+        },
+        "step32": {
+          "chrf": 66.17225404420458,
+          "bleu": 43.922327653281776,
+          "n": 128
+        },
+        "step64": {
+          "chrf": 65.74147459903375,
+          "bleu": 43.669512695245814,
+          "n": 128
+        }
+      },
+      "elapsed_seconds": 64.045942373,
+      "optimizer_updates": 64,
+      "result_checkpoint_sha256": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71",
+      "production_approval": "blocked_pending_independent_human_evaluation"
+    }
+  ],
+  "license": "CC-BY-4.0 MASSIVE / Apache-2.0 Marian + historical attributed Tatoeba",
+  "human_95_percent_accuracy_verified": false,
+  "commercial_default_activation": false,
+  "warning": "MASSIVE is intent-oriented short speech, NOT realistic multi-turn slang. These runs do not meet real-world contextual accuracy gate."
+}

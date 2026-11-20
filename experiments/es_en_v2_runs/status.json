@@ -1,0 +1,11 @@
+{
+  "three_rounds_train_completed": true,
+  "actual_training_run_id": 44806165157,
+  "training_failure": false,
+  "why_workflow_originally_failed": "Non-fast-forward push after training completed",
+  "recovered_without_retraining": true,
+  "research_only": true,
+  "production_promoted": false,
+  "real_bilingual_human_95_percent_verified": false,
+  "upstream_noncommercial_checkpoint_excluded": true
+}
