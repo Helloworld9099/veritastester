@@ -2,7 +2,7 @@ name: Real Spanish anti-loop retry ablation (previously reviewed DEV cases only)
 
 on:
   push:
-    branches: [research/es-en-human-feedback-20261120]
+    branches: [feat/bridgecaption-shared-french-spanish-20261120]
     paths:
       - .github/workflows/es-en-reviewed-loop-recovery.yml
       - research/es_en_v2/reviewer_feedback_20261120/run_loop_recovery.py
