@@ -9,6 +9,7 @@ import platform
 import shutil
 import subprocess
 import sys
+import sysconfig
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -44,7 +45,7 @@ def build(version, output):
                 if identity := os.environ.get("BRIDGECAPTION_MACOS_SIGNING_IDENTITY"):
                     args += ["--codesign-identity", identity]
             args += [str(ROOT / "desktop_entry.py")]
-            makespec = Path(sys.executable).with_name("pyi-makespec" + (".exe" if system == "Windows" else ""))
+            makespec = Path(sysconfig.get_path("scripts"), "pyi-makespec" + (".exe" if system == "Windows" else ""))
             subprocess.run([str(makespec), *args], check=True)
             spec = temp / "BridgeCaption.spec"
             if system == "Darwin":
