@@ -17,7 +17,7 @@ def datum(group="group_1"):
 
 class TestBilingualBabyDialogue(unittest.TestCase):
     def test_source_and_reference_turns_align_with_earlier_context_only(self):
-        r=parse_record(datum(),"es-en")
+        r=parse_record(datum(),direction="es-en")
         self.assertEqual(r["status"],"candidate_for_review")
         self.assertEqual(len(r["rows"]),2)
         self.assertEqual(r["rows"][0]["previous_source_turns"],[])
@@ -30,8 +30,8 @@ class TestBilingualBabyDialogue(unittest.TestCase):
         self.assertFalse(r["rows"][1]["permitted_as_human_gold"])
 
     def test_direction_reversal_uses_same_group(self):
-        a=parse_record(datum(),"es-en")
-        b=parse_record(datum(),"en-es")
+        a=parse_record(datum(),direction="es-en")
+        b=parse_record(datum(),direction="en-es")
         self.assertEqual(a["split"],b["split"])
         self.assertEqual(b["rows"][1]["source"],"Where is the dog?")
         self.assertEqual(b["rows"][1]["reference_candidate"],"¿Dónde está el perro?")
