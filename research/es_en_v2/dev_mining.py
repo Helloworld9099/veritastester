@@ -73,6 +73,11 @@ def mine_dev(rows, max_cases=200, *, min_chrf=50.0):
     """
     if not 1<=max_cases<=10000 or not 0<=min_chrf<=100:
         raise ValueError("Invalid mining budget")
+    # Reject the ENTIRE input batch before loading any model/metric or
+    # accessing a single heldout source/reference. This is a hard boundary.
+    rows=list(rows)
+    if any(row.get("split")!="dev" for row in rows):
+        raise ValueError("Only development examples allowed in mining")
     from sacrebleu.metrics import CHRF
     metric=CHRF()
     candidates=[]
