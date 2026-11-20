@@ -91,20 +91,21 @@ def smoke(previous, candidate):
             subprocess.run(command, check=True, timeout=180)
             print(f"{key}: requested native update from previous build {OLD}", flush=True)
             if system == "Windows":
-                # Avoid briefly locking BridgeCaption.exe with a version probe
-                # while Inno Setup is trying to replace it.
-                wait_for_setup = time.monotonic() + 215
-                helper_log = root / "helper.log"
+                # Wait for the actual Setup process, avoiding any read locks
+                # on BridgeCaption.exe while it replaces the installed files.
+                installer_pid = int((root / "installer.pid").read_text())
+                wait_for_setup = time.monotonic() + 120
                 while time.monotonic() < wait_for_setup:
-                    if helper_log.is_file():
-                        status = helper_log.read_text(encoding="utf-8-sig", errors="replace")
-                        if "Setup exit code: 0" in status:
-                            break
-                        if "Setup exit code:" in status:
-                            raise RuntimeError("Windows Setup returned a nonzero exit code")
-                    time.sleep(2)
+                    listing = subprocess.run(
+                        ["tasklist", "/FO", "CSV", "/NH", "/FI", f"PID eq {installer_pid}"],
+                        check=True, text=True, capture_output=True, timeout=15,
+                    )
+                    if not any(len(row) > 1 and row[1] == str(installer_pid)
+                               for row in csv.reader(io.StringIO(listing.stdout))):
+                        break
+                    time.sleep(1)
                 else:
-                    raise RuntimeError("Windows update helper did not report successful completion")
+                    raise RuntimeError("Windows Setup did not exit")
             deadline = time.monotonic() + 60
             while time.monotonic() < deadline:
                 try:
@@ -132,7 +133,7 @@ def smoke(previous, candidate):
                   "and observed automatic relaunch (synthetic transport)")
         except Exception:
             if system == "Windows":
-                for name in ("helper.log", "installer.log"):
+                for name in ("installer.log",):
                     log = root / name
                     if log.is_file():
                         print(f"{name}:\n{log.read_text(encoding='utf-8-sig', errors='replace')[-7000:]}", flush=True)

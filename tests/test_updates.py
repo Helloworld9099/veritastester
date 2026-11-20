@@ -89,24 +89,36 @@ def test_native_helper_does_not_inherit_frozen_app_runtime(monkeypatch):
     assert clean["PYINSTALLER_RESET_ENVIRONMENT"] == "1"
 
 
-def test_windows_helper_uses_exact_install_target_and_waits_only_for_setup(monkeypatch, tmp_path):
-    import base64
-    import ctypes
-    from types import SimpleNamespace
+def test_windows_setup_starts_directly_with_explicit_target_and_current_pid(monkeypatch, tmp_path):
     from bridgecaption import updates
 
-    def system_directory(buffer, size):
-        buffer.value = "C:\\Windows\\System32"
-        return len(buffer.value)
-
-    monkeypatch.setattr(ctypes, "windll", SimpleNamespace(kernel32=SimpleNamespace(
-        GetSystemDirectoryW=system_directory)), raising=False)
-    monkeypatch.setattr(updates.subprocess, "DETACHED_PROCESS", 8, raising=False)
     monkeypatch.setattr(updates.subprocess, "CREATE_NEW_PROCESS_GROUP", 512, raising=False)
     launches = []
     monkeypatch.setattr(updates.subprocess, "Popen", lambda args, **kwargs: launches.append(args))
-    updates._install_windows(tmp_path / "update.exe", tmp_path / "installed app" / "BridgeCaption.exe")
-    script = base64.b64decode(launches[0][-1]).decode("utf-16le")
-    assert "installed app'" in script and '/DIR="' in script
-    assert "[System.Diagnostics.Process]::Start($info)" in script
-    assert "$setup.WaitForExit(" in script and "$info.UseShellExecute = $false" in script
+    package = tmp_path / "update.exe"
+    target = tmp_path / "installed app" / "BridgeCaption.exe"
+    updates._install_windows(package, target)
+    assert launches[0][0] == str(package)
+    assert f"/DIR={target.parent}" in launches[0]
+    assert f"/WAITPID={updates.os.getpid()}" in launches[0]
+    assert "/RELAUNCH" in launches[0]
+
+
+def test_windows_staging_cleanup_does_not_remove_unrelated_files(monkeypatch, tmp_path):
+    from bridgecaption import updates
+
+    directory = tmp_path / "bridgecaption-update-fixture"
+    directory.mkdir()
+    package = directory / "verified-test.exe"
+    package.write_bytes(b"candidate")
+    unrelated = directory / "other.exe"
+    unrelated.write_bytes(b"another file")
+    monkeypatch.setattr(updates.tempfile, "gettempdir", lambda: str(tmp_path))
+    then = updates.time.time() - 25 * 3600
+    updates.os.utime(directory, (then, then))
+    updates._clean_windows_staging()
+    assert package.is_file() and unrelated.is_file()
+    unrelated.unlink()
+    updates.os.utime(directory, (then, then))
+    updates._clean_windows_staging()
+    assert not directory.exists()

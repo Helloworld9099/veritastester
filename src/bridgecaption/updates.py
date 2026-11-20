@@ -12,9 +12,11 @@ import os
 import platform
 import re
 import shutil
+import stat
 import subprocess
 import sys
 import tempfile
+import time
 from dataclasses import dataclass
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
@@ -257,66 +259,46 @@ def _native_environment():
     return environment
 
 
+def _clean_windows_staging():
+    """Clean only stale packages in app-owned temporary directories."""
+    cutoff = time.time() - 24 * 3600
+    for directory in Path(tempfile.gettempdir()).glob("bridgecaption-update-*"):
+        try:
+            metadata = directory.lstat()
+            if (not stat.S_ISDIR(metadata.st_mode) or metadata.st_mtime >= cutoff
+                    or getattr(metadata, "st_file_attributes", 0) & stat.FILE_ATTRIBUTE_REPARSE_POINT):
+                continue
+            entries = list(directory.iterdir())
+            if len(entries) == 1:
+                entry = entries[0]
+                if (entry.is_file() and not entry.is_symlink()
+                        and entry.name.startswith("verified-") and entry.suffix == ".exe"):
+                    discard_update(entry)
+        except OSError:
+            # Another updater or the OS may still be holding a file open.
+            continue
+
+
 def _install_windows(package, target, diagnostics=None):
     import ctypes
-    buf = ctypes.create_unicode_buffer(32768)
-    length = ctypes.windll.kernel32.GetSystemDirectoryW(buf, len(buf))
-    if not 0 < length < len(buf):
-        raise OSError("Could not find the Windows system directory")
-    powershell = Path(buf.value, "WindowsPowerShell", "v1.0", "powershell.exe")
-
-    def literal(text):
-        return "'" + str(text).replace("'", "''") + "'"
-
-    # Launch the signed installer directly. Lock it to the registered install
-    # directory, and don't join the process tree containing the relaunched app.
-    log_path = diagnostics / "installer.log" if diagnostics else ""
-    helper_log = diagnostics / "helper.log" if diagnostics else ""
-    command = f"""
-$ErrorActionPreference = 'Stop'
-$setupPath = {literal(package)}
-$installDir = {literal(target.parent)}
-$setupLog = {literal(log_path)}
-$helperLog = {literal(helper_log)}
-function Write-HelperLog([string]$Message) {{
-    if ($helperLog) {{ Add-Content -LiteralPath $helperLog -Value $Message }}
-}}
-try {{
-    Write-HelperLog 'Waiting for BridgeCaption to exit'
-    $p = Get-Process -Id {os.getpid()} -ErrorAction SilentlyContinue
-    if ($p -and -not $p.WaitForExit(30000)) {{ throw 'BridgeCaption did not exit in time' }}
-    $info = New-Object System.Diagnostics.ProcessStartInfo
-    $info.FileName = $setupPath
-    $info.Arguments = '/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /RELAUNCH /DIR="' + $installDir + '"'
-    if ($setupLog) {{ $info.Arguments += ' /LOG="' + $setupLog + '"' }}
-    $info.UseShellExecute = $false
-    $info.CreateNoWindow = $true
-    Write-HelperLog 'Starting the installer in the registered directory'
-    $setup = [System.Diagnostics.Process]::Start($info)
-    if (-not $setup.WaitForExit(180000)) {{ throw 'Setup did not exit in time' }}
-    Write-HelperLog ('Setup exit code: ' + $setup.ExitCode)
-    exit $setup.ExitCode
-}} catch {{
-    Write-HelperLog ($_.ToString())
-    exit 1
-}} finally {{
-    Remove-Item -LiteralPath $setupPath -Force -ErrorAction SilentlyContinue
-    Remove-Item -LiteralPath {literal(package.parent)} -ErrorAction SilentlyContinue
-}}
-"""
-    # PyInstaller's DLL search override is inherited by Windows child processes
-    # even if the environment block is replaced.
+    arguments = [str(package), "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART",
+                 "/RELAUNCH", f"/WAITPID={os.getpid()}", f"/DIR={target.parent}"]
+    if diagnostics:
+        arguments.append(f"/LOG={diagnostics / 'installer.log'}")
+    # Launch the verified EXE directly: setup waits for the app to exit before
+    # changing installed files. No shell or downloadable helper is involved.
+    # PyInstaller's DLL search override is inherited by child processes.
     bundle = getattr(sys, "_MEIPASS", None)
     if bundle and not ctypes.windll.kernel32.SetDllDirectoryW(None):
         raise ctypes.WinError()
     try:
-        subprocess.Popen(
-            [str(powershell), "-NoProfile", "-NoLogo", "-NonInteractive", "-EncodedCommand",
-             base64.b64encode(command.encode("utf-16le")).decode("ascii")],
-            stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-            creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP,
+        process = subprocess.Popen(
+            arguments, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP,
             env=_native_environment(),
         )
+        if diagnostics:
+            (diagnostics / "installer.pid").write_text(str(process.pid), encoding="utf-8")
     finally:
         if bundle:
             ctypes.windll.kernel32.SetDllDirectoryW(ctypes.c_wchar_p(bundle))
@@ -329,6 +311,7 @@ def install_update_on_exit(package: Path, *, diagnostics: Path | None = None) ->
     if package.suffix != PACKAGE_SUFFIXES[system] or not package.is_file():
         raise ValueError("Unexpected update package format")
     if system == "windows":
+        _clean_windows_staging()
         _install_windows(package, target, diagnostics)
         return
 
