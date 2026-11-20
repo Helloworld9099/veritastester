@@ -1,0 +1,288 @@
+{
+  "status": "actual_shared_marian_3_direction_pipeline_smoke",
+  "models": {
+    "es-en": {
+      "model": "Helsinki-NLP/opus-mt-es-en",
+      "revision": "c96e2c5399ebfae4fc43d9669556b9afa74bb69d",
+      "tokenizer_hashes": {
+        "source.spm": "e236ee6d866b635c0142114f8647f39831f9d92534aa2aad75c942f6a78ad0e3",
+        "target.spm": "4dd547c24816a335e7b0b2e63376a8f1b3cbfc671eda5ab808dd44fdadaa8791"
+      },
+      "model_status": "research_only_pending_commercial_provenance_review",
+      "active_sha256": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71",
+      "rollback_sha256": "14dddb5040afe49f8f05a1bfba3458d3321524b53b0fc05b359ad41a1ab75a4b"
+    },
+    "fr-en": {
+      "model": "Helsinki-NLP/opus-mt-fr-en",
+      "revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+      "tokenizer_hashes": {
+        "source.spm": "78d0e717c77053f1c4b856d8661d9cb87c64f083a35418c087b9146300e4f585",
+        "target.spm": "173e9f493a668fe396d599e28d414a201193094e6ffd7a4678e5aab0f6d3d838"
+      },
+      "model_status": "research_only_pending_global_voices_rights_and_attribution_audit",
+      "active_sha256": "fba2bd78958bf0bf8a4c14dc55e601e08663633718c4c9c17f91ef9b52dcfa1c",
+      "rollback_sha256": "072f7f5d2d90b26991c5c62bf8ddb40f686f65e66be52717e7b121d507008ad9"
+    },
+    "en-es": {
+      "model": "Helsinki-NLP/opus-mt-en-es",
+      "revision": "5bc4493d463cf000c1f0b50f8d56886a392ed4ab",
+      "tokenizer_hashes": {
+        "source.spm": "4dd547c24816a335e7b0b2e63376a8f1b3cbfc671eda5ab808dd44fdadaa8791",
+        "target.spm": "e236ee6d866b635c0142114f8647f39831f9d92534aa2aad75c942f6a78ad0e3"
+      },
+      "model_status": "research_only_base_provenance_audit",
+      "active_sha256": null,
+      "rollback_sha256": null
+    }
+  },
+  "actual_nonempty_translation_calls": 8,
+  "actual_captions": [
+    {
+      "source": "Hola, ¿me puedes ayudar?",
+      "translated": "Hi, can you help me?",
+      "direction": "es-en",
+      "duration_seconds": 5.609647674000001,
+      "version": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71"
+    },
+    {
+      "source": "No eran quince, eran cincuenta.",
+      "translated": "It wasn't fifteen, it was fifty.",
+      "direction": "es-en",
+      "duration_seconds": 0.19087896800002113,
+      "version": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71"
+    },
+    {
+      "source": "Bonjour, comment allez-vous ?",
+      "translated": "Hello, how are you?",
+      "direction": "fr-en",
+      "duration_seconds": 2.7424449380000055,
+      "version": "fba2bd78958bf0bf8a4c14dc55e601e08663633718c4c9c17f91ef9b52dcfa1c"
+    },
+    {
+      "source": "Je voudrais réserver une table pour demain.",
+      "translated": "I'd like to book a table for tomorrow.",
+      "direction": "fr-en",
+      "duration_seconds": 0.19761490799999137,
+      "version": "fba2bd78958bf0bf8a4c14dc55e601e08663633718c4c9c17f91ef9b52dcfa1c"
+    },
+    {
+      "source": "Can you help me, please?",
+      "translated": "¿Puedes ayudarme, por favor?",
+      "direction": "en-es",
+      "duration_seconds": 4.38575333,
+      "version": "5bc4493d463cf000c1f0b50f8d56886a392ed4ab"
+    },
+    {
+      "direction": "es-en",
+      "source": "Necesito ayuda con mi reserva.",
+      "translated": "I need help with my reservation.",
+      "pipeline_context": "disabled: 0 prior utterance(s); 0 learned sense hint(s)",
+      "version": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71"
+    },
+    {
+      "direction": "fr-en",
+      "source": "Je n'ai pas encore reçu mon billet.",
+      "translated": "I haven't received my ticket yet.",
+      "pipeline_context": "disabled: 0 prior utterance(s); 0 learned sense hint(s)",
+      "version": "fba2bd78958bf0bf8a4c14dc55e601e08663633718c4c9c17f91ef9b52dcfa1c"
+    },
+    {
+      "direction": "en-es",
+      "source": "Please tell me the meeting time.",
+      "translated": "Por favor, dime la hora de la reunión.",
+      "pipeline_context": "disabled: 0 prior utterance(s); 0 learned sense hint(s)",
+      "version": "5bc4493d463cf000c1f0b50f8d56886a392ed4ab"
+    }
+  ],
+  "archived_dev_comparisons": [
+    {
+      "direction": "es-en",
+      "id": "massive_es-en_1901",
+      "old_output": "update me with election results",
+      "unified_output": "update me with election results",
+      "same_exact_text": true,
+      "similar_after_whitespace_case": true
+    },
+    {
+      "direction": "es-en",
+      "id": "massive_es-en_9660",
+      "old_output": "put this program on",
+      "unified_output": "put this program on",
+      "same_exact_text": true,
+      "similar_after_whitespace_case": true
+    },
+    {
+      "direction": "es-en",
+      "id": "massive_es-en_906",
+      "old_output": "look at the weather next week for me please",
+      "unified_output": "look at the weather next week for me please",
+      "same_exact_text": true,
+      "similar_after_whitespace_case": true
+    },
+    {
+      "direction": "es-en",
+      "id": "massive_es-en_14654",
+      "old_output": "i wish my robot could work for me",
+      "unified_output": "i wish my robot could work for me",
+      "same_exact_text": true,
+      "similar_after_whitespace_case": true
+    },
+    {
+      "direction": "es-en",
+      "id": "massive_es-en_9889",
+      "old_output": "keep playing time between seams",
+      "unified_output": "keep playing time between seams",
+      "same_exact_text": true,
+      "similar_after_whitespace_case": true
+    },
+    {
+      "direction": "es-en",
+      "id": "massive_es-en_2825",
+      "old_output": "on what day does the tenth of april fall",
+      "unified_output": "on what day does the tenth of april fall",
+      "same_exact_text": true,
+      "similar_after_whitespace_case": true
+    },
+    {
+      "direction": "es-en",
+      "id": "massive_es-en_15145",
+      "old_output": "what is trend on twitter",
+      "unified_output": "what is trend on twitter",
+      "same_exact_text": true,
+      "similar_after_whitespace_case": true
+    },
+    {
+      "direction": "es-en",
+      "id": "massive_es-en_7675",
+      "old_output": "remind me of the next meeting at 4 am today",
+      "unified_output": "remind me of the next meeting at 4 am today",
+      "same_exact_text": true,
+      "similar_after_whitespace_case": true
+    },
+    {
+      "direction": "es-en",
+      "id": "massive_es-en_3270",
+      "old_output": "delete alarms for tomorrow",
+      "unified_output": "delete alarms for tomorrow",
+      "same_exact_text": true,
+      "similar_after_whitespace_case": true
+    },
+    {
+      "direction": "es-en",
+      "id": "massive_es-en_10545",
+      "old_output": "make a list of numbers for me",
+      "unified_output": "make a list of numbers for me",
+      "same_exact_text": true,
+      "similar_after_whitespace_case": true
+    },
+    {
+      "direction": "en-es",
+      "id": "massive_en-es_16334",
+      "old_output": "¿Tengo algún correo electrónico nuevo de John Smith?",
+      "unified_output": "¿Tengo algún correo electrónico nuevo de John Smith?",
+      "same_exact_text": true,
+      "similar_after_whitespace_case": true
+    },
+    {
+      "direction": "en-es",
+      "id": "massive_en-es_10925",
+      "old_output": "crear una nueva lista de mis facturas pendientes",
+      "unified_output": "crear una nueva lista de mis facturas pendientes",
+      "same_exact_text": true,
+      "similar_after_whitespace_case": true
+    },
+    {
+      "direction": "en-es",
+      "id": "massive_en-es_2514",
+      "old_output": "¿Cuál es el tiempo de esta semana",
+      "unified_output": "¿Cuál es el tiempo de esta semana",
+      "same_exact_text": true,
+      "similar_after_whitespace_case": true
+    },
+    {
+      "direction": "en-es",
+      "id": "massive_en-es_9489",
+      "old_output": "reproducir programas de música en la radio",
+      "unified_output": "reproducir programas de música en la radio",
+      "same_exact_text": true,
+      "similar_after_whitespace_case": true
+    },
+    {
+      "direction": "en-es",
+      "id": "massive_en-es_15897",
+      "old_output": "enviar feliz año nuevo a John en gmail punto com",
+      "unified_output": "enviar feliz año nuevo a John en gmail punto com",
+      "same_exact_text": true,
+      "similar_after_whitespace_case": true
+    },
+    {
+      "direction": "en-es",
+      "id": "massive_en-es_4779",
+      "old_output": "qué día de la semana es el veintisiete de junio de este año",
+      "unified_output": "qué día de la semana es el veintisiete de junio de este año",
+      "same_exact_text": true,
+      "similar_after_whitespace_case": true
+    },
+    {
+      "direction": "en-es",
+      "id": "massive_en-es_8903",
+      "old_output": "contar acerca de los últimos eventos",
+      "unified_output": "contar acerca de los últimos eventos",
+      "same_exact_text": true,
+      "similar_after_whitespace_case": true
+    },
+    {
+      "direction": "en-es",
+      "id": "massive_en-es_2006",
+      "old_output": "Por favor, juega rap.",
+      "unified_output": "Por favor, juega rap.",
+      "same_exact_text": true,
+      "similar_after_whitespace_case": true
+    },
+    {
+      "direction": "en-es",
+      "id": "massive_en-es_2665",
+      "old_output": "¿Qué está haciendo el ayuntamiento de Seattle sobre la falta de vivienda?",
+      "unified_output": "¿Qué está haciendo el ayuntamiento de Seattle sobre la falta de vivienda?",
+      "same_exact_text": true,
+      "similar_after_whitespace_case": true
+    },
+    {
+      "direction": "en-es",
+      "id": "massive_en-es_15171",
+      "old_output": "conseguirme actualizaciones del facebook de Kenny del fin de semana",
+      "unified_output": "conseguirme actualizaciones del facebook de Kenny del fin de semana",
+      "same_exact_text": true,
+      "similar_after_whitespace_case": true
+    }
+  ],
+  "archived_dev_comparison_count": 20,
+  "archived_dev_exact_parity": 20,
+  "archived_dev_normalized_parity": 20,
+  "all_archived_dev_parity": true,
+  "rollback_translations": [
+    {
+      "direction": "es-en",
+      "text": "Hello, good afternoon.",
+      "sha256": "14dddb5040afe49f8f05a1bfba3458d3321524b53b0fc05b359ad41a1ab75a4b"
+    },
+    {
+      "direction": "fr-en",
+      "text": "Hello, thank you very much.",
+      "sha256": "072f7f5d2d90b26991c5c62bf8ddb40f686f65e66be52717e7b121d507008ad9"
+    }
+  ],
+  "model_load_count": 10,
+  "model_cache_hits": 20,
+  "max_simultaneous_models_in_runtime": 1,
+  "max_rss_kib_linux": 1057180,
+  "total_elapsed_seconds": 21.609702193999993,
+  "default_bridgecaption_provider_unchanged": true,
+  "context_aware_model_activated": false,
+  "nc_research_models_excluded": true,
+  "independent_human_semantic_accuracy_verified": false,
+  "final_holdout_touched": false,
+  "new_training_updates": 0,
+  "translation_only_no_microphone": true,
+  "critical_note": "This verifies shared runtime and weight/version routing, not French 95% adequacy. Exact historical output parity is tested on previously reviewed MASSIVE dev rows, not unseen test examples."
+}
