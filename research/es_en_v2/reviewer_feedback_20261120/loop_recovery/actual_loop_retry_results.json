@@ -1,0 +1,69 @@
+{
+  "status": "real_es_en_one_retry_development_ablation",
+  "origin_reviewed_500_csv_sha256": "2f789b8b69ea79ad19d64a8eeb71c3b5ccccbb03ef5494d6a336a4986b7622f2",
+  "pinned_es_en_adapter_sha256": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71",
+  "original_repetition_loops_checked": 3,
+  "loops_no_longer_detected_after_retry": 3,
+  "still_unresolved_loops": 0,
+  "unchanged_nonloop_control": true,
+  "generation_options": {
+    "num_beams": 4,
+    "max_new_tokens": 96,
+    "no_repeat_ngram_size": 3,
+    "repetition_penalty": 1.12
+  },
+  "tested_cases": [
+    {
+      "excel_row": 311,
+      "case_id": "syn_12ad2a19ae66027aa831",
+      "direction": "es-en",
+      "source": "¡Guisantes verdes! ¡Delicioso!",
+      "prior_context_visible_to_reviewer_not_model": "¡Empujar! ¡Papá columpio! \\n\\n | ¡Así es! Y esta noche, podemos cenar unos ricos guisantes verdes. ¿Te parece bien? \\n\\n",
+      "previous_real_bot_output": "Yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy, yummy",
+      "constrained_real_bot_output": "Delicious!",
+      "original_repetition_detected": true,
+      "retry_recovers_from_repeat": true,
+      "status": "no_long_repetition_detected_after_retry",
+      "attempts": 2,
+      "retry_only_seconds": 5.748066335999965,
+      "human_meaning_preserved_verified": false
+    },
+    {
+      "excel_row": 314,
+      "case_id": "syn_3928805402623f66d57f",
+      "direction": "es-en",
+      "source": "¡Tobogán mojado! ¡Quiero ir! \\n\\n",
+      "prior_context_visible_to_reviewer_not_model": "¡Mira ese gran tobogán! Está todo mojado. No podemos usarlo aún. \\n\\n",
+      "previous_real_bot_output": "i want to go! i want to go! i want to go! i want to go! i want to go! i want to go! i want to go! i want to go! i want to go! i want to go! i want to go! i want to go",
+      "constrained_real_bot_output": "I want to go!",
+      "original_repetition_detected": true,
+      "retry_recovers_from_repeat": true,
+      "status": "no_long_repetition_detected_after_retry",
+      "attempts": 2,
+      "retry_only_seconds": 0.12862791100008053,
+      "human_meaning_preserved_verified": false
+    },
+    {
+      "excel_row": 416,
+      "case_id": "syn_f3f13205735175e50835",
+      "direction": "es-en",
+      "source": "¡Escalar! ¡Arriba, arriba! \\n\\n",
+      "prior_context_visible_to_reviewer_not_model": "¡Mira esa gran pared de roca! ¿Quieres escalarla? \\n\\n",
+      "previous_real_bot_output": "Up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up, up",
+      "constrained_real_bot_output": "Up, up, up!",
+      "original_repetition_detected": true,
+      "retry_recovers_from_repeat": true,
+      "status": "no_long_repetition_detected_after_retry",
+      "attempts": 2,
+      "retry_only_seconds": 0.18236093999996683,
+      "human_meaning_preserved_verified": false
+    }
+  ],
+  "elapsed_seconds": 6.059184139999957,
+  "peak_rss_kib_linux": 780536,
+  "automatic_metric_or_human_accuracy_claim": false,
+  "final_holdout_accessed": false,
+  "trained_on_reviewer_examples": false,
+  "production_provider_modified": false,
+  "limitation": "This fixes only detectable repetition. It does not solve idioms, context, negation, names, source errors, or incomplete clauses. A human must still assess whether nonrepetitive output has correct meaning."
+}
