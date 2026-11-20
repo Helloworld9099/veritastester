@@ -1,0 +1,60 @@
+name: Inspect real MIT-licensed ES-EN synthetic dialogue source under 8MiB cap
+
+on:
+  push:
+    branches: [train/es-en-v2]
+    paths:
+      - .github/workflows/es-en-v2-babylm-inspect.yml
+      - research/es_en_v2/inspect_babylm_stream.py
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pinned Hugging Face metadata client only
+        run: python -m pip install 'huggingface-hub==0.36.0'
+      - name: Inspect real public dialogue source (NO model training)
+        run: python -u research/es_en_v2/inspect_babylm_stream.py
+      - name: Preserve only source SHA and aggregate candidate-quality counts
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          file=Path('research/es_en_v2/dataset_receipts/babylm/source_sample_manifest.json')
+          obj=json.loads(file.read_text())
+          assert obj['new_human_verified_parallel_pairs']==0
+          assert obj['model_training_started_from_synthetic_data'] is False
+          assert obj['no_actual_source_text_saved'] is True
+          assert obj['received_bytes']<=8388608
+          assert obj['source_repo']=='lindazeng979/bilingual-babyLM'
+          (file.parent/'SHA256SUMS.txt').write_text(
+            hashlib.sha256(file.read_bytes()).hexdigest()+'  '+file.name+'\n')
+          print('SYNTHETIC_DIALOGUE_SOURCE_MANIFEST_ONLY',json.dumps({
+            'revision':obj['source_exact_revision'],
+            'counts':obj['counts'],
+            'human_gold_examples':obj['human_gold_examples']}))
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/es_en_v2/dataset_receipts/babylm
+          git commit -m 'research: pin bounded MIT bilingual conversational source sample statistics [skip ci]'
+          git pull --rebase origin train/es-en-v2
+          git push origin HEAD:refs/heads/train/es-en-v2
+      - name: Preserve metadata receipt on push failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: es-en-v2-mit-dialogue-candidate-inspection
+          path: research/es_en_v2/dataset_receipts/babylm/source_sample_manifest.json
+          if-no-files-found: warn
+          retention-days: 30
