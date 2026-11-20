@@ -1,0 +1,81 @@
+name: Validate human development feedback and anti-loop recovery
+
+on:
+  push:
+    branches: [research/es-en-human-feedback-20261120]
+    paths:
+      - .github/workflows/es-en-feedback-20261120.yml
+      - research/es_en_v2/reviewer_feedback_20261120/**
+      - research/es_en_v2/review_feedback_500.py
+      - research/es_en_v2/inference_safety.py
+      - research/es_en_v2/tests/test_reviewer_feedback_500.py
+      - research/es_en_v2/tests/test_inference_safety.py
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: es-en-feedback-20261120
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check Python syntax and run reviewer feedback and safety regression tests
+        run: |
+          python -m compileall -q research/es_en_v2/review_feedback_500.py research/es_en_v2/inference_safety.py
+          python -m unittest research.es_en_v2.tests.test_reviewer_feedback_500 research.es_en_v2.tests.test_inference_safety -v
+      - name: Join qualitative error flags to all 500 actual saved model outputs
+        run: python -u research/es_en_v2/review_feedback_500.py
+      - name: Verify honest incomplete human annotations, save reproducible summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import csv,json,hashlib
+          out=Path('research/es_en_v2/reviewer_feedback_20261120/processed')
+          summary=json.loads((out/'summary.json').read_text())
+          with (out/'reviewer_flagged_500_outputs.csv').open(newline='',encoding='utf-8-sig') as f:
+              rows=list(csv.DictReader(f))
+          assert len(rows)==500
+          assert summary['input_model_responses']==500
+          assert summary['distinct_rows_flagged_for_adjudication']==178
+          assert summary['unflagged_not_assumed_correct']==322
+          assert summary['per_row_pass_fail_labels_collected']==0
+          assert summary['training_examples_added']==0
+          assert summary['independently_evaluated_95_percent'] is False
+          assert all(x['Formal pass/fail']=='' for x in rows)
+          assert all(x['Adjudicated?']=='No' for x in rows)
+          assert rows[311-2]['Excel row']=='311' and 'repetition_loop' in rows[311-2]['Reported problem categories']
+          assert rows[318-2]['Direction']=='es-en'
+          assert rows[457-2]['Direction']=='en-es'
+          (out/'SHA256SUMS.txt').write_text(''.join(
+              hashlib.sha256(p.read_bytes()).hexdigest()+'  '+p.name+'\n'
+              for p in sorted(out.glob('*')) if p.is_file()))
+          print('VERIFIED_HUMAN_FEEDBACK_LEDGER',json.dumps({
+              'flagged':summary['distinct_rows_flagged_for_adjudication'],
+              'unmarked_not_passed':summary['unflagged_not_assumed_correct'],
+              'formal_labels':0}))
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/es_en_v2/reviewer_feedback_20261120/processed
+          git commit -m 'review: preserve qualitative row-to-case diagnostics without fabricated accuracy [skip ci]'
+          git pull --rebase origin research/es-en-human-feedback-20261120
+          git push origin HEAD:refs/heads/research/es-en-human-feedback-20261120
+      - name: Retain diagnostics even if Git push races
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: es-en-human-feedback-ledger-500
+          path: research/es_en_v2/reviewer_feedback_20261120/processed/
+          if-no-files-found: warn
+          retention-days: 30
