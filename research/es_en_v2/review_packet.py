@@ -16,6 +16,12 @@ from pathlib import Path
 
 CATEGORIES = ("general", "context", "idiom", "regional_slang",
               "domain_terms", "noisy_transcript")
+
+
+def is_private_path(path: Path) -> bool:
+    items = path.resolve().parts
+    return any(items[i:i+2] in (("data", "private"), ("results", "private"))
+               for i in range(len(items)-1))
 DIRECTIONS = ("es-en", "en-es")
 FIELDS = ("case_id", "direction", "category", "group_id", "speaker_id",
           "document_id", "region", "speaker_history", "source", "model_code",
@@ -55,8 +61,8 @@ def seal(path: Path, out: Path) -> dict:
     """No file contents enter the public log; this is a cryptographic receipt."""
     if not path.is_file() or path.is_symlink():
         raise ValueError("Holdout file must be a real local file")
-    if "data/private" not in str(path) and "results/private" not in str(path):
-        raise ValueError("The sealed holdout must stay under data/private or results/private")
+    if not is_private_path(path) or not is_private_path(out):
+        raise ValueError("Holdout and manifest must stay under data/private or results/private")
     digest = sha256(path)
     record = {
         "version": 1,
@@ -81,6 +87,8 @@ def create_blank_review_packet(cases, systems, out_dir: Path, *, seed: int = 202
     translate, inspect final errors or calculate adequacy.
     """
     import random
+    if not is_private_path(out_dir):
+        raise ValueError("Human reviewer packets must stay under data/private or results/private")
     if len(systems) < 2 or len(set(systems)) != len(systems):
         raise ValueError("Compare at least two distinct frozen systems")
     if not cases:
