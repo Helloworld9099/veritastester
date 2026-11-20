@@ -257,7 +257,7 @@ def _native_environment():
     return environment
 
 
-def _install_windows(package):
+def _install_windows(package, target, diagnostics=None):
     import ctypes
     buf = ctypes.create_unicode_buffer(32768)
     length = ctypes.windll.kernel32.GetSystemDirectoryW(buf, len(buf))
@@ -268,17 +268,39 @@ def _install_windows(package):
     def literal(text):
         return "'" + str(text).replace("'", "''") + "'"
 
-    # The detached OS helper waits before Inno overwrites any running binaries.
-    # Inno restarts the app when invoked with the updater-only /RELAUNCH flag.
+    # Launch the signed installer directly. Lock it to the registered install
+    # directory, and don't join the process tree containing the relaunched app.
+    log_path = diagnostics / "installer.log" if diagnostics else ""
+    helper_log = diagnostics / "helper.log" if diagnostics else ""
     command = f"""
 $ErrorActionPreference = 'Stop'
-$p = Get-Process -Id {os.getpid()} -ErrorAction SilentlyContinue
+$setupPath = {literal(package)}
+$installDir = {literal(target.parent)}
+$setupLog = {literal(log_path)}
+$helperLog = {literal(helper_log)}
+function Write-HelperLog([string]$Message) {{
+    if ($helperLog) {{ Add-Content -LiteralPath $helperLog -Value $Message }}
+}}
 try {{
-    if ($p) {{ Wait-Process -InputObject $p -Timeout 30 }}
-    $setup = Start-Process -FilePath {literal(package)} -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/RELAUNCH' -Wait -PassThru
+    Write-HelperLog 'Waiting for BridgeCaption to exit'
+    $p = Get-Process -Id {os.getpid()} -ErrorAction SilentlyContinue
+    if ($p -and -not $p.WaitForExit(30000)) {{ throw 'BridgeCaption did not exit in time' }}
+    $info = New-Object System.Diagnostics.ProcessStartInfo
+    $info.FileName = $setupPath
+    $info.Arguments = '/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /RELAUNCH /DIR="' + $installDir + '"'
+    if ($setupLog) {{ $info.Arguments += ' /LOG="' + $setupLog + '"' }}
+    $info.UseShellExecute = $false
+    $info.CreateNoWindow = $true
+    Write-HelperLog 'Starting the installer in the registered directory'
+    $setup = [System.Diagnostics.Process]::Start($info)
+    if (-not $setup.WaitForExit(180000)) {{ throw 'Setup did not exit in time' }}
+    Write-HelperLog ('Setup exit code: ' + $setup.ExitCode)
     exit $setup.ExitCode
+}} catch {{
+    Write-HelperLog ($_.ToString())
+    exit 1
 }} finally {{
-    Remove-Item -LiteralPath {literal(package)} -Force -ErrorAction SilentlyContinue
+    Remove-Item -LiteralPath $setupPath -Force -ErrorAction SilentlyContinue
     Remove-Item -LiteralPath {literal(package.parent)} -ErrorAction SilentlyContinue
 }}
 """
@@ -300,14 +322,14 @@ try {{
             ctypes.windll.kernel32.SetDllDirectoryW(ctypes.c_wchar_p(bundle))
 
 
-def install_update_on_exit(package: Path) -> None:
+def install_update_on_exit(package: Path, *, diagnostics: Path | None = None) -> None:
     """Stage an already-verified artifact and start a native detached installer."""
     target = installed_app()
     system = platform.system().lower()
     if package.suffix != PACKAGE_SUFFIXES[system] or not package.is_file():
         raise ValueError("Unexpected update package format")
     if system == "windows":
-        _install_windows(package)
+        _install_windows(package, target, diagnostics)
         return
 
     # Stage under the installation's parent so both the rename and rollback are

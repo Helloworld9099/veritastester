@@ -24,12 +24,12 @@ OLD, NEW = "0.1.0", "0.1.1"
 SETUP_FLAGS = ["/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART"]
 
 
-def worker(executable, package):
+def worker(executable, package, diagnostics=None):
     # This subprocess exits to let the same detached helper used by the app
     # replace the installed bundle/files. The initial path is a real install.
     sys.frozen = True
     sys.executable = str(executable)
-    updates.install_update_on_exit(package)
+    updates.install_update_on_exit(package, diagnostics=diagnostics)
 
 
 def read_version(executable, report):
@@ -85,9 +85,27 @@ def smoke(previous, candidate):
         assert update is not None and update.version == NEW
         downloaded = updates.download_update(update, lambda done, total: None)
         try:
-            subprocess.run([sys.executable, __file__, "--worker", str(executable), str(downloaded)],
-                           check=True, timeout=180)
-            deadline = time.monotonic() + 180
+            command = [sys.executable, __file__, "--worker", str(executable), str(downloaded)]
+            if system == "Windows":
+                command += ["--diagnostics", str(root)]
+            subprocess.run(command, check=True, timeout=180)
+            print(f"{key}: requested native update from previous build {OLD}", flush=True)
+            if system == "Windows":
+                # Avoid briefly locking BridgeCaption.exe with a version probe
+                # while Inno Setup is trying to replace it.
+                wait_for_setup = time.monotonic() + 215
+                helper_log = root / "helper.log"
+                while time.monotonic() < wait_for_setup:
+                    if helper_log.is_file():
+                        status = helper_log.read_text(encoding="utf-8-sig", errors="replace")
+                        if "Setup exit code: 0" in status:
+                            break
+                        if "Setup exit code:" in status:
+                            raise RuntimeError("Windows Setup returned a nonzero exit code")
+                    time.sleep(2)
+                else:
+                    raise RuntimeError("Windows update helper did not report successful completion")
+            deadline = time.monotonic() + 60
             while time.monotonic() < deadline:
                 try:
                     if read_version(executable, report) == NEW:
@@ -112,6 +130,13 @@ def smoke(previous, candidate):
             assert updates.find_update(NEW) is None
             print(f"{key}: installed simulated prior {OLD}, applied verified {NEW} in place, "
                   "and observed automatic relaunch (synthetic transport)")
+        except Exception:
+            if system == "Windows":
+                for name in ("helper.log", "installer.log"):
+                    log = root / name
+                    if log.is_file():
+                        print(f"{name}:\n{log.read_text(encoding='utf-8-sig', errors='replace')[-7000:]}", flush=True)
+            raise
         finally:
             # Relaunch is part of the production path; close it in the disposable
             # runner before cleanup (Windows keeps loaded libraries mapped).
@@ -127,7 +152,11 @@ def smoke(previous, candidate):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--worker", action="store_true")
+    parser.add_argument("--diagnostics", type=Path)
     parser.add_argument("first", type=Path)
     parser.add_argument("second", type=Path)
     args = parser.parse_args()
-    (worker if args.worker else smoke)(args.first.resolve(), args.second.resolve())
+    if args.worker:
+        worker(args.first.resolve(), args.second.resolve(), args.diagnostics)
+    else:
+        smoke(args.first.resolve(), args.second.resolve())
