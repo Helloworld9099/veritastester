@@ -1,0 +1,84 @@
+{
+  "language": "french",
+  "completed_optimizer_updates": 240,
+  "selected_based_on_contextual_DEVELOPMENT_only": "step240",
+  "cohorts": {
+    "publisher": "WMT24 Chat Translation (Unbabel)",
+    "license": "CC BY-NC 4.0: research only, commercial deployment PROHIBITED",
+    "source_commit": "12a34149267dd9ae98e60e0ec2e415707fad5618",
+    "source_git_blob_SHA1": {
+      "train": "f5b10236f9aa4f235239b1004e380aec2abc4f37",
+      "dev": "8c9d0a051de662fd43a50365ee11c4d968507a47"
+    },
+    "source_SHA256": {
+      "train": "eff96c25a2b5b5fc436ab85d573d4b2186fb8354a31763445c02e1cc80cc76ad",
+      "dev": "09f41828543e8ea13c6fd86a07a44316100c7b4f4763ee816489206b4050d442"
+    },
+    "official_train_conversations": 264,
+    "official_validation_conversations": 90,
+    "selected_chat_training_n": 3072,
+    "selected_history_dependent_training_n": 2890,
+    "selected_chat_dev_n": 256,
+    "selected_history_dependent_dev_n": 249,
+    "distinct_training_groups": 264,
+    "distinct_dev_groups": 90,
+    "old_MASSIVE_TRAIN_replay_n": 768,
+    "warm_stage7_adapter_SHA256": "5b9b136997fcc80c961542831a1dd0578018de81f1e1a069df686616a4f5d80f",
+    "strict_no_train_dev_overlap_by_conversation_id": true,
+    "WMT24_TEST_source_or_human_references_downloaded_or_scored": false,
+    "context_format": "current French text first, then | contexte : last up to two previous original speaker turns",
+    "context_note": "Contexts may contain genuine English and French original speaker messages; gold translations were NEVER supplied as context.",
+    "research_only": true
+  },
+  "contextual_dev_scores": {
+    "previous": {
+      "chrf": 53.57939340619819,
+      "bleu": 16.34642573306015,
+      "n": 256
+    },
+    "step60": {
+      "chrf": 57.34591067924724,
+      "bleu": 20.077799464439938,
+      "n": 256
+    },
+    "step120": {
+      "chrf": 65.7798006483772,
+      "bleu": 31.625536242953576,
+      "n": 256
+    },
+    "step180": {
+      "chrf": 71.50865837160144,
+      "bleu": 46.13620047701198,
+      "n": 256
+    },
+    "step240": {
+      "chrf": 72.70549511521564,
+      "bleu": 50.065682003701184,
+      "n": 256
+    }
+  },
+  "plain_input_dev_ablation": {
+    "base": {
+      "n": 256,
+      "chrf": 73.21973227628249,
+      "bleu": 55.38787648911471,
+      "reference_exact_match_fraction_not_adequacy": 0.12109375
+    },
+    "previous": {
+      "n": 256,
+      "chrf": 73.5798895922391,
+      "bleu": 55.549675951004765,
+      "reference_exact_match_fraction_not_adequacy": 0.15625
+    },
+    "selected": {
+      "n": 256,
+      "chrf": 73.18500250430135,
+      "bleu": 55.77754003590889,
+      "reference_exact_match_fraction_not_adequacy": 0.171875
+    }
+  },
+  "official_publisher_TEST_was_never_scored": true,
+  "commercial_deployment_allowed": false,
+  "90_percent_independent_human_adequacy_confirmed": false,
+  "caveat": "Research-only WMT24 Chat training, genuine dialogue context in input. No prior DiaBLa, TICO or WMT24 TEST rows were included. No bilingual-human ratings of BridgeCaption output are provided."
+}

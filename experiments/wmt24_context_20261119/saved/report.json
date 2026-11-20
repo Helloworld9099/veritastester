@@ -1,0 +1,83 @@
+{
+  "experiment": "research-only CPU french->English LoRA continuation",
+  "language": "french",
+  "seed": 2026111901,
+  "base_model": "Helsinki-NLP/opus-mt-fr-en",
+  "base_revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+  "warm_adapter_sha256": "5b9b136997fcc80c961542831a1dd0578018de81f1e1a069df686616a4f5d80f",
+  "corpus_source": "file:///tmp/BridgeCaption-WMT24-context-9ohhgwaw/train-dev.json",
+  "corpus_sha256": "a328e5b8fcefc8c063557d06ce6b2d71d594de171a7f25b034bcaee7f558c40c",
+  "attribution": "Tatoeba french-English pairs via ManyThings.org; verify license and attribution before redistribution",
+  "train_rows": 3840,
+  "dev_rows": 256,
+  "unique_pairs_after_filtering": 4096,
+  "warning": "The newly downloaded corpus may overlap earlier research and base pretraining. Development-only results do not establish generalization, production readiness, or translation improvement.",
+  "planned_updates": 240,
+  "learning_rate": 2.5e-05,
+  "selection": "Accept new checkpoint only if dev chrF improves >=0.25 AND dev BLEU does not fall, compared with unchanged prior adapter.",
+  "scores": {
+    "previous": {
+      "chrf": 53.57939340619819,
+      "bleu": 16.34642573306015,
+      "n": 256
+    },
+    "step60": {
+      "chrf": 57.34591067924724,
+      "bleu": 20.077799464439938,
+      "n": 256
+    },
+    "step120": {
+      "chrf": 65.7798006483772,
+      "bleu": 31.625536242953576,
+      "n": 256
+    },
+    "step180": {
+      "chrf": 71.50865837160144,
+      "bleu": 46.13620047701198,
+      "n": 256
+    },
+    "step240": {
+      "chrf": 72.70549511521564,
+      "bleu": 50.065682003701184,
+      "n": 256
+    }
+  },
+  "selected": "step240",
+  "completed_updates": 240,
+  "selected_candidate_sha256": "c858eb0a369baccbc93c5289b700886df896e15535cdf0222354e25f415a8b44",
+  "last_step_loss": 1.3148047924041748,
+  "elapsed_seconds": 698.842784146,
+  "stage": "context-v1",
+  "source": "WMT24 official train/valid conversations",
+  "research_license": "CC-BY-NC-4.0, not for commercial model use",
+  "cohort_manifest": {
+    "publisher": "WMT24 Chat Translation (Unbabel)",
+    "license": "CC BY-NC 4.0: research only, commercial deployment PROHIBITED",
+    "source_commit": "12a34149267dd9ae98e60e0ec2e415707fad5618",
+    "source_git_blob_SHA1": {
+      "train": "f5b10236f9aa4f235239b1004e380aec2abc4f37",
+      "dev": "8c9d0a051de662fd43a50365ee11c4d968507a47"
+    },
+    "source_SHA256": {
+      "train": "eff96c25a2b5b5fc436ab85d573d4b2186fb8354a31763445c02e1cc80cc76ad",
+      "dev": "09f41828543e8ea13c6fd86a07a44316100c7b4f4763ee816489206b4050d442"
+    },
+    "official_train_conversations": 264,
+    "official_validation_conversations": 90,
+    "selected_chat_training_n": 3072,
+    "selected_history_dependent_training_n": 2890,
+    "selected_chat_dev_n": 256,
+    "selected_history_dependent_dev_n": 249,
+    "distinct_training_groups": 264,
+    "distinct_dev_groups": 90,
+    "old_MASSIVE_TRAIN_replay_n": 768,
+    "warm_stage7_adapter_SHA256": "5b9b136997fcc80c961542831a1dd0578018de81f1e1a069df686616a4f5d80f",
+    "strict_no_train_dev_overlap_by_conversation_id": true,
+    "WMT24_TEST_source_or_human_references_downloaded_or_scored": false,
+    "context_format": "current French text first, then | contexte : last up to two previous original speaker turns",
+    "context_note": "Contexts may contain genuine English and French original speaker messages; gold translations were NEVER supplied as context.",
+    "research_only": true
+  },
+  "WMT24_test_still_completely_sealed": true,
+  "prior_speaker_turns_passed_to_model_during_training": true
+}
