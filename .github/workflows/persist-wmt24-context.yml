@@ -1,0 +1,85 @@
+name: Permanently preserve WMT24 noncommercial context-trained French model
+on:
+  push:
+    branches: [research/wmt24-contextual-french-20261119]
+    paths:
+      - .github/workflows/persist-wmt24-context.yml
+permissions:
+  actions: read
+  contents: write
+jobs:
+  preserve:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Retrieve successful actual contextual-training run
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 44456772405
+          github-token: ${{ github.token }}
+          repository: Helloworld9099/veritastester
+          name: wmt24-context-french-research-only
+          path: ${{ runner.temp }}/wmt-results
+      - name: Authenticate, verify and preserve research-only models
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,os,hashlib
+          from pathlib import Path
+          from shutil import copy2
+          src=Path(os.environ["RUNNER_TEMP"])/"wmt-results"
+          report_files=list(src.rglob("report.json"))
+          evidence_files=list(src.rglob("context_research_evaluation.json"))
+          selected_files=list(src.rglob("candidate_selected.safetensors"))
+          assert len(report_files)==len(evidence_files)==len(selected_files)==1
+          report=json.loads(report_files[0].read_text(encoding="utf8"))
+          evidence=json.loads(evidence_files[0].read_text(encoding="utf8"))
+          manifest=report["cohort_manifest"]
+          assert report["language"] == evidence["language"] == "french"
+          assert report["selected"] == evidence["selected_based_on_contextual_DEVELOPMENT_only"] == "step240"
+          assert report["completed_updates"] == evidence["completed_optimizer_updates"] == 240
+          assert report["stage"] == "context-v1"
+          assert report["research_license"] == "CC-BY-NC-4.0, not for commercial model use"
+          assert report["WMT24_test_still_completely_sealed"] is True
+          assert report["prior_speaker_turns_passed_to_model_during_training"] is True
+          assert evidence["official_publisher_TEST_was_never_scored"] is True
+          assert evidence["commercial_deployment_allowed"] is False
+          assert evidence["90_percent_independent_human_adequacy_confirmed"] is False
+          assert manifest == evidence["cohorts"]
+          assert manifest["source_commit"] == "12a34149267dd9ae98e60e0ec2e415707fad5618"
+          assert manifest["strict_no_train_dev_overlap_by_conversation_id"] is True
+          assert manifest["WMT24_TEST_source_or_human_references_downloaded_or_scored"] is False
+          assert (manifest["selected_chat_training_n"],manifest["selected_chat_dev_n"],
+                  manifest["old_MASSIVE_TRAIN_replay_n"]) == (3072,256,768)
+          assert len(report["scores"]) == 5
+          assert all(row["n"]==256 for row in report["scores"].values())
+          assert report["scores"]["step240"]["chrf"]>report["scores"]["previous"]["chrf"]
+          sha=hashlib.sha256(selected_files[0].read_bytes()).hexdigest()
+          assert sha == report["selected_candidate_sha256"]
+          target=Path("experiments/wmt24_context_20261119/saved")
+          target.mkdir(parents=True,exist_ok=False)
+          for path,name in ((report_files[0],"report.json"),
+                            (evidence_files[0],"context_research_evaluation.json"),
+                            (selected_files[0],"adapter_selected.safetensors")):
+              copy2(path,target/name)
+          candidates=sorted(src.rglob("candidate_step*.safetensors"))
+          assert len(candidates)==4
+          for path in candidates:copy2(path,target/path.name)
+          with (target/"SHA256SUMS.txt").open("w") as fh:
+              for path in sorted(target.iterdir()):
+                  if path.name!="SHA256SUMS.txt":
+                      fh.write(hashlib.sha256(path.read_bytes()).hexdigest()+"  "+path.name+"\n")
+          (target/"NONCOMMERCIAL_ONLY.txt").write_text(
+              "WMT24 Chat is CC BY-NC 4.0. These research adapters MUST NOT be "
+              "used commercially or activated as the production translator. "
+              "No independent bilingual human adequacy score has been obtained.\n")
+          print("PRESERVED_CONTEXT_ADAPTER_SHA256",sha)
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add experiments/wmt24_context_20261119/saved
+          git diff --cached --stat
+          git commit -m "research: preserve WMT24 French context-trained LoRA and development evidence [skip ci]"
+          git push origin "HEAD:refs/heads/research/wmt24-contextual-french-20261119"
