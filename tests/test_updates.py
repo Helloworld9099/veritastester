@@ -75,3 +75,15 @@ def test_redirect_cannot_downgrade_to_http():
     from urllib.request import Request
     with pytest.raises(ValueError, match="HTTPS"):
         HTTPSOnlyRedirect().redirect_request(Request("https://example.com"), None, 302, "", {}, "http://example.com")
+
+
+def test_native_helper_does_not_inherit_frozen_app_runtime(monkeypatch):
+    from bridgecaption import updates
+    monkeypatch.setenv("APPIMAGE", "/old/package.AppImage")
+    monkeypatch.setenv("APPDIR", "/old/extracted")
+    monkeypatch.setenv("LD_LIBRARY_PATH", "/old/bundled-libraries")
+    monkeypatch.setenv("LD_LIBRARY_PATH_ORIG", "/user/libraries")
+    clean = updates._native_environment()
+    assert not {"APPIMAGE", "APPDIR", "LD_LIBRARY_PATH_ORIG"}.intersection(clean)
+    assert clean["LD_LIBRARY_PATH"] == "/user/libraries"
+    assert clean["PYINSTALLER_RESET_ENVIRONMENT"] == "1"

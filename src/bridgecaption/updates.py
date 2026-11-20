@@ -243,6 +243,20 @@ fi
 """
 
 
+def _native_environment():
+    """Do not load bundled Tcl/Python libraries into native OS helpers."""
+    environment = os.environ.copy()
+    if "LD_LIBRARY_PATH_ORIG" in environment:
+        environment["LD_LIBRARY_PATH"] = environment.pop("LD_LIBRARY_PATH_ORIG")
+    elif getattr(sys, "frozen", False):
+        environment.pop("LD_LIBRARY_PATH", None)
+    # AppImage/PyInstaller markers belong to the old process, not its replacement.
+    for key in ("APPIMAGE", "APPDIR", "ARGV0"):
+        environment.pop(key, None)
+    environment["PYINSTALLER_RESET_ENVIRONMENT"] = "1"
+    return environment
+
+
 def _install_windows(package):
     import ctypes
     buf = ctypes.create_unicode_buffer(32768)
@@ -268,12 +282,22 @@ try {{
     Remove-Item -LiteralPath {literal(package.parent)} -ErrorAction SilentlyContinue
 }}
 """
-    subprocess.Popen(
-        [str(powershell), "-NoProfile", "-NoLogo", "-NonInteractive", "-EncodedCommand",
-         base64.b64encode(command.encode("utf-16le")).decode("ascii")],
-        stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-        creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP,
-    )
+    # PyInstaller's DLL search override is inherited by Windows child processes
+    # even if the environment block is replaced.
+    bundle = getattr(sys, "_MEIPASS", None)
+    if bundle and not ctypes.windll.kernel32.SetDllDirectoryW(None):
+        raise ctypes.WinError()
+    try:
+        subprocess.Popen(
+            [str(powershell), "-NoProfile", "-NoLogo", "-NonInteractive", "-EncodedCommand",
+             base64.b64encode(command.encode("utf-16le")).decode("ascii")],
+            stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP,
+            env=_native_environment(),
+        )
+    finally:
+        if bundle:
+            ctypes.windll.kernel32.SetDllDirectoryW(ctypes.c_wchar_p(bundle))
 
 
 def install_update_on_exit(package: Path) -> None:
@@ -290,14 +314,15 @@ def install_update_on_exit(package: Path) -> None:
     # on the same volume even if your temp directory lives on a separate disk.
     stage = Path(tempfile.mkdtemp(prefix=".bridgecaption-upgrade-", dir=target.parent))
     try:
+        environment = _native_environment()
         if system == "darwin":
             subprocess.run(["/usr/bin/ditto", "-x", "-k", str(package), str(stage)],
-                           check=True, capture_output=True, timeout=120)
+                           check=True, capture_output=True, timeout=120, env=environment)
             staged = stage / "BridgeCaption.app"
             if staged.is_symlink() or not (staged / "Contents/MacOS/BridgeCaption").is_file():
                 raise ValueError("Update archive does not contain BridgeCaption.app")
             subprocess.run(["/usr/bin/codesign", "--verify", "--deep", "--strict", str(staged)],
-                           check=True, capture_output=True, timeout=120)
+                           check=True, capture_output=True, timeout=120, env=environment)
         else:
             staged = stage / "replacement.AppImage"
             shutil.copyfile(package, staged)
@@ -306,7 +331,7 @@ def install_update_on_exit(package: Path) -> None:
             ["/bin/sh", "-c", _UNIX_SWAP, "bridgecaption-update", str(os.getpid()),
              str(staged), str(target), system, str(stage)],
             stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-            start_new_session=True,
+            start_new_session=True, env=environment,
         )
     except BaseException:
         shutil.rmtree(stage, ignore_errors=True)
