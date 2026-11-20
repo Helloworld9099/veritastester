@@ -1,0 +1,785 @@
+{
+  "status": "real_context_slang_development_translation_experiment",
+  "dev_stress_fixture_sha256": "d60356656a434d23b986193bb3761ae0df5529d093f150c590267e5021ee0160",
+  "source_human_authored": false,
+  "total_synthetic_development_cases": 40,
+  "spanish_to_english_model_sha256": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71",
+  "english_to_spanish_model_sha256": "5bc4493d463cf000c1f0b50f8d56886a392ed4ab",
+  "scores": {
+    "es-en": {
+      "original_base_no_context": {
+        "chrf_synthetic_reference_not_accuracy": 47.374038967494954,
+        "bleu_synthetic_reference_not_accuracy": 40.21573062971518,
+        "n": 20,
+        "category_chrF_synthetic_not_accuracy": {
+          "code_switch": {
+            "n": 1,
+            "chrF": 69.89345321136685
+          },
+          "context": {
+            "n": 3,
+            "chrF": 18.904978941308713
+          },
+          "critical": {
+            "n": 1,
+            "chrF": 100.0
+          },
+          "idiom": {
+            "n": 4,
+            "chrF": 23.669468236979345
+          },
+          "noisy_transcript": {
+            "n": 1,
+            "chrF": 91.94743050842375
+          },
+          "regional_slang": {
+            "n": 2,
+            "chrF": 46.66652550026821
+          },
+          "slang": {
+            "n": 7,
+            "chrF": 30.628117317104632
+          },
+          "technical": {
+            "n": 1,
+            "chrF": 72.1506915342856
+          }
+        },
+        "suspicious_development_error_tags": {
+          "contains_slang_needs_review": 4,
+          "context_sensitivity_needs_review": 20,
+          "contains_idiom_needs_review": 1
+        }
+      },
+      "trained_v2_no_context": {
+        "chrf_synthetic_reference_not_accuracy": 40.53576854292204,
+        "bleu_synthetic_reference_not_accuracy": 23.907830973590066,
+        "n": 20,
+        "category_chrF_synthetic_not_accuracy": {
+          "code_switch": {
+            "n": 1,
+            "chrF": 56.845541987799955
+          },
+          "context": {
+            "n": 3,
+            "chrF": 18.904978941308713
+          },
+          "critical": {
+            "n": 1,
+            "chrF": 100.0
+          },
+          "idiom": {
+            "n": 4,
+            "chrF": 24.02467529452303
+          },
+          "noisy_transcript": {
+            "n": 1,
+            "chrF": 56.10445516576633
+          },
+          "regional_slang": {
+            "n": 2,
+            "chrF": 46.66652550026821
+          },
+          "slang": {
+            "n": 7,
+            "chrF": 28.620079058037945
+          },
+          "technical": {
+            "n": 1,
+            "chrF": 58.16989230742754
+          }
+        },
+        "suspicious_development_error_tags": {
+          "contains_slang_needs_review": 4,
+          "context_sensitivity_needs_review": 20,
+          "contains_idiom_needs_review": 1
+        }
+      },
+      "trained_v2_context_injected": {
+        "chrf_synthetic_reference_not_accuracy": 28.78943343621042,
+        "bleu_synthetic_reference_not_accuracy": 4.701065342891648,
+        "n": 20,
+        "category_chrF_synthetic_not_accuracy": {
+          "code_switch": {
+            "n": 1,
+            "chrF": 44.06793675765727
+          },
+          "context": {
+            "n": 3,
+            "chrF": 23.81501036080725
+          },
+          "critical": {
+            "n": 1,
+            "chrF": 12.590663457932832
+          },
+          "idiom": {
+            "n": 4,
+            "chrF": 18.343042295323247
+          },
+          "noisy_transcript": {
+            "n": 1,
+            "chrF": 55.0205181797788
+          },
+          "regional_slang": {
+            "n": 2,
+            "chrF": 38.177033084481934
+          },
+          "slang": {
+            "n": 7,
+            "chrF": 20.67523225576389
+          },
+          "technical": {
+            "n": 1,
+            "chrF": 45.80179878947009
+          }
+        },
+        "suspicious_development_error_tags": {
+          "contains_slang_needs_review": 4,
+          "context_sensitivity_needs_review": 20,
+          "negation_disagreement": 4,
+          "contains_idiom_needs_review": 1
+        }
+      },
+      "same_source_ambiguous_context_outputs_differ": true
+    },
+    "en-es": {
+      "original_base_no_context": {
+        "chrf_synthetic_reference_not_accuracy": 17.519959374168963,
+        "bleu_synthetic_reference_not_accuracy": 6.095823350930717,
+        "n": 20,
+        "category_chrF_synthetic_not_accuracy": {
+          "context": {
+            "n": 4,
+            "chrF": 10.92927367823464
+          },
+          "critical": {
+            "n": 1,
+            "chrF": 23.54767196126886
+          },
+          "idiom": {
+            "n": 6,
+            "chrF": 11.574563359342813
+          },
+          "slang": {
+            "n": 9,
+            "chrF": 23.15533191598373
+          }
+        },
+        "suspicious_development_error_tags": {
+          "context_sensitivity_needs_review": 20,
+          "negation_disagreement": 2,
+          "contains_idiom_needs_review": 1
+        }
+      }
+    }
+  },
+  "illustrative_translations_not_final_gold": [
+    {
+      "case_id": "es_concert",
+      "direction": "es-en",
+      "category": "context",
+      "original_synthetic_development_source": "Está brutal.",
+      "previous_source_only": [
+        "El concierto fue buenísimo. La banda tocó increíble."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "That was amazing.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "It's brutal.",
+        "trained_v2_no_context": "It's brutal.",
+        "trained_v2_context_injected": "It's brutal.  previous context: The concert was great. The band played amazing."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "es_storm",
+      "direction": "es-en",
+      "category": "context",
+      "original_synthetic_development_source": "Está brutal.",
+      "previous_source_only": [
+        "El huracán destruyó varias casas y carreteras."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "It's terrible.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "It's brutal.",
+        "trained_v2_no_context": "It's brutal.",
+        "trained_v2_context_injected": "It is brutal.  context previous: The hurricane destroyed several houses and roads."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "es_chido",
+      "direction": "es-en",
+      "category": "slang",
+      "original_synthetic_development_source": "¡Qué chido!",
+      "previous_source_only": [
+        "Mira mi bicicleta nueva."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "How cool!",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "That's so cool!",
+        "trained_v2_no_context": "What a chido!",
+        "trained_v2_context_injected": "What a chido!  previous context: look at my new bike."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "es_mano",
+      "direction": "es-en",
+      "category": "slang",
+      "original_synthetic_development_source": "Me echó la mano.",
+      "previous_source_only": [
+        "Mi vecino me ayudó con la mudanza."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "He gave me a hand.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "He shook my hand.",
+        "trained_v2_no_context": "He shook hands with me.",
+        "trained_v2_context_injected": "he shook hands with me.  context previous: my neighbor helped me with the move."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "es_visto",
+      "direction": "es-en",
+      "category": "slang",
+      "original_synthetic_development_source": "Me dejó en visto.",
+      "previous_source_only": [
+        "Le mandé mensajes a Sofía, pero nunca contestó."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "She left me on read.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "He left me in sight.",
+        "trained_v2_no_context": "He left me in sight.",
+        "trained_v2_context_injected": "He left me in sight.  context previous: I sent messages to Sofia, but he never answered."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "es_lana",
+      "direction": "es-en",
+      "category": "slang",
+      "original_synthetic_development_source": "Me quedé sin lana.",
+      "previous_source_only": [
+        "Estoy de vacaciones en México y no tengo efectivo."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "I ran out of money.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "I ran out of wool.",
+        "trained_v2_no_context": "I ran out of wool.",
+        "trained_v2_context_injected": "I ran out of wool.  previous context: I am on vacation in Mexico and have no cash."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "es_pana",
+      "direction": "es-en",
+      "category": "slang",
+      "original_synthetic_development_source": "Mi pana llegó.",
+      "previous_source_only": [
+        "Estoy en Caracas con un amigo de la escuela."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "My buddy arrived.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "My corduroy's here.",
+        "trained_v2_no_context": "My corduroy's here.",
+        "trained_v2_context_injected": "My pana arrived.  context previous: I am in Caracas with a friend from school."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "es_guagua_bus",
+      "direction": "es-en",
+      "category": "regional_slang",
+      "original_synthetic_development_source": "¿Cogemos la guagua?",
+      "previous_source_only": [
+        "Estamos en Tenerife, tenemos que ir al centro."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "Shall we catch the bus?",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "Shall we take the guagua?",
+        "trained_v2_no_context": "Shall we take the guagua?",
+        "trained_v2_context_injected": "Shall we take the guagua?  context previous: We are in Tenerife, we have to go to the center."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "es_guagua_baby",
+      "direction": "es-en",
+      "category": "regional_slang",
+      "original_synthetic_development_source": "La guagua está durmiendo.",
+      "previous_source_only": [
+        "Estamos en Santiago de Chile, la bebé está cansada."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "The baby is sleeping.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "The guagua is sleeping.",
+        "trained_v2_no_context": "The guagua is sleeping.",
+        "trained_v2_context_injected": "The guagua is sleeping.  previous context: We are in Santiago de Chile, the baby is tired."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "es_pelo",
+      "direction": "es-en",
+      "category": "idiom",
+      "original_synthetic_development_source": "Me estás tomando el pelo.",
+      "previous_source_only": [
+        "El profesor hizo una broma y todos nos reímos."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "You're pulling my leg.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "You're kidding me.",
+        "trained_v2_no_context": "You're kidding me.",
+        "trained_v2_context_injected": "You're kidding me.The previous context: The teacher made a joke and we all laughed."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "es_pata",
+      "direction": "es-en",
+      "category": "idiom",
+      "original_synthetic_development_source": "Metí la pata.",
+      "previous_source_only": [
+        "Olvidé la cita con mi amiga."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "I messed up.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "I screwed up.",
+        "trained_v2_no_context": "I screwed up.",
+        "trained_v2_context_injected": "i screwed up.  previous context: i forgot the date with my friend."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "es_nubes",
+      "direction": "es-en",
+      "category": "idiom",
+      "original_synthetic_development_source": "Estaba en las nubes.",
+      "previous_source_only": [
+        "En clase no pude concentrarme."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "I was daydreaming.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "I was in the clouds.",
+        "trained_v2_no_context": "I was in the clouds.",
+        "trained_v2_context_injected": "I was in the clouds.  context previous: In class I could not concentrate."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "es_paquete",
+      "direction": "es-en",
+      "category": "context",
+      "original_synthetic_development_source": "¿Ya lo recibiste?",
+      "previous_source_only": [
+        "Me dijo que el paquete va a llegar mañana."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "Have you received it yet?",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "Did you get it yet?",
+        "trained_v2_no_context": "Did you get it yet?",
+        "trained_v2_context_injected": "Did you get it yet?  previous context: I told you the package will arrive tomorrow."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "es_archivo",
+      "direction": "es-en",
+      "category": "technical",
+      "original_synthetic_development_source": "Necesito bajar el tamaño sin perder los datos.",
+      "previous_source_only": [
+        "El archivo pesa cinco megabytes y hay que comprimirlo."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "I need to reduce the size without losing the data.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "I need to downsize without losing the data.",
+        "trained_v2_no_context": "I need to downsize without losing data.",
+        "trained_v2_context_injected": "i need to downsize without losing data.  previous context: file weighs five megabytes and you need to compress it."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "es_numero",
+      "direction": "es-en",
+      "category": "critical",
+      "original_synthetic_development_source": "No eran 15, eran 50.",
+      "previous_source_only": [
+        "El precio de la reserva está equivocado."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "It wasn't 15, it was 50.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "It wasn't 15, it was 50.",
+        "trained_v2_no_context": "It wasn't 15, it was 50.",
+        "trained_v2_context_injected": "There were 15, there were 50.  previous context: The price of booking is wrong."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "es_ruido",
+      "direction": "es-en",
+      "category": "noisy_transcript",
+      "original_synthetic_development_source": "eh no sé si escuchaste lo que dije",
+      "previous_source_only": [
+        "La conexión del micrófono se está cortando."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "Uh, I don't know if you heard what I said.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "I don't know if you heard what I said.",
+        "trained_v2_no_context": "i don't know if i heard what i said",
+        "trained_v2_context_injected": "i don't know if you heard what i said in the previous context: the microphone connection is being cut."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "es_deploy",
+      "direction": "es-en",
+      "category": "code_switch",
+      "original_synthetic_development_source": "Necesito hacer un deploy antes del viernes.",
+      "previous_source_only": [
+        "Estamos programando una app nueva."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "I need to deploy it before Friday.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "I need to make a deploy before Friday.",
+        "trained_v2_no_context": "i need to do a deploy before friday.",
+        "trained_v2_context_injected": "i need to do a deploy before friday.  previous context: we are programming a new app."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "es_ahorita",
+      "direction": "es-en",
+      "category": "slang",
+      "original_synthetic_development_source": "Ahorita voy.",
+      "previous_source_only": [
+        "Mis amigos me invitaron a jugar fútbol."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "I'll be there shortly.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "I'll be right there.",
+        "trained_v2_no_context": "I'll be right there.",
+        "trained_v2_context_injected": "i'm going right now.  previous context: my friends invited me to play football."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "es_pilas",
+      "direction": "es-en",
+      "category": "idiom",
+      "original_synthetic_development_source": "Se puso las pilas.",
+      "previous_source_only": [
+        "Mi compañera estudió mucho después del examen anterior."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "She got her act together.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "He got his ass up.",
+        "trained_v2_no_context": "He got his hands on.",
+        "trained_v2_context_injected": "It set the pace.  previous context: My partner studied long after the previous exam."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "es_pelos",
+      "direction": "es-en",
+      "category": "slang",
+      "original_synthetic_development_source": "Está de pelos.",
+      "previous_source_only": [
+        "La película de anoche fue buenísima."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "It's awesome.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "He's hairy.",
+        "trained_v2_no_context": "It's hairy.",
+        "trained_v2_context_injected": "It's hairy.  previous context: last night's movie was great."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "en_down_agree",
+      "direction": "en-es",
+      "category": "context",
+      "original_synthetic_development_source": "I'm down.",
+      "previous_source_only": [
+        "Want to play basketball after class?"
+      ],
+      "agent_authored_possible_reference_not_human_gold": "Me apunto.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "Estoy abajo."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "en_down_sad",
+      "direction": "en-es",
+      "category": "context",
+      "original_synthetic_development_source": "I'm down.",
+      "previous_source_only": [
+        "How have you been feeling since the breakup?"
+      ],
+      "agent_authored_possible_reference_not_human_gold": "Me siento decaído.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "Estoy abajo."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "en_slaps",
+      "direction": "en-es",
+      "category": "slang",
+      "original_synthetic_development_source": "That song slaps.",
+      "previous_source_only": [
+        "Did you hear the new album?"
+      ],
+      "agent_authored_possible_reference_not_human_gold": "Esa canción está buenísima.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "Esa canción da bofetadas."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "en_ghosted",
+      "direction": "en-es",
+      "category": "slang",
+      "original_synthetic_development_source": "He ghosted me.",
+      "previous_source_only": [
+        "I texted him three times and he hasn't replied."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "Dejó de responderme.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "Me asustó."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "en_fire",
+      "direction": "en-es",
+      "category": "slang",
+      "original_synthetic_development_source": "Those are fire.",
+      "previous_source_only": [
+        "Look at these new sneakers!"
+      ],
+      "agent_authored_possible_reference_not_human_gold": "Están increíbles.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "Esos son fuego."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "en_nocap",
+      "direction": "en-es",
+      "category": "slang",
+      "original_synthetic_development_source": "No cap.",
+      "previous_source_only": [
+        "I'm serious about this."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "En serio.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "Sin gorra."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "en_mid",
+      "direction": "en-es",
+      "category": "slang",
+      "original_synthetic_development_source": "It was mid.",
+      "previous_source_only": [
+        "We watched a movie that wasn't especially good."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "Fue mediocre.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "Era medio."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "en_dead",
+      "direction": "en-es",
+      "category": "idiom",
+      "original_synthetic_development_source": "I'm dead.",
+      "previous_source_only": [
+        "My friend told the funniest joke."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "Me muero de risa.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "Estoy muerto."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "en_leg",
+      "direction": "en-es",
+      "category": "idiom",
+      "original_synthetic_development_source": "Break a leg!",
+      "previous_source_only": [
+        "I hope your theater performance goes well tonight."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "¡Mucha suerte!",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "¡Rómpete una pierna!"
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "en_tea",
+      "direction": "en-es",
+      "category": "idiom",
+      "original_synthetic_development_source": "Spill the tea.",
+      "previous_source_only": [
+        "Tell me what happened at the party."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "Cuéntame el chisme.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "Derrama el té."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "en_bailed",
+      "direction": "en-es",
+      "category": "slang",
+      "original_synthetic_development_source": "She bailed.",
+      "previous_source_only": [
+        "She promised to come to our meeting but didn't show up."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "Se echó para atrás.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "Se fue."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "en_bet",
+      "direction": "en-es",
+      "category": "context",
+      "original_synthetic_development_source": "Bet.",
+      "previous_source_only": [
+        "Are you coming with us to the cafe?"
+      ],
+      "agent_authored_possible_reference_not_human_gold": "Dale.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "Apuesto."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "en_lowkey",
+      "direction": "en-es",
+      "category": "slang",
+      "original_synthetic_development_source": "Lowkey, I liked it.",
+      "previous_source_only": [
+        "I thought the movie was going to be bad."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "La verdad, me gustó un poco.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "Lookkey, me gustó."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "en_sick_game",
+      "direction": "en-es",
+      "category": "context",
+      "original_synthetic_development_source": "That was sick.",
+      "previous_source_only": [
+        "That gaming move was incredible."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "Eso estuvo increíble.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "Eso fue enfermizo."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "en_slack",
+      "direction": "en-es",
+      "category": "idiom",
+      "original_synthetic_development_source": "Cut me some slack.",
+      "previous_source_only": [
+        "I made a mistake at work, can you be patient?"
+      ],
+      "agent_authored_possible_reference_not_human_gold": "Sé un poco comprensivo conmigo.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "Dame un respiro."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "en_sus",
+      "direction": "en-es",
+      "category": "slang",
+      "original_synthetic_development_source": "That's sus.",
+      "previous_source_only": [
+        "The website sent me an unexpected password reset link."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "Eso es sospechoso.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "Eso es sus."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "en_cooked",
+      "direction": "en-es",
+      "category": "slang",
+      "original_synthetic_development_source": "I'm cooked.",
+      "previous_source_only": [
+        "I forgot to study and the exam starts now."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "Estoy perdido.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "Estoy cocinado."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "en_assignment",
+      "direction": "en-es",
+      "category": "idiom",
+      "original_synthetic_development_source": "She understood the assignment.",
+      "previous_source_only": [
+        "She decorated everything beautifully for the party."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "Lo hizo de maravilla.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "Ella entendió la tarea."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "en_head",
+      "direction": "en-es",
+      "category": "idiom",
+      "original_synthetic_development_source": "It went over my head.",
+      "previous_source_only": [
+        "They explained the joke, but I didn't understand it."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "No lo entendí.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "Se me pasó por encima de la cabeza."
+      },
+      "not_human_quality_score": true
+    },
+    {
+      "case_id": "en_negation",
+      "direction": "en-es",
+      "category": "critical",
+      "original_synthetic_development_source": "She hasn't submitted them yet.",
+      "previous_source_only": [
+        "Marta still hasn't submitted the documents."
+      ],
+      "agent_authored_possible_reference_not_human_gold": "Todavía no los ha entregado.",
+      "hypotheses_for_dev_inspection": {
+        "original_base_no_context": "Aún no las ha presentado."
+      },
+      "not_human_quality_score": true
+    }
+  ],
+  "elapsed_seconds": 25.375969443999992,
+  "peak_rss_kib_linux": 975816,
+  "human_adequacy_95_verified": false,
+  "test_or_final_holdout_used": false,
+  "not_training_data": true,
+  "research_only": true,
+  "disclaimer": "All references authored by an AI assistant; natural variants may score poorly under chrF despite conveying the right meaning. No real-world meaning-preservation accuracy can be inferred."
+}
