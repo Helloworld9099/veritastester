@@ -44,12 +44,13 @@ SOURCE_SHA = {
 WARM_REL = "experiments/wmt24_context_20261119/saved/adapter_selected.safetensors"
 WARM_SHA = "c858eb0a369baccbc93c5289b700886df896e15535cdf0222354e25f415a8b44"
 SEED = 2026111902
-UPDATES = 192
-CHAT_TRAIN = 3072
-MASSIVE_REPLAY = 768
+UPDATES = 96
+CHAT_TRAIN = 384
+WMT_REPLAY = 768
+MASSIVE_REPLAY = 384
 DEV_COUNT = 256
-TOTAL_TRAIN = CHAT_TRAIN + MASSIVE_REPLAY
-STEPS = (48, 96, 144, 192)
+TOTAL_TRAIN = CHAT_TRAIN + WMT_REPLAY + MASSIVE_REPLAY
+STEPS = (24, 48, 72, 96)
 
 
 def digest(items) -> str:
@@ -115,6 +116,17 @@ def make_cohorts():
         train_items, old_train + old_dev + new_dev, CHAT_TRAIN, seed=SEED)
 
     old_and_frozen = old_train + old_dev + new_dev + new_chat
+    # Rehearse historical WMT24 TRAIN conversations, never old/new
+    # development. Distinct dialogue groups among these training examples
+    # are allowed because the same groups were legitimately trained before.
+    excluded_src = {first.canonical(x["source"]) for x in new_dev + new_chat}
+    excluded_en = {first.canonical(x["reference"]) for x in new_dev + new_chat}
+    old_replay_eligible = [
+        row for row in old_train
+        if first.canonical(row["source"]) not in excluded_src
+        and first.canonical(row["reference"]) not in excluded_en
+    ]
+    wmt_replay = first.select_group_aware(old_replay_eligible, WMT_REPLAY, SEED + 2)
     french = massive.fetch_multipart("fr-FR")
     english = massive.fetch_multipart("en-US")
     old_massive = massive.select_pairs(english, french, include_ids=True)
@@ -126,7 +138,9 @@ def make_cohorts():
     blocked += old_massive["dev"] + old_massive["test"]
     replay = balanced.pick_replay(
         old_massive["train"], blocked, count=MASSIVE_REPLAY, seed=SEED)
-    train_pairs = [(x["input_with_context"], x["reference"]) for x in new_chat] + replay
+    train_pairs = ([(x["input_with_context"], x["reference"]) for x in new_chat]
+                   + [(x["input_with_context"], x["reference"]) for x in wmt_replay]
+                   + replay)
     dev_pairs = [(x["input_with_context"], x["reference"]) for x in new_dev]
     plain_dev = [(x["source"], x["reference"]) for x in new_dev]
     random.Random(SEED).shuffle(train_pairs)
@@ -139,6 +153,8 @@ def make_cohorts():
         "new_chat_train_n": len(new_chat),
         "new_train_history_turn_n": sum(bool(x["prior_turns"]) for x in new_chat),
         "new_chat_train_hash": digest(new_chat),
+        "old_WMT24_official_TRAIN_only_replay": len(wmt_replay),
+        "old_WMT24_replay_hash": digest(wmt_replay),
         "new_dev_n": len(new_dev),
         "new_dev_history_turn_n": sum(bool(x["prior_turns"]) for x in new_dev),
         "new_dev_hash": digest(new_dev),
