@@ -1,0 +1,87 @@
+name: EVAL frozen Spanish champion once on independent FLORES-200 (not conversation)
+
+on:
+  push:
+    branches: [research/spanish-fifteen-full-rounds-20261120]
+    paths:
+      - .github/workflows/eval-spanish-independent-flores.yml
+      - research/spanish_flores_generalization_20261120/**
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: spanish-flores-once-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  independent-out-of-domain-evaluation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      TOKENIZERS_PARALLELISM: 'false'
+      OMP_NUM_THREADS: '4'
+      MKL_NUM_THREADS: '4'
+      HF_HUB_DISABLE_TELEMETRY: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install only pinned CPU model evaluator dependencies
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'huggingface-hub>=0.34,<1.0'
+      - name: Verify code syntax and pinned fifteen-round champion checksum
+        run: |
+          python -m compileall -q research/spanish_flores_generalization_20261120
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          p=Path('experiments/spanish_fifteen_rounds_20261120/saved')
+          s=json.loads((p/'summary.json').read_text())
+          assert s['number_of_completed_full_rounds']==15
+          assert len(s['rounds'])==15 and sum(x['completed_updates'] for x in s['rounds'])==3600
+          assert hashlib.sha256((p/'champion_adapter.safetensors').read_bytes()).hexdigest()==s['winner']['adapter_sha256']
+          PY
+      - name: Score preselected winner ONCE against newly selected untouched FLORES devtest
+        run: |
+          python -u research/spanish_flores_generalization_20261120/evaluate.py \
+            --output-dir "${{ runner.temp }}/spanish-flores-fresh"
+      - name: Permanently preserve external evaluation, without moving or retraining champion
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          src=Path(os.environ['RUNNER_TEMP'])/'spanish-flores-fresh/flores_external_evaluation.json'
+          data=json.loads(src.read_text())
+          assert data['test_used_once_only'] is True
+          assert data['test_used_for_training'] is False
+          assert data['test_used_for_checkpoint_selection'] is False
+          assert data['human_95_percent_semantic_accuracy_verified'] is False
+          assert data['commercial_use_allowed'] is False
+          target=Path('research/spanish_flores_generalization_20261120/saved')
+          target.mkdir(parents=True,exist_ok=False)
+          out=target/'flores_external_evaluation.json'
+          out.write_text(json.dumps(data,indent=2))
+          (target/'SHA256SUMS.txt').write_text(hashlib.sha256(out.read_bytes()).hexdigest()+'  '+out.name+'\n')
+          print('FROZEN_FLORES_RESULTS',json.dumps(data['scores']))
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/spanish_flores_generalization_20261120/saved
+          git commit -m 'research: preserve independent once-only FLORES Spanish comparison [skip ci]'
+          git push origin 'HEAD:refs/heads/research/spanish-fifteen-full-rounds-20261120'
+      - name: Retain exact external evaluation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spanish-flores-once-only-independent-generalization
+          path: ${{ runner.temp }}/spanish-flores-fresh/flores_external_evaluation.json
+          if-no-files-found: warn
+          retention-days: 30
