@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "scope": "research_only",
+  "architecture": "single_multilingual_model",
+  "target_directions": ["en->es", "es->en", "fr->en"],
+  "candidate": null
+}

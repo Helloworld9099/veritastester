@@ -520,6 +520,126 @@
     "continuation_final_audit_20261116/README.md": {
       "bytes": 410,
       "sha256": "b9335e10ac9498c645645f5048e5233b8099e18242561548dcd8a25289ccdd64"
+    },
+    "local_workflow.py": {
+      "bytes": 8580,
+      "sha256": "04ef36e85f395dea9582f60aa08347d843658197464aae39bc3abc282c1ec9ea"
+    },
+    "unified_eval/__init__.py": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "unified_eval/__main__.py": {
+      "bytes": 24491,
+      "sha256": "4fc08d588df297e7878957bd72d1f955cacf0d57c241abbf9de21d852305baf1"
+    },
+    "unified_eval/gates.py": {
+      "bytes": 13364,
+      "sha256": "6cf4bcee168ce24fff80f0c8979bf6ce4cb1d586210d341621cb20211e2c257f"
+    },
+    "unified_eval/metrics.py": {
+      "bytes": 14756,
+      "sha256": "836aa1bfe0ee8891a64ac1aaf75ea9c42022caaaddab9fb3a2a2cda03619b9c2"
+    },
+    "unified_eval/performance.py": {
+      "bytes": 16206,
+      "sha256": "b5c5772dc06b356806b6ed7f797478955e74e2fe5b6408e69be3b732f5df7641"
+    },
+    "unified_eval/review.py": {
+      "bytes": 4484,
+      "sha256": "b96559cc25fc9400b3254ada96b6bd9c8574a054d56d3d2d688e48bd82c781a5"
+    },
+    "unified_models/README.md": {
+      "bytes": 2620,
+      "sha256": "b5b1f065709ff2e183be20f851dc8eb85820bc7f435eb6f9206430df811eef31"
+    },
+    "unified_models/__init__.py": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "unified_models/checkpoint_inventory.json": {
+      "bytes": 64498,
+      "sha256": "494b074e35cf4e6142a8bd01518170ae4c89117bd4b6cc120189abb5a89e1119"
+    },
+    "unified_models/checkpoint_inventory.py": {
+      "bytes": 10829,
+      "sha256": "0d80bf52cc4217b427f63610f37d6cb8a92568c754b22f72b43b3ef65c733d24"
+    },
+    "unified_models/datasets.py": {
+      "bytes": 28862,
+      "sha256": "92da08c05a42c3699af1198da4ce04d47b06314ba45d9e835a19ce8fab4fc1f1"
+    },
+    "unified_models/historical/__init__.py": {
+      "bytes": 83,
+      "sha256": "33be41f1fce9b194e9e2fa6ec447ee8d85d2bfae9179c8f5441d228557dbc065"
+    },
+    "unified_models/historical/registry.json": {
+      "bytes": 15990,
+      "sha256": "f5b47b4e79b1efdd2a7e1bdd1c6ef4f7d091f5584156a7a9b7a45b6980cbbf06"
+    },
+    "unified_models/historical/registry.py": {
+      "bytes": 19469,
+      "sha256": "c8d45711f805b6ca4de96a872d3b3e5d76561b2226801b6d9c600d4c179df3d7"
+    },
+    "unified_models/historical/runtime.py": {
+      "bytes": 9832,
+      "sha256": "f25f5e6acaa1832cb5b6487ac22a5560393394bfaf6460e41951ace12123d51d"
+    },
+    "unified_models/inference_safety.py": {
+      "bytes": 2921,
+      "sha256": "73d5f45738ee089f03c686c9cccb960d052bb4c8eca9ace39db8be0cc6bfb07f"
+    },
+    "unified_models/registry.json": {
+      "bytes": 177,
+      "sha256": "2341a28f3f4e4c396712d736655b41c53164a7d7f16344386c077dd59cde8a03"
+    },
+    "unified_models/registry.py": {
+      "bytes": 8933,
+      "sha256": "d8fc243b4af561255d68c90cca814622dcdee9812d794673c9c1776343e91a99"
+    },
+    "unified_models/runtime.py": {
+      "bytes": 4634,
+      "sha256": "05027e175a6a3961afa6e3abc2d804f767fdbdbe62afa5f91b271845fce6157d"
+    },
+    "unified_models/verify_baseline.py": {
+      "bytes": 15268,
+      "sha256": "9f09586b4399c5ab27906f0cd9a3f3363dfc6a62fab17ae1c2743323b794010d"
+    },
+    "unified_training/__init__.py": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "unified_training/__main__.py": {
+      "bytes": 1318,
+      "sha256": "c3491671930a9005f3310f16226c97054b216157109dd27a513473203214f879"
+    },
+    "unified_training/artifacts.py": {
+      "bytes": 21014,
+      "sha256": "37b9fa9baef367937ab27f36a9a555645b400ce73c2a413309443f3c78627c87"
+    },
+    "unified_training/backends.py": {
+      "bytes": 11848,
+      "sha256": "473beaa814271d8793e859821f5b15324652a5654ba83362b2bd24a6d3023e7d"
+    },
+    "unified_training/config.py": {
+      "bytes": 15749,
+      "sha256": "1e87dc593b5ceedc4d4bfe621ef1d751b6b5c59614a1fedb92cf841d9c0f7c36"
+    },
+    "unified_training/engine.py": {
+      "bytes": 14426,
+      "sha256": "c9ca09a80f82a2872ac535d99956770798e3ad42c14ce458683ca80f175bc756"
+    },
+    "workflow_contract.py": {
+      "bytes": 17660,
+      "sha256": "5ad3db7f58fc3b50eaf75845a0ffa18c16442b3b9a52e0fc942c8be56673ce0a"
+    },
+    "workflow_data.py": {
+      "bytes": 16762,
+      "sha256": "78e283eb6a56bd3f0d9df063ade9314fbfbf2194d48f647e0bd3b61fcc224aff"
+    },
+    "workflow_store.py": {
+      "bytes": 13960,
+      "sha256": "08b5c7d64b5af9edf7f3dece59111d29c77ce301e5999ed0adcef6a340577ae9"
     }
   }
 }
