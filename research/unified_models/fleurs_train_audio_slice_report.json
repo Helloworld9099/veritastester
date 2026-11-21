@@ -1,0 +1,45 @@
+{
+  "archive_selection": "first eight unique matching sentence IDs per locale, 1 to 15 s, in archive order",
+  "dataset": {
+    "attribution": "Google FLEURS, Conneau et al.; publisher TRAIN; source audio converted to 16 kHz mono PCM16 WAV",
+    "license": "CC-BY-4.0",
+    "origin": "https://huggingface.co/datasets/google/fleurs/tree/70bb2e84b976b7e960aa89f1c648e09c59f894dd",
+    "revision": "70bb2e84b976b7e960aa89f1c648e09c59f894dd"
+  },
+  "decoded_pcm_overlap_check": {
+    "basis": "exact_decoded_16khz_mono_pcm16",
+    "dev_clips": 8,
+    "matches": 0,
+    "reference": "eight_prior_fleurs_dev_pilot_wavs",
+    "train_clips": 16
+  },
+  "full_archive_verified": false,
+  "holdout_opened": false,
+  "normalized_wav_digests_verified": 16,
+  "scope": "bounded_publisher_train_audio_and_m11_labels",
+  "selected_train_audio_manifest_sha256": "02e9458a2d7c1c6d780866eaf83c64b9fe5031bdb25d364a7d05215f7a4d5373",
+  "source_train_manifest_sha256": "47d6906f42c928b3e6b5f77f71db38566161b2c0892edff70e2fa1c90cc5f5c7",
+  "sources": [
+    {
+      "archive": "data/es_419/audio/train.tar.gz",
+      "archive_publisher_lfs_sha256_declared_not_verified": "f832ccb74a59f53ec3bceb77e26826d0516ba6a2e8cd1e9a7f8876615a056985",
+      "archive_total_bytes": 1439647524,
+      "clips": 8,
+      "duration_seconds": 79.92,
+      "locale": "es_419",
+      "partial_prefix_bytes": 12000000,
+      "partial_prefix_sha256_observed": "3369e44642cb7b50cadb1c8ef0f05c4835865d386063333e33d5ec11f8d95dc0"
+    },
+    {
+      "archive": "data/fr_fr/audio/train.tar.gz",
+      "archive_publisher_lfs_sha256_declared_not_verified": "39b5bad1f61d3ae4ef64c2eb16f9524ffb21d8568965dd71b09702befdbd7f95",
+      "archive_total_bytes": 1730529959,
+      "clips": 8,
+      "duration_seconds": 95.52,
+      "locale": "fr_fr",
+      "partial_prefix_bytes": 12000000,
+      "partial_prefix_sha256_observed": "423cedf3ceb2ec25926ea38576280dbcb6f8dc91e141916aa06b0121f9f69110"
+    }
+  ],
+  "training_executed": false
+}
