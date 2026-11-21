@@ -15,7 +15,7 @@ M5 adds an [opt-in PCM and caption-event contract](STREAMING_SPEECH_EXPERIMENT.m
 
 The [paced replay follow-up](PACED_SPEECH_REPLAY.md) uses actual capture-clock arrivals for the same DEV corpus. It measures prefix re-encoding, not native incremental model state.
 
-The [native incremental candidate screen](INCREMENTAL_SPEECH_SCREEN.md) checks released candidates against the single-checkpoint, shared-encoder requirement. It adds a local trace preflight; no candidate model has passed a runtime benchmark.
+The [native incremental candidate screen](INCREMENTAL_SPEECH_SCREEN.md) checks released candidates against the single-checkpoint, shared-encoder requirement. It adds a local trace preflight; no candidate model has passed a runtime benchmark. The [runnable causal two-head probe](CAUSAL_DUAL_HEAD_PROBE.md) then tests state reuse and paired output mechanics with generated audio and untrained numeric heads, not language quality.
 
 ## A separate research track, in the same PR
 

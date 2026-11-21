@@ -704,6 +704,14 @@
     "unified_models/incremental_evidence.py": {
       "bytes": 7559,
       "sha256": "6a9b354f792b4d1afcadae41d8b13eb638292206fd3f6962216a10012f5f0de5"
+    },
+    "unified_models/causal_dual_head.py": {
+      "bytes": 8723,
+      "sha256": "b7daa59e39527ead87b9bdd47aed0ac30b5b066dfd72c3d0471018ad14bcb6bd"
+    },
+    "unified_models/causal_dual_head_report.json": {
+      "bytes": 869,
+      "sha256": "e9c5a07d4db56b92b1d2ead1e71edae5730f0e055b44738c499a1b23c089c71c"
     }
   }
 }

@@ -1,0 +1,31 @@
+{
+  "checkpoint_sha256": "ba9bb42530cbc70b43edef666922f480e4e275311a8cec5476d1dbab7ac194df",
+  "clock": "logical_ticks_not_latency",
+  "encoder_hidden_width": 8,
+  "head_events": {
+    "draft": 12,
+    "final": 4
+  },
+  "kind": "bridgecaption_untrained_causal_probe",
+  "max_retained_tail_samples": 314,
+  "method_sha256": "b7daa59e39527ead87b9bdd47aed0ac30b5b066dfd72c3d0471018ad14bcb6bd",
+  "model_load_events": 1,
+  "scope": "generated_waveform_and_numeric_heads_only",
+  "trace_validation": {
+    "benchmark_passed": false,
+    "directions": {
+      "es->en": {
+        "audio_samples": 1401,
+        "encoder_calls": 5,
+        "utterances": 1
+      },
+      "fr->en": {
+        "audio_samples": 1401,
+        "encoder_calls": 5,
+        "utterances": 1
+      }
+    },
+    "model_runtime_verified_by_validator": false,
+    "status": "trace_structure_passed"
+  }
+}
