@@ -652,6 +652,26 @@
     "unified_models/streaming_app_bridge.py": {
       "bytes": 5038,
       "sha256": "e3a7b58a0818588e4a114740e73a579a84f48b249372c7897aa4da0a1507c206"
+    },
+    "unified_models/speech_benchmark.py": {
+      "bytes": 17507,
+      "sha256": "96684a8470dc8695b383a6bf30d095050c20920f689728f2112ae7b2612efe9c"
+    },
+    "unified_training/continual.py": {
+      "bytes": 9415,
+      "sha256": "5910e2226a41418fe25a9a928defa73242cffa80847703df4dacc8dd58da82b9"
+    },
+    "unified_training/efficient_batches.py": {
+      "bytes": 8077,
+      "sha256": "3c0f37e841c969e806415826b8045a486188f3810a07973df705bb46e3c1de6a"
+    },
+    "unified_training/shared_plan.py": {
+      "bytes": 12167,
+      "sha256": "52bf800333cfbdb616d75be0928562cb0af8eff0eb8a9821abf743d49e2c16a1"
+    },
+    "unified_training/successive_halving.py": {
+      "bytes": 10387,
+      "sha256": "27bcd4e64f586b2aa2c9b6ec7cd07097a07151c01236e7a95ceb715aa75217d7"
     }
   }
 }

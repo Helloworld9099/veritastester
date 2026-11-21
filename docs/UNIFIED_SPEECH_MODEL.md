@@ -11,7 +11,7 @@ No per-language model reload is planned. Source and target language are routing 
 
 ## Prototype status
 
-M5 adds an [opt-in PCM and caption-event contract](STREAMING_SPEECH_EXPERIMENT.md) and bounded synthetic checks. It does not claim a real streaming model or switch the app. An unchanged incumbent pipeline is still the baseline.
+M5 adds an [opt-in PCM and caption-event contract](STREAMING_SPEECH_EXPERIMENT.md) and bounded synthetic checks. It does not claim a real streaming model or switch the app. An unchanged incumbent pipeline is still the baseline. M6 adds [local evidence and opt-in preparation tools](OPT_IN_MULTILINGUAL_RESEARCH.md); it does not execute a real foundation benchmark or select a model.
 
 ## A separate research track, in the same PR
 
