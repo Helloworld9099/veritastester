@@ -720,6 +720,18 @@
     "unified_models/fleurs_adaptation_inputs_report.json": {
       "bytes": 1305,
       "sha256": "f5edddc815f46ef46d1d9ed81327e1816606e2058bc44b7755fb891b9734632d"
+    },
+    "unified_models/nemotron_cache_smoke.py": {
+      "bytes": 15931,
+      "sha256": "6dc88ece00cf9a442dd68ae16056fb4c122165b0508390ee32b56fb7261b8bf0"
+    },
+    "unified_models/fleurs_train_audio_slice_report.json": {
+      "bytes": 1977,
+      "sha256": "d74b8c5a7d0c578e056a36c03439d0778b0a9986854248f4a4a3b780a92d93e9"
+    },
+    "unified_models/nemotron_cache_smoke_report.json": {
+      "bytes": 8382,
+      "sha256": "c3affc8451854e8c35e5ecdce62d8c28df5e900e34520612389f278bbde126a1"
     }
   }
 }
