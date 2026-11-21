@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "mode": "research_training_only",
+  "production_enabled": false,
+  "model": {
+    "id": "facebook/m2m100_418M",
+    "revision": "55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636",
+    "license": "mit",
+    "parameters_approx": 418000000,
+    "one_shared_tokenizer": true,
+    "one_shared_pretrained_base": true,
+    "model_card": "https://huggingface.co/facebook/m2m100_418M"
+  },
+  "directions": [
+    "es-en",
+    "fr-en",
+    "en-es",
+    "en-fr",
+    "es-fr",
+    "fr-es"
+  ],
+  "data": {
+    "repo": "AmazonScience/massive",
+    "revision": "ff6bd8e4b27c3543e4f8fe2108f32bb95a6f8740",
+    "license": "cc-by-4.0",
+    "locales": [
+      "en-US",
+      "es-ES",
+      "fr-FR"
+    ],
+    "train_split": "train",
+    "development_split": "validation",
+    "final_test_may_be_accessed": false,
+    "previous_500_review_examples_used_as_training": false,
+    "review_source": "research/es_en_v2/reviewer_examples_500/BridgeCaption_500_Real_Model_Translations_Review.csv",
+    "number_of_training_groups": 120,
+    "number_of_dev_groups": 12
+  },
+  "training": {
+    "seed": 2026112101,
+    "updates": 18,
+    "gradient_accumulation": 1,
+    "batch_size": 2,
+    "token_max_length": 48,
+    "lora_rank": 4,
+    "lora_alpha": 8,
+    "last_encoder_layers": 2,
+    "last_decoder_layers": 2,
+    "learning_rate": 0.00012,
+    "weight_decay": 0,
+    "checkpoint_steps": [
+      6,
+      12,
+      18
+    ],
+    "global_quality_gate": "never promote without independently human reviewed dev and legacy comparators"
+  },
+  "compute": {
+    "gpu_hours": 0,
+    "model_training_timeout_minutes": 45,
+    "max_paid_spend_usd": 0,
+    "max_omp_threads": 3
+  },
+  "excluded_model_lineage": [
+    "French WMT24 Chat CC-BY-NC trained adapters",
+    "Spanish NC subtitling research champions"
+  ],
+  "required_evidence": [
+    "one shared base and one shared adapter across all directions",
+    "sha256 for frozen base and trained adapter",
+    "real optimizer updates",
+    "MASSIVE development only scores before/after",
+    "all legacy champions preserved",
+    "production default unaffected",
+    "no human 95% claim"
+  ],
+  "status": "implementation_under_development"
+}

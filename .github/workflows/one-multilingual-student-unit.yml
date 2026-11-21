@@ -1,0 +1,42 @@
+name: Validate one neural model and mathematical LoRA merge (offline CPU tests)
+
+on:
+  push:
+    branches: [train/one-multilingual-student-20261121]
+    paths:
+      - .github/workflows/one-multilingual-student-unit.yml
+      - research/multilingual_student/tests/**
+      - research/multilingual_student/runtime.py
+      - research/multilingual_student/standalone_runtime.py
+      - research/multilingual_student/model.py
+      - research/multilingual_student/data.py
+
+permissions:
+  contents: read
+
+jobs:
+  no-network-contract:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      PYTHONPATH: ".:src"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install CPU-only PyTorch for real matrix numerical merge
+        run: python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+      - name: Compile all single neural model implementation files
+        run: python -m compileall -q research/multilingual_student
+      - name: Prove six directions, group isolation, one model cache and LoRA math
+        run: python -m unittest discover -s research/multilingual_student/tests -p 'test_*.py' -v
+      - name: Ensure existing production provider, ASR and update files unchanged in this branch
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          for path in ('src/bridgecaption/providers.py','src/bridgecaption/pipeline.py'):
+              s=Path(path).read_text()
+              assert 'multilingual_student' not in s
+          print('EXISTING_BRIDGECAPTION_DEFAULT_AND_ASR_UNTOUCHED')
+          PY

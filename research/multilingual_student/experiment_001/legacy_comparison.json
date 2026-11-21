@@ -1,0 +1,52 @@
+{
+  "status": "real_fair_old_models_vs_single_multilingual_student_dev_comparison",
+  "frozen_dev_sha256": "88f6eca0eeb35e39faac5506be153314b76a7b572587733ccfe18ce032d8c03a",
+  "results": {
+    "es-en": {
+      "n": 6,
+      "old_original_trained_model": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71",
+      "old_chrf_not_accuracy": 46.7751,
+      "old_bleu_not_accuracy": 22.6251,
+      "one_shared_student_chrf_not_accuracy": 29.1295,
+      "one_shared_student_bleu_not_accuracy": 3.8679,
+      "difference_student_minus_legacy_chrF": -17.6456,
+      "difference_student_minus_legacy_BLEU": -18.7572,
+      "same_frozen_development_inputs": true,
+      "human_meaning_accuracy_evaluated": false
+    },
+    "fr-en": {
+      "n": 6,
+      "old_original_trained_model": "fba2bd78958bf0bf8a4c14dc55e601e08663633718c4c9c17f91ef9b52dcfa1c",
+      "old_chrf_not_accuracy": 61.5243,
+      "old_bleu_not_accuracy": 25.1518,
+      "one_shared_student_chrf_not_accuracy": 50.7638,
+      "one_shared_student_bleu_not_accuracy": 26.1127,
+      "difference_student_minus_legacy_chrF": -10.7605,
+      "difference_student_minus_legacy_BLEU": 0.9609,
+      "same_frozen_development_inputs": true,
+      "human_meaning_accuracy_evaluated": false
+    },
+    "en-es": {
+      "n": 6,
+      "old_original_trained_model": "5bc4493d463cf000c1f0b50f8d56886a392ed4ab",
+      "old_chrf_not_accuracy": 41.34,
+      "old_bleu_not_accuracy": 10.181,
+      "one_shared_student_chrf_not_accuracy": 43.6149,
+      "one_shared_student_bleu_not_accuracy": 14.7192,
+      "difference_student_minus_legacy_chrF": 2.2749,
+      "difference_student_minus_legacy_BLEU": 4.5382,
+      "same_frozen_development_inputs": true,
+      "human_meaning_accuracy_evaluated": false
+    }
+  },
+  "language_specialist_models_retained": true,
+  "automated_chrf_regression_gate": false,
+  "production_candidate_approved": false,
+  "independent_bilingual_pass_rates_available": false,
+  "source_development_only": true,
+  "reviewed_500_used_for_training_or_selection": false,
+  "publisher_test_or_final_holdout_accessed": false,
+  "elapsed_seconds": 106.153944852,
+  "peak_rss_kib_linux": 1252936,
+  "note": "A six-pair publisher-intent development comparison per direction is too small to infer real-world accuracy, slang adequacy or robust non-regression. Keep legacy champions regardless of chrF result."
+}

@@ -1,0 +1,542 @@
+{
+  "status": "completed_real_shared_multilingual_student_continuation",
+  "model_id": "facebook/m2m100_418M",
+  "same_single_base_and_single_shared_adapter": true,
+  "parent_checkpoint_sha256": "97c3a1b23cf7d290cecac038ead9fd8a6f810905944b6c441184c48418258f4b",
+  "parent_weights_file_not_modified": true,
+  "candidate_checkpoint_sha256": "c5fb23ba8412955235cb3bcfbe3f584f1b362048fd87049550980c0004475acf",
+  "selected_research_checkpoint_sha256": "97c3a1b23cf7d290cecac038ead9fd8a6f810905944b6c441184c48418258f4b",
+  "selected_from": "preserved_parent",
+  "updated_steps": 60,
+  "total_student_updates_in_lineage": 78,
+  "directions": [
+    "es-en",
+    "fr-en",
+    "en-es",
+    "en-fr",
+    "es-fr",
+    "fr-es"
+  ],
+  "each_direction_actual_update_count": {
+    "fr-en": 16,
+    "es-en": 16,
+    "en-es": 10,
+    "en-fr": 6,
+    "fr-es": 6,
+    "es-fr": 6
+  },
+  "optimizer_state_reset_for_new_round": true,
+  "underlying_model_and_adapter_weights_continued": true,
+  "parent_development_12_per_direction": {
+    "es-en": {
+      "n": 12,
+      "chrF_not_accuracy": 45.1976,
+      "BLEU_not_accuracy": 17.0434,
+      "empty_predictions": 0,
+      "example_output": "You can give me the train schedules for Ann Arbor",
+      "source_and_reference_not_in_report": true
+    },
+    "fr-en": {
+      "n": 12,
+      "chrF_not_accuracy": 53.0598,
+      "BLEU_not_accuracy": 26.2335,
+      "empty_predictions": 0,
+      "example_output": "Can you give me the train schedules for Ann Arbor?",
+      "source_and_reference_not_in_report": true
+    },
+    "en-es": {
+      "n": 12,
+      "chrF_not_accuracy": 49.1426,
+      "BLEU_not_accuracy": 13.7519,
+      "empty_predictions": 0,
+      "example_output": "Puedes darme los horarios de tren para Ann Arbor",
+      "source_and_reference_not_in_report": true
+    },
+    "en-fr": {
+      "n": 12,
+      "chrF_not_accuracy": 57.8337,
+      "BLEU_not_accuracy": 34.6038,
+      "empty_predictions": 0,
+      "example_output": "Vous pouvez me donner les horaires de train pour Ann Arbor",
+      "source_and_reference_not_in_report": true
+    },
+    "es-fr": {
+      "n": 12,
+      "chrF_not_accuracy": 57.7594,
+      "BLEU_not_accuracy": 25.1998,
+      "empty_predictions": 0,
+      "example_output": "Vous pouvez me donner les horaires des trains pour Ann Arbor",
+      "source_and_reference_not_in_report": true
+    },
+    "fr-es": {
+      "n": 12,
+      "chrF_not_accuracy": 44.73,
+      "BLEU_not_accuracy": 11.7678,
+      "empty_predictions": 0,
+      "example_output": "Puedes darme los horarios de tren para Ann Arbor",
+      "source_and_reference_not_in_report": true
+    }
+  },
+  "candidate_development_12_per_direction": {
+    "es-en": {
+      "n": 12,
+      "chrF_not_accuracy": 47.7841,
+      "BLEU_not_accuracy": 19.0298,
+      "empty_predictions": 0,
+      "example_output": "You can give me the train schedules for Ann Arbor",
+      "source_and_reference_not_in_report": true
+    },
+    "fr-en": {
+      "n": 12,
+      "chrF_not_accuracy": 54.8867,
+      "BLEU_not_accuracy": 26.392,
+      "empty_predictions": 0,
+      "example_output": "Can you give me the train schedules for Ann Arbor?",
+      "source_and_reference_not_in_report": true
+    },
+    "en-es": {
+      "n": 12,
+      "chrF_not_accuracy": 49.7211,
+      "BLEU_not_accuracy": 14.5982,
+      "empty_predictions": 0,
+      "example_output": "Puedes darme los horarios de tren para Ann Arbor",
+      "source_and_reference_not_in_report": true
+    },
+    "en-fr": {
+      "n": 12,
+      "chrF_not_accuracy": 61.0009,
+      "BLEU_not_accuracy": 32.3839,
+      "empty_predictions": 0,
+      "example_output": "Vous pouvez me donner des horaires de train pour Ann Arbor",
+      "source_and_reference_not_in_report": true
+    },
+    "es-fr": {
+      "n": 12,
+      "chrF_not_accuracy": 58.073,
+      "BLEU_not_accuracy": 24.9656,
+      "empty_predictions": 0,
+      "example_output": "Vous pouvez me donner les horaires des trains pour Ann Arbor",
+      "source_and_reference_not_in_report": true
+    },
+    "fr-es": {
+      "n": 12,
+      "chrF_not_accuracy": 44.7915,
+      "BLEU_not_accuracy": 11.7678,
+      "empty_predictions": 0,
+      "example_output": "Puedes darme los horarios de tren para Ann Arbor",
+      "source_and_reference_not_in_report": true
+    }
+  },
+  "development_chrF_deltas_not_accuracy": {
+    "es-en": 2.5865,
+    "fr-en": 1.8269,
+    "en-es": 0.5785,
+    "en-fr": 3.1672,
+    "es-fr": 0.3136,
+    "fr-es": 0.0615
+  },
+  "development_BLEU_deltas_not_accuracy": {
+    "es-en": 1.9864,
+    "fr-en": 0.1585,
+    "en-es": 0.8463,
+    "en-fr": -2.2199,
+    "es-fr": -0.2342,
+    "fr-es": 0.0
+  },
+  "passes_automatic_no_regression_gate": false,
+  "old_french_and_spanish_champions_unchanged": {
+    "es-en": {
+      "path": "experiments/es_en_v2_runs/candidate_after_three.safetensors",
+      "sha256": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71"
+    },
+    "fr-en": {
+      "path": "experiments/balanced_stage5_20261118/saved/french/adapter_selected.safetensors",
+      "sha256": "fba2bd78958bf0bf8a4c14dc55e601e08663633718c4c9c17f91ef9b52dcfa1c"
+    }
+  },
+  "reviewed_500_used_for_training": false,
+  "final_holdout_or_publisher_test_accessed": false,
+  "new_training_corpus": {
+    "old_round1_route_group_examples_excluded": true,
+    "new_optimizer_updates": 60,
+    "sampling": {
+      "fr-en": 16,
+      "es-en": 16,
+      "en-es": 10,
+      "en-fr": 6,
+      "fr-es": 6,
+      "es-fr": 6
+    },
+    "new_source_target_pairs": 120,
+    "schedule_sha256": "42ea59dc52b26a9d518eca6ce78c9b50d37b6e5a698ed2e04445e58bb516829f"
+  },
+  "no_nc_corpora_or_teacher_output_used": true,
+  "training_loss": [
+    {
+      "step": 1,
+      "route": "fr-en",
+      "total_loss": 2.206772,
+      "grad_norm": 0.393892
+    },
+    {
+      "step": 2,
+      "route": "fr-en",
+      "total_loss": 2.848304,
+      "grad_norm": 0.547393
+    },
+    {
+      "step": 3,
+      "route": "fr-en",
+      "total_loss": 2.039644,
+      "grad_norm": 0.619049
+    },
+    {
+      "step": 4,
+      "route": "fr-en",
+      "total_loss": 1.928808,
+      "grad_norm": 0.498622
+    },
+    {
+      "step": 5,
+      "route": "fr-en",
+      "total_loss": 2.632796,
+      "grad_norm": 0.59667
+    },
+    {
+      "step": 6,
+      "route": "fr-en",
+      "total_loss": 3.20174,
+      "grad_norm": 0.560748
+    },
+    {
+      "step": 7,
+      "route": "es-en",
+      "total_loss": 2.309105,
+      "grad_norm": 0.416199
+    },
+    {
+      "step": 8,
+      "route": "en-es",
+      "total_loss": 2.193904,
+      "grad_norm": 0.622828
+    },
+    {
+      "step": 9,
+      "route": "es-en",
+      "total_loss": 2.995484,
+      "grad_norm": 0.700273
+    },
+    {
+      "step": 10,
+      "route": "es-en",
+      "total_loss": 2.437692,
+      "grad_norm": 0.708055
+    },
+    {
+      "step": 11,
+      "route": "en-fr",
+      "total_loss": 1.27167,
+      "grad_norm": 0.420682
+    },
+    {
+      "step": 12,
+      "route": "fr-es",
+      "total_loss": 2.482595,
+      "grad_norm": 0.442953
+    },
+    {
+      "step": 13,
+      "route": "fr-es",
+      "total_loss": 2.658069,
+      "grad_norm": 0.589355
+    },
+    {
+      "step": 14,
+      "route": "fr-en",
+      "total_loss": 4.798249,
+      "grad_norm": 1.078608
+    },
+    {
+      "step": 15,
+      "route": "es-en",
+      "total_loss": 1.86165,
+      "grad_norm": 0.566556
+    },
+    {
+      "step": 16,
+      "route": "fr-en",
+      "total_loss": 1.190288,
+      "grad_norm": 0.564888
+    },
+    {
+      "step": 17,
+      "route": "fr-en",
+      "total_loss": 2.3532,
+      "grad_norm": 0.613079
+    },
+    {
+      "step": 18,
+      "route": "fr-en",
+      "total_loss": 2.298264,
+      "grad_norm": 0.448369
+    },
+    {
+      "step": 19,
+      "route": "en-fr",
+      "total_loss": 3.012803,
+      "grad_norm": 0.771025
+    },
+    {
+      "step": 20,
+      "route": "es-en",
+      "total_loss": 2.279042,
+      "grad_norm": 0.756964
+    },
+    {
+      "step": 21,
+      "route": "es-en",
+      "total_loss": 2.034516,
+      "grad_norm": 0.559957
+    },
+    {
+      "step": 22,
+      "route": "es-en",
+      "total_loss": 5.398071,
+      "grad_norm": 1.242203
+    },
+    {
+      "step": 23,
+      "route": "en-es",
+      "total_loss": 2.635013,
+      "grad_norm": 0.703209
+    },
+    {
+      "step": 24,
+      "route": "en-fr",
+      "total_loss": 1.762008,
+      "grad_norm": 0.52649
+    },
+    {
+      "step": 25,
+      "route": "es-en",
+      "total_loss": 1.674531,
+      "grad_norm": 0.635298
+    },
+    {
+      "step": 26,
+      "route": "fr-es",
+      "total_loss": 1.512715,
+      "grad_norm": 0.519151
+    },
+    {
+      "step": 27,
+      "route": "es-fr",
+      "total_loss": 2.17207,
+      "grad_norm": 0.516168
+    },
+    {
+      "step": 28,
+      "route": "fr-en",
+      "total_loss": 2.095994,
+      "grad_norm": 0.752081
+    },
+    {
+      "step": 29,
+      "route": "en-fr",
+      "total_loss": 1.394172,
+      "grad_norm": 0.338956
+    },
+    {
+      "step": 30,
+      "route": "es-en",
+      "total_loss": 1.759263,
+      "grad_norm": 0.814242
+    },
+    {
+      "step": 31,
+      "route": "es-en",
+      "total_loss": 2.640062,
+      "grad_norm": 0.58226
+    },
+    {
+      "step": 32,
+      "route": "en-es",
+      "total_loss": 2.536455,
+      "grad_norm": 1.09816
+    },
+    {
+      "step": 33,
+      "route": "fr-en",
+      "total_loss": 2.670798,
+      "grad_norm": 0.667698
+    },
+    {
+      "step": 34,
+      "route": "fr-en",
+      "total_loss": 2.810382,
+      "grad_norm": 0.604336
+    },
+    {
+      "step": 35,
+      "route": "en-fr",
+      "total_loss": 2.793568,
+      "grad_norm": 0.61104
+    },
+    {
+      "step": 36,
+      "route": "fr-es",
+      "total_loss": 4.163405,
+      "grad_norm": 0.963087
+    },
+    {
+      "step": 37,
+      "route": "en-es",
+      "total_loss": 1.671516,
+      "grad_norm": 0.617225
+    },
+    {
+      "step": 38,
+      "route": "fr-en",
+      "total_loss": 1.287681,
+      "grad_norm": 0.642599
+    },
+    {
+      "step": 39,
+      "route": "en-es",
+      "total_loss": 2.054747,
+      "grad_norm": 0.742112
+    },
+    {
+      "step": 40,
+      "route": "fr-es",
+      "total_loss": 3.875313,
+      "grad_norm": 1.066235
+    },
+    {
+      "step": 41,
+      "route": "fr-es",
+      "total_loss": 2.814282,
+      "grad_norm": 0.837007
+    },
+    {
+      "step": 42,
+      "route": "es-en",
+      "total_loss": 3.034998,
+      "grad_norm": 0.843651
+    },
+    {
+      "step": 43,
+      "route": "en-es",
+      "total_loss": 1.534731,
+      "grad_norm": 0.51386
+    },
+    {
+      "step": 44,
+      "route": "es-fr",
+      "total_loss": 1.878468,
+      "grad_norm": 0.814977
+    },
+    {
+      "step": 45,
+      "route": "fr-en",
+      "total_loss": 1.821817,
+      "grad_norm": 0.721231
+    },
+    {
+      "step": 46,
+      "route": "es-fr",
+      "total_loss": 1.155338,
+      "grad_norm": 0.514861
+    },
+    {
+      "step": 47,
+      "route": "es-en",
+      "total_loss": 2.902433,
+      "grad_norm": 0.779016
+    },
+    {
+      "step": 48,
+      "route": "es-en",
+      "total_loss": 2.427164,
+      "grad_norm": 0.916915
+    },
+    {
+      "step": 49,
+      "route": "en-es",
+      "total_loss": 4.427065,
+      "grad_norm": 1.02104
+    },
+    {
+      "step": 50,
+      "route": "es-fr",
+      "total_loss": 3.128808,
+      "grad_norm": 0.836383
+    },
+    {
+      "step": 51,
+      "route": "en-es",
+      "total_loss": 1.8601,
+      "grad_norm": 0.819788
+    },
+    {
+      "step": 52,
+      "route": "es-fr",
+      "total_loss": 3.058404,
+      "grad_norm": 0.717445
+    },
+    {
+      "step": 53,
+      "route": "es-en",
+      "total_loss": 1.216958,
+      "grad_norm": 0.688866
+    },
+    {
+      "step": 54,
+      "route": "es-fr",
+      "total_loss": 2.922192,
+      "grad_norm": 0.794301
+    },
+    {
+      "step": 55,
+      "route": "en-fr",
+      "total_loss": 1.799592,
+      "grad_norm": 0.693187
+    },
+    {
+      "step": 56,
+      "route": "en-es",
+      "total_loss": 2.111756,
+      "grad_norm": 0.987088
+    },
+    {
+      "step": 57,
+      "route": "fr-en",
+      "total_loss": 1.776077,
+      "grad_norm": 0.833777
+    },
+    {
+      "step": 58,
+      "route": "en-es",
+      "total_loss": 2.09094,
+      "grad_norm": 0.524866
+    },
+    {
+      "step": 59,
+      "route": "es-en",
+      "total_loss": 3.634628,
+      "grad_norm": 0.865472
+    },
+    {
+      "step": 60,
+      "route": "es-en",
+      "total_loss": 1.296987,
+      "grad_norm": 0.650839
+    }
+  ],
+  "elapsed_seconds": 168.38468110999997,
+  "peak_rss_kib_linux": 3681036,
+  "paid_cost_usd": 0,
+  "human_95_percent_meaning_accuracy_verified": false,
+  "production_activated": false,
+  "notice": "This is a real continuation from learned weights, but small publisher dev chrF is NOT semantic adequacy or a meaningful final holdout. Keep the historical specialist models. If any automatic subgroup regresses, retain the exact previous shared checkpoint."
+}

@@ -1,0 +1,119 @@
+name: Continue training one shared multilingual model without resetting weights
+
+on:
+  push:
+    branches: [train/one-multilingual-student-20261121]
+    paths:
+      - .github/workflows/one-multilingual-student-continue.yml
+      - research/multilingual_student/continue_train.py
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: one-multilingual-learned-student-continuation-v2
+  cancel-in-progress: false
+
+jobs:
+  real-continuation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      PYTHONPATH: ".:src"
+      HF_HOME: /tmp/bridgecaption-m2m100-cache
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      TOKENIZERS_PARALLELISM: "false"
+      OMP_NUM_THREADS: "3"
+      MKL_NUM_THREADS: "3"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install pinned free CPU-only model training tools
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'datasets==2.21.0' 'huggingface-hub==0.36.0' 'hf-xet>=1.1,<2'
+      - name: Verify exact old shared student and historic French/Spanish specialist rollback
+        run: |
+          python -m py_compile research/multilingual_student/continue_train.py
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          from research.multilingual_student.train import ensure_old_winners_untouched
+          p=Path('research/multilingual_student/experiment_001/shared_lora_step18.safetensors')
+          expected='97c3a1b23cf7d290cecac038ead9fd8a6f810905944b6c441184c48418258f4b'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()==expected
+          assert set(ensure_old_winners_untouched())=={'fr-en','es-en'}
+          print('VERIFIED_PREVIOUS_ONE_SHARED_STUDENT_PARENT',expected)
+          PY
+      - name: Do REAL 60-step continuation with fresh train groups, evaluate all six on frozen DEV
+        run: python -u research/multilingual_student/continue_train.py
+      - name: Verify full optimizer continuation, every language, no hidden test and model regression gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          from safetensors import safe_open
+          p=Path('research/multilingual_student/experiment_002')
+          r=json.loads((p/'report.json').read_text())
+          assert r['status']=='completed_real_shared_multilingual_student_continuation'
+          assert r['updated_steps']==60
+          assert r['total_student_updates_in_lineage']==78
+          assert r['underlying_model_and_adapter_weights_continued'] is True
+          assert r['optimizer_state_reset_for_new_round'] is True
+          assert r['parent_weights_file_not_modified'] is True
+          assert r['parent_checkpoint_sha256']=='97c3a1b23cf7d290cecac038ead9fd8a6f810905944b6c441184c48418258f4b'
+          assert sum(r['each_direction_actual_update_count'].values())==60
+          assert set(r['each_direction_actual_update_count'])=={'en-es','en-fr','es-en','es-fr','fr-en','fr-es'}
+          assert r['new_training_corpus']['old_round1_route_group_examples_excluded'] is True
+          assert r['reviewed_500_used_for_training'] is False
+          assert r['final_holdout_or_publisher_test_accessed'] is False
+          assert r['no_nc_corpora_or_teacher_output_used'] is True
+          assert r['human_95_percent_meaning_accuracy_verified'] is False
+          assert r['production_activated'] is False
+          assert r['paid_cost_usd']==0
+          for step in (20,40,60):
+              checkpoint=p/f'shared_lora_extra{step:02d}.safetensors'
+              assert checkpoint.is_file()
+              with safe_open(checkpoint,framework='pt',device='cpu') as f:
+                  assert len(list(f.keys()))==24
+          candidate=p/'shared_lora_extra60.safetensors'
+          assert hashlib.sha256(candidate.read_bytes()).hexdigest()==r['candidate_checkpoint_sha256']
+          assert hashlib.sha256(
+            Path('research/multilingual_student/experiment_001/shared_lora_step18.safetensors').read_bytes()
+          ).hexdigest()==r['parent_checkpoint_sha256']
+          for row in (p/'SHA256SUMS.txt').read_text().splitlines():
+              digest,name=row.split('  ')
+              assert hashlib.sha256((p/name).read_bytes()).hexdigest()==digest
+          print('REAL_78_UPDATE_UNIFIED_MULTILINGUAL_LINEAGE_VERIFIED',json.dumps({
+            'parent':r['parent_checkpoint_sha256'],
+            'candidate':r['candidate_checkpoint_sha256'],
+            'selected':r['selected_research_checkpoint_sha256'],
+            'quality_gate':r['passes_automatic_no_regression_gate'],
+            'dev_changes_chrF_not_accuracy':r['development_chrF_deltas_not_accuracy'],
+            'verified_human_95':False}))
+          PY
+      - name: Preserve new learned adapter and do not modify previous champion
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/multilingual_student/experiment_002
+          git commit -m 'research: save real 60-update continuation of shared multilingual student [skip ci]'
+          git pull --rebase origin train/one-multilingual-student-20261121
+          git push origin HEAD:refs/heads/train/one-multilingual-student-20261121
+      - name: Keep candidate after a branch push conflict
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: one-multilingual-learned-adapter-60-additional-steps
+          path: research/multilingual_student/experiment_002/
+          if-no-files-found: warn
+          retention-days: 30

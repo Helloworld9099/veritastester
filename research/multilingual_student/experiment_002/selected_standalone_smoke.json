@@ -1,0 +1,47 @@
+{
+  "status": "real_selected_one_multilingual_weight_pipeline_smoke_passed",
+  "trained_selected_adapter": "a00c7965211853df07ce3fa032a76283dfc984dcdaeac85e03263445029ffb8e",
+  "routes": [
+    "es-en",
+    "fr-en",
+    "en-es",
+    "en-fr",
+    "es-fr",
+    "fr-es"
+  ],
+  "total_network_loads": 1,
+  "six_actual_translation_outputs": {
+    "es-en": {
+      "translation": "Can you help me with the reservation?",
+      "seconds": 5.001575306999996
+    },
+    "fr-en": {
+      "translation": "Can you help me with the reservation?",
+      "seconds": 1.0304442440000088
+    },
+    "en-es": {
+      "translation": "Hola, necesito tu ayuda con mi reserva.",
+      "seconds": 0.9949531809999996
+    },
+    "en-fr": {
+      "translation": "Bonjour, j'ai besoin de votre aide avec ma réservation.",
+      "seconds": 1.3185481180000096
+    },
+    "es-fr": {
+      "translation": "Pouvez-vous venir avant 8h ?",
+      "seconds": 0.9549626549999886
+    },
+    "fr-es": {
+      "translation": "Quiero reservar una mesa para mañana.",
+      "seconds": 0.9570428079999971
+    }
+  },
+  "additional_BridgeCaption_Pipeline_translations": 3,
+  "default_provider_unchanged": true,
+  "speech_recognition_verified": false,
+  "prior_turns_conditioning_verified": false,
+  "human_95_percent_adequacy_verified": false,
+  "final_test_or_reviewed_500_used": false,
+  "max_rss_kib_linux": 2389228,
+  "elapsed_seconds": 12.774930690000005
+}

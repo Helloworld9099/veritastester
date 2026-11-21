@@ -1,0 +1,9 @@
+{
+  "status": "ready_selected_checkpoint_export",
+  "selection_report": "research/multilingual_student/experiment_002/checkpoint_selection.json",
+  "selected_shared_model_sha256": "a00c7965211853df07ce3fa032a76283dfc984dcdaeac85e03263445029ffb8e",
+  "training_lineage_updates": 38,
+  "one_full_neural_weight_only": true,
+  "production_activation": false,
+  "paid_spend_usd": 0
+}

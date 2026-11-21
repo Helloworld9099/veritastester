@@ -1,0 +1,126 @@
+name: Train ONE true shared English-Spanish-French neural model (experimental)
+
+on:
+  push:
+    branches: [train/one-multilingual-student-20261121]
+    paths:
+      - .github/workflows/one-multilingual-student.yml
+      - research/multilingual_student/config.json
+      - research/multilingual_student/model.py
+      - research/multilingual_student/data.py
+      - research/multilingual_student/train.py
+      - research/multilingual_student/tests/test_single_model_contract.py
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: one-shared-multilingual-model-training-v1
+  cancel-in-progress: false
+
+jobs:
+  real-six-direction-student:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      PYTHONPATH: ".:src"
+      TOKENIZERS_PARALLELISM: "false"
+      OMP_NUM_THREADS: "3"
+      MKL_NUM_THREADS: "3"
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      HF_HUB_DISABLE_XET: "0"
+      HF_HOME: /tmp/bridgecaption-m2m100-cache
+      BRIDGE_NO_PAID_APIS: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install official free CPU Torch, pinned translator and dataset dependencies
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'datasets==2.21.0' 'huggingface-hub==0.36.0' 'hf-xet>=1.1,<2'
+      - name: Test all six routes, group decontamination and zero-API safeguards first
+        run: |
+          python -m compileall -q research/multilingual_student
+          python -m unittest discover -s research/multilingual_student/tests -p 'test_*.py' -v
+      - name: Verify actual existing ES and FR checkpoint bytes were not changed
+        run: |
+          python - <<'PY'
+          from research.multilingual_student.train import ensure_old_winners_untouched
+          from research.multilingual_student.model import read_config
+          r=ensure_old_winners_untouched()
+          assert set(r)=={'es-en','fr-en'}
+          assert not read_config()['production_enabled']
+          print('PRESERVED_PREVIOUS_FRENCH_SPANISH_WINNERS',r)
+          PY
+      - name: Actually download the exact MIT multilingual base, train 18 steps, evaluate all six directions
+        run: |
+          python -u research/multilingual_student/train.py
+      - name: Verify one learned shared adapter, all directions and honest dev gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          from safetensors import safe_open
+          folder=Path('research/multilingual_student/experiment_001')
+          report=json.loads((folder/'report.json').read_text())
+          data=json.loads((folder/'data_manifest.json').read_text())
+          assert report['status']=='completed_actual_single_multilingual_student_training'
+          assert report['single_shared_weight_set'] is True
+          assert report['optimizer_updates_completed']==18
+          assert len(report['trained_directions'])==6
+          assert set(report['trained_languages'])=={'en','es','fr'}
+          assert all(n==3 for n in report['each_direction_trained'].values())
+          assert report['source_reviewed_500_used_for_training'] is False
+          assert report['dataset_test_or_final_holdout_accessed'] is False
+          assert report['independently_verified_95_percent_meaning_accuracy'] is False
+          assert report['production_activation_authorized'] is False
+          assert report['old_translators_or_update_system_modified'] is False
+          assert report['paid_spend_usd']==0
+          assert report['base_pretrained_weights_bytes']>1000000000
+          assert len(report['base_pretrained_weights_sha256'])==64
+          assert data['train_groups']==120 and data['development_groups']==12
+          assert data['reviewed_500_never_train_or_dev'] is True
+          assert data['final_test_accessed'] is False
+          checkpoints=[folder / f'shared_lora_step{x:02d}.safetensors' for x in (6,12,18)]
+          assert all(f.is_file() for f in checkpoints)
+          for f in checkpoints:
+              with safe_open(f,framework='pt',device='cpu') as handle:
+                  names=list(handle.keys())
+              assert len(names)==24 and all('.lora_' in key for key in names)
+          champion=checkpoints[-1]
+          assert hashlib.sha256(champion.read_bytes()).hexdigest()==report['checkpoint_sha256']
+          for row in (folder/'SHA256SUMS.txt').read_text().splitlines():
+              sha,name=row.split('  ')
+              assert hashlib.sha256((folder/name).read_bytes()).hexdigest()==sha
+          print('VERIFIED_REAL_SINGLE_MODEL_SIX_DIRECTION_TRAINING',json.dumps({
+              'steps':report['optimizer_updates_completed'],
+              'one_shared_lora_sha256':report['checkpoint_sha256'],
+              'per_direction_chrF_development_change':report['dev_chrf_change_not_meaning_accuracy'],
+              'research_status':report['research_checkpoint_status'],
+              'human_95_claim':False}))
+          PY
+      - name: Save small shared checkpoint and reproducible receipts; NEVER push 1.94GB base or change product
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/multilingual_student/experiment_001
+          git commit -m 'train: preserve actual six-direction shared multilingual checkpoint and no-regression receipt [skip ci]'
+          git pull --rebase origin train/one-multilingual-student-20261121
+          git push origin HEAD:refs/heads/train/one-multilingual-student-20261121
+      - name: Archive checkpoints even if branch push races
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: one-real-multilingual-en-es-fr-trained-student
+          path: research/multilingual_student/experiment_001/
+          if-no-files-found: warn
+          retention-days: 30

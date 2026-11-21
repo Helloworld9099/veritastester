@@ -1,0 +1,77 @@
+# BridgeCaption — one genuine multilingual translation model
+
+**Branch:** `train/one-multilingual-student-20261121` · **Draft PR #48** · **Status:** Research experiment, not released.
+
+## What is and is not one model
+
+The previous French/Spanish consolidation shared one loader but retained separate Marian encoder/decoder weight sets and language tokenizers. The new student instead has **one pretrained M2M100 multilingual encoder/decoder** and **one shared learned low-rank adapter** used across all six directions (`es↔en`, `fr↔en`, `es↔fr`). Routing changes token IDs inside the **same** network; it does not select a language-specific model. The `export_standalone.py` experiment **folds** the shared adapter weights into the base matrices and saves an independent `model.safetensors`, plus tokenizer and config, to run without any adapter file.
+
+This is a **shared text translation model, not yet a shared speech/ASR model**. BridgeCaption's microphone, Whisper, captions, update system and production translator remain exactly as before.
+
+The trained result is not a continuation of old Marian tensors: Marian French and Spanish embeddings and tokenizers are incompatible with the new shared base. The old learned checkpoints are preserved for fallback, separate evaluation and possible verified teacher-guided distillation in the future. No legacy optimizer moments were imported.
+
+## Base, data and licenses
+
+| Resource | Pin / license | Use |
+|---|---|---|
+| Multilingual base | `facebook/m2m100_418M` SHA `55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636`, MIT | One model for English, Spanish, French |
+| New student training | Amazon MASSIVE `ff6bd8e4b27c3543e4f8fe2108f32bb95a6f8740`, CC BY 4.0 | Publisher `train` only, same group ID across three locales |
+| Model selection | MASSIVE publisher `validation`, not new independent final test | Repeated development, never called accuracy |
+| Reviewed 500 translations | Already consumed development evaluation only | Their source text excluded from new training and dev |
+| Previous ES→EN | `3bf849bb...` accepted Spanish v2 | Preserved separate, not merged |
+| Previous FR→EN | `fba2bd78...` balanced French Stage 5 | Preserved separate, not merged |
+| Noncommercial WMT24/subtitle adapters | CC BY-NC provenance | Excluded entirely from model ancestry |
+
+The first resource budget is **$0** paid compute, existing free `ubuntu-24.04` CPU Actions, maximum 45 minutes. Model-card licence and exact revision are checked before training. Only 120 licensed tri-lingual training groups and 12 developer-only validation groups per route are sampled for the initial reproducible pilot. These groups are predominantly isolated voice commands, not authentic multi-turn slang or conversational context.
+
+## Files
+
+- `config.json`: unambiguous data/model licences, exact upstream revision, six routes, CPU and optimizer bounds.
+- `data.py`: pinned publisher train/dev, three-locales-by-original-ID alignment, numeric/entity checks and review leakage exclusions. Does not access MASSIVE test.
+- `model.py`: one shared M2M100 tokenizer, q/v LoRA, immutable hash-based adapter loader, route tokens, and in-place mathematical merging of one shared adapter.
+- `train.py`: 18 actual optimizer steps, three saved SHA-pinned incremental checkpoints, before/after publisher-development chrF and BLEU per direction. Regression gate cannot authorize production by itself.
+- `runtime.py`: opt-in BridgeCaption `TranslationRequest` / `Pipeline` translation with one resident trained student; rejects untrained dialogue-history injection and silent text truncation.
+- `export_standalone.py`: convert real trained student to standalone *full* merged multilingual model. Expected download is large (approx 2 GB).
+- `standalone_runtime.py` / `smoke_standalone.py`: load **one** standalone weight from local files and check six directions plus the real BridgeCaption text `Pipeline` with no reloads.
+- `tests/`: source/license/model contract and deterministic split; numerical LoRA-merge test; all-six-route single-model cache contract.
+
+## Run and inspect
+
+```sh
+PYTHONPATH=.:src python -m unittest discover -s research/multilingual_student/tests -p 'test_*.py' -v
+PYTHONPATH=.:src python research/multilingual_student/train.py
+```
+
+CI: `.github/workflows/one-multilingual-student.yml`. A successful run writes immutable `research/multilingual_student/experiment_001/{report.json,data_manifest.json,shared_lora_step*.safetensors,SHA256SUMS.txt}`. It commits only small learned adapters, **not 2GB pretrained weights**. Re-running against the same output is blocked so successful experiments are not overwritten.
+
+After that succeeds, add `research/multilingual_student/export_request.json` to trigger `.github/workflows/one-multilingual-student-export.yml`: it saves the full merged model as a downloadable 7-day **GitHub Actions artifact**, not as a 2 GB commit. It also records the actual SHA and six-direction BridgeCaption text-Pipeline smoke evidence. No API keys, paid services or private user speech are used.
+
+**No claim of 95% meaning-preservation, dialect/slang competence or live microphone latency is implied by successful execution.** Before product deployment, run independent bilingual meaning scoring (both directions and subgroups), compare with old French and Spanish champions, verify rights/attribution, and test low-memory sustained full audio capture. A regression against old champions blocks any automatic replacement.
+
+
+## Test the already exported full neural weight offline
+
+The first **verified** standalone export was produced by [run 44961592822](https://github.com/Helloworld9099/veritastester/actions/runs/44961592822). Download its 7-day GitHub Actions artifact `BridgeCaption-one-standalone-EN-ES-FR-model` and extract it. Locate the directory containing `model.safetensors`, `config.json`, and `sentencepiece.bpe.model` (the full file is 1,935,681,888 bytes; SHA-256 `c3461166c467fb43fa93ecf4c5d327a823d8772e4b9c99e712ee3531358d30f0`). Keep `standalone_export.json` from the artifact or use the committed copy in `experiment_001/`.
+
+```sh
+# In the cloned repository, after installing research/requirements-replay.txt:
+PYTHONPATH=.:src python research/multilingual_student/cli.py \
+  --model-dir /path/to/extracted/model-directory \
+  --source fr --target es \
+  --text "Je voudrais réserver une table pour demain."
+```
+
+Expected from the tested first exported checkpoint: `Quiero reservar una mesa para mañana.`
+
+This CLI loads **one full merged model**, not six weights; subsequent requests in the same running Python process reuse the same weights. The CLI is text-only and does not change the installed BridgeCaption app. It is **not a 95% meaning accuracy certification** and does not automatically load microphone/ASR. The first training candidate was not promoted after the FR→EN dev regression; the old language-specific models are still the working fallback.
+
+The whole file is deliberately excluded from normal Git history (GitHub's individual-file size limit), but the compact trained shared adapter, immutable model-base revision, all hashes and exact reconstruction script persist in this branch after the temporary Actions artifact expires.
+
+
+## Best actually selected single model (November 21, 2026)
+
+The first 18-step model was **really trained, merged and tested**. A second round then continued from those same learned weights for 60 additional optimizer steps, rather than resetting them. Checkpoint selection on pinned publisher-development data found that the candidate after **20 additional steps** passed the research no-regression gate, whereas candidates after 40 and 60 did not. Therefore the **selected unified research checkpoint contains 38 cumulative optimizer updates**, with adapter SHA-256 `a00c7965211853df07ce3fa032a76283dfc984dcdaeac85e03263445029ffb8e`. See `experiment_002/checkpoint_selection.json`.
+
+A *new* full-weight export of that selected student was successfully completed: [selected one-model artifact](https://github.com/Helloworld9099/veritastester/actions/runs/44962625096/artifacts/14730192642), available through **2026-11-28**. The standalone `model.safetensors` weighs **1,935,681,888 bytes**, SHA-256 `f0f90a965fe3f03997445f3b5508a2327f53bd825183b1c7570037df40aa55b6`. It uses one neural encoder/decoder across all six directions, not multiple pretrained weights. Exact pre/post LoRA merge outputs and real BridgeCaption text-Pipeline integration passed with only one model load. For the CLI, pass the folder containing the extracted model files plus `--receipt research/multilingual_student/experiment_002/selected_standalone_export.json`.
+
+**Important no-regression decision:** A [same-12-DEV-example comparison](https://github.com/Helloworld9099/veritastester/actions/runs/44962661440) shows the selected unified student **still underperforms** the previously trained separate specialists: ES→EN 47.78 vs 60.99 chrF, FR→EN 55.05 vs 64.92 chrF, EN→ES 49.16 vs 55.76 chrF. These scores are small-sample automatic translation similarity, not accuracy. This is a real unified-model research milestone, **NOT a working replacement that maintains every previous linguistic gain**. Both original specialist checkpoints remain intact, and the application default provider is unchanged. Do not train on reviewed developer examples or open the sealed final holdout to tune the student.

@@ -1,0 +1,261 @@
+{
+  "status": "actual_saved_shared_multilingual_checkpoint_sweep_completed",
+  "from_parent_sha256": "97c3a1b23cf7d290cecac038ead9fd8a6f810905944b6c441184c48418258f4b",
+  "selected_research_checkpoint_relative": "research/multilingual_student/experiment_002/shared_lora_extra20.safetensors",
+  "selected_research_sha256": "a00c7965211853df07ce3fa032a76283dfc984dcdaeac85e03263445029ffb8e",
+  "selection_reason": "development_selected_continuation_not_production",
+  "evaluations": {
+    "shared_lora_extra20.safetensors": {
+      "sha256": "a00c7965211853df07ce3fa032a76283dfc984dcdaeac85e03263445029ffb8e",
+      "no_regression_automatic_gate": true,
+      "development_summary": {
+        "chrF_changes_not_accuracy": {
+          "en-es": 0.0143,
+          "en-fr": 0.0,
+          "es-en": 2.5865,
+          "es-fr": 0.0,
+          "fr-en": 1.987,
+          "fr-es": 0.0
+        },
+        "BLEU_changes_not_accuracy": {
+          "en-es": 0.0945,
+          "en-fr": 0.0,
+          "es-en": 1.6637,
+          "es-fr": 0.0,
+          "fr-en": 0.1585,
+          "fr-es": 0.0
+        },
+        "mean_chrF_delta_not_accuracy": 0.7646,
+        "automatic_gate_blockers": []
+      },
+      "scores": {
+        "es-en": {
+          "n": 12,
+          "chrF_not_accuracy": 47.7841,
+          "BLEU_not_accuracy": 18.7071,
+          "empty_predictions": 0,
+          "example_output": "You can give me the train schedules for Ann Arbor",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-en": {
+          "n": 12,
+          "chrF_not_accuracy": 55.0468,
+          "BLEU_not_accuracy": 26.392,
+          "empty_predictions": 0,
+          "example_output": "Can you give me the train schedules for Ann Arbor?",
+          "source_and_reference_not_in_report": true
+        },
+        "en-es": {
+          "n": 12,
+          "chrF_not_accuracy": 49.1569,
+          "BLEU_not_accuracy": 13.8464,
+          "empty_predictions": 0,
+          "example_output": "Puedes darme los horarios de tren para Ann Arbor",
+          "source_and_reference_not_in_report": true
+        },
+        "en-fr": {
+          "n": 12,
+          "chrF_not_accuracy": 57.8337,
+          "BLEU_not_accuracy": 34.6038,
+          "empty_predictions": 0,
+          "example_output": "Vous pouvez me donner les horaires de train pour Ann Arbor",
+          "source_and_reference_not_in_report": true
+        },
+        "es-fr": {
+          "n": 12,
+          "chrF_not_accuracy": 57.7594,
+          "BLEU_not_accuracy": 25.1998,
+          "empty_predictions": 0,
+          "example_output": "Vous pouvez me donner les horaires des trains pour Ann Arbor",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-es": {
+          "n": 12,
+          "chrF_not_accuracy": 44.73,
+          "BLEU_not_accuracy": 11.7678,
+          "empty_predictions": 0,
+          "example_output": "Puedes darme los horarios de tren para Ann Arbor",
+          "source_and_reference_not_in_report": true
+        }
+      },
+      "meaning_preservation_human_verified": false
+    },
+    "shared_lora_extra40.safetensors": {
+      "sha256": "5dfb4b4b480338108b5bb27369e021b4086cf838b91912eed172146e03d0c19f",
+      "no_regression_automatic_gate": false,
+      "development_summary": {
+        "chrF_changes_not_accuracy": {
+          "en-es": 0.0143,
+          "en-fr": -1.0207,
+          "es-en": 2.5865,
+          "es-fr": 0.1295,
+          "fr-en": 0.9354,
+          "fr-es": 0.0615
+        },
+        "BLEU_changes_not_accuracy": {
+          "en-es": 0.0945,
+          "en-fr": -5.0443,
+          "es-en": 1.6637,
+          "es-fr": 0.0,
+          "fr-en": -0.2736,
+          "fr-es": 0.0
+        },
+        "mean_chrF_delta_not_accuracy": 0.4511,
+        "automatic_gate_blockers": [
+          "en-fr:BLEU",
+          "en-fr:chrF"
+        ]
+      },
+      "scores": {
+        "es-en": {
+          "n": 12,
+          "chrF_not_accuracy": 47.7841,
+          "BLEU_not_accuracy": 18.7071,
+          "empty_predictions": 0,
+          "example_output": "You can give me the train schedules for Ann Arbor",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-en": {
+          "n": 12,
+          "chrF_not_accuracy": 53.9952,
+          "BLEU_not_accuracy": 25.9599,
+          "empty_predictions": 0,
+          "example_output": "Can you give me the train schedules for Ann Arbor?",
+          "source_and_reference_not_in_report": true
+        },
+        "en-es": {
+          "n": 12,
+          "chrF_not_accuracy": 49.1569,
+          "BLEU_not_accuracy": 13.8464,
+          "empty_predictions": 0,
+          "example_output": "Puedes darme los horarios de tren para Ann Arbor",
+          "source_and_reference_not_in_report": true
+        },
+        "en-fr": {
+          "n": 12,
+          "chrF_not_accuracy": 56.813,
+          "BLEU_not_accuracy": 29.5595,
+          "empty_predictions": 0,
+          "example_output": "Vous pouvez me donner des horaires de train pour Ann Arbor",
+          "source_and_reference_not_in_report": true
+        },
+        "es-fr": {
+          "n": 12,
+          "chrF_not_accuracy": 57.8889,
+          "BLEU_not_accuracy": 25.1998,
+          "empty_predictions": 0,
+          "example_output": "Vous pouvez me donner les horaires des trains pour Ann Arbor",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-es": {
+          "n": 12,
+          "chrF_not_accuracy": 44.7915,
+          "BLEU_not_accuracy": 11.7678,
+          "empty_predictions": 0,
+          "example_output": "Puedes darme los horarios de tren para Ann Arbor",
+          "source_and_reference_not_in_report": true
+        }
+      },
+      "meaning_preservation_human_verified": false
+    },
+    "shared_lora_extra60.safetensors": {
+      "sha256": "c5fb23ba8412955235cb3bcfbe3f584f1b362048fd87049550980c0004475acf",
+      "no_regression_automatic_gate": false,
+      "development_summary": {
+        "chrF_changes_not_accuracy": {
+          "en-es": 0.5785,
+          "en-fr": 3.1672,
+          "es-en": 2.5865,
+          "es-fr": 0.3136,
+          "fr-en": 1.8269,
+          "fr-es": 0.0615
+        },
+        "BLEU_changes_not_accuracy": {
+          "en-es": 0.8463,
+          "en-fr": -2.2199,
+          "es-en": 1.9864,
+          "es-fr": -0.2342,
+          "fr-en": 0.1585,
+          "fr-es": 0.0
+        },
+        "mean_chrF_delta_not_accuracy": 1.4224,
+        "automatic_gate_blockers": [
+          "en-fr:BLEU"
+        ]
+      },
+      "scores": {
+        "es-en": {
+          "n": 12,
+          "chrF_not_accuracy": 47.7841,
+          "BLEU_not_accuracy": 19.0298,
+          "empty_predictions": 0,
+          "example_output": "You can give me the train schedules for Ann Arbor",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-en": {
+          "n": 12,
+          "chrF_not_accuracy": 54.8867,
+          "BLEU_not_accuracy": 26.392,
+          "empty_predictions": 0,
+          "example_output": "Can you give me the train schedules for Ann Arbor?",
+          "source_and_reference_not_in_report": true
+        },
+        "en-es": {
+          "n": 12,
+          "chrF_not_accuracy": 49.7211,
+          "BLEU_not_accuracy": 14.5982,
+          "empty_predictions": 0,
+          "example_output": "Puedes darme los horarios de tren para Ann Arbor",
+          "source_and_reference_not_in_report": true
+        },
+        "en-fr": {
+          "n": 12,
+          "chrF_not_accuracy": 61.0009,
+          "BLEU_not_accuracy": 32.3839,
+          "empty_predictions": 0,
+          "example_output": "Vous pouvez me donner des horaires de train pour Ann Arbor",
+          "source_and_reference_not_in_report": true
+        },
+        "es-fr": {
+          "n": 12,
+          "chrF_not_accuracy": 58.073,
+          "BLEU_not_accuracy": 24.9656,
+          "empty_predictions": 0,
+          "example_output": "Vous pouvez me donner les horaires des trains pour Ann Arbor",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-es": {
+          "n": 12,
+          "chrF_not_accuracy": 44.7915,
+          "BLEU_not_accuracy": 11.7678,
+          "empty_predictions": 0,
+          "example_output": "Puedes darme los horarios de tren para Ann Arbor",
+          "source_and_reference_not_in_report": true
+        }
+      },
+      "meaning_preservation_human_verified": false
+    }
+  },
+  "on_development_only": true,
+  "full_six_directions_evaluated": true,
+  "human_95_percent_meaning_accuracy_verified": false,
+  "production_activated": false,
+  "user_default_not_changed": true,
+  "publisher_test_or_final_holdout_accessed": false,
+  "reviewed_500_source_text_not_trained": true,
+  "one_base_and_one_shared_adapter_per_candidate": true,
+  "old_marian_models_untouched": {
+    "es-en": {
+      "path": "experiments/es_en_v2_runs/candidate_after_three.safetensors",
+      "sha256": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71"
+    },
+    "fr-en": {
+      "path": "experiments/balanced_stage5_20261118/saved/french/adapter_selected.safetensors",
+      "sha256": "fba2bd78958bf0bf8a4c14dc55e601e08663633718c4c9c17f91ef9b52dcfa1c"
+    }
+  },
+  "paid_cost_usd": 0,
+  "elapsed_seconds": 168.29140140799996,
+  "rss_peak_kib_linux": 3407844,
+  "limitation": "Four candidate checkpoints compared on only 12 publisher development cases per direction; scores have high variance and selection bias. Human adequacy remains unmeasured, and old specialist language-model performance blocks deployment."
+}
