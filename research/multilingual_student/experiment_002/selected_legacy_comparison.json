@@ -1,0 +1,53 @@
+{
+  "status": "actual_selected_single_model_vs_old_specialists_on_identical_DEV",
+  "selected_research_adapter_sha256": "a00c7965211853df07ce3fa032a76283dfc984dcdaeac85e03263445029ffb8e",
+  "verified_publisher_development_sha256": "88f6eca0eeb35e39faac5506be153314b76a7b572587733ccfe18ce032d8c03a",
+  "selected_model_is_one_shared_neural_network": true,
+  "results": {
+    "es-en": {
+      "n": 12,
+      "old_model_revision_or_adapter_sha256": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71",
+      "old_trained_model_chrF_not_accuracy": 60.9937,
+      "old_trained_model_BLEU_not_accuracy": 32.8521,
+      "one_model_selected_chrF_not_accuracy": 47.7841,
+      "one_model_selected_BLEU_not_accuracy": 18.7071,
+      "one_model_minus_old_chrF": -13.2096,
+      "one_model_minus_old_BLEU": -14.145,
+      "same_development_case_ids": true,
+      "independent_bilingual_meaning_labels": false
+    },
+    "fr-en": {
+      "n": 12,
+      "old_model_revision_or_adapter_sha256": "fba2bd78958bf0bf8a4c14dc55e601e08663633718c4c9c17f91ef9b52dcfa1c",
+      "old_trained_model_chrF_not_accuracy": 64.9247,
+      "old_trained_model_BLEU_not_accuracy": 35.8166,
+      "one_model_selected_chrF_not_accuracy": 55.0468,
+      "one_model_selected_BLEU_not_accuracy": 26.392,
+      "one_model_minus_old_chrF": -9.8779,
+      "one_model_minus_old_BLEU": -9.4246,
+      "same_development_case_ids": true,
+      "independent_bilingual_meaning_labels": false
+    },
+    "en-es": {
+      "n": 12,
+      "old_model_revision_or_adapter_sha256": "5bc4493d463cf000c1f0b50f8d56886a392ed4ab",
+      "old_trained_model_chrF_not_accuracy": 55.7588,
+      "old_trained_model_BLEU_not_accuracy": 22.0629,
+      "one_model_selected_chrF_not_accuracy": 49.1569,
+      "one_model_selected_BLEU_not_accuracy": 13.8464,
+      "one_model_minus_old_chrF": -6.6019,
+      "one_model_minus_old_BLEU": -8.2165,
+      "same_development_case_ids": true,
+      "independent_bilingual_meaning_labels": false
+    }
+  },
+  "production_promoted": false,
+  "old_language_specialists_preserved": true,
+  "independent_95_percent_meaning_accuracy_verified": false,
+  "reviewed_500_or_final_holdout_used_for_selection": false,
+  "no_new_training_executed": true,
+  "paid_spend_usd": 0,
+  "elapsed_seconds": 24.95531466,
+  "rss_peak_kib_linux": 1250396,
+  "warning": "Only 12 publisher intent DEV examples/direction. This automatic chrF/BLEU comparison is not an independent semantic accuracy study. Old models remain unchanged even if the selected shared model has higher text similarity."
+}
