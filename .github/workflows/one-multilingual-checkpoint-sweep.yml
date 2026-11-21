@@ -1,0 +1,92 @@
+name: Select best saved single multilingual student checkpoint (all six DEV routes)
+
+on:
+  push:
+    branches: [train/one-multilingual-student-20261121]
+    paths:
+      - .github/workflows/one-multilingual-checkpoint-sweep.yml
+      - research/multilingual_student/select_checkpoint.py
+      - research/multilingual_student/tests/test_checkpoint_gate.py
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: one-multilingual-saved-checkpoint-selection-v1
+  cancel-in-progress: false
+
+jobs:
+  frozen-development:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 28
+    env:
+      PYTHONPATH: ".:src"
+      HF_HOME: /tmp/bridgecaption-m2m100-cache
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      TOKENIZERS_PARALLELISM: "false"
+      OMP_NUM_THREADS: "3"
+      MKL_NUM_THREADS: "3"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install free pinned CPU model evaluation dependencies
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'datasets==2.21.0' 'huggingface-hub==0.36.0' 'hf-xet>=1.1,<2'
+      - name: Verify every group must pass the strict all-six-route regression gate
+        run: |
+          python -m unittest research.multilingual_student.tests.test_checkpoint_gate -v
+          python -m py_compile research/multilingual_student/select_checkpoint.py
+      - name: Evaluate 20/40/60 learned shared checkpoints on same pinned publisher DEV
+        run: python -u research/multilingual_student/select_checkpoint.py
+      - name: Verify no final test and choose only non-regressing research weights
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          root=Path('research/multilingual_student/experiment_002')
+          p=root/'checkpoint_selection.json'
+          r=json.loads(p.read_text())
+          assert r['status']=='actual_saved_shared_multilingual_checkpoint_sweep_completed'
+          assert r['from_parent_sha256']=='97c3a1b23cf7d290cecac038ead9fd8a6f810905944b6c441184c48418258f4b'
+          assert len(r['evaluations'])==3
+          assert r['full_six_directions_evaluated'] is True
+          assert r['publisher_test_or_final_holdout_accessed'] is False
+          assert r['human_95_percent_meaning_accuracy_verified'] is False
+          assert r['production_activated'] is False
+          assert r['user_default_not_changed'] is True
+          assert r['paid_cost_usd']==0
+          best=Path(r['selected_research_checkpoint_relative'])
+          assert best.is_file()
+          assert hashlib.sha256(best.read_bytes()).hexdigest()==r['selected_research_sha256']
+          (root/'checkpoint_selection.sha256').write_text(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+p.name+'\n')
+          print('SELECTED_SIX_ROUTE_RESEARCH_STUDENT_SHA256',json.dumps({
+            'selected':r['selected_research_sha256'],
+            'selection_reason':r['selection_reason'],
+            'eligible':sum(x['no_regression_automatic_gate'] for x in r['evaluations'].values()),
+            'independent_accuracy_claim':False}))
+          PY
+      - name: Preserve all actually measured checkpoint candidates and selection decision
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/multilingual_student/experiment_002/checkpoint_selection*
+          git commit -m 'research: preserve all saved multilingual checkpoint comparison results and safe selection [skip ci]'
+          git pull --rebase origin train/one-multilingual-student-20261121
+          git push origin HEAD:refs/heads/train/one-multilingual-student-20261121
+      - name: Retain checkpoint comparison evidence on push failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: one-multilingual-20-40-60-frozen-dev-evaluation
+          path: research/multilingual_student/experiment_002/checkpoint_selection.json
+          if-no-files-found: warn
+          retention-days: 30
