@@ -732,6 +732,14 @@
     "unified_models/nemotron_cache_smoke_report.json": {
       "bytes": 8382,
       "sha256": "c3affc8451854e8c35e5ecdce62d8c28df5e900e34520612389f278bbde126a1"
+    },
+    "unified_models/nemotron_q8_smoke.py": {
+      "bytes": 8898,
+      "sha256": "7be4a9d6cd066c8f34d1bf0589f5720ddec9ca0c3e461c9d06774614d111c2c3"
+    },
+    "unified_models/nemotron_q8_smoke_report.json": {
+      "bytes": 3196,
+      "sha256": "38c783021e82c6610dc0e953b5696dddd0d3f4057b3d945e658efd4e5053b591"
     }
   }
 }
