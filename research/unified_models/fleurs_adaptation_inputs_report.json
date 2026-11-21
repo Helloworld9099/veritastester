@@ -1,0 +1,48 @@
+{
+  "audio_bytes_checked": false,
+  "dataset": {
+    "license": "CC-BY-4.0",
+    "origin": "https://huggingface.co/datasets/google/fleurs/tree/70bb2e84b976b7e960aa89f1c648e09c59f894dd",
+    "revision": "70bb2e84b976b7e960aa89f1c648e09c59f894dd"
+  },
+  "directions": {
+    "es->en": {
+      "dev": {
+        "audio_rows": 408,
+        "missing_english_rows": 0,
+        "paired_rows": 408
+      },
+      "train": {
+        "audio_rows": 2796,
+        "missing_english_rows": 64,
+        "paired_rows": 2732
+      }
+    },
+    "fr->en": {
+      "dev": {
+        "audio_rows": 289,
+        "missing_english_rows": 0,
+        "paired_rows": 289
+      },
+      "train": {
+        "audio_rows": 3193,
+        "missing_english_rows": 74,
+        "paired_rows": 3119
+      }
+    }
+  },
+  "exact_cross_split_checks_passed": [
+    "parallel_sentence_id",
+    "audio_member_filename",
+    "normalized_text"
+  ],
+  "foundation_pretraining_disjoint_verified": false,
+  "holdout_opened": false,
+  "kind": "bridgecaption_fleurs_adaptation_input_prep",
+  "manifest_sha256": {
+    "dev": "a8420bda54d85c1256d043afce4cfceab8f5bb77e7920300b90c11ac9b41a51c",
+    "train": "47d6906f42c928b3e6b5f77f71db38566161b2c0892edff70e2fa1c90cc5f5c7"
+  },
+  "scope": "pinned_train_dev_metadata_only",
+  "speaker_audit_verified": false
+}

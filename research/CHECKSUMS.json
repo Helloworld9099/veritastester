@@ -712,6 +712,14 @@
     "unified_models/causal_dual_head_report.json": {
       "bytes": 869,
       "sha256": "e9c5a07d4db56b92b1d2ead1e71edae5730f0e055b44738c499a1b23c089c71c"
+    },
+    "unified_models/fleurs_adaptation_inputs.py": {
+      "bytes": 7026,
+      "sha256": "de10a6c546a004fd741b24bd8bebd84701bdddc26cc5fe3df6986a638e2b5d11"
+    },
+    "unified_models/fleurs_adaptation_inputs_report.json": {
+      "bytes": 1305,
+      "sha256": "f5edddc815f46ef46d1d9ed81327e1816606e2058bc44b7755fb891b9734632d"
     }
   }
 }
