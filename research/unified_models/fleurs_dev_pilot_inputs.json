@@ -1,0 +1,74 @@
+{
+  "audio_archive_prefix_range": "bytes=0-11999999",
+  "clips": [
+    {
+      "id": "es-1615",
+      "normalized_pcm16_wav_sha256": "850c3a6378b51d7e3b39369c7e12df78114168a57747711ebad21001cff511fe",
+      "publisher_wav_member_sha256": "98e75b0d98f8b5b6885d32c0ffaf444eb1d026aabcbf6ab3ffad23bd6eef66aa",
+      "seconds": 8.4,
+      "source_language": "es"
+    },
+    {
+      "id": "es-1510",
+      "normalized_pcm16_wav_sha256": "c07f37ca057c50b8c48afe052cfefda86a8d2639c9352a2843ccca3a03c97c44",
+      "publisher_wav_member_sha256": "e604c81b3b60ed61fb95e867231c5193d8bc0579118c9296898d9e28773550a3",
+      "seconds": 12.12,
+      "source_language": "es"
+    },
+    {
+      "id": "es-1599",
+      "normalized_pcm16_wav_sha256": "a40e069c79affeac000af35be4b50bc7180209f4eac1129f4395f955e07574f9",
+      "publisher_wav_member_sha256": "c6ba1869a95e4112059f0b142b2b0640d7040aac0b9c5f72410df58c7a0a1904",
+      "seconds": 9.18,
+      "source_language": "es"
+    },
+    {
+      "id": "es-1589",
+      "normalized_pcm16_wav_sha256": "90936b29fe1e0b41d23be3f678fcbd0853cb59f7050709bb161684fb98536c29",
+      "publisher_wav_member_sha256": "0a4f4e65aa475e85d91267a20e80827c230ba35f3d06f663ac5b8d2e073e442e",
+      "seconds": 13.68,
+      "source_language": "es"
+    },
+    {
+      "id": "fr-1524",
+      "normalized_pcm16_wav_sha256": "da4ee9f5ddb3d8898d973cb6d70c6e7568c8825d2d177394c3762330902f3342",
+      "publisher_wav_member_sha256": "8bb53b14f4cc695c54a136a5db57e534344a225d81a6b5314ca6cdb0a12c7005",
+      "seconds": 14.46,
+      "source_language": "fr"
+    },
+    {
+      "id": "fr-1570",
+      "normalized_pcm16_wav_sha256": "281c4d7e65d186abbd4659a0afe8f8e614900c9add588c6cbdd2447fdd8ee5ce",
+      "publisher_wav_member_sha256": "a9f2f1630034aae5bbe5273a25166d9ed1e92bedf4d613c7398fbda92b65ed12",
+      "seconds": 6.0,
+      "source_language": "fr"
+    },
+    {
+      "id": "fr-1533",
+      "normalized_pcm16_wav_sha256": "4e42e046b987eab5cf60073457dc9efac531e4a37ff26d995fd8900c50810166",
+      "publisher_wav_member_sha256": "3561eaebe0d9ebce49e68a090b162faca85af0eb04a224e1e3887ee0d8fee55e",
+      "seconds": 7.86,
+      "source_language": "fr"
+    },
+    {
+      "id": "fr-1652",
+      "normalized_pcm16_wav_sha256": "d7c768432f38e8ad3c0a5cf59a57e2d291b6419e5ef8ba97ab832090273faf7b",
+      "publisher_wav_member_sha256": "c17b380f42a02a804c4f6fc17c0cefb06c5566b5a300f8a46090a71060e31ed4",
+      "seconds": 8.52,
+      "source_language": "fr"
+    }
+  ],
+  "dataset": "Google FLEURS",
+  "license": "CC-BY-4.0",
+  "original_reference_join": "same integer sentence ID, TSV raw_transcription column 2, first en_us dev record for ID",
+  "revision": "70bb2e84b976b7e960aa89f1c648e09c59f894dd",
+  "schema_version": 1,
+  "scope": "publisher_development_only",
+  "selected_by": "first four distinct sentence IDs in each dev audio archive prefix, matching an English dev transcript and 1\u201315 s after PCM conversion",
+  "split": "dev",
+  "tsv_sha256": {
+    "en_us": "9d57ee7e91e9d4c92edb39f6bbea668ef8dc2a3ff96eb510d5580b2ad05d17ec",
+    "es_419": "352b2a5f03f02fe752254fab737f76519963650f4630d2fb63957177aeec927f",
+    "fr_fr": "3e0b792358c1cb4a426fe1c18fc1571d5406b390d738a2ed1bfd3c8b9d28de44"
+  }
+}

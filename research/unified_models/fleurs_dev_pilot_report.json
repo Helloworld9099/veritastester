@@ -1,0 +1,293 @@
+{
+  "app_incumbent_full_pipeline_measured": false,
+  "asr_wer_normalization": "NFC casefold punctuation-to-space accents-retained corpus WER",
+  "audio_to_partial_caption": "not_measured",
+  "checkpoint_architecture": "whisper_base_multilingual",
+  "checkpoint_files": {
+    "added_tokens.json": {
+      "bytes": 34604,
+      "sha256": "9715fd2243b6f06a5858b5e32950d2853f73dd5bc201aafcf76f5082a2d8acd1"
+    },
+    "config.json": {
+      "bytes": 1983,
+      "sha256": "a153c53883a6799b6f056b4a8d1a515c9926d03994682ba88a7616618d7da0c1"
+    },
+    "generation_config.json": {
+      "bytes": 3807,
+      "sha256": "444b3f636d2fff89dd9ecf549e2a085b61f7ff0fa0246d4628bac6a3b8cc9ba4"
+    },
+    "merges.txt": {
+      "bytes": 493869,
+      "sha256": "2df2990a395e35e8dfbc7511e08c12d56018d8d04691e0133e5d63b21e154dc6"
+    },
+    "model.safetensors": {
+      "bytes": 290403936,
+      "sha256": "07cadb9f25677c8d50df603e66a98fbd842cce45047139baeb16e6219a1e807b"
+    },
+    "normalizer.json": {
+      "bytes": 52666,
+      "sha256": "bf1c507dc8724ca9cf9903640dacfb69dae2f00edee4f21ceba106a7392f26dd"
+    },
+    "preprocessor_config.json": {
+      "bytes": 184990,
+      "sha256": "9b5cd03a36fbb8a627c64d98a5b5b126ead95a77720723944487311f0110b666"
+    },
+    "special_tokens_map.json": {
+      "bytes": 2194,
+      "sha256": "e67ae3a0aaa99abcd9f187138e12db1f65c16a14761c50ef10eef2c174a7a691"
+    },
+    "tokenizer.json": {
+      "bytes": 2480466,
+      "sha256": "27fc476bfe7f17299480be2273fc0608e4d5a99aba2ab5dec5374b4482d1a566"
+    },
+    "tokenizer_config.json": {
+      "bytes": 282683,
+      "sha256": "2a4c4281cf9f51ac6ccc406fdc711a087afe6530f671fa7b80953edc498275ce"
+    },
+    "vocab.json": {
+      "bytes": 835550,
+      "sha256": "8f680bba319e01a653d2e8a5dbc17a9157179e0576e6ce74ce0c06356c6e24f9"
+    }
+  },
+  "checkpoint_publisher_revision": "e37978b90ca9030d5170a5c07aadb050351a65bb",
+  "checkpoint_repository": "openai/whisper-base",
+  "clip_statistics": [
+    {
+      "asr_edit_count": 5,
+      "asr_empty": false,
+      "asr_reference_words": 16,
+      "audio_seconds": 8.4,
+      "direction": "es->en",
+      "direction_clip_index": 1,
+      "dual_result_ms": 2232.456,
+      "preprocess_ms": 9.999,
+      "process_peak_rss_kib_so_far": 723996,
+      "process_rss_kib": 723996,
+      "shared_encoder_ms": 856.272,
+      "transcribe_decode_ms": 734.715,
+      "translate_decode_ms": 631.427,
+      "translation_empty": false
+    },
+    {
+      "asr_edit_count": 2,
+      "asr_empty": false,
+      "asr_reference_words": 30,
+      "audio_seconds": 12.12,
+      "direction": "es->en",
+      "direction_clip_index": 2,
+      "dual_result_ms": 2460.24,
+      "preprocess_ms": 6.467,
+      "process_peak_rss_kib_so_far": 730008,
+      "process_rss_kib": 730008,
+      "shared_encoder_ms": 592.831,
+      "transcribe_decode_ms": 1064.259,
+      "translate_decode_ms": 796.619,
+      "translation_empty": false
+    },
+    {
+      "asr_edit_count": 0,
+      "asr_empty": false,
+      "asr_reference_words": 20,
+      "audio_seconds": 9.18,
+      "direction": "es->en",
+      "direction_clip_index": 3,
+      "dual_result_ms": 1815.489,
+      "preprocess_ms": 5.867,
+      "process_peak_rss_kib_so_far": 730008,
+      "process_rss_kib": 730008,
+      "shared_encoder_ms": 536.857,
+      "transcribe_decode_ms": 706.14,
+      "translate_decode_ms": 566.585,
+      "translation_empty": false
+    },
+    {
+      "asr_edit_count": 1,
+      "asr_empty": false,
+      "asr_reference_words": 27,
+      "audio_seconds": 13.68,
+      "direction": "es->en",
+      "direction_clip_index": 4,
+      "dual_result_ms": 2603.625,
+      "preprocess_ms": 7.411,
+      "process_peak_rss_kib_so_far": 730008,
+      "process_rss_kib": 730008,
+      "shared_encoder_ms": 571.772,
+      "transcribe_decode_ms": 1239.256,
+      "translate_decode_ms": 785.143,
+      "translation_empty": false
+    },
+    {
+      "asr_edit_count": 6,
+      "asr_empty": false,
+      "asr_reference_words": 40,
+      "audio_seconds": 14.46,
+      "direction": "fr->en",
+      "direction_clip_index": 1,
+      "dual_result_ms": 3348.891,
+      "preprocess_ms": 4.864,
+      "process_peak_rss_kib_so_far": 730076,
+      "process_rss_kib": 730076,
+      "shared_encoder_ms": 544.952,
+      "transcribe_decode_ms": 1602.322,
+      "translate_decode_ms": 1196.712,
+      "translation_empty": false
+    },
+    {
+      "asr_edit_count": 10,
+      "asr_empty": false,
+      "asr_reference_words": 24,
+      "audio_seconds": 6.0,
+      "direction": "fr->en",
+      "direction_clip_index": 2,
+      "dual_result_ms": 2119.649,
+      "preprocess_ms": 7.282,
+      "process_peak_rss_kib_so_far": 730084,
+      "process_rss_kib": 730084,
+      "shared_encoder_ms": 553.162,
+      "transcribe_decode_ms": 875.951,
+      "translate_decode_ms": 683.213,
+      "translation_empty": false
+    },
+    {
+      "asr_edit_count": 14,
+      "asr_empty": false,
+      "asr_reference_words": 23,
+      "audio_seconds": 7.86,
+      "direction": "fr->en",
+      "direction_clip_index": 3,
+      "dual_result_ms": 2129.163,
+      "preprocess_ms": 4.435,
+      "process_peak_rss_kib_so_far": 730084,
+      "process_rss_kib": 730084,
+      "shared_encoder_ms": 530.27,
+      "transcribe_decode_ms": 962.551,
+      "translate_decode_ms": 631.869,
+      "translation_empty": false
+    },
+    {
+      "asr_edit_count": 2,
+      "asr_empty": false,
+      "asr_reference_words": 9,
+      "audio_seconds": 8.52,
+      "direction": "fr->en",
+      "direction_clip_index": 4,
+      "dual_result_ms": 1513.6,
+      "preprocess_ms": 6.81,
+      "process_peak_rss_kib_so_far": 730084,
+      "process_rss_kib": 730084,
+      "shared_encoder_ms": 609.265,
+      "transcribe_decode_ms": 499.533,
+      "translate_decode_ms": 397.911,
+      "translation_empty": false
+    }
+  ],
+  "decode": {
+    "do_sample": false,
+    "max_new_tokens": 128,
+    "num_beams": 1,
+    "return_timestamps": false
+  },
+  "decoder_generation_passes_per_clip": 2,
+  "device": "cpu",
+  "directions": {
+    "es->en": {
+      "asr_edit_count": 8,
+      "asr_reference_words": 93,
+      "asr_wer_pct": 8.602151,
+      "clips": 4,
+      "translation_chrf": 48.477821
+    },
+    "fr->en": {
+      "asr_edit_count": 32,
+      "asr_reference_words": 96,
+      "asr_wer_pct": 33.333333,
+      "clips": 4,
+      "translation_chrf": 49.004142
+    }
+  },
+  "encoder_computations_per_clip": 1,
+  "historical_marian_asr_text_proxy": {
+    "directions": {
+      "es->en": {
+        "clips": 4,
+        "failed_translation_calls_scored_empty": 0,
+        "translation_call_ms_includes_first_load": [
+          2313.835,
+          1325.492,
+          973.379,
+          1296.958
+        ],
+        "translation_chrf": 49.722321
+      },
+      "fr->en": {
+        "clips": 4,
+        "failed_translation_calls_scored_empty": 0,
+        "translation_call_ms_includes_first_load": [
+          2581.784,
+          1049.176,
+          1170.468,
+          733.913
+        ],
+        "translation_chrf": 51.256343
+      }
+    },
+    "historical_adapter_pins": [
+      {
+        "adapter_sha256": null,
+        "base": "Helsinki-NLP/opus-mt-en-es",
+        "direction": "en-es",
+        "human_95_percent_verified": false,
+        "license_status": "research_only_base_provenance_audit",
+        "model_ready_for_production": false,
+        "revision": "5bc4493d463cf000c1f0b50f8d56886a392ed4ab",
+        "supports_context": false
+      },
+      {
+        "adapter_sha256": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71",
+        "base": "Helsinki-NLP/opus-mt-es-en",
+        "direction": "es-en",
+        "human_95_percent_verified": false,
+        "license_status": "research_only_pending_europarl_commercial_provenance_review",
+        "model_ready_for_production": false,
+        "revision": "c96e2c5399ebfae4fc43d9669556b9afa74bb69d",
+        "supports_context": false
+      },
+      {
+        "adapter_sha256": "fba2bd78958bf0bf8a4c14dc55e601e08663633718c4c9c17f91ef9b52dcfa1c",
+        "base": "Helsinki-NLP/opus-mt-fr-en",
+        "direction": "fr-en",
+        "human_95_percent_verified": false,
+        "license_status": "research_only_pending_global_voices_rights_and_attribution_audit",
+        "model_ready_for_production": false,
+        "revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02",
+        "supports_context": false
+      }
+    ],
+    "status": "measured_offline_proxy_not_live_app"
+  },
+  "host_machine": "x86_64",
+  "host_platform": "Linux",
+  "independent_human_meaning_accuracy": "not_measured",
+  "kind": "fleurs_local_whisper_base_dev_diagnostic",
+  "libraries": {
+    "sacrebleu": "2.6.0",
+    "torch": "2.7.1+cpu",
+    "transformers": "4.57.6"
+  },
+  "manifest_sha256": "054757fcf489071d4d461e843e8f1ec22bc8a7d4e308505286922e98143e0720",
+  "model_load_ms": 472.607,
+  "observed_encoder_forward_calls": 8,
+  "one_audio_processing_pass_per_clip": true,
+  "promotion_eligible": false,
+  "same_whisper_instance_two_decode_tasks": true,
+  "schema_version": 1,
+  "scope": "publisher_development_only",
+  "torch_interop_threads": 1,
+  "torch_threads": 2,
+  "translation_metric_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+  "true_streaming": false,
+  "whisper_process_memory_after": {
+    "process_peak_rss_kib_so_far": 730084,
+    "process_rss_kib": 730084
+  }
+}
