@@ -1,0 +1,78 @@
+{
+  "status": "full_single_standalone_multilingual_neural_model_exported",
+  "variant": "selected_38_total_updates",
+  "from_actual_learned_adapter_sha256": "a00c7965211853df07ce3fa032a76283dfc984dcdaeac85e03263445029ffb8e",
+  "selected_after_18_plus_20_updates": true,
+  "base_revision": "55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636",
+  "full_weight_file": "model.safetensors",
+  "full_weight_sha256": "f0f90a965fe3f03997445f3b5508a2327f53bd825183b1c7570037df40aa55b6",
+  "full_weight_bytes": 1935681888,
+  "trained_routes": [
+    "es-en",
+    "fr-en",
+    "en-es",
+    "en-fr",
+    "es-fr",
+    "fr-es"
+  ],
+  "exact_text_generation_matches_adapter": true,
+  "actual_pre_post_merge_texts": {
+    "es-en": "Can you help me with the reservation?",
+    "fr-en": "Can you help me with the reservation?",
+    "en-es": "Hola, necesito tu ayuda con mi reserva.",
+    "en-fr": "Bonjour, j'ai besoin de votre aide avec ma réservation.",
+    "es-fr": "Pouvez-vous venir avant 8h ?",
+    "fr-es": "Quiero reservar una mesa para mañana."
+  },
+  "files": {
+    "added_tokens.json": {
+      "sha256": "d90c37708272ca7f5b2b10a4635697f57c163a5e01bb3ae1a872f8b29e45e873",
+      "bytes": 2006
+    },
+    "config.json": {
+      "sha256": "804774d84422b2af9c4c24b32d8d4bb78c98c218c3d3dde13c88139c5460ff69",
+      "bytes": 886
+    },
+    "generation_config.json": {
+      "sha256": "8a2b290f1d6ec327beb25e842921ac203bc20e7cb386cfd2f24a582a0ace5e0a",
+      "bytes": 228
+    },
+    "model.safetensors": {
+      "sha256": "f0f90a965fe3f03997445f3b5508a2327f53bd825183b1c7570037df40aa55b6",
+      "bytes": 1935681888
+    },
+    "sentencepiece.bpe.model": {
+      "sha256": "d8f7c76ed2a5e0822be39f0a4f95a55eb19c78f4593ce609e2edbc2aea4d380a",
+      "bytes": 2423393
+    },
+    "special_tokens_map.json": {
+      "sha256": "009ea667e0ca903c10dac22cf7ae3a3a0b173ff33f8c64154fddd8c043805622",
+      "bytes": 1559
+    },
+    "tokenizer_config.json": {
+      "sha256": "b19f6b17e43be75615c8366ced0bfc03e123cbb5b637749a0e647560aa578088",
+      "bytes": 19818
+    },
+    "vocab.json": {
+      "sha256": "b6e77e474aeea8f441363aca7614317c06381f3eacfe10fb9856d5081d1074cc",
+      "bytes": 3708092
+    }
+  },
+  "artifact_location": "Downloadable Actions artifact; not committed to Git history",
+  "production_enabled": false,
+  "trained_student_meaning_95_percent_independently_verified": false,
+  "no_final_holdout_opened": true,
+  "old_french_spanish_champions_unchanged": {
+    "es-en": {
+      "path": "experiments/es_en_v2_runs/candidate_after_three.safetensors",
+      "sha256": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71"
+    },
+    "fr-en": {
+      "path": "experiments/balanced_stage5_20261118/saved/french/adapter_selected.safetensors",
+      "sha256": "fba2bd78958bf0bf8a4c14dc55e601e08663633718c4c9c17f91ef9b52dcfa1c"
+    }
+  },
+  "paid_spend_usd": 0,
+  "elapsed_seconds": 32.544382772999995,
+  "warning": "Development selection on 12 utterances per direction is noisy; comparison against the historical Marian models and independent human adequacy is still required. The app's default provider is unchanged."
+}
