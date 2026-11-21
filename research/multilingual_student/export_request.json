@@ -1,0 +1,9 @@
+{
+  "run": "export_one_standalone_neural_weight",
+  "student_adapter_sha256": "97c3a1b23cf7d290cecac038ead9fd8a6f810905944b6c441184c48418258f4b",
+  "proof": "pre/post merge exact six-route outputs and real BridgeCaption Pipeline smoke",
+  "status": "research_only",
+  "paid_spend_usd": 0,
+  "license": "MIT and CC BY 4.0",
+  "production_authorized": false
+}
