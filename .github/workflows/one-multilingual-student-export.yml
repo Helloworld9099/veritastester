@@ -1,0 +1,96 @@
+name: Export ONE standalone multilingual neural weight file
+
+on:
+  push:
+    branches: [train/one-multilingual-student-20261121]
+    paths: [research/multilingual_student/export_request.json]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  standalone:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      PYTHONPATH: ".:src"
+      TOKENIZERS_PARALLELISM: "false"
+      OMP_NUM_THREADS: "3"
+      MKL_NUM_THREADS: "3"
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      HF_HOME: /tmp/bridgecaption-m2m100-cache
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install pinned free CPU inference and export requirements
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'datasets==2.21.0' 'huggingface-hub==0.36.0' 'hf-xet>=1.1,<2'
+      - name: Verify trained input, six routes and exact mathematical LoRA merge on CPU
+        run: |
+          python -m unittest discover -s research/multilingual_student/tests -p 'test_*.py' -v
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          p=Path('research/multilingual_student/experiment_001')
+          r=json.loads((p/'report.json').read_text())
+          a=p/'shared_lora_step18.safetensors'
+          assert r['status']=='completed_actual_single_multilingual_student_training'
+          assert hashlib.sha256(a.read_bytes()).hexdigest()==r['checkpoint_sha256']
+          assert r['independently_verified_95_percent_meaning_accuracy'] is False
+          assert not r['production_activation_authorized']
+          PY
+      - name: Create real merged one-weight neural model with all six routes
+        run: python -u research/multilingual_student/export_standalone.py
+      - name: Run real BridgeCaption Pipeline against single model.safetensors
+        run: python -u research/multilingual_student/smoke_standalone.py
+      - name: Verify one complete merged weight and parity before release of artifact
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json,os
+          p=Path('research/multilingual_student/experiment_001')
+          a=json.loads((p/'standalone_export.json').read_text())
+          b=json.loads((p/'standalone_runtime_smoke.json').read_text())
+          assert a['full_weight_bytes']>1000000000
+          assert len(a['trained_routes'])==6
+          assert a['exact_text_generation_matches_adapter'] is True
+          assert a['production_enabled'] is False
+          assert a['trained_student_meaning_95_percent_independently_verified'] is False
+          assert b['status']=='real_one_full_weight_model_pipeline_smoke_passed'
+          assert b['total_model_loads']==1
+          assert b['no_independent_95_percent_adequacy_claim'] is True
+          weight=Path(os.environ['RUNNER_TEMP'])/'bridgecaption-standalone-trilingual'/a['full_weight_file']
+          assert weight.is_file() and weight.stat().st_size==a['full_weight_bytes']
+          PY
+      - name: Archive standalone neural checkpoint as downloadable GitHub artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BridgeCaption-one-standalone-EN-ES-FR-model
+          path: |
+            ${{ runner.temp }}/bridgecaption-standalone-trilingual/
+            research/multilingual_student/experiment_001/standalone_export.json
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
+      - name: Save small verified SHA/proof without committing giant weights
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/multilingual_student/experiment_001/standalone*.json
+          git commit -m 'research: preserve real single multilingual merged-model SHA and app smoke [skip ci]'
+          git pull --rebase origin train/one-multilingual-student-20261121
+          git push origin HEAD:refs/heads/train/one-multilingual-student-20261121
+      - name: Preserve verification receipts even if full model is too large to upload
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: one-multilingual-standalone-verification-receipts
+          path: research/multilingual_student/experiment_001/standalone*.json
+          if-no-files-found: warn
+          retention-days: 30
