@@ -9,6 +9,10 @@ Live audio → shared streaming encoder → original transcript ↘
 
 No per-language model reload is planned. Source and target language are routing **inputs to the same verified model**, not selectors for different weights. Unsupported directions must fail explicitly. The existing Whisper-plus-translator app stays unchanged until this path wins comparable tests and the user approves deployment. Historical Spanish, French and Mandarin artifacts stay intact: use licensed, approved specialists for isolated benchmarks and potential teacher signals, not runtime switching or direct weight merges. Restricted lineages stay isolated. Text-only examples cannot teach audio recognition; future audio evaluation/training needs appropriately licensed audio, transcripts, references and timing annotations.
 
+## Prototype status
+
+M5 adds an [opt-in PCM and caption-event contract](STREAMING_SPEECH_EXPERIMENT.md) and bounded synthetic checks. It does not claim a real streaming model or switch the app. An unchanged incumbent pipeline is still the baseline.
+
 ## A separate research track, in the same PR
 
 Keep the completed infrastructure numbering (inventory, evaluation, training coordination, local workflow) intact. Treat the proposed speech milestones as a **parallel research sequence**, not completed work and not replacements already made:
