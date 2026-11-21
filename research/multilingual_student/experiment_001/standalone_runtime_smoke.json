@@ -1,0 +1,46 @@
+{
+  "status": "real_one_full_weight_model_pipeline_smoke_passed",
+  "total_model_loads": 1,
+  "same_network_kept_through_all_six_directions": true,
+  "directions": [
+    "es-en",
+    "fr-en",
+    "en-es",
+    "en-fr",
+    "es-fr",
+    "fr-es"
+  ],
+  "real_model_text_outputs": {
+    "es-en": {
+      "translation": "Can you help me with the reservation?",
+      "seconds": 3.3811992290000035
+    },
+    "fr-en": {
+      "translation": "Can you help me with the reservation?",
+      "seconds": 0.8064287290000038
+    },
+    "en-es": {
+      "translation": "Hola, necesito tu ayuda con mi reserva.",
+      "seconds": 0.7977717999999925
+    },
+    "en-fr": {
+      "translation": "Bonjour, j'ai besoin de votre aide avec ma réservation.",
+      "seconds": 1.1142860459999895
+    },
+    "es-fr": {
+      "translation": "Peut-on arriver avant 8h ?",
+      "seconds": 0.8098485290000212
+    },
+    "fr-es": {
+      "translation": "Quiero reservar una mesa para mañana.",
+      "seconds": 0.8037940300000059
+    }
+  },
+  "additional_real_BridgeCaption_Pipeline_cases": 3,
+  "max_memory_kib_linux": 2389400,
+  "elapsed_seconds": 9.80071281299999,
+  "no_production_app_changes": true,
+  "no_substitute_ASR_or_microphone_added": true,
+  "no_independent_95_percent_adequacy_claim": true,
+  "test_holdout_never_accessed": true
+}
