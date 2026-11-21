@@ -1,0 +1,7 @@
+{
+  "run": "compare_legacy_champions",
+  "student_report": "research/multilingual_student/experiment_001/report.json",
+  "trained_adapter_sha256": "97c3a1b23cf7d290cecac038ead9fd8a6f810905944b6c441184c48418258f4b",
+  "same_dev_only": true,
+  "release_authorized": false
+}
