@@ -15,6 +15,8 @@ M5 adds an [opt-in PCM and caption-event contract](STREAMING_SPEECH_EXPERIMENT.m
 
 The [paced replay follow-up](PACED_SPEECH_REPLAY.md) uses actual capture-clock arrivals for the same DEV corpus. It measures prefix re-encoding, not native incremental model state.
 
+The [native incremental candidate screen](INCREMENTAL_SPEECH_SCREEN.md) checks released candidates against the single-checkpoint, shared-encoder requirement. It adds a local trace preflight; no candidate model has passed a runtime benchmark.
+
 ## A separate research track, in the same PR
 
 Keep the completed infrastructure numbering (inventory, evaluation, training coordination, local workflow) intact. Treat the proposed speech milestones as a **parallel research sequence**, not completed work and not replacements already made:
