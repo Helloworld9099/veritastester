@@ -1,0 +1,108 @@
+name: Export selected 38-update ONE full multilingual model checkpoint
+
+on:
+  push:
+    branches: [train/one-multilingual-student-20261121]
+    paths: [research/multilingual_student/export_selected_request.json]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: selected-one-file-multilingual-neural-export
+  cancel-in-progress: false
+
+jobs:
+  selected-standalone:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      PYTHONPATH: ".:src"
+      HF_HOME: /tmp/bridgecaption-m2m100-cache
+      TOKENIZERS_PARALLELISM: "false"
+      OMP_NUM_THREADS: "3"
+      MKL_NUM_THREADS: "3"
+      HF_HUB_DISABLE_TELEMETRY: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install free CPU-only pinned multilingual model and tokenization
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'datasets==2.21.0' 'huggingface-hub==0.36.0' 'hf-xet>=1.1,<2'
+      - name: Verify original model and explicitly selected nonregressing checkpoint
+        run: |
+          python -m py_compile research/multilingual_student/export_selected.py research/multilingual_student/smoke_selected.py
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          p=Path('research/multilingual_student/experiment_002')
+          x=json.loads((p/'checkpoint_selection.json').read_text())
+          assert x['selection_reason']=='development_selected_continuation_not_production'
+          assert x['selected_research_checkpoint_relative'].endswith('shared_lora_extra20.safetensors')
+          assert x['selected_research_sha256']=='a00c7965211853df07ce3fa032a76283dfc984dcdaeac85e03263445029ffb8e'
+          assert hashlib.sha256(Path(x['selected_research_checkpoint_relative']).read_bytes()).hexdigest()==x['selected_research_sha256']
+          assert x['human_95_percent_meaning_accuracy_verified'] is False
+          print('VERIFIED_SELECTED_ONE_MODEL_RESEARCH_CHECKPOINT')
+          PY
+      - name: Merge selected 18+20-update shared learned adapter into a single neural .safetensors
+        run: python -u research/multilingual_student/export_selected.py
+      - name: Run real BridgeCaption Pipeline through one exported weight set in six directions
+        run: python -u research/multilingual_student/smoke_selected.py
+      - name: Verify complete standalone weight, matching predictions, checksum and no activation
+        run: |
+          python - <<'PY'
+          import json,hashlib,os
+          from pathlib import Path
+          p=Path('research/multilingual_student/experiment_002')
+          d=json.loads((p/'selected_standalone_export.json').read_text())
+          s=json.loads((p/'selected_standalone_smoke.json').read_text())
+          assert d['status']=='full_single_standalone_multilingual_neural_model_exported'
+          assert d['variant']=='selected_38_total_updates'
+          assert d['exact_text_generation_matches_adapter'] is True
+          assert d['full_weight_bytes']>1000000000
+          assert len(d['trained_routes'])==6
+          assert d['production_enabled'] is False
+          assert d['trained_student_meaning_95_percent_independently_verified'] is False
+          assert s['status']=='real_selected_one_multilingual_weight_pipeline_smoke_passed'
+          assert s['total_network_loads']==1
+          assert s['trained_selected_adapter']=='a00c7965211853df07ce3fa032a76283dfc984dcdaeac85e03263445029ffb8e'
+          assert s['default_provider_unchanged'] and not s['human_95_percent_adequacy_verified']
+          file=Path(os.environ['RUNNER_TEMP'])/'bridgecaption-standalone-selected-38-updates'/d['full_weight_file']
+          assert file.is_file()
+          assert file.stat().st_size==d['full_weight_bytes']
+          assert hashlib.sha256(file.read_bytes()).hexdigest()==d['full_weight_sha256']
+          print('BEST_SAVED_ONE_FULL_MULTILINGUAL_WEIGHT_VERIFIED',json.dumps({
+            'bytes':d['full_weight_bytes'],'sha256':d['full_weight_sha256'],
+            'six_routes':True,'one_network_load':True,'human_adequacy_95':False}))
+          PY
+      - name: Upload FULL selected 1.94GB standalone checkpoint outside Git history
+        uses: actions/upload-artifact@v4
+        with:
+          name: BridgeCaption-one-multilingual-selected-38-updates
+          path: |
+            ${{ runner.temp }}/bridgecaption-standalone-selected-38-updates/
+            research/multilingual_student/experiment_002/selected_standalone_export.json
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
+      - name: Preserve hash and real app evidence; do NOT commit 2GB weight into source
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/multilingual_student/experiment_002/selected_standalone*.json
+          git commit -m 'research: record selected 38-update one-weight model SHA and real application smoke [skip ci]'
+          git pull --rebase origin train/one-multilingual-student-20261121
+          git push origin HEAD:refs/heads/train/one-multilingual-student-20261121
+      - name: Retain small results if artifact upload fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: selected-multilingual-full-weight-validation-receipts
+          path: research/multilingual_student/experiment_002/selected_standalone*.json
+          if-no-files-found: warn
+          retention-days: 30
