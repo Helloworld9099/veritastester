@@ -119,6 +119,15 @@ def run():
     print("TRILINGUAL_LICENSED_CORPUS_READY",json.dumps(data_receipt),flush=True)
 
     model,tokenizer=load_shared_model(verify_license=False)
+    from huggingface_hub import hf_hub_download
+    pinned_base=Path(hf_hub_download(repo_id=cfg["model"]["id"],
+                                    revision=cfg["model"]["revision"],
+                                    filename="pytorch_model.bin"))
+    base_weight_sha=sha256(pinned_base)
+    base_weight_bytes=pinned_base.stat().st_size
+    if base_weight_bytes<1000000000:
+        raise RuntimeError("Downloaded multilingual base weights unexpectedly incomplete")
+    print("EXACT_PRETRAINED_MULTILINGUAL_BASE_SHA256",base_weight_sha,flush=True)
     model.config.use_cache=False
     model.generation_config.use_cache=True
     # No LoRA is attached yet. This measures actual multilingual pretrained
@@ -201,6 +210,8 @@ def run():
         "provenance":rights,
         "model_format":"one M2M100 base plus one shared learned LoRA for all 6 routes",
         "base_pretrained_revision":cfg["model"]["revision"],
+        "base_pretrained_weights_sha256":base_weight_sha,
+        "base_pretrained_weights_bytes":base_weight_bytes,
         "single_shared_weight_set":True,
         "trained_languages":["en","es","fr"],
         "trained_directions":cfg["directions"],
