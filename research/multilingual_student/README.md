@@ -47,3 +47,22 @@ CI: `.github/workflows/one-multilingual-student.yml`. A successful run writes im
 After that succeeds, add `research/multilingual_student/export_request.json` to trigger `.github/workflows/one-multilingual-student-export.yml`: it saves the full merged model as a downloadable 7-day **GitHub Actions artifact**, not as a 2 GB commit. It also records the actual SHA and six-direction BridgeCaption text-Pipeline smoke evidence. No API keys, paid services or private user speech are used.
 
 **No claim of 95% meaning-preservation, dialect/slang competence or live microphone latency is implied by successful execution.** Before product deployment, run independent bilingual meaning scoring (both directions and subgroups), compare with old French and Spanish champions, verify rights/attribution, and test low-memory sustained full audio capture. A regression against old champions blocks any automatic replacement.
+
+
+## Test the already exported full neural weight offline
+
+The first **verified** standalone export was produced by [run 44961592822](https://github.com/Helloworld9099/veritastester/actions/runs/44961592822). Download its 7-day GitHub Actions artifact `BridgeCaption-one-standalone-EN-ES-FR-model` and extract it. Locate the directory containing `model.safetensors`, `config.json`, and `sentencepiece.bpe.model` (the full file is 1,935,681,888 bytes; SHA-256 `c3461166c467fb43fa93ecf4c5d327a823d8772e4b9c99e712ee3531358d30f0`). Keep `standalone_export.json` from the artifact or use the committed copy in `experiment_001/`.
+
+```sh
+# In the cloned repository, after installing research/requirements-replay.txt:
+PYTHONPATH=.:src python research/multilingual_student/cli.py \
+  --model-dir /path/to/extracted/model-directory \
+  --source fr --target es \
+  --text "Je voudrais réserver une table pour demain."
+```
+
+Expected from the tested first exported checkpoint: `Quiero reservar una mesa para mañana.`
+
+This CLI loads **one full merged model**, not six weights; subsequent requests in the same running Python process reuse the same weights. The CLI is text-only and does not change the installed BridgeCaption app. It is **not a 95% meaning accuracy certification** and does not automatically load microphone/ASR. The first training candidate was not promoted after the FR→EN dev regression; the old language-specific models are still the working fallback.
+
+The whole file is deliberately excluded from normal Git history (GitHub's individual-file size limit), but the compact trained shared adapter, immutable model-base revision, all hashes and exact reconstruction script persist in this branch after the temporary Actions artifact expires.
