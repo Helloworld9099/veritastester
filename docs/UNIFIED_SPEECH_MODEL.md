@@ -13,6 +13,8 @@ No per-language model reload is planned. Source and target language are routing 
 
 M5 adds an [opt-in PCM and caption-event contract](STREAMING_SPEECH_EXPERIMENT.md) and bounded synthetic checks. It does not claim a real streaming model or switch the app. An unchanged incumbent pipeline is still the baseline. M6 adds [local evidence and opt-in preparation tools](OPT_IN_MULTILINGUAL_RESEARCH.md); it does not select a model. The [first real local DEV pilot](FLEURS_SPEECH_PILOT.md) measures eight read clips and verifies the shared-encoder mechanics, not native streaming or the full incumbent gate.
 
+The [paced replay follow-up](PACED_SPEECH_REPLAY.md) uses actual capture-clock arrivals for the same DEV corpus. It measures prefix re-encoding, not native incremental model state.
+
 ## A separate research track, in the same PR
 
 Keep the completed infrastructure numbering (inventory, evaluation, training coordination, local workflow) intact. Treat the proposed speech milestones as a **parallel research sequence**, not completed work and not replacements already made:
