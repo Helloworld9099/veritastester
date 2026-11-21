@@ -1,0 +1,39 @@
+{
+  "dataset": "AmazonScience/massive",
+  "dev_examples_per_direction": 12,
+  "dev_sha256": "88f6eca0eeb35e39faac5506be153314b76a7b572587733ccfe18ce032d8c03a",
+  "development_groups": 12,
+  "development_split": "validation",
+  "directions": [
+    "es-en",
+    "fr-en",
+    "en-es",
+    "en-fr",
+    "es-fr",
+    "fr-es"
+  ],
+  "exact_text_cross_split_overlap": false,
+  "final_test_accessed": false,
+  "group_aligned_source_target_intent": true,
+  "group_disjoint_train_and_development": true,
+  "license": "cc-by-4.0",
+  "limitations": "MASSIVE utterances are usually isolated voice commands; no real spoken multi-turn slang context. Publisher locale alignment is not independent bilingual validation.",
+  "model_base": {
+    "model_card_license": "mit",
+    "model_id": "facebook/m2m100_418M",
+    "revision": "55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
+  },
+  "no_nc_licensed_data_used": true,
+  "optimizer_schedule_sha256": "cca0be83031a03d7593ebed0dec0756ff9a76c82ef8570a011c84f7a3a6bf9e0",
+  "quality_filter": "intent-ID, length/ratio, exact dedup, digit sanity, email/URL/phone screening",
+  "raw_source_text_published": false,
+  "reviewed_500_never_train_or_dev": true,
+  "revision": "ff6bd8e4b27c3543e4f8fe2108f32bb95a6f8740",
+  "semantic_correctness_independently_reviewed": false,
+  "synthetic_training_pair_labels_used": false,
+  "train_examples_per_direction": 120,
+  "train_groups": 120,
+  "train_sha256": "22532e18c23cee1d98011eba25b56af62eb094ca225fe25b0d016bc8bffdca3a",
+  "trained_adapter_sha256": "97c3a1b23cf7d290cecac038ead9fd8a6f810905944b6c441184c48418258f4b",
+  "training_split": "train"
+}
