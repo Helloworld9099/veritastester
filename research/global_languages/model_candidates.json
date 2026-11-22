@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "model_family_expansion_research_only": true,
+  "production_backends_activated": 0,
+  "purpose": "Document model families that may extend language coverage while preserving the single app interface and legal gates.",
+  "candidates": [
+    {
+      "model_id": "google/madlad400-3b-mt",
+      "reported_languages": 419,
+      "reported_model_license": "Apache-2.0",
+      "source": "https://huggingface.co/google/madlad400-3b-mt",
+      "architecture": "T5 translation model with target language prefix",
+      "weights_approx_bytes_fp16": 6000000000,
+      "status": "review_first_then_benchmark",
+      "enabled": false,
+      "requirements": [
+        "verify upstream revision and original license; inspect training-data license and intended use",
+        "audit claimed native codes against Glottolog IDs and script codes",
+        "measure CPU RAM and streaming caption latency; 3B may be too slow on local laptop",
+        "compare independent bilingual meaning accuracy and rare-language harm",
+        "enable only with new pinned backend and rollback policy"
+      ]
+    },
+    {
+      "model_id": "facebook/nllb-200-distilled-600M",
+      "reported_languages": 196,
+      "reported_model_license": "CC-BY-NC-4.0",
+      "source": "https://huggingface.co/facebook/nllb-200-distilled-600M",
+      "status": "excluded_noncommercial_licensing",
+      "enabled": false,
+      "requirements": [
+        "Do not blend these weights or outputs into commercial BridgeCaption training ancestry."
+      ]
+    },
+    {
+      "model_id": "facebook/seamless-m4t-medium",
+      "reported_languages": 96,
+      "reported_model_license": "CC-BY-NC-4.0",
+      "source": "https://huggingface.co/facebook/seamless-m4t-medium",
+      "status": "excluded_noncommercial_licensing",
+      "enabled": false,
+      "requirements": [
+        "Do not activate or use as commercially cleared speech/translation provider."
+      ]
+    }
+  ],
+  "disclaimer": "These are research leads, NOT loaded/downloaded/trained/verified backends. Future expansion requires resource, rights and quality tests; 8k documented language labels are not 8k translated languages."
+}
