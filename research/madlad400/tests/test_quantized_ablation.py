@@ -11,7 +11,8 @@ def sample_meta(license_name="apache-2.0",sha="a"*40,
     siblings=[
         SimpleNamespace(rfilename="model.bin",size=model_bin),
         SimpleNamespace(rfilename="config.json",size=4500),
-        SimpleNamespace(rfilename="sentencepiece.model",size=5200000),
+        SimpleNamespace(rfilename="spiece.model",size=4430000),
+        SimpleNamespace(rfilename="shared_vocabulary.json",size=5480000),
     ]
     return SimpleNamespace(sha=sha,cardData={"license":license_name},
                            siblings=siblings)
@@ -22,7 +23,7 @@ class TestEfficientModelAbalations(unittest.TestCase):
         approved=safe_metadata(sample_meta())
         self.assertEqual(approved["converted_repo"],MODEL_ID)
         self.assertEqual(approved["license"],"apache-2.0")
-        self.assertEqual(approved["candidate_model_size_bytes"],3505204500)
+        self.assertEqual(approved["candidate_model_size_bytes"],3509914500)
         self.assertTrue(approved["conversion_not_verified_exact_against_google_pretrained"])
 
     def test_bad_conversion_license_hash_or_resource_never_loaded(self):
