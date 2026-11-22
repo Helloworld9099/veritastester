@@ -1,0 +1,67 @@
+{
+  "status": "completed_optimization_policy_analysis_not_training",
+  "prior": {
+    "status": "analyzed_actual_historical_training_failure",
+    "actual_previous_optimizer_updates": 72,
+    "historical_accepted_candidates": [],
+    "historical_rejected_and_why": {
+      "shared_tatoeba_extra24.safetensors": [
+        "mean_chrF_gain_below_fixed_minimum"
+      ],
+      "shared_tatoeba_extra48.safetensors": [
+        "fr-es:BLEU",
+        "mean_chrF_gain_below_fixed_minimum"
+      ],
+      "shared_tatoeba_extra72.safetensors": [
+        "fr-en:chrF",
+        "en-fr:BLEU",
+        "fr-en:BLEU",
+        "fr-es:BLEU",
+        "mean_chrF_gain_below_fixed_minimum"
+      ]
+    },
+    "historical_selected_checkpoint_unchanged": "a00c7965211853df07ce3fa032a76283dfc984dcdaeac85e03263445029ffb8e",
+    "lessons": [
+      "No blindly repeating 72 updates on Tatoeba + MASSIVE; zero accepted candidates",
+      "Current 1-sentence-per-direction MADLAD pilot is inadequate for quality claims",
+      "Use more diverse licensed, human-verified context/sense data before changing learning rate",
+      "Test INT8 live-caption throughput and 10-route forgetting before considering release"
+    ],
+    "does_not_claim_new_training": true
+  },
+  "first_next_experiment": {
+    "next": "measure_pretrained_MADLAD_on_development",
+    "reason": "First establish native pretrained quality; no blind LoRA training",
+    "remaining_minutes": 45,
+    "allow_new_training": false,
+    "same_failed_schedule_must_not_be_repeated": true,
+    "paid_spend_usd": 0,
+    "claim_95_percent": false
+  },
+  "candidate_methods": [
+    "int8_ctranslate2_pretrained_inference",
+    "targeted_quality_filter_and_deduplicate",
+    "balanced_replay_vs_low_resource_adaptation",
+    "last_decoder_lora_vs_encoder_decoder_lora",
+    "past_only_human_verified_context_training",
+    "licensed_teacher_distillation_after_dev_label_check",
+    "checkpoint_average_only_if_validated",
+    "resample_more_diverse_dev_groups"
+  ],
+  "language_gate_current": [
+    "es-en",
+    "fr-en",
+    "en-es",
+    "en-fr",
+    "es-fr",
+    "fr-es"
+  ],
+  "language_gate_beyond_english_spanish_french": [
+    "en-de",
+    "en-pt",
+    "en-ar",
+    "en-zh"
+  ],
+  "no_paid_compute": true,
+  "no_automatic_accuracy_promotion": true
+}
