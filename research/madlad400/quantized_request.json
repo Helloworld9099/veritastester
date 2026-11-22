@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "purpose": "Run one controlled real CPU-INT8 beam1-vs-beam2 benchmark to choose efficient 425-code neural model serving before further gradients",
+  "model_id": "cstr/madlad400-3b-ct2-int8",
+  "license_requirement": "Apache-2.0",
+  "target": "MADLAD-400-3B pretrained third-party conversion (experimental; compare actual outputs, latency, RAM)",
+  "directions": [
+    "es-en",
+    "fr-en",
+    "en-es",
+    "en-fr",
+    "es-fr",
+    "fr-es"
+  ],
+  "extra_native_smoke": [
+    "en-de",
+    "en-pt",
+    "en-ar",
+    "en-zh"
+  ],
+  "dataset": "MASSIVE publisher VALIDATION only; never final test",
+  "max_paid_spend_usd": 0,
+  "max_wall_minutes": 35,
+  "checkpoint_migration": false,
+  "production_enabled": false,
+  "original_checkpoints_preserved": true,
+  "note": "Benchmark inference only, do NOT count as a neural training round, mark all quality as development/unverified."
+}
