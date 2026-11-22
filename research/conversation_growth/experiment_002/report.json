@@ -1,0 +1,693 @@
+{
+  "status": "actual_additive_rank8_training_completed",
+  "actual_optimizer_updates": 48,
+  "old_learned_rank4_frozen": true,
+  "parent_sha256": "a00c7965211853df07ce3fa032a76283dfc984dcdaeac85e03263445029ffb8e",
+  "parent_unchanged": true,
+  "previous_specialists_unchanged": true,
+  "model_id": "facebook/m2m100_418M",
+  "architecture": {
+    "targets": [
+      "model.encoder.layers.10.self_attn.q_proj",
+      "model.encoder.layers.10.self_attn.v_proj",
+      "model.encoder.layers.11.self_attn.q_proj",
+      "model.encoder.layers.11.self_attn.v_proj",
+      "model.decoder.layers.10.self_attn.q_proj",
+      "model.decoder.layers.10.self_attn.v_proj",
+      "model.decoder.layers.10.encoder_attn.q_proj",
+      "model.decoder.layers.10.encoder_attn.v_proj",
+      "model.decoder.layers.11.self_attn.q_proj",
+      "model.decoder.layers.11.self_attn.v_proj",
+      "model.decoder.layers.11.encoder_attn.q_proj",
+      "model.decoder.layers.11.encoder_attn.v_proj"
+    ],
+    "tensor_keys": [
+      "model.decoder.layers.10.encoder_attn.q_proj.lora_A",
+      "model.decoder.layers.10.encoder_attn.q_proj.lora_B",
+      "model.decoder.layers.10.encoder_attn.v_proj.lora_A",
+      "model.decoder.layers.10.encoder_attn.v_proj.lora_B",
+      "model.decoder.layers.10.self_attn.q_proj.lora_A",
+      "model.decoder.layers.10.self_attn.q_proj.lora_B",
+      "model.decoder.layers.10.self_attn.v_proj.lora_A",
+      "model.decoder.layers.10.self_attn.v_proj.lora_B",
+      "model.decoder.layers.11.encoder_attn.q_proj.lora_A",
+      "model.decoder.layers.11.encoder_attn.q_proj.lora_B",
+      "model.decoder.layers.11.encoder_attn.v_proj.lora_A",
+      "model.decoder.layers.11.encoder_attn.v_proj.lora_B",
+      "model.decoder.layers.11.self_attn.q_proj.lora_A",
+      "model.decoder.layers.11.self_attn.q_proj.lora_B",
+      "model.decoder.layers.11.self_attn.v_proj.lora_A",
+      "model.decoder.layers.11.self_attn.v_proj.lora_B",
+      "model.encoder.layers.10.self_attn.q_proj.lora_A",
+      "model.encoder.layers.10.self_attn.q_proj.lora_B",
+      "model.encoder.layers.10.self_attn.v_proj.lora_A",
+      "model.encoder.layers.10.self_attn.v_proj.lora_B",
+      "model.encoder.layers.11.self_attn.q_proj.lora_A",
+      "model.encoder.layers.11.self_attn.q_proj.lora_B",
+      "model.encoder.layers.11.self_attn.v_proj.lora_A",
+      "model.encoder.layers.11.self_attn.v_proj.lora_B"
+    ],
+    "trainable_parameters": 196608,
+    "shared_across_all_six_directions": true,
+    "rank": 8,
+    "alpha": 16
+  },
+  "sources": {
+    "en-es": {
+      "url": "https://object.pouta.csc.fi/OPUS-Tatoeba/v2023-04-12/moses/en-es.txt.zip",
+      "archive_sha256": "a26e7675cae64c93ce45e6cae48f38424bf26e0923cec9d7881b1fa2bb636227",
+      "compressed_bytes": 7239318,
+      "raw_pairs": 222073,
+      "accepted_pairs": 350,
+      "license": "CC-BY-2.0-FR",
+      "original_source": "https://tatoeba.org/en/downloads",
+      "attribution_required": true,
+      "publisher_train_or_test_split": "OPUS Tatoeba released parallel sentence list; NOT an unseen final test"
+    },
+    "en-fr": {
+      "url": "https://object.pouta.csc.fi/OPUS-Tatoeba/v2023-04-12/moses/en-fr.txt.zip",
+      "archive_sha256": "be06c23bb4d5e477a6ae5c71ddcbacd8799cde4292b40e2a40fc616a0c7538e8",
+      "compressed_bytes": 8227651,
+      "raw_pairs": 275413,
+      "accepted_pairs": 350,
+      "license": "CC-BY-2.0-FR",
+      "original_source": "https://tatoeba.org/en/downloads",
+      "attribution_required": true,
+      "publisher_train_or_test_split": "OPUS Tatoeba released parallel sentence list; NOT an unseen final test"
+    },
+    "es-fr": {
+      "url": "https://object.pouta.csc.fi/OPUS-Tatoeba/v2023-04-12/moses/es-fr.txt.zip",
+      "archive_sha256": "4c0f6b7d034ba37dce35b34bc1e81ade975accbddc7ea17d77dceb9da061e95e",
+      "compressed_bytes": 1834000,
+      "raw_pairs": 51988,
+      "accepted_pairs": 350,
+      "license": "CC-BY-2.0-FR",
+      "original_source": "https://tatoeba.org/en/downloads",
+      "attribution_required": true,
+      "publisher_train_or_test_split": "OPUS Tatoeba released parallel sentence list; NOT an unseen final test"
+    }
+  },
+  "source_counts": {
+    "Tatoeba_parallel": 48,
+    "MASSIVE_intent_only_gold": 0
+  },
+  "directions": {
+    "en-fr": 8,
+    "es-fr": 8,
+    "es-en": 8,
+    "fr-en": 8,
+    "fr-es": 8,
+    "en-es": 8
+  },
+  "frozen_development_hash": "7c17d60b03186d0aa76898d71431bd15148aa114525ce26daadf427ada5b2838",
+  "developer_groups_per_route": 36,
+  "baseline_not_semantic_accuracy": {
+    "es-en": {
+      "n": 36,
+      "chrF_not_accuracy": 55.1793,
+      "BLEU_not_accuracy": 20.9928,
+      "empty_predictions": 0,
+      "example_output": "I need a solar protection this weekend.",
+      "source_and_reference_not_in_report": true
+    },
+    "fr-en": {
+      "n": 36,
+      "chrF_not_accuracy": 53.3989,
+      "BLEU_not_accuracy": 24.544,
+      "empty_predictions": 0,
+      "example_output": "Do I need a sun cream this weekend?",
+      "source_and_reference_not_in_report": true
+    },
+    "en-es": {
+      "n": 36,
+      "chrF_not_accuracy": 53.7663,
+      "BLEU_not_accuracy": 28.5312,
+      "empty_predictions": 0,
+      "example_output": "Necesito un bloqueo de sol este fin de semana",
+      "source_and_reference_not_in_report": true
+    },
+    "en-fr": {
+      "n": 36,
+      "chrF_not_accuracy": 57.2148,
+      "BLEU_not_accuracy": 32.0105,
+      "empty_predictions": 0,
+      "example_output": "J'ai besoin de blocage solaire ce week-end",
+      "source_and_reference_not_in_report": true
+    },
+    "es-fr": {
+      "n": 36,
+      "chrF_not_accuracy": 56.6701,
+      "BLEU_not_accuracy": 36.4492,
+      "empty_predictions": 0,
+      "example_output": "J'ai besoin de protection solaire ce week-end",
+      "source_and_reference_not_in_report": true
+    },
+    "fr-es": {
+      "n": 36,
+      "chrF_not_accuracy": 54.4958,
+      "BLEU_not_accuracy": 29.5327,
+      "empty_predictions": 0,
+      "example_output": "¿Necesitaría una crema solar este fin de semana?",
+      "source_and_reference_not_in_report": true
+    }
+  },
+  "candidate_evaluations": {
+    "shared_rank8_extra12.safetensors": {
+      "sha256": "6e87f0c55274dd99fbcf2ca53b67d038f340eca3d7dee92ab0c7e86722e0cc37",
+      "development": {
+        "es-en": {
+          "n": 36,
+          "chrF_not_accuracy": 55.1793,
+          "BLEU_not_accuracy": 20.9928,
+          "empty_predictions": 0,
+          "example_output": "I need a solar protection this weekend.",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-en": {
+          "n": 36,
+          "chrF_not_accuracy": 53.3989,
+          "BLEU_not_accuracy": 24.544,
+          "empty_predictions": 0,
+          "example_output": "Do I need a sun cream this weekend?",
+          "source_and_reference_not_in_report": true
+        },
+        "en-es": {
+          "n": 36,
+          "chrF_not_accuracy": 53.7663,
+          "BLEU_not_accuracy": 28.5312,
+          "empty_predictions": 0,
+          "example_output": "Necesito un bloqueo de sol este fin de semana",
+          "source_and_reference_not_in_report": true
+        },
+        "en-fr": {
+          "n": 36,
+          "chrF_not_accuracy": 57.2148,
+          "BLEU_not_accuracy": 32.0105,
+          "empty_predictions": 0,
+          "example_output": "J'ai besoin de blocage solaire ce week-end",
+          "source_and_reference_not_in_report": true
+        },
+        "es-fr": {
+          "n": 36,
+          "chrF_not_accuracy": 56.6701,
+          "BLEU_not_accuracy": 36.4492,
+          "empty_predictions": 0,
+          "example_output": "J'ai besoin de protection solaire ce week-end",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-es": {
+          "n": 36,
+          "chrF_not_accuracy": 54.4958,
+          "BLEU_not_accuracy": 29.5327,
+          "empty_predictions": 0,
+          "example_output": "¿Necesitaría una crema solar este fin de semana?",
+          "source_and_reference_not_in_report": true
+        }
+      },
+      "gate": {
+        "chrF_deltas_not_accuracy": {
+          "en-es": 0.0,
+          "en-fr": 0.0,
+          "es-en": 0.0,
+          "es-fr": 0.0,
+          "fr-en": 0.0,
+          "fr-es": 0.0
+        },
+        "BLEU_deltas_not_accuracy": {
+          "en-es": 0.0,
+          "en-fr": 0.0,
+          "es-en": 0.0,
+          "es-fr": 0.0,
+          "fr-en": 0.0,
+          "fr-es": 0.0
+        },
+        "mean_chrF_delta": 0.0,
+        "blocked_by": [
+          "mean_chrF_gain_below_fixed_minimum"
+        ],
+        "high_confidence_digit_proxy_only": true
+      },
+      "eligible_research_only": false,
+      "numeric_critical_error_proxy_untested": true
+    },
+    "shared_rank8_extra24.safetensors": {
+      "sha256": "b2a8796e1f725c72e0ed117d12e5127c822759adf3867cf77ab67ce78b0d5816",
+      "development": {
+        "es-en": {
+          "n": 36,
+          "chrF_not_accuracy": 55.1793,
+          "BLEU_not_accuracy": 20.9928,
+          "empty_predictions": 0,
+          "example_output": "I need a solar protection this weekend.",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-en": {
+          "n": 36,
+          "chrF_not_accuracy": 53.3989,
+          "BLEU_not_accuracy": 24.544,
+          "empty_predictions": 0,
+          "example_output": "Do I need a sun cream this weekend?",
+          "source_and_reference_not_in_report": true
+        },
+        "en-es": {
+          "n": 36,
+          "chrF_not_accuracy": 53.7582,
+          "BLEU_not_accuracy": 28.4209,
+          "empty_predictions": 0,
+          "example_output": "Necesito un bloqueo de sol este fin de semana",
+          "source_and_reference_not_in_report": true
+        },
+        "en-fr": {
+          "n": 36,
+          "chrF_not_accuracy": 57.1887,
+          "BLEU_not_accuracy": 32.033,
+          "empty_predictions": 0,
+          "example_output": "J'ai besoin de blocage solaire ce week-end",
+          "source_and_reference_not_in_report": true
+        },
+        "es-fr": {
+          "n": 36,
+          "chrF_not_accuracy": 56.6701,
+          "BLEU_not_accuracy": 36.4492,
+          "empty_predictions": 0,
+          "example_output": "J'ai besoin de protection solaire ce week-end",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-es": {
+          "n": 36,
+          "chrF_not_accuracy": 54.4958,
+          "BLEU_not_accuracy": 29.5327,
+          "empty_predictions": 0,
+          "example_output": "¿Necesitaría una crema solar este fin de semana?",
+          "source_and_reference_not_in_report": true
+        }
+      },
+      "gate": {
+        "chrF_deltas_not_accuracy": {
+          "en-es": -0.0081,
+          "en-fr": -0.0261,
+          "es-en": 0.0,
+          "es-fr": 0.0,
+          "fr-en": 0.0,
+          "fr-es": 0.0
+        },
+        "BLEU_deltas_not_accuracy": {
+          "en-es": -0.1103,
+          "en-fr": 0.0225,
+          "es-en": 0.0,
+          "es-fr": 0.0,
+          "fr-en": 0.0,
+          "fr-es": 0.0
+        },
+        "mean_chrF_delta": -0.0057,
+        "blocked_by": [
+          "mean_chrF_gain_below_fixed_minimum"
+        ],
+        "high_confidence_digit_proxy_only": true
+      },
+      "eligible_research_only": false,
+      "numeric_critical_error_proxy_untested": true
+    },
+    "shared_rank8_extra48.safetensors": {
+      "sha256": "d0e0f3434e8473d7ae7f571b26b37d1addeee27eb88d1661aa2635c44210e984",
+      "development": {
+        "es-en": {
+          "n": 36,
+          "chrF_not_accuracy": 55.1793,
+          "BLEU_not_accuracy": 20.9928,
+          "empty_predictions": 0,
+          "example_output": "I need a solar protection this weekend.",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-en": {
+          "n": 36,
+          "chrF_not_accuracy": 53.3989,
+          "BLEU_not_accuracy": 24.544,
+          "empty_predictions": 0,
+          "example_output": "Do I need a sun cream this weekend?",
+          "source_and_reference_not_in_report": true
+        },
+        "en-es": {
+          "n": 36,
+          "chrF_not_accuracy": 53.7582,
+          "BLEU_not_accuracy": 28.4209,
+          "empty_predictions": 0,
+          "example_output": "Necesito un bloqueo de sol este fin de semana",
+          "source_and_reference_not_in_report": true
+        },
+        "en-fr": {
+          "n": 36,
+          "chrF_not_accuracy": 57.1887,
+          "BLEU_not_accuracy": 32.033,
+          "empty_predictions": 0,
+          "example_output": "J'ai besoin de blocage solaire ce week-end",
+          "source_and_reference_not_in_report": true
+        },
+        "es-fr": {
+          "n": 36,
+          "chrF_not_accuracy": 56.6701,
+          "BLEU_not_accuracy": 36.4492,
+          "empty_predictions": 0,
+          "example_output": "J'ai besoin de protection solaire ce week-end",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-es": {
+          "n": 36,
+          "chrF_not_accuracy": 54.4958,
+          "BLEU_not_accuracy": 29.5327,
+          "empty_predictions": 0,
+          "example_output": "¿Necesitaría una crema solar este fin de semana?",
+          "source_and_reference_not_in_report": true
+        }
+      },
+      "gate": {
+        "chrF_deltas_not_accuracy": {
+          "en-es": -0.0081,
+          "en-fr": -0.0261,
+          "es-en": 0.0,
+          "es-fr": 0.0,
+          "fr-en": 0.0,
+          "fr-es": 0.0
+        },
+        "BLEU_deltas_not_accuracy": {
+          "en-es": -0.1103,
+          "en-fr": 0.0225,
+          "es-en": 0.0,
+          "es-fr": 0.0,
+          "fr-en": 0.0,
+          "fr-es": 0.0
+        },
+        "mean_chrF_delta": -0.0057,
+        "blocked_by": [
+          "mean_chrF_gain_below_fixed_minimum"
+        ],
+        "high_confidence_digit_proxy_only": true
+      },
+      "eligible_research_only": false,
+      "numeric_critical_error_proxy_untested": true
+    }
+  },
+  "selected_path": "research/multilingual_student/experiment_002/shared_lora_extra20.safetensors",
+  "selected_sha256": "a00c7965211853df07ce3fa032a76283dfc984dcdaeac85e03263445029ffb8e",
+  "checkpoint_decision": "previous_rank4_champion_preserved_all_candidates_rejected",
+  "all_previous_runs_and_checkpoints_preserved": true,
+  "reviewer_500_used_for_training": false,
+  "human_semantic_95_percent_verified": false,
+  "true_multiturn_context_gold_trained": false,
+  "final_holdout_accessed": false,
+  "production_translation_provider_changed": false,
+  "paid_spend_usd": 0,
+  "wall_seconds": 1001.67068051,
+  "peak_rss_kib_linux": 3801484,
+  "training_records": [
+    {
+      "step": 1,
+      "route": "en-fr",
+      "loss": 0.82837,
+      "gradient_norm": 0.2054
+    },
+    {
+      "step": 2,
+      "route": "es-fr",
+      "loss": 0.65662,
+      "gradient_norm": 0.13726
+    },
+    {
+      "step": 3,
+      "route": "es-en",
+      "loss": 0.94132,
+      "gradient_norm": 0.18295
+    },
+    {
+      "step": 4,
+      "route": "fr-en",
+      "loss": 0.97638,
+      "gradient_norm": 0.23381
+    },
+    {
+      "step": 5,
+      "route": "fr-es",
+      "loss": 1.71676,
+      "gradient_norm": 0.29802
+    },
+    {
+      "step": 6,
+      "route": "en-fr",
+      "loss": 0.86595,
+      "gradient_norm": 0.21664
+    },
+    {
+      "step": 7,
+      "route": "es-fr",
+      "loss": 1.72931,
+      "gradient_norm": 0.28419
+    },
+    {
+      "step": 8,
+      "route": "es-fr",
+      "loss": 1.03598,
+      "gradient_norm": 0.2789
+    },
+    {
+      "step": 9,
+      "route": "en-es",
+      "loss": 1.24257,
+      "gradient_norm": 0.36156
+    },
+    {
+      "step": 10,
+      "route": "en-fr",
+      "loss": 1.62811,
+      "gradient_norm": 0.29589
+    },
+    {
+      "step": 11,
+      "route": "fr-es",
+      "loss": 1.04837,
+      "gradient_norm": 0.2214
+    },
+    {
+      "step": 12,
+      "route": "fr-en",
+      "loss": 1.69384,
+      "gradient_norm": 0.31082
+    },
+    {
+      "step": 13,
+      "route": "en-fr",
+      "loss": 1.0175,
+      "gradient_norm": 0.28523
+    },
+    {
+      "step": 14,
+      "route": "fr-en",
+      "loss": 0.93697,
+      "gradient_norm": 0.28493
+    },
+    {
+      "step": 15,
+      "route": "en-fr",
+      "loss": 2.47634,
+      "gradient_norm": 0.52871
+    },
+    {
+      "step": 16,
+      "route": "fr-en",
+      "loss": 1.03141,
+      "gradient_norm": 0.24149
+    },
+    {
+      "step": 17,
+      "route": "fr-en",
+      "loss": 0.58636,
+      "gradient_norm": 0.16051
+    },
+    {
+      "step": 18,
+      "route": "en-es",
+      "loss": 1.22022,
+      "gradient_norm": 0.27362
+    },
+    {
+      "step": 19,
+      "route": "en-fr",
+      "loss": 3.71886,
+      "gradient_norm": 0.0977
+    },
+    {
+      "step": 20,
+      "route": "fr-es",
+      "loss": 1.23565,
+      "gradient_norm": 0.25812
+    },
+    {
+      "step": 21,
+      "route": "es-fr",
+      "loss": 0.66277,
+      "gradient_norm": 0.16225
+    },
+    {
+      "step": 22,
+      "route": "es-en",
+      "loss": 1.10723,
+      "gradient_norm": 0.20695
+    },
+    {
+      "step": 23,
+      "route": "fr-es",
+      "loss": 1.5429,
+      "gradient_norm": 0.36622
+    },
+    {
+      "step": 24,
+      "route": "en-es",
+      "loss": 0.78523,
+      "gradient_norm": 0.25501
+    },
+    {
+      "step": 25,
+      "route": "en-fr",
+      "loss": 0.75761,
+      "gradient_norm": 0.20257
+    },
+    {
+      "step": 26,
+      "route": "es-fr",
+      "loss": 1.23038,
+      "gradient_norm": 0.28364
+    },
+    {
+      "step": 27,
+      "route": "fr-en",
+      "loss": 1.89182,
+      "gradient_norm": 0.22975
+    },
+    {
+      "step": 28,
+      "route": "fr-es",
+      "loss": 1.77143,
+      "gradient_norm": 0.39414
+    },
+    {
+      "step": 29,
+      "route": "es-en",
+      "loss": 1.20582,
+      "gradient_norm": 0.31035
+    },
+    {
+      "step": 30,
+      "route": "es-en",
+      "loss": 0.81611,
+      "gradient_norm": 0.22145
+    },
+    {
+      "step": 31,
+      "route": "es-en",
+      "loss": 1.12628,
+      "gradient_norm": 0.2308
+    },
+    {
+      "step": 32,
+      "route": "es-fr",
+      "loss": 0.80976,
+      "gradient_norm": 0.21842
+    },
+    {
+      "step": 33,
+      "route": "en-es",
+      "loss": 1.03102,
+      "gradient_norm": 0.27885
+    },
+    {
+      "step": 34,
+      "route": "en-es",
+      "loss": 1.81842,
+      "gradient_norm": 0.40446
+    },
+    {
+      "step": 35,
+      "route": "fr-es",
+      "loss": 1.12535,
+      "gradient_norm": 0.27876
+    },
+    {
+      "step": 36,
+      "route": "es-en",
+      "loss": 2.77107,
+      "gradient_norm": 0.42652
+    },
+    {
+      "step": 37,
+      "route": "fr-es",
+      "loss": 1.64822,
+      "gradient_norm": 0.36493
+    },
+    {
+      "step": 38,
+      "route": "es-en",
+      "loss": 1.44264,
+      "gradient_norm": 0.20093
+    },
+    {
+      "step": 39,
+      "route": "en-es",
+      "loss": 1.71143,
+      "gradient_norm": 0.36684
+    },
+    {
+      "step": 40,
+      "route": "en-es",
+      "loss": 1.13159,
+      "gradient_norm": 0.37634
+    },
+    {
+      "step": 41,
+      "route": "fr-es",
+      "loss": 1.85861,
+      "gradient_norm": 0.40248
+    },
+    {
+      "step": 42,
+      "route": "es-fr",
+      "loss": 2.09142,
+      "gradient_norm": 0.30703
+    },
+    {
+      "step": 43,
+      "route": "en-fr",
+      "loss": 0.82985,
+      "gradient_norm": 0.28802
+    },
+    {
+      "step": 44,
+      "route": "en-es",
+      "loss": 1.08187,
+      "gradient_norm": 0.26887
+    },
+    {
+      "step": 45,
+      "route": "fr-en",
+      "loss": 0.74405,
+      "gradient_norm": 0.28235
+    },
+    {
+      "step": 46,
+      "route": "fr-en",
+      "loss": 1.15591,
+      "gradient_norm": 0.29909
+    },
+    {
+      "step": 47,
+      "route": "es-en",
+      "loss": 0.67727,
+      "gradient_norm": 0.24167
+    },
+    {
+      "step": 48,
+      "route": "es-fr",
+      "loss": 0.83012,
+      "gradient_norm": 0.22774
+    }
+  ],
+  "warning": "DEV chrF/BLEU are not accuracy percentages; 36 examples per direction cannot establish nuanced slang/context or human meaning fidelity. Numeric preservation gate had no eligible digit probes on this cohort."
+}
