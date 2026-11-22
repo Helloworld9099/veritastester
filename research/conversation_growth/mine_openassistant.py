@@ -21,7 +21,7 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT))
-OUT=ROOT/"research/conversation_growth/openassistant_mining"
+OUT=ROOT/"research/conversation_growth/openassistant_mining_v2"
 PII=re.compile(r"\b[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}\b|https?://\S+|(?:\+?[0-9][ \-()]*){9,}",re.I)
 SLANG={
     "en":("i'm down","im down","slaps","ghosted","left on read",
@@ -107,13 +107,34 @@ def analyze_rows(rows,*,source_sha:str="offline-test"):
             "dataset":"OpenAssistant/oasst1",
             "eligible_for_training":False,
         })
-    # Group by conversation and take only one example per thread for
-    # review-candidate diversity; never claim human adequacy.
+    # 2026 WMT work on targeted contextual slang highlights rarity.
+    # Allocate bounded review slots across all three languages and
+    # prefer slang-rich cases, then reference/correction and multi-turn.
+    # Keep ONE example per conversation so evaluations do not leak turns.
     unique={}
-    for item in sorted(candidates,key=lambda it:hashlib.sha256(
-        it["turn_id"].encode()).hexdigest()):
+    for item in sorted(candidates,key=lambda it:(
+        0 if "slang_or_regional" in it["tags"] else 1,
+        0 if "reference_or_correction" in it["tags"] else 1,
+        hashlib.sha256(it["turn_id"].encode()).hexdigest()
+    )):
         unique.setdefault(item["conversation_id"],item)
-    examples=list(unique.values())[:90]
+    available=Counter(item["source_language"] for item in unique.values())
+    bins={lang:[] for lang in ("en","es","fr")}
+    for item in unique.values():
+        bins[item["source_language"]].append(item)
+    examples=[]
+    selected_ids=set()
+    for lang in ("en","es","fr"):
+        for item in bins[lang][:30]:
+            examples.append(item)
+            selected_ids.add(item["turn_id"])
+    # Fill any deficit without discarding rare languages or slang.
+    for item in unique.values():
+        if len(examples)>=90:
+            break
+        if item["turn_id"] not in selected_ids:
+            examples.append(item)
+            selected_ids.add(item["turn_id"])
     stats=Counter()
     for row in examples:
         stats[row["source_language"]]+=1
@@ -127,6 +148,8 @@ def analyze_rows(rows,*,source_sha:str="offline-test"):
         "original_message_count":len(rows),
         "valid_nonprivate_message_count":len(keep),
         "candidate_unique_conversations":len(unique),
+        "eligible_candidates_before_sampling_by_language":dict(sorted(available.items())),
+        "sampling_policy":"prioritize_slang_then_reference_and_equalize_en_es_fr_review_slots",
         "candidate_for_human_bilingual_review":len(examples),
         "language_and_focus_counts":dict(sorted(stats.items())),
         "sample_ids_sha256":hashlib_records([x["turn_id"] for x in examples]),
