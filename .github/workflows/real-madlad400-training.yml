@@ -1,14 +1,13 @@
 name: Actually fine-tune free MADLAD-400 3B shared 400-plus-language model
 
 on:
+  # Start costly real-model training only when a dedicated immutable
+  # request is explicitly committed. Ordinary code/test edits must NOT
+  # spawn additional hours of identical 3B training.
   push:
     branches: [train/madlad400-3b-shared-20261121]
     paths:
-      - .github/workflows/real-madlad400-training.yml
-      - research/madlad400/config.json
-      - research/madlad400/model.py
-      - research/madlad400/train.py
-      - research/madlad400/tests/**
+      - research/madlad400/run_request.json
   workflow_dispatch:
 
 permissions:
