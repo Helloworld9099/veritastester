@@ -11,7 +11,6 @@ import io
 import json
 import random
 import re
-import urllib.request
 import zipfile
 from pathlib import Path
 
@@ -39,7 +38,7 @@ def parse_moses_zip(blob:bytes,pair:str):
         files={}
         for lang in (a,b):
             candidates=[x for x in z.namelist()
-                        if x.rsplit("/",1)[-1]==f"Tatoeba.{pair}.{lang}"]
+                        if x.rsplit("/",1)[-1].startswith(f"Tatoeba.{pair}.") and x.endswith("."+lang)]
             if len(candidates)!=1:
                 raise RuntimeError("Unexpected OPUS archive layout: "+pair+" "+lang)
             info=z.getinfo(candidates[0])
@@ -63,7 +62,7 @@ def choose(raw,pair,*,ban,seed,train_count=MAX_PAIRS,dev_count=DEV_PAIRS):
     for index,(a,b) in enumerate(raw):
         a=a.strip()
         b=b.strip()
-        if not robust_filter(a,b) or not CJK.search(b):
+        if not CJK.search(b) or not robust_filter(a,b):
             continue
         x,y=normalize(a),normalize(b)
         if x in seen or y in seen:
