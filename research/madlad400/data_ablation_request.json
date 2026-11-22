@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "experiment": "hard_case_data_selection_vs_random_not_more_same_training",
+  "source": "Tatoeba v2023-04-12 original CC BY 2.0 FR aligned pairs",
+  "original_archive_sha256s": {
+    "en-es": "a26e7675cae64c93ce45e6cae48f38424bf26e0923cec9d7881b1fa2bb636227",
+    "en-fr": "be06c23bb4d5e477a6ae5c71ddcbacd8799cde4292b40e2a40fc616a0c7538e8",
+    "es-fr": "4c0f6b7d034ba37dce35b34bc1e81ade975accbddc7ea17d77dceb9da061e95"
+  },
+  "methods": [
+    "uniform_deterministic_random",
+    "licensed_hard_phenomena_stratified"
+  ],
+  "categories": [
+    "idiom_or_regional_phrase",
+    "explicit_negation",
+    "time_number",
+    "pronoun_reference",
+    "informal_register",
+    "multi_clause"
+  ],
+  "no_user_review_500_training": true,
+  "no_final_holdout_access": true,
+  "no_paid_compute": true,
+  "full_neural_gradient_steps": 0,
+  "quality_claim": false
+}
