@@ -1,0 +1,76 @@
+name: BridgeCaption twelve-route Mandarin continuation
+
+on:
+  push:
+    branches: [feat/global-language-architecture-and-conversation-training-20261121]
+    paths:
+      - .github/workflows/mandarin-shared-training.yml
+      - research/mandarin_growth/train.py
+      - research/mandarin_growth/prepare.py
+      - research/mandarin_growth/tests/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bridgecaption-mandarin-shared-training
+  cancel-in-progress: false
+
+jobs:
+  train:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    env:
+      PYTHONPATH: ".:src"
+      HF_HOME: /tmp/bridgecaption-hf
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      TOKENIZERS_PARALLELISM: "false"
+      OMP_NUM_THREADS: "3"
+      MKL_NUM_THREADS: "3"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install CPU-only training dependencies
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'datasets==2.21.0' 'huggingface-hub==0.36.0' 'hf-xet>=1.1,<2'
+      - name: Syntax and Mandarin data tests
+        run: |
+          python -m compileall -q research/mandarin_growth research/conversation_growth
+          python -m unittest discover -s research/mandarin_growth/tests -p 'test_*.py' -v
+      - name: Prepare licensed Mandarin data with disjoint development split
+        run: python -m research.mandarin_growth.prepare
+      - name: Train one M2M100 adapter and evaluate all 12 routes
+        run: python -u research/mandarin_growth/train.py
+      - name: Verify model receipt
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('research/mandarin_growth/experiment_002/report.json')
+          r=json.loads(p.read_text())
+          assert r['optimizer_updates']==72
+          assert len(r['routes'])==12
+          assert r['original_parent_unchanged']
+          assert r['legacy_champions_unchanged']
+          assert len(r['checkpoints'])==3
+          assert not r['release_approved']
+          assert not r['human_95_percent_verified']
+          assert not r['final_holdout_used']
+          print('MANDARIN_TRAINING_RECEIPT_VERIFIED')
+          PY
+      - name: Save actual training and corpus artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bridgecaption-mandarin-12-route-training
+          path: |
+            research/mandarin_growth/experiment_001/
+            research/mandarin_growth/experiment_002/
+          retention-days: 30
+          if-no-files-found: warn
