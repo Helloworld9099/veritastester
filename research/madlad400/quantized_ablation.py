@@ -46,10 +46,10 @@ def safe_metadata(info)->dict:
     selected={}
     for row in info.siblings:
         name=str(row.rfilename)
-        if name in {"model.bin","config.json","sentencepiece.model"}:
+        if name in {"model.bin","config.json","spiece.model","shared_vocabulary.json"}:
             selected[name]=int(row.size) if row.size else 0
-    if set(selected)!={"model.bin","config.json","sentencepiece.model"}:
-        raise RuntimeError("Expected complete CTranslate2 model binary, config and SentencePiece file")
+    if set(selected)!={"model.bin","config.json","spiece.model","shared_vocabulary.json"}:
+        raise RuntimeError("Expected model.bin/config.json/shared_vocabulary.json/spiece.model from pinned CTranslate2 conversion")
     if any(v<=0 for v in selected.values()):
         raise RuntimeError("Could not check file sizes before download")
     if selected["model.bin"]<500000000 or sum(selected.values())>MAX_MODEL_BYTES:
@@ -135,7 +135,7 @@ def run():
             raise RuntimeError("Pinned converted model asset size mismatch")
     source["files_sha256"]={
         filename:file_sha256(model_folder/filename) for filename in source["file_sizes"]}
-    sp=SentencePieceProcessor(model_file=str(model_folder/"sentencepiece.model"))
+    sp=SentencePieceProcessor(model_file=str(model_folder/"spiece.model"))
     for code in ("en","es","fr","de","pt","ar","zh"):
         token="<2"+code+">"
         if sp.piece_to_id(token)==sp.unk_id():
