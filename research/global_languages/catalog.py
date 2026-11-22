@@ -112,6 +112,9 @@ def from_glottolog_csv(text:str)->list[DocumentedLanguage]:
             raise ValueError("Empty name or duplicate Glottocode")
         if parent and not GLOTTOCODE.fullmatch(parent):
             parent=None
+        if not GLOTTOCODE.fullmatch(glotto):
+            raise ValueError("Glottolog provided nonstandard code "+repr(glotto)+
+                             " for "+repr(name)+"; schema "+repr(sorted(fields)))
         language=DocumentedLanguage(
             glottocode=glotto,name=name,level=level,
             iso639_3=iso if iso and iso not in {"nan","none"} else None,
