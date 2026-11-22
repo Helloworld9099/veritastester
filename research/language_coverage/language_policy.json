@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "base_model": "facebook/m2m100_418M",
+  "base_revision": "55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636",
+  "production_enabled": false,
+  "languages": {
+    "en": {
+      "role": "bridge_and_regression",
+      "model_code": "en",
+      "status": "existing_custom_training"
+    },
+    "es": {
+      "role": "priority",
+      "model_code": "es",
+      "status": "existing_custom_training"
+    },
+    "fr": {
+      "role": "priority",
+      "model_code": "fr",
+      "status": "existing_custom_training"
+    },
+    "zh": {
+      "role": "priority",
+      "model_code": "zh",
+      "status": "pretrained_only_not_yet_custom_trained"
+    }
+  },
+  "planned_routes": [
+    "en-es",
+    "es-en",
+    "en-fr",
+    "fr-en",
+    "es-fr",
+    "fr-es",
+    "en-zh",
+    "zh-en",
+    "es-zh",
+    "zh-es",
+    "fr-zh",
+    "zh-fr"
+  ],
+  "future_languages": {
+    "registry_source": "pinned_m2m100_tokenizer.lang_code_to_id",
+    "new_language_requires_explicit_data_and_eval": true,
+    "do_not_assume_all_pretrained_languages_proficient": true
+  },
+  "training": {
+    "no_reset": true,
+    "freeze_old_champion": true,
+    "no_madlad_migration": true,
+    "never_promote_without_all_old_route_regression_checks": true,
+    "parallel_data_only": true,
+    "license_verification_required": true,
+    "no_final_holdout_in_training": true,
+    "independent_bilingual_review_required": true
+  },
+  "evaluation": {
+    "meaning_accuracy_target": 0.95,
+    "slang_context_required": true,
+    "critical_errors": [
+      "negation",
+      "numbers",
+      "names",
+      "speaker_intent"
+    ],
+    "mandarin_script": "Simplified Chinese as first eval slice; Traditional Chinese separately assessed",
+    "report_each_route_separately": true
+  }
+}
