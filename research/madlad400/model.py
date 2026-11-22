@@ -164,6 +164,55 @@ def attach_shared_lora(model,*,rank:int=4,alpha:int=8):
             "all_native_languages_share_adapter":True}
 
 
+
+def merge_shared_adapter_into_base(model,*,rank:int,alpha:int)->dict:
+    """Fold trained shared LoRA into MADLAD weights for CT2 INT8 conversion.
+
+    Makes a single standalone encoder-decoder network; does NOT mutate the
+    saved source adapter .safetensors. Math is exact in fp32; casting to BF16
+    may round, so exported predictions must be re-evaluated after merge and
+    quantization before any research promotion.
+    """
+    import torch
+    from torch import nn
+    if not 1<=rank<=16 or not 1<=alpha<=64:
+        raise ValueError("Invalid signed adapter rank/scale")
+    merged=[]
+    # list(...) before replacements: never modify module hierarchy while
+    # traversing a live generator.
+    for name,module in list(model.named_modules()):
+        if not name or not hasattr(module,"lora_A") or not hasattr(module,"lora_B"):
+            continue
+        base=getattr(module,"base",None)
+        if not isinstance(base,nn.Linear):
+            raise RuntimeError("Expected LoRA wrapper around frozen Linear: "+name)
+        A,B=module.lora_A,module.lora_B
+        if (A.ndim!=2 or B.ndim!=2 or A.shape[0]!=rank
+            or B.shape[1]!=rank or A.shape[1]!=base.in_features
+            or B.shape[0]!=base.out_features):
+            raise RuntimeError("Learned LoRA tensors do not match original model")
+        if not torch.isfinite(A).all() or not torch.isfinite(B).all():
+            raise RuntimeError("Nonfinite LoRA tensors cannot be merged")
+        parent,key=name.rsplit(".",1)
+        with torch.no_grad():
+            delta=(B.float()@A.float())*(alpha/rank)
+            if not torch.isfinite(delta).all():
+                raise RuntimeError("Nonfinite LoRA merged delta")
+            base.weight.copy_((base.weight.float()+delta).to(base.weight.dtype))
+        setattr(model.get_submodule(parent),key,base)
+        merged.append(name)
+    if len(merged)!=4:
+        raise RuntimeError("Expected exactly 4 shared last-decoder q/v LoRA modules")
+    if any(name.endswith((".lora_A",".lora_B")) for name in model.state_dict()):
+        raise RuntimeError("Adapter tensors remained after supposedly merging")
+    model.eval()
+    return {"merged_projection_count":len(merged),
+            "model_is_one_standalone_pretrained_translation_network":True,
+            "weights_updated_from_trained_lora":True,
+            "original_adapter_on_disk_not_modified":True,
+            "requires_post_export_quality_and_int8_parity_evaluation":True}
+
+
 def adapter_state(model):
     return {name:tensor.detach().float().cpu().contiguous()
             for name,tensor in model.state_dict().items()
