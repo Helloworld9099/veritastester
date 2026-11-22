@@ -7,6 +7,7 @@ import json
 import tempfile
 import unittest
 import zipfile
+import zipfile
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -138,7 +139,7 @@ class TestUniversalCatalog(unittest.TestCase):
             router.require_research_route("glotto:lowd1234","es")
 
     def test_false_zip_cannot_write_or_claim_unsupported_catalog(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(zipfile.BadZipFile):
             build_catalog(b"not a zip",iana_fixture(),out=self.location/"bad")
         with tempfile.TemporaryDirectory() as tmp:
             blank=Path(tmp)/"empty"
