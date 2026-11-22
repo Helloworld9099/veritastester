@@ -1,0 +1,26 @@
+{
+  "status": "real_openassistant_context_candidate_mining_no_parallel_gold",
+  "dataset": "OpenAssistant/oasst1",
+  "source_dataset_sha": "fdf72ae0827c1cda404aff25b6603abec9e3399b",
+  "license": "Apache-2.0",
+  "original_message_count": 84437,
+  "valid_nonprivate_message_count": 36942,
+  "candidate_unique_conversations": 3645,
+  "candidate_for_human_bilingual_review": 90,
+  "language_and_focus_counts": {
+    "en": 66,
+    "es": 19,
+    "fr": 5,
+    "multi_turn": 56,
+    "reference_or_correction": 56
+  },
+  "sample_ids_sha256": "5606127c5122e9d48480406cd2bbcd6a4b87486b00ce4522edc2f84536bab034",
+  "future_dialogue_in_context": false,
+  "bilingual_targets_available": false,
+  "new_verified_parallel_training_examples": 0,
+  "training_updates_executed": 0,
+  "the_500_reviewed_utterances_used_as_training": false,
+  "human_95_percent_meaning_accuracy_verified": false,
+  "license_and_review_required_before_any_training": true,
+  "elapsed_seconds": 22.12509096800011
+}
