@@ -1,0 +1,33 @@
+{
+  "status": "real_openassistant_context_candidate_mining_no_parallel_gold",
+  "dataset": "OpenAssistant/oasst1",
+  "source_dataset_sha": "fdf72ae0827c1cda404aff25b6603abec9e3399b",
+  "license": "Apache-2.0",
+  "original_message_count": 84437,
+  "valid_nonprivate_message_count": 36942,
+  "candidate_unique_conversations": 3645,
+  "eligible_candidates_before_sampling_by_language": {
+    "en": 2457,
+    "es": 998,
+    "fr": 190
+  },
+  "sampling_policy": "prioritize_slang_then_reference_and_equalize_en_es_fr_review_slots",
+  "candidate_for_human_bilingual_review": 90,
+  "language_and_focus_counts": {
+    "en": 30,
+    "es": 30,
+    "fr": 30,
+    "multi_turn": 31,
+    "reference_or_correction": 75,
+    "slang_or_regional": 45
+  },
+  "sample_ids_sha256": "c2b7338ecd7f0c7944895d0d50dc87fe256e3961506a5ab6f4120d8d42b5d7fd",
+  "future_dialogue_in_context": false,
+  "bilingual_targets_available": false,
+  "new_verified_parallel_training_examples": 0,
+  "training_updates_executed": 0,
+  "the_500_reviewed_utterances_used_as_training": false,
+  "human_95_percent_meaning_accuracy_verified": false,
+  "license_and_review_required_before_any_training": true,
+  "elapsed_seconds": 12.644676963999991
+}
