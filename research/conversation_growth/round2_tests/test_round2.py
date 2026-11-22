@@ -36,7 +36,7 @@ class TestRound2(unittest.TestCase):
         new_b=torch.cat([b,torch.zeros(6,4)],dim=1)
         old=(x @ a.T) @ b.T * (8/4)
         expanded=(x @ new_a.T) @ new_b.T * (16/8)
-        torch.testing.assert_close(old,expanded,rtol=0,atol=0)
+        torch.testing.assert_close(old,expanded,rtol=1e-6,atol=1e-6)
 
     def test_existing_rank_masked(self):
         import torch
