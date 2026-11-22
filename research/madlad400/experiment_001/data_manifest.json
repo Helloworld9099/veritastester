@@ -1,0 +1,31 @@
+{
+  "dataset": "AmazonScience/massive",
+  "dev_examples_per_direction": 12,
+  "dev_sha256": "88f6eca0eeb35e39faac5506be153314b76a7b572587733ccfe18ce032d8c03a",
+  "development_groups": 12,
+  "development_split": "validation",
+  "directions": [
+    "es-en",
+    "fr-en",
+    "en-es",
+    "en-fr",
+    "es-fr",
+    "fr-es"
+  ],
+  "exact_text_cross_split_overlap": false,
+  "final_test_accessed": false,
+  "group_aligned_source_target_intent": true,
+  "group_disjoint_train_and_development": true,
+  "license": "cc-by-4.0",
+  "limitations": "MASSIVE utterances are usually isolated voice commands; no real spoken multi-turn slang context. Publisher locale alignment is not independent bilingual validation.",
+  "no_nc_licensed_data_used": true,
+  "quality_filter": "intent-ID, length/ratio, exact dedup, digit sanity, email/URL/phone screening",
+  "reviewed_500_never_train_or_dev": true,
+  "revision": "ff6bd8e4b27c3543e4f8fe2108f32bb95a6f8740",
+  "semantic_correctness_independently_reviewed": false,
+  "synthetic_training_pair_labels_used": false,
+  "train_examples_per_direction": 120,
+  "train_groups": 120,
+  "train_sha256": "22532e18c23cee1d98011eba25b56af62eb094ca225fe25b0d016bc8bffdca3a",
+  "training_split": "train"
+}
