@@ -133,7 +133,7 @@ def sample_pairs(raw:list[tuple[str,str]],pair:str,limit:int,ban:set[str],seed:i
                        "provenance":"Tatoeba via OPUS v2023-04-12"})
         if len(result)==limit:
             break
-    if len(result)<max(32,limit//2):
+    if len(result)<(limit if limit<32 else max(32,limit//2)):
         raise RuntimeError("Not enough eligible new licensed parallel pairs")
     return result
 
