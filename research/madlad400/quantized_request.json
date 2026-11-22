@@ -24,5 +24,8 @@
   "checkpoint_migration": false,
   "production_enabled": false,
   "original_checkpoints_preserved": true,
-  "note": "Benchmark inference only, do NOT count as a neural training round, mark all quality as development/unverified."
+  "note": "Benchmark inference only, do NOT count as a neural training round, mark all quality as development/unverified.",
+  "retry": 2,
+  "reason_for_recheck": "First run rejected third-party conversion before download because actual pinned files are spiece.model + shared_vocabulary.json, not sentencepiece.model. New run uses exact verified HF model tree.",
+  "completed_training_steps_claimed": 0
 }
