@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "experiment": "capacity_isolated_tatoeba_continuation_002",
+  "release_approved": false,
+  "paid_spend_cap_usd": 0,
+  "final_holdout_access": false,
+  "parent": {
+    "model": "facebook/m2m100_418M",
+    "revision": "55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636",
+    "path": "research/multilingual_student/experiment_002/shared_lora_extra20.safetensors",
+    "sha256": "a00c7965211853df07ce3fa032a76283dfc984dcdaeac85e03263445029ffb8e",
+    "rank": 4,
+    "alpha": 8
+  },
+  "frozen_dev": {
+    "n_per_direction": 36,
+    "group_ids_sha256": "7c17d60b03186d0aa76898d71431bd15148aa114525ce26daadf427ada5b2838",
+    "prior_receipt": "research/conversation_growth/experiment_001/report.json"
+  },
+  "training": {
+    "seed": 2026112202,
+    "updates": 48,
+    "batch_size": 2,
+    "lr": 0.00002,
+    "checkpoints": [
+      12,
+      24,
+      48
+    ],
+    "rank": 8,
+    "alpha": 16,
+    "sampling": {
+      "es-en": 8,
+      "fr-en": 8,
+      "en-es": 8,
+      "en-fr": 8,
+      "es-fr": 8,
+      "fr-es": 8
+    },
+    "supervision": "licensed_real_parallel_Tatoeba_only",
+    "parent_rank_gradients_frozen": true
+  },
+  "restrictions": {
+    "forbid_retraining_on_reviewer_500": true,
+    "do_not_train_massive_intent_aligned_utterances_as_literal_gold": true,
+    "source_manifest_pin": "research/conversation_growth/experiment_001/data_manifest.json",
+    "prior_checkpoints_immutable": true,
+    "production_unchanged": true,
+    "semantic_and_slang_accuracy_unverified": true
+  }
+}
