@@ -1,0 +1,852 @@
+{
+  "status": "actual_additional_licensed_multilingual_training_completed",
+  "model_family": "facebook/m2m100_418M",
+  "parent_38_step_shared_sha256": "a00c7965211853df07ce3fa032a76283dfc984dcdaeac85e03263445029ffb8e",
+  "parent_file_unchanged": true,
+  "actual_optimizer_updates": 72,
+  "source_counts": {
+    "Tatoeba_CC-BY-2.0-FR_parallel": 61,
+    "MASSIVE_CC-BY-4.0_replay": 11
+  },
+  "directions": {
+    "fr-es": 8,
+    "es-en": 18,
+    "es-fr": 8,
+    "en-es": 12,
+    "en-fr": 8,
+    "fr-en": 18
+  },
+  "new_source_dataset_sha256": {
+    "en-es": "a26e7675cae64c93ce45e6cae48f38424bf26e0923cec9d7881b1fa2bb636227",
+    "en-fr": "be06c23bb4d5e477a6ae5c71ddcbacd8799cde4292b40e2a40fc616a0c7538e8",
+    "es-fr": "4c0f6b7d034ba37dce35b34bc1e81ade975accbddc7ea17d77dceb9da061e95e"
+  },
+  "new_development_uses_publisher_validation_not_test": true,
+  "dev_group_count_per_route": 36,
+  "baseline_dev_not_meaning_accuracy": {
+    "es-en": {
+      "n": 36,
+      "chrF_not_accuracy": 55.1793,
+      "BLEU_not_accuracy": 20.9928,
+      "empty_predictions": 0,
+      "example_output": "I need a solar protection this weekend.",
+      "source_and_reference_not_in_report": true
+    },
+    "fr-en": {
+      "n": 36,
+      "chrF_not_accuracy": 53.3989,
+      "BLEU_not_accuracy": 24.544,
+      "empty_predictions": 0,
+      "example_output": "Do I need a sun cream this weekend?",
+      "source_and_reference_not_in_report": true
+    },
+    "en-es": {
+      "n": 36,
+      "chrF_not_accuracy": 53.7663,
+      "BLEU_not_accuracy": 28.5312,
+      "empty_predictions": 0,
+      "example_output": "Necesito un bloqueo de sol este fin de semana",
+      "source_and_reference_not_in_report": true
+    },
+    "en-fr": {
+      "n": 36,
+      "chrF_not_accuracy": 57.2148,
+      "BLEU_not_accuracy": 32.0105,
+      "empty_predictions": 0,
+      "example_output": "J'ai besoin de blocage solaire ce week-end",
+      "source_and_reference_not_in_report": true
+    },
+    "es-fr": {
+      "n": 36,
+      "chrF_not_accuracy": 56.6701,
+      "BLEU_not_accuracy": 36.4492,
+      "empty_predictions": 0,
+      "example_output": "J'ai besoin de protection solaire ce week-end",
+      "source_and_reference_not_in_report": true
+    },
+    "fr-es": {
+      "n": 36,
+      "chrF_not_accuracy": 54.4958,
+      "BLEU_not_accuracy": 29.5327,
+      "empty_predictions": 0,
+      "example_output": "¿Necesitaría una crema solar este fin de semana?",
+      "source_and_reference_not_in_report": true
+    }
+  },
+  "baseline_digit_swap_proxy": {},
+  "all_candidate_evaluations": {
+    "shared_tatoeba_extra24.safetensors": {
+      "sha256": "88104c5f475a07865941154db72d2acd27708f55c5dfed8cf1d1780d0c677713",
+      "bytes": 396168,
+      "development": {
+        "es-en": {
+          "n": 36,
+          "chrF_not_accuracy": 55.2071,
+          "BLEU_not_accuracy": 21.0251,
+          "empty_predictions": 0,
+          "example_output": "I need a solar protection this weekend.",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-en": {
+          "n": 36,
+          "chrF_not_accuracy": 53.3989,
+          "BLEU_not_accuracy": 24.544,
+          "empty_predictions": 0,
+          "example_output": "Do I need a sun cream this weekend?",
+          "source_and_reference_not_in_report": true
+        },
+        "en-es": {
+          "n": 36,
+          "chrF_not_accuracy": 53.8325,
+          "BLEU_not_accuracy": 28.4626,
+          "empty_predictions": 0,
+          "example_output": "Necesito un bloqueo de sol este fin de semana",
+          "source_and_reference_not_in_report": true
+        },
+        "en-fr": {
+          "n": 36,
+          "chrF_not_accuracy": 57.1887,
+          "BLEU_not_accuracy": 32.033,
+          "empty_predictions": 0,
+          "example_output": "J'ai besoin de blocage solaire ce week-end",
+          "source_and_reference_not_in_report": true
+        },
+        "es-fr": {
+          "n": 36,
+          "chrF_not_accuracy": 56.5914,
+          "BLEU_not_accuracy": 36.3872,
+          "empty_predictions": 0,
+          "example_output": "J'ai besoin de protection solaire ce week-end",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-es": {
+          "n": 36,
+          "chrF_not_accuracy": 54.7731,
+          "BLEU_not_accuracy": 29.5763,
+          "empty_predictions": 0,
+          "example_output": "¿Necesitaría una crema solar este fin de semana?",
+          "source_and_reference_not_in_report": true
+        }
+      },
+      "high_confidence_digit_proxy": {},
+      "automatic_gate": {
+        "chrF_deltas_not_accuracy": {
+          "en-es": 0.0662,
+          "en-fr": -0.0261,
+          "es-en": 0.0278,
+          "es-fr": -0.0787,
+          "fr-en": 0.0,
+          "fr-es": 0.2773
+        },
+        "BLEU_deltas_not_accuracy": {
+          "en-es": -0.0686,
+          "en-fr": 0.0225,
+          "es-en": 0.0323,
+          "es-fr": -0.062,
+          "fr-en": 0.0,
+          "fr-es": 0.0436
+        },
+        "mean_chrF_delta": 0.0444,
+        "blocked_by": [
+          "mean_chrF_gain_below_fixed_minimum"
+        ],
+        "high_confidence_digit_proxy_only": true
+      },
+      "eligible_for_research_only": false
+    },
+    "shared_tatoeba_extra48.safetensors": {
+      "sha256": "e09c876b1238b3e2860c1c9ef88eb882800bb236af7325e6ac126b81912c130e",
+      "bytes": 396168,
+      "development": {
+        "es-en": {
+          "n": 36,
+          "chrF_not_accuracy": 55.262,
+          "BLEU_not_accuracy": 21.0251,
+          "empty_predictions": 0,
+          "example_output": "I need a solar protection this weekend.",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-en": {
+          "n": 36,
+          "chrF_not_accuracy": 53.3875,
+          "BLEU_not_accuracy": 24.352,
+          "empty_predictions": 0,
+          "example_output": "Do I need a sun cream this weekend?",
+          "source_and_reference_not_in_report": true
+        },
+        "en-es": {
+          "n": 36,
+          "chrF_not_accuracy": 53.9089,
+          "BLEU_not_accuracy": 28.6843,
+          "empty_predictions": 0,
+          "example_output": "Necesito un bloqueo de sol este fin de semana",
+          "source_and_reference_not_in_report": true
+        },
+        "en-fr": {
+          "n": 36,
+          "chrF_not_accuracy": 57.0091,
+          "BLEU_not_accuracy": 31.2746,
+          "empty_predictions": 0,
+          "example_output": "J'ai besoin de blocage solaire ce week-end",
+          "source_and_reference_not_in_report": true
+        },
+        "es-fr": {
+          "n": 36,
+          "chrF_not_accuracy": 56.7644,
+          "BLEU_not_accuracy": 36.411,
+          "empty_predictions": 0,
+          "example_output": "J'ai besoin de protection solaire ce week-end",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-es": {
+          "n": 36,
+          "chrF_not_accuracy": 53.8332,
+          "BLEU_not_accuracy": 27.7841,
+          "empty_predictions": 0,
+          "example_output": "¿Necesitaría una crema solar este fin de semana?",
+          "source_and_reference_not_in_report": true
+        }
+      },
+      "high_confidence_digit_proxy": {},
+      "automatic_gate": {
+        "chrF_deltas_not_accuracy": {
+          "en-es": 0.1426,
+          "en-fr": -0.2057,
+          "es-en": 0.0827,
+          "es-fr": 0.0943,
+          "fr-en": -0.0114,
+          "fr-es": -0.6626
+        },
+        "BLEU_deltas_not_accuracy": {
+          "en-es": 0.1531,
+          "en-fr": -0.7359,
+          "es-en": 0.0323,
+          "es-fr": -0.0382,
+          "fr-en": -0.192,
+          "fr-es": -1.7486
+        },
+        "mean_chrF_delta": -0.0933,
+        "blocked_by": [
+          "fr-es:BLEU",
+          "mean_chrF_gain_below_fixed_minimum"
+        ],
+        "high_confidence_digit_proxy_only": true
+      },
+      "eligible_for_research_only": false
+    },
+    "shared_tatoeba_extra72.safetensors": {
+      "sha256": "3bd898a175fd5012e322444f3c24725a981ef160e56bad4509e185bb4d4b872b",
+      "bytes": 396168,
+      "development": {
+        "es-en": {
+          "n": 36,
+          "chrF_not_accuracy": 55.262,
+          "BLEU_not_accuracy": 21.0251,
+          "empty_predictions": 0,
+          "example_output": "I need a solar protection this weekend.",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-en": {
+          "n": 36,
+          "chrF_not_accuracy": 52.2252,
+          "BLEU_not_accuracy": 23.1743,
+          "empty_predictions": 0,
+          "example_output": "Do I need a sun cream this weekend?",
+          "source_and_reference_not_in_report": true
+        },
+        "en-es": {
+          "n": 36,
+          "chrF_not_accuracy": 54.1329,
+          "BLEU_not_accuracy": 29.2186,
+          "empty_predictions": 0,
+          "example_output": "Necesito un bloqueo de sol este fin de semana",
+          "source_and_reference_not_in_report": true
+        },
+        "en-fr": {
+          "n": 36,
+          "chrF_not_accuracy": 56.5522,
+          "BLEU_not_accuracy": 30.3886,
+          "empty_predictions": 0,
+          "example_output": "J'ai besoin de blocage solaire ce week-end",
+          "source_and_reference_not_in_report": true
+        },
+        "es-fr": {
+          "n": 36,
+          "chrF_not_accuracy": 56.8177,
+          "BLEU_not_accuracy": 36.5755,
+          "empty_predictions": 0,
+          "example_output": "J'ai besoin de protection solaire ce week-end",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-es": {
+          "n": 36,
+          "chrF_not_accuracy": 53.8537,
+          "BLEU_not_accuracy": 27.7841,
+          "empty_predictions": 0,
+          "example_output": "¿Necesitaría una crema solar este fin de semana?",
+          "source_and_reference_not_in_report": true
+        }
+      },
+      "high_confidence_digit_proxy": {},
+      "automatic_gate": {
+        "chrF_deltas_not_accuracy": {
+          "en-es": 0.3666,
+          "en-fr": -0.6626,
+          "es-en": 0.0827,
+          "es-fr": 0.1476,
+          "fr-en": -1.1737,
+          "fr-es": -0.6421
+        },
+        "BLEU_deltas_not_accuracy": {
+          "en-es": 0.6874,
+          "en-fr": -1.6219,
+          "es-en": 0.0323,
+          "es-fr": 0.1263,
+          "fr-en": -1.3697,
+          "fr-es": -1.7486
+        },
+        "mean_chrF_delta": -0.3136,
+        "blocked_by": [
+          "fr-en:chrF",
+          "en-fr:BLEU",
+          "fr-en:BLEU",
+          "fr-es:BLEU",
+          "mean_chrF_gain_below_fixed_minimum"
+        ],
+        "high_confidence_digit_proxy_only": true
+      },
+      "eligible_for_research_only": false
+    }
+  },
+  "selected_relative_path": "research/multilingual_student/experiment_002/shared_lora_extra20.safetensors",
+  "selected_sha256": "a00c7965211853df07ce3fa032a76283dfc984dcdaeac85e03263445029ffb8e",
+  "checkpoint_decision": "parent_preserved_all_new_candidates_rejected",
+  "loss_history": [
+    {
+      "update": 1,
+      "route": "fr-es",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 2.62694,
+      "grad_norm": 0.7396
+    },
+    {
+      "update": 2,
+      "route": "fr-es",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 0.97654,
+      "grad_norm": 0.38193
+    },
+    {
+      "update": 3,
+      "route": "es-en",
+      "origin": "MASSIVE_CC-BY-4.0_replay",
+      "loss": 1.91724,
+      "grad_norm": 0.68648
+    },
+    {
+      "update": 4,
+      "route": "es-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 2.18168,
+      "grad_norm": 0.41305
+    },
+    {
+      "update": 5,
+      "route": "es-fr",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.11415,
+      "grad_norm": 0.50096
+    },
+    {
+      "update": 6,
+      "route": "en-es",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 2.13933,
+      "grad_norm": 0.44524
+    },
+    {
+      "update": 7,
+      "route": "en-es",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.56943,
+      "grad_norm": 0.62139
+    },
+    {
+      "update": 8,
+      "route": "es-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 0.9135,
+      "grad_norm": 0.44735
+    },
+    {
+      "update": 9,
+      "route": "fr-es",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.95887,
+      "grad_norm": 0.69923
+    },
+    {
+      "update": 10,
+      "route": "en-es",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.44012,
+      "grad_norm": 0.60336
+    },
+    {
+      "update": 11,
+      "route": "es-fr",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.55861,
+      "grad_norm": 0.53997
+    },
+    {
+      "update": 12,
+      "route": "en-fr",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.25033,
+      "grad_norm": 0.39428
+    },
+    {
+      "update": 13,
+      "route": "fr-en",
+      "origin": "MASSIVE_CC-BY-4.0_replay",
+      "loss": 1.57254,
+      "grad_norm": 0.61705
+    },
+    {
+      "update": 14,
+      "route": "en-es",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.54457,
+      "grad_norm": 0.45383
+    },
+    {
+      "update": 15,
+      "route": "fr-es",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.93824,
+      "grad_norm": 0.68009
+    },
+    {
+      "update": 16,
+      "route": "fr-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.47854,
+      "grad_norm": 0.53527
+    },
+    {
+      "update": 17,
+      "route": "es-fr",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.58937,
+      "grad_norm": 0.71636
+    },
+    {
+      "update": 18,
+      "route": "es-fr",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 0.92929,
+      "grad_norm": 0.38338
+    },
+    {
+      "update": 19,
+      "route": "en-es",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.78857,
+      "grad_norm": 0.66022
+    },
+    {
+      "update": 20,
+      "route": "es-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 0.65144,
+      "grad_norm": 0.49973
+    },
+    {
+      "update": 21,
+      "route": "fr-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 0.88308,
+      "grad_norm": 0.50261
+    },
+    {
+      "update": 22,
+      "route": "en-fr",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.10695,
+      "grad_norm": 0.54444
+    },
+    {
+      "update": 23,
+      "route": "es-en",
+      "origin": "MASSIVE_CC-BY-4.0_replay",
+      "loss": 1.35771,
+      "grad_norm": 0.48
+    },
+    {
+      "update": 24,
+      "route": "fr-es",
+      "origin": "MASSIVE_CC-BY-4.0_replay",
+      "loss": 2.47603,
+      "grad_norm": 0.77134
+    },
+    {
+      "update": 25,
+      "route": "es-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.20383,
+      "grad_norm": 0.48583
+    },
+    {
+      "update": 26,
+      "route": "en-es",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.9068,
+      "grad_norm": 0.84403
+    },
+    {
+      "update": 27,
+      "route": "es-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.25282,
+      "grad_norm": 0.40078
+    },
+    {
+      "update": 28,
+      "route": "en-es",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 2.18125,
+      "grad_norm": 0.61783
+    },
+    {
+      "update": 29,
+      "route": "es-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.04412,
+      "grad_norm": 0.57568
+    },
+    {
+      "update": 30,
+      "route": "fr-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.29623,
+      "grad_norm": 0.52862
+    },
+    {
+      "update": 31,
+      "route": "fr-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 0.93394,
+      "grad_norm": 0.44428
+    },
+    {
+      "update": 32,
+      "route": "fr-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 0.73155,
+      "grad_norm": 0.45683
+    },
+    {
+      "update": 33,
+      "route": "fr-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 0.671,
+      "grad_norm": 0.4483
+    },
+    {
+      "update": 34,
+      "route": "fr-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.04807,
+      "grad_norm": 0.57324
+    },
+    {
+      "update": 35,
+      "route": "fr-en",
+      "origin": "MASSIVE_CC-BY-4.0_replay",
+      "loss": 1.01,
+      "grad_norm": 0.71126
+    },
+    {
+      "update": 36,
+      "route": "es-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 0.94411,
+      "grad_norm": 0.78788
+    },
+    {
+      "update": 37,
+      "route": "en-fr",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 0.81278,
+      "grad_norm": 0.46392
+    },
+    {
+      "update": 38,
+      "route": "fr-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 0.89236,
+      "grad_norm": 0.5037
+    },
+    {
+      "update": 39,
+      "route": "en-es",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.27625,
+      "grad_norm": 0.67395
+    },
+    {
+      "update": 40,
+      "route": "es-fr",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.48461,
+      "grad_norm": 0.56562
+    },
+    {
+      "update": 41,
+      "route": "en-fr",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.29373,
+      "grad_norm": 0.5209
+    },
+    {
+      "update": 42,
+      "route": "es-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 0.84769,
+      "grad_norm": 0.48575
+    },
+    {
+      "update": 43,
+      "route": "en-fr",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 0.62792,
+      "grad_norm": 0.44312
+    },
+    {
+      "update": 44,
+      "route": "en-fr",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 0.94996,
+      "grad_norm": 0.59141
+    },
+    {
+      "update": 45,
+      "route": "es-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.23473,
+      "grad_norm": 0.44304
+    },
+    {
+      "update": 46,
+      "route": "fr-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 0.81604,
+      "grad_norm": 0.61767
+    },
+    {
+      "update": 47,
+      "route": "fr-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 0.67418,
+      "grad_norm": 0.43602
+    },
+    {
+      "update": 48,
+      "route": "es-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.74394,
+      "grad_norm": 0.58193
+    },
+    {
+      "update": 49,
+      "route": "fr-en",
+      "origin": "MASSIVE_CC-BY-4.0_replay",
+      "loss": 2.38383,
+      "grad_norm": 0.88484
+    },
+    {
+      "update": 50,
+      "route": "en-es",
+      "origin": "MASSIVE_CC-BY-4.0_replay",
+      "loss": 1.6568,
+      "grad_norm": 0.78065
+    },
+    {
+      "update": 51,
+      "route": "es-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 0.49961,
+      "grad_norm": 0.58207
+    },
+    {
+      "update": 52,
+      "route": "es-fr",
+      "origin": "MASSIVE_CC-BY-4.0_replay",
+      "loss": 2.28566,
+      "grad_norm": 0.7646
+    },
+    {
+      "update": 53,
+      "route": "en-fr",
+      "origin": "MASSIVE_CC-BY-4.0_replay",
+      "loss": 1.61243,
+      "grad_norm": 0.64812
+    },
+    {
+      "update": 54,
+      "route": "es-fr",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.09513,
+      "grad_norm": 0.4739
+    },
+    {
+      "update": 55,
+      "route": "fr-es",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.26068,
+      "grad_norm": 0.61523
+    },
+    {
+      "update": 56,
+      "route": "en-es",
+      "origin": "MASSIVE_CC-BY-4.0_replay",
+      "loss": 2.05784,
+      "grad_norm": 0.79694
+    },
+    {
+      "update": 57,
+      "route": "fr-es",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.50808,
+      "grad_norm": 0.58261
+    },
+    {
+      "update": 58,
+      "route": "es-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 0.93407,
+      "grad_norm": 0.56062
+    },
+    {
+      "update": 59,
+      "route": "es-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.00412,
+      "grad_norm": 0.59092
+    },
+    {
+      "update": 60,
+      "route": "es-en",
+      "origin": "MASSIVE_CC-BY-4.0_replay",
+      "loss": 1.47781,
+      "grad_norm": 0.93296
+    },
+    {
+      "update": 61,
+      "route": "en-es",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.29229,
+      "grad_norm": 0.49408
+    },
+    {
+      "update": 62,
+      "route": "es-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 0.83085,
+      "grad_norm": 0.47345
+    },
+    {
+      "update": 63,
+      "route": "en-fr",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.58906,
+      "grad_norm": 0.65825
+    },
+    {
+      "update": 64,
+      "route": "fr-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.19558,
+      "grad_norm": 0.59862
+    },
+    {
+      "update": 65,
+      "route": "en-es",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.08148,
+      "grad_norm": 0.65311
+    },
+    {
+      "update": 66,
+      "route": "fr-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.49299,
+      "grad_norm": 0.6146
+    },
+    {
+      "update": 67,
+      "route": "fr-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.12659,
+      "grad_norm": 0.69527
+    },
+    {
+      "update": 68,
+      "route": "fr-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.66802,
+      "grad_norm": 0.76663
+    },
+    {
+      "update": 69,
+      "route": "fr-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.7329,
+      "grad_norm": 0.83344
+    },
+    {
+      "update": 70,
+      "route": "es-en",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.65655,
+      "grad_norm": 0.77687
+    },
+    {
+      "update": 71,
+      "route": "fr-es",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 0.977,
+      "grad_norm": 0.57113
+    },
+    {
+      "update": 72,
+      "route": "es-fr",
+      "origin": "Tatoeba_CC-BY-2.0-FR_parallel",
+      "loss": 1.72448,
+      "grad_norm": 0.78859
+    }
+  ],
+  "old_spanish_french_specialists_preserved": {
+    "es-en": {
+      "path": "experiments/es_en_v2_runs/candidate_after_three.safetensors",
+      "sha256": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71"
+    },
+    "fr-en": {
+      "path": "experiments/balanced_stage5_20261118/saved/french/adapter_selected.safetensors",
+      "sha256": "fba2bd78958bf0bf8a4c14dc55e601e08663633718c4c9c17f91ef9b52dcfa1c"
+    }
+  },
+  "human_95_percent_meaning_accuracy_verified": false,
+  "true_dialogue_context_trained": false,
+  "authentic_parallel_tatoeba_sentences_used": true,
+  "public_or_synthetic_only_no_private_speech_used": true,
+  "noncommercial_or_unlicensed_data_used": false,
+  "prior_reviewed_500_used_as_train_or_dev": false,
+  "final_holdout_accessed": false,
+  "default_live_app_modified": false,
+  "paid_cost_usd": 0,
+  "wall_seconds": 1151.4808113049999,
+  "max_rss_kib_linux": 3865380,
+  "warning": "Automatic chrF, BLEU and a narrow digit mismatch proxy are not 95% meaning preservation. These corpora are mostly isolated utterances. Real conversational slang/context requires conversation-grounded verified references and bilingual QA."
+}

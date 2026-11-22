@@ -1,0 +1,62 @@
+{
+  "status": "new_licensed_parallel_corpus_compiled_no_final_test",
+  "sources": {
+    "en-es": {
+      "url": "https://object.pouta.csc.fi/OPUS-Tatoeba/v2023-04-12/moses/en-es.txt.zip",
+      "archive_sha256": "a26e7675cae64c93ce45e6cae48f38424bf26e0923cec9d7881b1fa2bb636227",
+      "compressed_bytes": 7239318,
+      "raw_pairs": 222073,
+      "accepted_pairs": 350,
+      "license": "CC-BY-2.0-FR",
+      "original_source": "https://tatoeba.org/en/downloads",
+      "attribution_required": true,
+      "publisher_train_or_test_split": "OPUS Tatoeba released parallel sentence list; NOT an unseen final test"
+    },
+    "en-fr": {
+      "url": "https://object.pouta.csc.fi/OPUS-Tatoeba/v2023-04-12/moses/en-fr.txt.zip",
+      "archive_sha256": "be06c23bb4d5e477a6ae5c71ddcbacd8799cde4292b40e2a40fc616a0c7538e8",
+      "compressed_bytes": 8227651,
+      "raw_pairs": 275413,
+      "accepted_pairs": 350,
+      "license": "CC-BY-2.0-FR",
+      "original_source": "https://tatoeba.org/en/downloads",
+      "attribution_required": true,
+      "publisher_train_or_test_split": "OPUS Tatoeba released parallel sentence list; NOT an unseen final test"
+    },
+    "es-fr": {
+      "url": "https://object.pouta.csc.fi/OPUS-Tatoeba/v2023-04-12/moses/es-fr.txt.zip",
+      "archive_sha256": "4c0f6b7d034ba37dce35b34bc1e81ade975accbddc7ea17d77dceb9da061e95e",
+      "compressed_bytes": 1834000,
+      "raw_pairs": 51988,
+      "accepted_pairs": 350,
+      "license": "CC-BY-2.0-FR",
+      "original_source": "https://tatoeba.org/en/downloads",
+      "attribution_required": true,
+      "publisher_train_or_test_split": "OPUS Tatoeba released parallel sentence list; NOT an unseen final test"
+    }
+  },
+  "source_license": "Tatoeba CC BY 2.0 FR, original contributors",
+  "source_attribution_url": "https://tatoeba.org/en/downloads",
+  "allowed_to_retrain_only_in_research": true,
+  "developer_validation_hash_previous": "88f6eca0eeb35e39faac5506be153314b76a7b572587733ccfe18ce032d8c03a",
+  "all_original_publisher_validation_excluded": true,
+  "all_500_reviewed_sources_excluded": true,
+  "independent_human_semantic_validation": false,
+  "real_multi_turn_dialogue_pairs": 0,
+  "record_count": 1050,
+  "pairs_per_route": {
+    "en-es": 350,
+    "en-fr": 350,
+    "es-fr": 350,
+    "es-en": 350,
+    "fr-en": 350,
+    "fr-es": 350
+  },
+  "final_holdout_downloaded": false,
+  "noncommercial_data_used": false,
+  "warning": "Tatoeba is useful genuine parallel language data but it has no reliable previous-turn context or guaranteed slang. Do not claim conversational or 95% semantic success from this data alone.",
+  "new_frozen_development_group_ids_sha256": "7c17d60b03186d0aa76898d71431bd15148aa114525ce26daadf427ada5b2838",
+  "developer_examples_per_direction": 36,
+  "sampled_training_schedule_sha256": "a9161e32ac2fc9760d4d9cf56e54d1e79bdb244ecbbd8fe0791de3878250b163",
+  "parent_adapter_sha256": "a00c7965211853df07ce3fa032a76283dfc984dcdaeac85e03263445029ffb8e"
+}
