@@ -5,7 +5,9 @@ on:
     branches: [feat/global-language-architecture-and-conversation-training-20261121]
     paths:
       - .github/workflows/global-language-catalog.yml
-      - research/global_languages/**
+      - research/global_languages/catalog.py
+      - research/global_languages/sync_catalog.py
+      - research/global_languages/tests/**
   workflow_dispatch:
 
 permissions:
@@ -67,9 +69,13 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add research/global_languages/generated
-          git commit -m 'catalog: pin real Glottolog 5.4 documented languages/dialects and IANA SHA [skip ci]'
-          git pull --rebase origin feat/global-language-architecture-and-conversation-training-20261121
-          git push origin HEAD:refs/heads/feat/global-language-architecture-and-conversation-training-20261121
+          if git diff --cached --quiet; then
+            echo 'CATALOG_ALREADY_IMMUTABLY_SAVED_NO_DUPLICATE_COMMIT'
+          else
+            git commit -m 'catalog: pin real Glottolog 5.4 documented languages/dialects and IANA SHA [skip ci]'
+            git pull --rebase origin feat/global-language-architecture-and-conversation-training-20261121
+            git push origin HEAD:refs/heads/feat/global-language-architecture-and-conversation-training-20261121
+          fi
       - name: Preserve generated catalog if data provider is reachable but branch push conflicts
         if: always()
         uses: actions/upload-artifact@v4
