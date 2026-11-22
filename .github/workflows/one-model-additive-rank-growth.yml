@@ -1,0 +1,122 @@
+name: Validate and train additive one-model EN-ES-FR rank growth
+
+on:
+  push:
+    branches: [feat/global-language-architecture-and-conversation-training-20261121]
+    paths:
+      - .github/workflows/one-model-additive-rank-growth.yml
+      - research/conversation_growth/config_round2.json
+      - research/conversation_growth/round2.py
+      - research/conversation_growth/round2_tests/**
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bridgecaption-one-model-additive-round2
+  cancel-in-progress: false
+
+jobs:
+  cpu-learning:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      PYTHONPATH: ".:src"
+      HF_HOME: /tmp/bridgecaption-m2m100-cache
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      TOKENIZERS_PARALLELISM: "false"
+      OMP_NUM_THREADS: "3"
+      MKL_NUM_THREADS: "3"
+      BRIDGE_NO_PAID_APIS: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install free pinned CPU-only model and licensed corpus dependencies
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'datasets==2.21.0' 'huggingface-hub==0.36.0' 'hf-xet>=1.1,<2'
+      - name: Check additivity, parent preservation and disjoint sampling
+        run: |
+          python -m compileall -q research/conversation_growth
+          python -m unittest discover -s research/conversation_growth/round2_tests -p 'test_*.py' -v
+          python -m unittest discover -s research/conversation_growth/tests -p 'test_*.py' -v
+      - name: Confirm frozen shared model and earlier results
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          from research.conversation_growth.round2 import config
+          from research.multilingual_student.train import ensure_old_winners_untouched
+          c=config()
+          p=Path(c['parent']['path'])
+          assert hashlib.sha256(p.read_bytes()).hexdigest()==c['parent']['sha256']
+          assert len(ensure_old_winners_untouched())==2
+          previous=json.loads(Path('research/conversation_growth/experiment_001/report.json').read_text())
+          assert previous['checkpoint_decision']=='parent_preserved_all_new_candidates_rejected'
+          assert previous['actual_optimizer_updates']==72
+          assert c['final_holdout_access'] is False and c['paid_spend_cap_usd']==0
+          print('PARENT_AND_PRIOR_RESULTS_PINNED')
+          PY
+      - name: Actually train additive new rank on true bilingual pairs
+        run: python -u research/conversation_growth/round2.py
+      - name: Verify final checkpoints, lineage and evaluation gates
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          from safetensors import safe_open
+          root=Path('research/conversation_growth/experiment_002')
+          report=json.loads((root/'report.json').read_text())
+          assert report['status']=='actual_additive_rank8_training_completed'
+          assert report['actual_optimizer_updates']==48
+          assert report['old_learned_rank4_frozen'] is True
+          assert report['parent_unchanged'] is True
+          assert report['previous_specialists_unchanged'] is True
+          assert report['source_counts']=={'Tatoeba_parallel':48,'MASSIVE_intent_only_gold':0}
+          assert report['reviewer_500_used_for_training'] is False
+          assert report['human_semantic_95_percent_verified'] is False
+          assert report['final_holdout_accessed'] is False
+          assert report['production_translation_provider_changed'] is False
+          assert report['paid_spend_usd']==0
+          assert set(report['directions'])=={'es-en','fr-en','en-es','en-fr','es-fr','fr-es'}
+          for step in (12,24,48):
+              p=root/f'shared_rank8_extra{step:02d}.safetensors'
+              assert p.is_file()
+              with safe_open(p,framework='pt',device='cpu') as f:
+                  assert len(list(f.keys()))==24
+          for line in (root/'SHA256SUMS.txt').read_text().splitlines():
+              sha,name=line.split('  ')
+              assert hashlib.sha256((root/name).read_bytes()).hexdigest()==sha
+          selected=Path(report['selected_path'])
+          assert selected.is_file()
+          assert hashlib.sha256(selected.read_bytes()).hexdigest()==report['selected_sha256']
+          print('ACTUAL_SHARED_ADDITIVE_TRAINING_VERIFIED',json.dumps({
+              'optimizer_updates':report['actual_optimizer_updates'],
+              'checkpoint_decision':report['checkpoint_decision'],
+              'selected_sha256':report['selected_sha256'],
+              'human_semantic_accuracy_unverified':True
+          }))
+          PY
+      - name: Save research-only checkpoints without merging or deploying
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/conversation_growth/experiment_002
+          git commit -m 'train: preserve additive one-model learning outcomes [skip ci]'
+          git pull --rebase origin feat/global-language-architecture-and-conversation-training-20261121
+          git push origin HEAD:refs/heads/feat/global-language-architecture-and-conversation-training-20261121
+      - name: Preserve research results even when Git push is rejected
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: one-model-additive-rank-growth-experiment-002
+          path: research/conversation_growth/experiment_002/
+          if-no-files-found: warn
+          retention-days: 30
