@@ -19,7 +19,7 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[2]
 CATALOG_DIR=ROOT/"research/global_languages/generated"
-GLOTTOCODE=re.compile(r"[a-z]{4}[0-9]{4}\Z")
+GLOTTOCODE=re.compile(r"[a-z0-9]{4}[0-9]{4}\Z")
 ISOCODE=re.compile(r"[a-z]{3}\Z")
 LANGUAGE_SUBTAG=re.compile(r"[a-zA-Z]{2,8}\Z")
 SCRIPT_SUBTAG=re.compile(r"[a-zA-Z]{4}\Z")
