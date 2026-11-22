@@ -9,7 +9,8 @@ from unittest.mock import patch
 
 from research.madlad400.model import (
     adapter_state,attach_shared_lora,config,file_sha256,
-    language_input,supported_target_markers,verify_model_card
+    language_input,supported_target_markers,verify_model_card,
+    merge_shared_adapter_into_base
 )
 
 
@@ -111,6 +112,18 @@ class TestPinnedMADLADBackbone(unittest.TestCase):
         self.assertTrue(torch.equal(layer.base.weight,original))
         self.assertNotEqual(float(layer.lora_B.abs().sum()),0.0)
         self.assertEqual(len(adapter_state(net)),8)
+        # One actual trained adapter can be folded into one standalone
+        # neural weight set without silently discarding learned progress.
+        probe=torch.randn(3,16)
+        net.eval()
+        with torch.no_grad():
+            before=net.decoder.block[-1].layer[0].SelfAttention.q(probe)
+        merged=merge_shared_adapter_into_base(net,rank=4,alpha=8)
+        with torch.no_grad():
+            after=net.decoder.block[-1].layer[0].SelfAttention.q(probe)
+        self.assertEqual(merged["merged_projection_count"],4)
+        torch.testing.assert_close(before,after,rtol=1e-5,atol=1e-5)
+        self.assertEqual(len(adapter_state(net)),0)
 
     def test_sha_checksum_is_streaming(self):
         with tempfile.TemporaryDirectory() as p:
