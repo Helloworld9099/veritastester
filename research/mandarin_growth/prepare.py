@@ -31,28 +31,44 @@ MAX_PAIRS=450
 DEV_PAIRS=60
 
 
-def parse_moses_zip(blob:bytes,pair:str):
+def parse_moses_zip(blob:bytes,pair:str,archive_pair:str|None=None):
+    """Normalize true Mandarin `cmn` or `zh` archive fields into runtime zh.
+
+    Never interpret Yue/Cantonese, Literary Chinese, or another Chinese
+    variety as Mandarin. OPUS may store the source language second.
+    """
     if pair not in PAIRS:
         raise ValueError("Only audited Mandarin routes allowed")
-    a,b=pair.split("-")
+    european=pair.split("-")[0]
+    original=archive_pair or pair
+    languages=original.split("-")
+    if len(languages)!=2 or european not in languages:
+        raise ValueError("Wrong language alignment in publisher archive")
+    if "cmn" in languages:
+        mandarin="cmn"
+    elif "zh" in languages:
+        mandarin="zh"
+    else:
+        raise ValueError("Not a Mandarin or Chinese tagged archive")
     with zipfile.ZipFile(io.BytesIO(blob)) as z:
         files={}
-        for lang in (a,b):
-            candidates=[x for x in z.namelist()
-                        if x.rsplit("/",1)[-1].startswith(f"Tatoeba.{pair}.") and x.endswith("."+lang)]
-            if len(candidates)!=1:
-                raise RuntimeError("Unexpected OPUS archive layout: "+pair+" "+lang)
-            info=z.getinfo(candidates[0])
-            if info.file_size>MAX_UNCOMPRESSED:
+        for lang in (european,mandarin):
+            matches=[name for name in z.namelist()
+                     if name.rsplit("/",1)[-1].startswith(f"Tatoeba.{original}.")
+                     and name.endswith("."+lang)]
+            if len(matches)!=1:
+                raise RuntimeError("Unexpected OPUS archive layout: "+original+" "+lang)
+            item=z.getinfo(matches[0])
+            if item.file_size>MAX_UNCOMPRESSED:
                 raise RuntimeError("OPUS zip column exceeds safe size")
-            with z.open(info) as f:
+            with z.open(item) as f:
                 raw=f.read(MAX_UNCOMPRESSED+1)
             if len(raw)>MAX_UNCOMPRESSED:
                 raise RuntimeError("OPUS zip bomb limit")
             files[lang]=raw.decode("utf-8-sig").splitlines()
-    if len(files[a])!=len(files[b]):
+    if len(files[european])!=len(files[mandarin]):
         raise RuntimeError("Parallel alignment row count mismatch")
-    return list(zip(files[a],files[b]))
+    return list(zip(files[european],files[mandarin]))
 
 
 def robust_chinese_parallel(a: str, b: str) -> bool:
@@ -64,9 +80,9 @@ def robust_chinese_parallel(a: str, b: str) -> bool:
     """
     if not text_quality(a) or not isinstance(b,str):
         return False
-    if not 4 <= len(b) <= 200 or len(CJK.findall(b)) < 4:
+    if not 4 <= len(b) <= 65 or len(CJK.findall(b)) < 4 or len(a)>150:
         return False
-    if LINKS.search(a) or LINKS.search(b) or "\\ufffd" in b:
+    if LINKS.search(a) or LINKS.search(b) or chr(0xfffd) in b:
         return False
     # Chinese characters are often much more compact than European text.
     ratio=len(b)/max(len(a),1)
@@ -114,17 +130,37 @@ def prepare(*,downloader=download,seed=2026112203):
     dev=[]
     sources={}
     for pair in PAIRS:
-        url=BASE+pair+".txt.zip"
-        blob=downloader(url)
-        if len(blob)>MAX_COMPRESSED:
-            raise RuntimeError("Oversized OPUS archive")
-        raw=parse_moses_zip(blob,pair)
-        tr,dv=choose(raw,pair,ban=ban,seed=seed)
+        european=pair.split("-")[0]
+        # The publisher often labels Mandarin as ISO 639-3 `cmn` rather than
+        # generic Chinese `zh`; archive files may be oriented either way.
+        # Record the exact successful spelling for audit and reproducibility.
+        candidates=(pair,"cmn-"+european,european+"-cmn")
+        errors=[]
+        accepted=None
+        for archive_pair in candidates:
+            url=BASE+archive_pair+".txt.zip"
+            try:
+                blob=downloader(url)
+                if len(blob)>MAX_COMPRESSED:
+                    raise RuntimeError("Oversized OPUS archive")
+                raw=parse_moses_zip(blob,pair,archive_pair=archive_pair)
+                tr,dv=choose(raw,pair,ban=ban,seed=seed)
+                accepted=(url,archive_pair,blob,raw,tr,dv)
+                break
+            except (OSError,TimeoutError,RuntimeError,ValueError,zipfile.BadZipFile) as err:
+                errors.append(archive_pair+":"+type(err).__name__+":"+str(err)[:130])
+        if accepted is None:
+            raise RuntimeError("No verified licensed Mandarin publisher pair for "+
+                               pair+"; "+str(errors))
+        url,archive_pair,blob,raw,tr,dv=accepted
         for row in tr+dv:
             ban.update((normalize(row["source"]),normalize(row["target"])))
         train+=tr
         dev+=dv
-        sources[pair]={"url":url,"sha256":hashlib.sha256(blob).hexdigest(),
+        sources[pair]={"url":url,"archive_pair":archive_pair,
+                       "mandarin_code":"cmn" if "cmn" in archive_pair.split("-") else "zh",
+                       "runtime_tokenizer_language":"zh",
+                       "sha256":hashlib.sha256(blob).hexdigest(),
                        "raw_pairs":len(raw),"train_pairs":len(tr),"dev_pairs":len(dv),
                        "license":"CC-BY-2.0-FR","attribution":SOURCE}
     train_text={normalize(v) for row in train for v in (row["source"],row["target"])}
