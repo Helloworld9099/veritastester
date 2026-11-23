@@ -15,10 +15,11 @@ import zipfile
 from pathlib import Path
 
 from research.conversation_growth.data import (
-    download, normalize, get_reviewed_sources, robust_filter, MAX_UNCOMPRESSED,
-    MAX_COMPRESSED,
+    download, normalize, get_reviewed_sources, MAX_UNCOMPRESSED,
+    MAX_COMPRESSED, LINKS, DIGITS,
 )
 from research.multilingual_student.model import ROOT
+from research.multilingual_student.data import text_quality
 
 PAIRS=("en-zh","es-zh","fr-zh")
 VERSION="v2023-04-12"
@@ -54,6 +55,31 @@ def parse_moses_zip(blob:bytes,pair:str):
     return list(zip(files[a],files[b]))
 
 
+def robust_chinese_parallel(a: str, b: str) -> bool:
+    """Chinese has no whitespace word delimiters; do not reuse Latin word count.
+
+    Check source language word quality, Han content, bounded dimensions,
+    URLs/PII and digit preservation. This is a *noise filter*, not independent
+    confirmation that every translation is semantically correct.
+    """
+    if not text_quality(a) or not isinstance(b,str):
+        return False
+    if not 4 <= len(b) <= 200 or len(CJK.findall(b)) < 4:
+        return False
+    if LINKS.search(a) or LINKS.search(b) or "\\ufffd" in b:
+        return False
+    # Chinese characters are often much more compact than European text.
+    ratio=len(b)/max(len(a),1)
+    if not 0.18 <= ratio <= 2.5:
+        return False
+    if normalize(a)==normalize(b):
+        return False
+    left,right=DIGITS.findall(a),DIGITS.findall(b)
+    if left and right and left!=right:
+        return False
+    return True
+
+
 def choose(raw,pair,*,ban,seed,train_count=MAX_PAIRS,dev_count=DEV_PAIRS):
     if pair not in PAIRS or train_count<1 or dev_count<1:
         raise ValueError("Invalid Mandarin pair/budget")
@@ -62,7 +88,7 @@ def choose(raw,pair,*,ban,seed,train_count=MAX_PAIRS,dev_count=DEV_PAIRS):
     for index,(a,b) in enumerate(raw):
         a=a.strip()
         b=b.strip()
-        if not CJK.search(b) or not robust_filter(a,b):
+        if not robust_chinese_parallel(a,b):
             continue
         x,y=normalize(a),normalize(b)
         if x in seen or y in seen:
