@@ -1,0 +1,52 @@
+{
+  "sources": {
+    "en-es": {
+      "publisher": "Tatoeba via OPUS v2023-04-12",
+      "archive_sha256": "a26e7675cae64c93ce45e6cae48f38424bf26e0923cec9d7881b1fa2bb636227",
+      "url": "https://object.pouta.csc.fi/OPUS-Tatoeba/v2023-04-12/moses/en-es.txt.zip",
+      "license": "CC-BY-2.0-FR",
+      "accepted": 1500,
+      "first_350_are_already_seen": true,
+      "no_new_publisher_test_split_exists": true
+    },
+    "en-fr": {
+      "publisher": "Tatoeba via OPUS v2023-04-12",
+      "archive_sha256": "be06c23bb4d5e477a6ae5c71ddcbacd8799cde4292b40e2a40fc616a0c7538e8",
+      "url": "https://object.pouta.csc.fi/OPUS-Tatoeba/v2023-04-12/moses/en-fr.txt.zip",
+      "license": "CC-BY-2.0-FR",
+      "accepted": 1500,
+      "first_350_are_already_seen": true,
+      "no_new_publisher_test_split_exists": true
+    },
+    "es-fr": {
+      "publisher": "Tatoeba via OPUS v2023-04-12",
+      "archive_sha256": "4c0f6b7d034ba37dce35b34bc1e81ade975accbddc7ea17d77dceb9da061e95e",
+      "url": "https://object.pouta.csc.fi/OPUS-Tatoeba/v2023-04-12/moses/es-fr.txt.zip",
+      "license": "CC-BY-2.0-FR",
+      "accepted": 1500,
+      "first_350_are_already_seen": true,
+      "no_new_publisher_test_split_exists": true
+    }
+  },
+  "license": "CC-BY-2.0-FR",
+  "train_samples_by_pair": {
+    "en-es": 800,
+    "en-fr": 800,
+    "es-fr": 800
+  },
+  "dev_samples_by_pair": {
+    "en-es": 20,
+    "en-fr": 20,
+    "es-fr": 20
+  },
+  "new_dev_outside_original_350": true,
+  "train_dev_cross_pair_disjoint_by_text": true,
+  "old_500_reviewed_not_used": true,
+  "no_MASSIVE_as_parallel_gold": true,
+  "no_multiturn_data": true,
+  "no_final_holdout": true,
+  "pretraining_overlap_with_tatoeba_not_ruled_out": true,
+  "train_ids_digest_sha256": "e9a810a1fddb08d552b838fe7542950b2e3c75461e7b2e7beb878c9e8f03652c",
+  "dev_ids_digest_sha256": "0c048772032807c3009c9ed095d23c276dac8718d75061430194af31f563cb42",
+  "training_schedule_sha256": "f55df77e0b4d63ba266b383bf902d2735c894b072bc9e677be7615c9c0888b7b"
+}
