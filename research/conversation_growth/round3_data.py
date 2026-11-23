@@ -64,11 +64,11 @@ def identities(row) -> set[str]:
             for x in normalized_keys(row[field]) if x}
 
 
-def split_samples(corpora: dict, *, prefix=350, upper=1200, target_train=800, target_dev=20):
+def split_samples(corpora: dict, *, prefix=350, upper=1200, target_train=800, target_dev=20, forbidden=()):
     """Globally disjoint across pair boundaries, forward AND reverse paths."""
     if set(corpora) != set(PAIRS):
         raise RuntimeError("Expected three authentic parallel source sets")
-    seen = set()
+    seen = set(forbidden)
     training = {}
     for pair in PAIRS:
         rows = corpora[pair]
@@ -93,6 +93,8 @@ def split_samples(corpora: dict, *, prefix=350, upper=1200, target_train=800, ta
         picked = []
         # New source data is disjoint from earlier 350-item fine-tuning input.
         for row in corpora[pair][upper:]:
+            if max(len(row['source']),len(row['target'])) > 135:
+                continue
             keys = identities(row)
             if keys & seen:
                 continue
@@ -173,7 +175,7 @@ def build_data(*, downloader=download):
         result,prefix=spec["data"]["past_training_prefix"],
         upper=spec["data"]["training_upper_index"],
         target_train=spec["data"]["training_sample_use_limit_per_corpus"],
-        target_dev=spec["data"]["dev_per_corpus"])
+        target_dev=spec["data"]["dev_per_corpus"], forbidden=forbidden)
     # Exclude reviewed originals and all publisher MASSIVE validation by string.
     for corpus in (train,dev):
         for group in corpus.values():
