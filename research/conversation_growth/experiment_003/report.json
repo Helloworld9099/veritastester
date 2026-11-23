@@ -1,0 +1,2387 @@
+{
+  "status": "actual_shared_rank4_parallel_round3_completed",
+  "model_id": "facebook/m2m100_418M",
+  "actual_optimizer_updates": 240,
+  "routes": {
+    "es-fr": 40,
+    "en-es": 40,
+    "es-en": 40,
+    "en-fr": 40,
+    "fr-es": 40,
+    "fr-en": 40
+  },
+  "parent_sha256": "a00c7965211853df07ce3fa032a76283dfc984dcdaeac85e03263445029ffb8e",
+  "parent_file_unchanged": true,
+  "original_specialists_unchanged": true,
+  "architecture": {
+    "targets": [
+      "model.encoder.layers.10.self_attn.q_proj",
+      "model.encoder.layers.10.self_attn.v_proj",
+      "model.encoder.layers.11.self_attn.q_proj",
+      "model.encoder.layers.11.self_attn.v_proj",
+      "model.decoder.layers.10.self_attn.q_proj",
+      "model.decoder.layers.10.self_attn.v_proj",
+      "model.decoder.layers.10.encoder_attn.q_proj",
+      "model.decoder.layers.10.encoder_attn.v_proj",
+      "model.decoder.layers.11.self_attn.q_proj",
+      "model.decoder.layers.11.self_attn.v_proj",
+      "model.decoder.layers.11.encoder_attn.q_proj",
+      "model.decoder.layers.11.encoder_attn.v_proj"
+    ],
+    "tensor_keys": [
+      "model.decoder.layers.10.encoder_attn.q_proj.lora_A",
+      "model.decoder.layers.10.encoder_attn.q_proj.lora_B",
+      "model.decoder.layers.10.encoder_attn.v_proj.lora_A",
+      "model.decoder.layers.10.encoder_attn.v_proj.lora_B",
+      "model.decoder.layers.10.self_attn.q_proj.lora_A",
+      "model.decoder.layers.10.self_attn.q_proj.lora_B",
+      "model.decoder.layers.10.self_attn.v_proj.lora_A",
+      "model.decoder.layers.10.self_attn.v_proj.lora_B",
+      "model.decoder.layers.11.encoder_attn.q_proj.lora_A",
+      "model.decoder.layers.11.encoder_attn.q_proj.lora_B",
+      "model.decoder.layers.11.encoder_attn.v_proj.lora_A",
+      "model.decoder.layers.11.encoder_attn.v_proj.lora_B",
+      "model.decoder.layers.11.self_attn.q_proj.lora_A",
+      "model.decoder.layers.11.self_attn.q_proj.lora_B",
+      "model.decoder.layers.11.self_attn.v_proj.lora_A",
+      "model.decoder.layers.11.self_attn.v_proj.lora_B",
+      "model.encoder.layers.10.self_attn.q_proj.lora_A",
+      "model.encoder.layers.10.self_attn.q_proj.lora_B",
+      "model.encoder.layers.10.self_attn.v_proj.lora_A",
+      "model.encoder.layers.10.self_attn.v_proj.lora_B",
+      "model.encoder.layers.11.self_attn.q_proj.lora_A",
+      "model.encoder.layers.11.self_attn.q_proj.lora_B",
+      "model.encoder.layers.11.self_attn.v_proj.lora_A",
+      "model.encoder.layers.11.self_attn.v_proj.lora_B"
+    ],
+    "trainable_parameters": 98304,
+    "shared_across_all_six_directions": true,
+    "rank": 4,
+    "alpha": 8
+  },
+  "train_manifest": {
+    "sources": {
+      "en-es": {
+        "publisher": "Tatoeba via OPUS v2023-04-12",
+        "archive_sha256": "a26e7675cae64c93ce45e6cae48f38424bf26e0923cec9d7881b1fa2bb636227",
+        "url": "https://object.pouta.csc.fi/OPUS-Tatoeba/v2023-04-12/moses/en-es.txt.zip",
+        "license": "CC-BY-2.0-FR",
+        "accepted": 1500,
+        "first_350_are_already_seen": true,
+        "no_new_publisher_test_split_exists": true
+      },
+      "en-fr": {
+        "publisher": "Tatoeba via OPUS v2023-04-12",
+        "archive_sha256": "be06c23bb4d5e477a6ae5c71ddcbacd8799cde4292b40e2a40fc616a0c7538e8",
+        "url": "https://object.pouta.csc.fi/OPUS-Tatoeba/v2023-04-12/moses/en-fr.txt.zip",
+        "license": "CC-BY-2.0-FR",
+        "accepted": 1500,
+        "first_350_are_already_seen": true,
+        "no_new_publisher_test_split_exists": true
+      },
+      "es-fr": {
+        "publisher": "Tatoeba via OPUS v2023-04-12",
+        "archive_sha256": "4c0f6b7d034ba37dce35b34bc1e81ade975accbddc7ea17d77dceb9da061e95e",
+        "url": "https://object.pouta.csc.fi/OPUS-Tatoeba/v2023-04-12/moses/es-fr.txt.zip",
+        "license": "CC-BY-2.0-FR",
+        "accepted": 1500,
+        "first_350_are_already_seen": true,
+        "no_new_publisher_test_split_exists": true
+      }
+    },
+    "license": "CC-BY-2.0-FR",
+    "train_samples_by_pair": {
+      "en-es": 800,
+      "en-fr": 800,
+      "es-fr": 800
+    },
+    "dev_samples_by_pair": {
+      "en-es": 20,
+      "en-fr": 20,
+      "es-fr": 20
+    },
+    "new_dev_outside_original_350": true,
+    "train_dev_cross_pair_disjoint_by_text": true,
+    "old_500_reviewed_not_used": true,
+    "no_MASSIVE_as_parallel_gold": true,
+    "no_multiturn_data": true,
+    "no_final_holdout": true,
+    "pretraining_overlap_with_tatoeba_not_ruled_out": true,
+    "train_ids_digest_sha256": "e9a810a1fddb08d552b838fe7542950b2e3c75461e7b2e7beb878c9e8f03652c",
+    "dev_ids_digest_sha256": "0c048772032807c3009c9ed095d23c276dac8718d75061430194af31f563cb42",
+    "training_schedule_sha256": "f55df77e0b4d63ba266b383bf902d2735c894b072bc9e677be7615c9c0888b7b"
+  },
+  "new_parallel_dev_per_direction": 20,
+  "frozen_massive_dev_per_direction": 36,
+  "frozen_massive_group_digest": "7c17d60b03186d0aa76898d71431bd15148aa114525ce26daadf427ada5b2838",
+  "baseline_massive_dev_not_human_accuracy": {
+    "es-en": {
+      "n": 36,
+      "chrF_not_accuracy": 55.1793,
+      "BLEU_not_accuracy": 20.9928,
+      "empty_predictions": 0,
+      "example_output": "I need a solar protection this weekend.",
+      "source_and_reference_not_in_report": true
+    },
+    "fr-en": {
+      "n": 36,
+      "chrF_not_accuracy": 53.3989,
+      "BLEU_not_accuracy": 24.544,
+      "empty_predictions": 0,
+      "example_output": "Do I need a sun cream this weekend?",
+      "source_and_reference_not_in_report": true
+    },
+    "en-es": {
+      "n": 36,
+      "chrF_not_accuracy": 53.7663,
+      "BLEU_not_accuracy": 28.5312,
+      "empty_predictions": 0,
+      "example_output": "Necesito un bloqueo de sol este fin de semana",
+      "source_and_reference_not_in_report": true
+    },
+    "en-fr": {
+      "n": 36,
+      "chrF_not_accuracy": 57.2148,
+      "BLEU_not_accuracy": 32.0105,
+      "empty_predictions": 0,
+      "example_output": "J'ai besoin de blocage solaire ce week-end",
+      "source_and_reference_not_in_report": true
+    },
+    "es-fr": {
+      "n": 36,
+      "chrF_not_accuracy": 56.6701,
+      "BLEU_not_accuracy": 36.4492,
+      "empty_predictions": 0,
+      "example_output": "J'ai besoin de protection solaire ce week-end",
+      "source_and_reference_not_in_report": true
+    },
+    "fr-es": {
+      "n": 36,
+      "chrF_not_accuracy": 54.4958,
+      "BLEU_not_accuracy": 29.5327,
+      "empty_predictions": 0,
+      "example_output": "¿Necesitaría una crema solar este fin de semana?",
+      "source_and_reference_not_in_report": true
+    }
+  },
+  "baseline_tatoeba_dev_not_human_accuracy": {
+    "en-es": {
+      "n": 20,
+      "chrF_not_accuracy": 58.5522,
+      "BLEU_not_accuracy": 33.5974,
+      "empty_predictions": 0,
+      "example_output": "Yo comí uno.",
+      "source_and_reference_not_in_report": true
+    },
+    "es-en": {
+      "n": 20,
+      "chrF_not_accuracy": 65.8686,
+      "BLEU_not_accuracy": 47.322,
+      "empty_predictions": 0,
+      "example_output": "I ate one.",
+      "source_and_reference_not_in_report": true
+    },
+    "en-fr": {
+      "n": 20,
+      "chrF_not_accuracy": 54.1579,
+      "BLEU_not_accuracy": 30.7821,
+      "empty_predictions": 0,
+      "example_output": "La barre spatiale est la clé d'un clavier alfanumérique.",
+      "source_and_reference_not_in_report": true
+    },
+    "fr-en": {
+      "n": 20,
+      "chrF_not_accuracy": 68.0776,
+      "BLEU_not_accuracy": 43.9647,
+      "empty_predictions": 0,
+      "example_output": "The space bar is an alphanumeric keyboard touch.",
+      "source_and_reference_not_in_report": true
+    },
+    "es-fr": {
+      "n": 20,
+      "chrF_not_accuracy": 62.8624,
+      "BLEU_not_accuracy": 46.3526,
+      "empty_predictions": 0,
+      "example_output": "Personne ne veut aider Thomas.",
+      "source_and_reference_not_in_report": true
+    },
+    "fr-es": {
+      "n": 20,
+      "chrF_not_accuracy": 62.5819,
+      "BLEU_not_accuracy": 29.4846,
+      "empty_predictions": 0,
+      "example_output": "Nadie quiere ayudar a Thomas.",
+      "source_and_reference_not_in_report": true
+    }
+  },
+  "checkpoints": {
+    "shared_lora_parallel_extra060.safetensors": {
+      "sha256": "ffc8295053ff7e4bf55916be651faeaea0e18599ca63c3edc9ab8774f5e8a84c",
+      "bytes": 396248,
+      "massive_dev": {
+        "es-en": {
+          "n": 36,
+          "chrF_not_accuracy": 54.7821,
+          "BLEU_not_accuracy": 20.612,
+          "empty_predictions": 0,
+          "example_output": "I will need a solar protection this weekend.",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-en": {
+          "n": 36,
+          "chrF_not_accuracy": 53.454,
+          "BLEU_not_accuracy": 23.5034,
+          "empty_predictions": 0,
+          "example_output": "Do I need a sun cream this weekend?",
+          "source_and_reference_not_in_report": true
+        },
+        "en-es": {
+          "n": 36,
+          "chrF_not_accuracy": 54.1079,
+          "BLEU_not_accuracy": 29.4805,
+          "empty_predictions": 0,
+          "example_output": "Necesito un bloqueo solar este fin de semana",
+          "source_and_reference_not_in_report": true
+        },
+        "en-fr": {
+          "n": 36,
+          "chrF_not_accuracy": 57.9393,
+          "BLEU_not_accuracy": 33.0991,
+          "empty_predictions": 0,
+          "example_output": "J'ai besoin de blocage solaire ce week-end",
+          "source_and_reference_not_in_report": true
+        },
+        "es-fr": {
+          "n": 36,
+          "chrF_not_accuracy": 55.9748,
+          "BLEU_not_accuracy": 34.597,
+          "empty_predictions": 0,
+          "example_output": "J'ai besoin de protection solaire ce week-end",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-es": {
+          "n": 36,
+          "chrF_not_accuracy": 54.586,
+          "BLEU_not_accuracy": 28.4305,
+          "empty_predictions": 0,
+          "example_output": "¿Necesitaría una crema solar este fin de semana?",
+          "source_and_reference_not_in_report": true
+        }
+      },
+      "tatoeba_dev": {
+        "en-es": {
+          "n": 20,
+          "chrF_not_accuracy": 59.2029,
+          "BLEU_not_accuracy": 34.6478,
+          "empty_predictions": 0,
+          "example_output": "Yo comí uno.",
+          "source_and_reference_not_in_report": true
+        },
+        "es-en": {
+          "n": 20,
+          "chrF_not_accuracy": 68.1574,
+          "BLEU_not_accuracy": 50.9123,
+          "empty_predictions": 0,
+          "example_output": "I ate one.",
+          "source_and_reference_not_in_report": true
+        },
+        "en-fr": {
+          "n": 20,
+          "chrF_not_accuracy": 54.9714,
+          "BLEU_not_accuracy": 31.2306,
+          "empty_predictions": 0,
+          "example_output": "La barre spatiale est la clé d'un clavier alfanumérique.",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-en": {
+          "n": 20,
+          "chrF_not_accuracy": 71.1802,
+          "BLEU_not_accuracy": 45.8368,
+          "empty_predictions": 0,
+          "example_output": "The space bar is an alphanumeric keyboard touch.",
+          "source_and_reference_not_in_report": true
+        },
+        "es-fr": {
+          "n": 20,
+          "chrF_not_accuracy": 64.272,
+          "BLEU_not_accuracy": 47.5743,
+          "empty_predictions": 0,
+          "example_output": "Personne ne veut aider Thomas.",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-es": {
+          "n": 20,
+          "chrF_not_accuracy": 61.9796,
+          "BLEU_not_accuracy": 29.353,
+          "empty_predictions": 0,
+          "example_output": "Nadie quiere ayudar a Thomas.",
+          "source_and_reference_not_in_report": true
+        }
+      },
+      "automatic_gates": {
+        "massive": {
+          "eligible": false,
+          "chrF_delta_not_human_accuracy": {
+            "en-es": 0.3416,
+            "es-en": -0.3972,
+            "en-fr": 0.7245,
+            "fr-en": 0.0551,
+            "es-fr": -0.6953,
+            "fr-es": 0.0902
+          },
+          "BLEU_delta_not_human_accuracy": {
+            "en-es": 0.9493,
+            "es-en": -0.3808,
+            "en-fr": 1.0886,
+            "fr-en": -1.0406,
+            "es-fr": -1.8522,
+            "fr-es": -1.1022
+          },
+          "mean_chrF_delta": 0.0198,
+          "blocked_by": [
+            "insufficient_mean_massive_chrF_gain",
+            "fr-en:BLEU_regression",
+            "es-fr:BLEU_regression",
+            "fr-es:BLEU_regression"
+          ]
+        },
+        "tatoeba": {
+          "eligible": false,
+          "chrF_delta_not_human_accuracy": {
+            "en-es": 0.6507,
+            "es-en": 2.2888,
+            "en-fr": 0.8135,
+            "fr-en": 3.1026,
+            "es-fr": 1.4096,
+            "fr-es": -0.6023
+          },
+          "BLEU_delta_not_human_accuracy": {
+            "en-es": 1.0504,
+            "es-en": 3.5903,
+            "en-fr": 0.4485,
+            "fr-en": 1.8721,
+            "es-fr": 1.2217,
+            "fr-es": -0.1316
+          },
+          "mean_chrF_delta": 1.2772,
+          "blocked_by": [
+            "fr-es:chrF_regression"
+          ]
+        },
+        "automated_research_selection_only": true,
+        "numeric_and_slang_context_meaning_not_independently_verified": true
+      },
+      "eligible_for_research_only": false
+    },
+    "shared_lora_parallel_extra120.safetensors": {
+      "sha256": "37a417699ff4d1ce64122e4ce985b69a46011c456fa7e5716f303fb541df077d",
+      "bytes": 396248,
+      "massive_dev": {
+        "es-en": {
+          "n": 36,
+          "chrF_not_accuracy": 54.9373,
+          "BLEU_not_accuracy": 23.0347,
+          "empty_predictions": 0,
+          "example_output": "I will need a solar protection this weekend.",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-en": {
+          "n": 36,
+          "chrF_not_accuracy": 56.4194,
+          "BLEU_not_accuracy": 27.6384,
+          "empty_predictions": 0,
+          "example_output": "Would I need a sun cream this weekend?",
+          "source_and_reference_not_in_report": true
+        },
+        "en-es": {
+          "n": 36,
+          "chrF_not_accuracy": 54.6427,
+          "BLEU_not_accuracy": 28.8383,
+          "empty_predictions": 0,
+          "example_output": "Necesito un bloqueo solar este fin de semana",
+          "source_and_reference_not_in_report": true
+        },
+        "en-fr": {
+          "n": 36,
+          "chrF_not_accuracy": 61.3075,
+          "BLEU_not_accuracy": 36.3241,
+          "empty_predictions": 0,
+          "example_output": "J'ai besoin de blocage solaire ce week-end",
+          "source_and_reference_not_in_report": true
+        },
+        "es-fr": {
+          "n": 36,
+          "chrF_not_accuracy": 57.0138,
+          "BLEU_not_accuracy": 32.9045,
+          "empty_predictions": 0,
+          "example_output": "J'ai besoin de protection solaire ce week-end",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-es": {
+          "n": 36,
+          "chrF_not_accuracy": 54.4527,
+          "BLEU_not_accuracy": 28.3541,
+          "empty_predictions": 0,
+          "example_output": "¿Necesitaría una crema solar este fin de semana?",
+          "source_and_reference_not_in_report": true
+        }
+      },
+      "tatoeba_dev": {
+        "en-es": {
+          "n": 20,
+          "chrF_not_accuracy": 59.5824,
+          "BLEU_not_accuracy": 37.118,
+          "empty_predictions": 0,
+          "example_output": "Yo comí uno.",
+          "source_and_reference_not_in_report": true
+        },
+        "es-en": {
+          "n": 20,
+          "chrF_not_accuracy": 68.5502,
+          "BLEU_not_accuracy": 50.3155,
+          "empty_predictions": 0,
+          "example_output": "I ate one.",
+          "source_and_reference_not_in_report": true
+        },
+        "en-fr": {
+          "n": 20,
+          "chrF_not_accuracy": 57.9889,
+          "BLEU_not_accuracy": 33.2353,
+          "empty_predictions": 0,
+          "example_output": "La barre spatiale est la clé d'un clavier alfanumérique.",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-en": {
+          "n": 20,
+          "chrF_not_accuracy": 68.9657,
+          "BLEU_not_accuracy": 43.6159,
+          "empty_predictions": 0,
+          "example_output": "The space bar is an alphanumeric keyboard touch.",
+          "source_and_reference_not_in_report": true
+        },
+        "es-fr": {
+          "n": 20,
+          "chrF_not_accuracy": 62.7007,
+          "BLEU_not_accuracy": 44.6369,
+          "empty_predictions": 0,
+          "example_output": "Personne ne veut aider Thomas.",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-es": {
+          "n": 20,
+          "chrF_not_accuracy": 62.7152,
+          "BLEU_not_accuracy": 29.4316,
+          "empty_predictions": 0,
+          "example_output": "Nadie quiere ayudar a Thomas.",
+          "source_and_reference_not_in_report": true
+        }
+      },
+      "automatic_gates": {
+        "massive": {
+          "eligible": false,
+          "chrF_delta_not_human_accuracy": {
+            "en-es": 0.8764,
+            "es-en": -0.242,
+            "en-fr": 4.0927,
+            "fr-en": 3.0205,
+            "es-fr": 0.3437,
+            "fr-es": -0.0431
+          },
+          "BLEU_delta_not_human_accuracy": {
+            "en-es": 0.3071,
+            "es-en": 2.0419,
+            "en-fr": 4.3136,
+            "fr-en": 3.0944,
+            "es-fr": -3.5447,
+            "fr-es": -1.1786
+          },
+          "mean_chrF_delta": 1.3414,
+          "blocked_by": [
+            "es-fr:BLEU_regression",
+            "fr-es:BLEU_regression"
+          ]
+        },
+        "tatoeba": {
+          "eligible": false,
+          "chrF_delta_not_human_accuracy": {
+            "en-es": 1.0302,
+            "es-en": 2.6816,
+            "en-fr": 3.831,
+            "fr-en": 0.8881,
+            "es-fr": -0.1617,
+            "fr-es": 0.1333
+          },
+          "BLEU_delta_not_human_accuracy": {
+            "en-es": 3.5206,
+            "es-en": 2.9935,
+            "en-fr": 2.4532,
+            "fr-en": -0.3488,
+            "es-fr": -1.7157,
+            "fr-es": -0.053
+          },
+          "mean_chrF_delta": 1.4004,
+          "blocked_by": [
+            "es-fr:BLEU_regression"
+          ]
+        },
+        "automated_research_selection_only": true,
+        "numeric_and_slang_context_meaning_not_independently_verified": true
+      },
+      "eligible_for_research_only": false
+    },
+    "shared_lora_parallel_extra240.safetensors": {
+      "sha256": "8d7e2b70a32101170e98d8a12950fcd7f94b4f5378af49643cc44c38f3060e3b",
+      "bytes": 396248,
+      "massive_dev": {
+        "es-en": {
+          "n": 36,
+          "chrF_not_accuracy": 54.2236,
+          "BLEU_not_accuracy": 21.58,
+          "empty_predictions": 0,
+          "example_output": "I'm going to need a solar protection this weekend.",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-en": {
+          "n": 36,
+          "chrF_not_accuracy": 56.6816,
+          "BLEU_not_accuracy": 26.4311,
+          "empty_predictions": 0,
+          "example_output": "Would I need a sun cream this weekend?",
+          "source_and_reference_not_in_report": true
+        },
+        "en-es": {
+          "n": 36,
+          "chrF_not_accuracy": 55.0586,
+          "BLEU_not_accuracy": 29.078,
+          "empty_predictions": 0,
+          "example_output": "Necesito un bloqueo solar este fin de semana",
+          "source_and_reference_not_in_report": true
+        },
+        "en-fr": {
+          "n": 36,
+          "chrF_not_accuracy": 61.5243,
+          "BLEU_not_accuracy": 35.4555,
+          "empty_predictions": 0,
+          "example_output": "J'ai besoin de blocage solaire ce week-end",
+          "source_and_reference_not_in_report": true
+        },
+        "es-fr": {
+          "n": 36,
+          "chrF_not_accuracy": 58.2666,
+          "BLEU_not_accuracy": 35.2209,
+          "empty_predictions": 0,
+          "example_output": "J'ai besoin de protection solaire ce week-end",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-es": {
+          "n": 36,
+          "chrF_not_accuracy": 55.9747,
+          "BLEU_not_accuracy": 31.1927,
+          "empty_predictions": 0,
+          "example_output": "¿Necesitaría una crema solar este fin de semana?",
+          "source_and_reference_not_in_report": true
+        }
+      },
+      "tatoeba_dev": {
+        "en-es": {
+          "n": 20,
+          "chrF_not_accuracy": 61.1115,
+          "BLEU_not_accuracy": 40.1363,
+          "empty_predictions": 0,
+          "example_output": "Yo comí uno.",
+          "source_and_reference_not_in_report": true
+        },
+        "es-en": {
+          "n": 20,
+          "chrF_not_accuracy": 68.2678,
+          "BLEU_not_accuracy": 52.059,
+          "empty_predictions": 0,
+          "example_output": "I ate one.",
+          "source_and_reference_not_in_report": true
+        },
+        "en-fr": {
+          "n": 20,
+          "chrF_not_accuracy": 57.4891,
+          "BLEU_not_accuracy": 33.1539,
+          "empty_predictions": 0,
+          "example_output": "La barre spatiale est la clé d'un clavier alfanumérique.",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-en": {
+          "n": 20,
+          "chrF_not_accuracy": 69.4633,
+          "BLEU_not_accuracy": 46.4465,
+          "empty_predictions": 0,
+          "example_output": "The space bar is an alphanumeric keyboard touch.",
+          "source_and_reference_not_in_report": true
+        },
+        "es-fr": {
+          "n": 20,
+          "chrF_not_accuracy": 62.8603,
+          "BLEU_not_accuracy": 44.84,
+          "empty_predictions": 0,
+          "example_output": "Personne ne veut aider Thomas.",
+          "source_and_reference_not_in_report": true
+        },
+        "fr-es": {
+          "n": 20,
+          "chrF_not_accuracy": 62.7152,
+          "BLEU_not_accuracy": 29.4316,
+          "empty_predictions": 0,
+          "example_output": "Nadie quiere ayudar a Thomas.",
+          "source_and_reference_not_in_report": true
+        }
+      },
+      "automatic_gates": {
+        "massive": {
+          "eligible": false,
+          "chrF_delta_not_human_accuracy": {
+            "en-es": 1.2923,
+            "es-en": -0.9557,
+            "en-fr": 4.3095,
+            "fr-en": 3.2827,
+            "es-fr": 1.5965,
+            "fr-es": 1.4789
+          },
+          "BLEU_delta_not_human_accuracy": {
+            "en-es": 0.5468,
+            "es-en": 0.5872,
+            "en-fr": 3.445,
+            "fr-en": 1.8871,
+            "es-fr": -1.2283,
+            "fr-es": 1.66
+          },
+          "mean_chrF_delta": 1.834,
+          "blocked_by": [
+            "es-fr:BLEU_regression"
+          ]
+        },
+        "tatoeba": {
+          "eligible": false,
+          "chrF_delta_not_human_accuracy": {
+            "en-es": 2.5593,
+            "es-en": 2.3992,
+            "en-fr": 3.3312,
+            "fr-en": 1.3857,
+            "es-fr": -0.0021,
+            "fr-es": 0.1333
+          },
+          "BLEU_delta_not_human_accuracy": {
+            "en-es": 6.5389,
+            "es-en": 4.737,
+            "en-fr": 2.3718,
+            "fr-en": 2.4818,
+            "es-fr": -1.5126,
+            "fr-es": -0.053
+          },
+          "mean_chrF_delta": 1.6344,
+          "blocked_by": [
+            "es-fr:BLEU_regression"
+          ]
+        },
+        "automated_research_selection_only": true,
+        "numeric_and_slang_context_meaning_not_independently_verified": true
+      },
+      "eligible_for_research_only": false
+    }
+  },
+  "checkpoint_decision": "parent_preserved_no_candidate_passed_both_gates",
+  "selected_path": "research/multilingual_student/experiment_002/shared_lora_extra20.safetensors",
+  "selected_sha256": "a00c7965211853df07ce3fa032a76283dfc984dcdaeac85e03263445029ffb8e",
+  "never_downgrade_if_gates_fail": true,
+  "previous_models_and_reports_preserved": true,
+  "train_log": [
+    {
+      "update": 1,
+      "route": "es-fr",
+      "learning_rate": 6.25e-06,
+      "cross_entropy": 1.068292,
+      "gradient_norm": 0.53646
+    },
+    {
+      "update": 2,
+      "route": "en-es",
+      "learning_rate": 1.25e-05,
+      "cross_entropy": 1.206967,
+      "gradient_norm": 0.5275
+    },
+    {
+      "update": 3,
+      "route": "es-en",
+      "learning_rate": 1.875e-05,
+      "cross_entropy": 1.856745,
+      "gradient_norm": 0.52345
+    },
+    {
+      "update": 4,
+      "route": "es-fr",
+      "learning_rate": 2.5e-05,
+      "cross_entropy": 1.318145,
+      "gradient_norm": 0.39131
+    },
+    {
+      "update": 5,
+      "route": "en-fr",
+      "learning_rate": 3.125e-05,
+      "cross_entropy": 0.977632,
+      "gradient_norm": 0.37476
+    },
+    {
+      "update": 6,
+      "route": "fr-es",
+      "learning_rate": 3.75e-05,
+      "cross_entropy": 1.394939,
+      "gradient_norm": 0.51217
+    },
+    {
+      "update": 7,
+      "route": "en-es",
+      "learning_rate": 4.375e-05,
+      "cross_entropy": 1.073145,
+      "gradient_norm": 0.47317
+    },
+    {
+      "update": 8,
+      "route": "en-fr",
+      "learning_rate": 5e-05,
+      "cross_entropy": 0.823617,
+      "gradient_norm": 0.30739
+    },
+    {
+      "update": 9,
+      "route": "fr-es",
+      "learning_rate": 5.625e-05,
+      "cross_entropy": 1.93913,
+      "gradient_norm": 0.35585
+    },
+    {
+      "update": 10,
+      "route": "es-en",
+      "learning_rate": 6.25e-05,
+      "cross_entropy": 0.736321,
+      "gradient_norm": 0.50185
+    },
+    {
+      "update": 11,
+      "route": "fr-es",
+      "learning_rate": 6.875e-05,
+      "cross_entropy": 1.290764,
+      "gradient_norm": 0.54449
+    },
+    {
+      "update": 12,
+      "route": "es-en",
+      "learning_rate": 7.5e-05,
+      "cross_entropy": 1.356494,
+      "gradient_norm": 0.48108
+    },
+    {
+      "update": 13,
+      "route": "en-es",
+      "learning_rate": 8.125e-05,
+      "cross_entropy": 1.105563,
+      "gradient_norm": 0.35324
+    },
+    {
+      "update": 14,
+      "route": "es-fr",
+      "learning_rate": 8.75e-05,
+      "cross_entropy": 1.101819,
+      "gradient_norm": 0.45413
+    },
+    {
+      "update": 15,
+      "route": "es-en",
+      "learning_rate": 9.375e-05,
+      "cross_entropy": 0.724149,
+      "gradient_norm": 0.46207
+    },
+    {
+      "update": 16,
+      "route": "es-en",
+      "learning_rate": 0.0001,
+      "cross_entropy": 0.742834,
+      "gradient_norm": 0.43357
+    },
+    {
+      "update": 17,
+      "route": "es-en",
+      "learning_rate": 0.00010625,
+      "cross_entropy": 0.661546,
+      "gradient_norm": 0.39092
+    },
+    {
+      "update": 18,
+      "route": "en-fr",
+      "learning_rate": 0.0001125,
+      "cross_entropy": 1.873884,
+      "gradient_norm": 0.62181
+    },
+    {
+      "update": 19,
+      "route": "en-fr",
+      "learning_rate": 0.00011875,
+      "cross_entropy": 2.996752,
+      "gradient_norm": 0.71245
+    },
+    {
+      "update": 20,
+      "route": "es-fr",
+      "learning_rate": 0.000125,
+      "cross_entropy": 0.942663,
+      "gradient_norm": 0.42195
+    },
+    {
+      "update": 21,
+      "route": "fr-es",
+      "learning_rate": 0.00013125,
+      "cross_entropy": 1.261873,
+      "gradient_norm": 0.38296
+    },
+    {
+      "update": 22,
+      "route": "en-fr",
+      "learning_rate": 0.0001375,
+      "cross_entropy": 1.01935,
+      "gradient_norm": 0.4524
+    },
+    {
+      "update": 23,
+      "route": "fr-es",
+      "learning_rate": 0.00014375,
+      "cross_entropy": 1.499473,
+      "gradient_norm": 0.62421
+    },
+    {
+      "update": 24,
+      "route": "en-fr",
+      "learning_rate": 0.00015,
+      "cross_entropy": 0.81768,
+      "gradient_norm": 0.4188
+    },
+    {
+      "update": 25,
+      "route": "fr-es",
+      "learning_rate": 0.00014999,
+      "cross_entropy": 0.932532,
+      "gradient_norm": 0.47432
+    },
+    {
+      "update": 26,
+      "route": "en-fr",
+      "learning_rate": 0.00014997,
+      "cross_entropy": 1.423457,
+      "gradient_norm": 0.54269
+    },
+    {
+      "update": 27,
+      "route": "es-fr",
+      "learning_rate": 0.00014994,
+      "cross_entropy": 1.047971,
+      "gradient_norm": 0.37472
+    },
+    {
+      "update": 28,
+      "route": "fr-en",
+      "learning_rate": 0.00014989,
+      "cross_entropy": 0.941941,
+      "gradient_norm": 0.46274
+    },
+    {
+      "update": 29,
+      "route": "en-es",
+      "learning_rate": 0.00014983,
+      "cross_entropy": 1.692465,
+      "gradient_norm": 0.85946
+    },
+    {
+      "update": 30,
+      "route": "en-fr",
+      "learning_rate": 0.00014976,
+      "cross_entropy": 0.818146,
+      "gradient_norm": 0.45606
+    },
+    {
+      "update": 31,
+      "route": "en-es",
+      "learning_rate": 0.00014968,
+      "cross_entropy": 1.856328,
+      "gradient_norm": 0.67792
+    },
+    {
+      "update": 32,
+      "route": "es-fr",
+      "learning_rate": 0.00014958,
+      "cross_entropy": 1.137017,
+      "gradient_norm": 0.59202
+    },
+    {
+      "update": 33,
+      "route": "es-fr",
+      "learning_rate": 0.00014947,
+      "cross_entropy": 1.231117,
+      "gradient_norm": 0.55205
+    },
+    {
+      "update": 34,
+      "route": "en-es",
+      "learning_rate": 0.00014934,
+      "cross_entropy": 0.675949,
+      "gradient_norm": 0.57588
+    },
+    {
+      "update": 35,
+      "route": "en-es",
+      "learning_rate": 0.0001492,
+      "cross_entropy": 1.454254,
+      "gradient_norm": 0.59988
+    },
+    {
+      "update": 36,
+      "route": "en-es",
+      "learning_rate": 0.00014905,
+      "cross_entropy": 1.285423,
+      "gradient_norm": 0.88313
+    },
+    {
+      "update": 37,
+      "route": "fr-en",
+      "learning_rate": 0.00014889,
+      "cross_entropy": 1.669533,
+      "gradient_norm": 0.79284
+    },
+    {
+      "update": 38,
+      "route": "fr-es",
+      "learning_rate": 0.00014871,
+      "cross_entropy": 1.562089,
+      "gradient_norm": 0.71344
+    },
+    {
+      "update": 39,
+      "route": "fr-es",
+      "learning_rate": 0.00014852,
+      "cross_entropy": 2.277927,
+      "gradient_norm": 1.02335
+    },
+    {
+      "update": 40,
+      "route": "en-fr",
+      "learning_rate": 0.00014832,
+      "cross_entropy": 1.271413,
+      "gradient_norm": 0.6337
+    },
+    {
+      "update": 41,
+      "route": "en-es",
+      "learning_rate": 0.0001481,
+      "cross_entropy": 1.178881,
+      "gradient_norm": 0.89723
+    },
+    {
+      "update": 42,
+      "route": "en-fr",
+      "learning_rate": 0.00014787,
+      "cross_entropy": 1.674661,
+      "gradient_norm": 0.73374
+    },
+    {
+      "update": 43,
+      "route": "es-en",
+      "learning_rate": 0.00014763,
+      "cross_entropy": 0.901398,
+      "gradient_norm": 0.7483
+    },
+    {
+      "update": 44,
+      "route": "es-fr",
+      "learning_rate": 0.00014737,
+      "cross_entropy": 1.445635,
+      "gradient_norm": 0.99447
+    },
+    {
+      "update": 45,
+      "route": "es-en",
+      "learning_rate": 0.00014711,
+      "cross_entropy": 1.34586,
+      "gradient_norm": 0.97224
+    },
+    {
+      "update": 46,
+      "route": "fr-es",
+      "learning_rate": 0.00014683,
+      "cross_entropy": 1.299998,
+      "gradient_norm": 0.99994
+    },
+    {
+      "update": 47,
+      "route": "es-en",
+      "learning_rate": 0.00014654,
+      "cross_entropy": 1.240576,
+      "gradient_norm": 0.9117
+    },
+    {
+      "update": 48,
+      "route": "es-en",
+      "learning_rate": 0.00014623,
+      "cross_entropy": 0.651661,
+      "gradient_norm": 0.83238
+    },
+    {
+      "update": 49,
+      "route": "en-fr",
+      "learning_rate": 0.00014591,
+      "cross_entropy": 1.045217,
+      "gradient_norm": 0.77017
+    },
+    {
+      "update": 50,
+      "route": "fr-en",
+      "learning_rate": 0.00014558,
+      "cross_entropy": 0.856872,
+      "gradient_norm": 0.60692
+    },
+    {
+      "update": 51,
+      "route": "fr-en",
+      "learning_rate": 0.00014524,
+      "cross_entropy": 1.276622,
+      "gradient_norm": 1.00971
+    },
+    {
+      "update": 52,
+      "route": "fr-es",
+      "learning_rate": 0.00014489,
+      "cross_entropy": 1.298579,
+      "gradient_norm": 0.7176
+    },
+    {
+      "update": 53,
+      "route": "fr-es",
+      "learning_rate": 0.00014452,
+      "cross_entropy": 1.430466,
+      "gradient_norm": 0.81678
+    },
+    {
+      "update": 54,
+      "route": "en-fr",
+      "learning_rate": 0.00014414,
+      "cross_entropy": 1.412903,
+      "gradient_norm": 0.95619
+    },
+    {
+      "update": 55,
+      "route": "fr-es",
+      "learning_rate": 0.00014375,
+      "cross_entropy": 0.852567,
+      "gradient_norm": 0.80158
+    },
+    {
+      "update": 56,
+      "route": "en-fr",
+      "learning_rate": 0.00014335,
+      "cross_entropy": 2.182248,
+      "gradient_norm": 1.00909
+    },
+    {
+      "update": 57,
+      "route": "fr-en",
+      "learning_rate": 0.00014294,
+      "cross_entropy": 1.871857,
+      "gradient_norm": 0.83061
+    },
+    {
+      "update": 58,
+      "route": "fr-es",
+      "learning_rate": 0.00014251,
+      "cross_entropy": 1.44322,
+      "gradient_norm": 0.86046
+    },
+    {
+      "update": 59,
+      "route": "fr-es",
+      "learning_rate": 0.00014208,
+      "cross_entropy": 1.183312,
+      "gradient_norm": 1.05828
+    },
+    {
+      "update": 60,
+      "route": "es-en",
+      "learning_rate": 0.00014163,
+      "cross_entropy": 0.71306,
+      "gradient_norm": 0.67933
+    },
+    {
+      "update": 61,
+      "route": "en-fr",
+      "learning_rate": 0.00014117,
+      "cross_entropy": 1.330045,
+      "gradient_norm": 1.06723
+    },
+    {
+      "update": 62,
+      "route": "fr-en",
+      "learning_rate": 0.00014069,
+      "cross_entropy": 0.860388,
+      "gradient_norm": 0.70742
+    },
+    {
+      "update": 63,
+      "route": "es-en",
+      "learning_rate": 0.00014021,
+      "cross_entropy": 0.944719,
+      "gradient_norm": 1.34823
+    },
+    {
+      "update": 64,
+      "route": "fr-es",
+      "learning_rate": 0.00013972,
+      "cross_entropy": 1.134664,
+      "gradient_norm": 0.94618
+    },
+    {
+      "update": 65,
+      "route": "en-fr",
+      "learning_rate": 0.00013921,
+      "cross_entropy": 0.723509,
+      "gradient_norm": 0.60746
+    },
+    {
+      "update": 66,
+      "route": "es-fr",
+      "learning_rate": 0.0001387,
+      "cross_entropy": 1.086824,
+      "gradient_norm": 0.61123
+    },
+    {
+      "update": 67,
+      "route": "es-fr",
+      "learning_rate": 0.00013817,
+      "cross_entropy": 1.092373,
+      "gradient_norm": 0.81119
+    },
+    {
+      "update": 68,
+      "route": "fr-en",
+      "learning_rate": 0.00013763,
+      "cross_entropy": 0.625938,
+      "gradient_norm": 0.85557
+    },
+    {
+      "update": 69,
+      "route": "en-es",
+      "learning_rate": 0.00013708,
+      "cross_entropy": 0.799065,
+      "gradient_norm": 0.92566
+    },
+    {
+      "update": 70,
+      "route": "fr-en",
+      "learning_rate": 0.00013653,
+      "cross_entropy": 0.626512,
+      "gradient_norm": 0.96059
+    },
+    {
+      "update": 71,
+      "route": "en-es",
+      "learning_rate": 0.00013596,
+      "cross_entropy": 2.789901,
+      "gradient_norm": 1.24557
+    },
+    {
+      "update": 72,
+      "route": "fr-en",
+      "learning_rate": 0.00013538,
+      "cross_entropy": 0.936255,
+      "gradient_norm": 1.08698
+    },
+    {
+      "update": 73,
+      "route": "es-fr",
+      "learning_rate": 0.00013479,
+      "cross_entropy": 0.703226,
+      "gradient_norm": 0.84941
+    },
+    {
+      "update": 74,
+      "route": "en-fr",
+      "learning_rate": 0.00013419,
+      "cross_entropy": 2.039686,
+      "gradient_norm": 1.50267
+    },
+    {
+      "update": 75,
+      "route": "es-fr",
+      "learning_rate": 0.00013358,
+      "cross_entropy": 1.572629,
+      "gradient_norm": 0.96738
+    },
+    {
+      "update": 76,
+      "route": "fr-en",
+      "learning_rate": 0.00013296,
+      "cross_entropy": 1.366472,
+      "gradient_norm": 1.20553
+    },
+    {
+      "update": 77,
+      "route": "es-fr",
+      "learning_rate": 0.00013233,
+      "cross_entropy": 1.103397,
+      "gradient_norm": 1.00568
+    },
+    {
+      "update": 78,
+      "route": "fr-en",
+      "learning_rate": 0.00013169,
+      "cross_entropy": 1.730192,
+      "gradient_norm": 1.67108
+    },
+    {
+      "update": 79,
+      "route": "en-fr",
+      "learning_rate": 0.00013105,
+      "cross_entropy": 0.842088,
+      "gradient_norm": 0.96202
+    },
+    {
+      "update": 80,
+      "route": "en-es",
+      "learning_rate": 0.00013039,
+      "cross_entropy": 1.21309,
+      "gradient_norm": 1.79728
+    },
+    {
+      "update": 81,
+      "route": "en-fr",
+      "learning_rate": 0.00012972,
+      "cross_entropy": 0.680161,
+      "gradient_norm": 1.03593
+    },
+    {
+      "update": 82,
+      "route": "en-es",
+      "learning_rate": 0.00012905,
+      "cross_entropy": 0.610094,
+      "gradient_norm": 1.02195
+    },
+    {
+      "update": 83,
+      "route": "en-es",
+      "learning_rate": 0.00012837,
+      "cross_entropy": 1.815844,
+      "gradient_norm": 1.19152
+    },
+    {
+      "update": 84,
+      "route": "es-en",
+      "learning_rate": 0.00012767,
+      "cross_entropy": 1.256628,
+      "gradient_norm": 1.00419
+    },
+    {
+      "update": 85,
+      "route": "fr-es",
+      "learning_rate": 0.00012697,
+      "cross_entropy": 1.923402,
+      "gradient_norm": 1.15662
+    },
+    {
+      "update": 86,
+      "route": "es-fr",
+      "learning_rate": 0.00012626,
+      "cross_entropy": 0.651303,
+      "gradient_norm": 0.69109
+    },
+    {
+      "update": 87,
+      "route": "en-es",
+      "learning_rate": 0.00012555,
+      "cross_entropy": 1.228528,
+      "gradient_norm": 0.90812
+    },
+    {
+      "update": 88,
+      "route": "es-fr",
+      "learning_rate": 0.00012482,
+      "cross_entropy": 1.286604,
+      "gradient_norm": 0.92859
+    },
+    {
+      "update": 89,
+      "route": "en-es",
+      "learning_rate": 0.00012409,
+      "cross_entropy": 1.499959,
+      "gradient_norm": 1.34052
+    },
+    {
+      "update": 90,
+      "route": "fr-en",
+      "learning_rate": 0.00012335,
+      "cross_entropy": 0.996294,
+      "gradient_norm": 1.23248
+    },
+    {
+      "update": 91,
+      "route": "fr-es",
+      "learning_rate": 0.0001226,
+      "cross_entropy": 1.041716,
+      "gradient_norm": 1.14601
+    },
+    {
+      "update": 92,
+      "route": "fr-en",
+      "learning_rate": 0.00012184,
+      "cross_entropy": 1.001707,
+      "gradient_norm": 1.20451
+    },
+    {
+      "update": 93,
+      "route": "fr-en",
+      "learning_rate": 0.00012108,
+      "cross_entropy": 1.163458,
+      "gradient_norm": 1.30914
+    },
+    {
+      "update": 94,
+      "route": "en-fr",
+      "learning_rate": 0.00012031,
+      "cross_entropy": 0.753044,
+      "gradient_norm": 0.95973
+    },
+    {
+      "update": 95,
+      "route": "es-en",
+      "learning_rate": 0.00011953,
+      "cross_entropy": 0.517864,
+      "gradient_norm": 1.16283
+    },
+    {
+      "update": 96,
+      "route": "es-en",
+      "learning_rate": 0.00011875,
+      "cross_entropy": 1.727496,
+      "gradient_norm": 1.1597
+    },
+    {
+      "update": 97,
+      "route": "es-fr",
+      "learning_rate": 0.00011796,
+      "cross_entropy": 0.761822,
+      "gradient_norm": 1.04297
+    },
+    {
+      "update": 98,
+      "route": "en-es",
+      "learning_rate": 0.00011716,
+      "cross_entropy": 1.334738,
+      "gradient_norm": 1.19198
+    },
+    {
+      "update": 99,
+      "route": "fr-en",
+      "learning_rate": 0.00011636,
+      "cross_entropy": 0.417701,
+      "gradient_norm": 0.98713
+    },
+    {
+      "update": 100,
+      "route": "fr-es",
+      "learning_rate": 0.00011555,
+      "cross_entropy": 1.794383,
+      "gradient_norm": 1.46853
+    },
+    {
+      "update": 101,
+      "route": "en-es",
+      "learning_rate": 0.00011473,
+      "cross_entropy": 0.784843,
+      "gradient_norm": 1.43858
+    },
+    {
+      "update": 102,
+      "route": "fr-es",
+      "learning_rate": 0.00011391,
+      "cross_entropy": 1.588802,
+      "gradient_norm": 1.00823
+    },
+    {
+      "update": 103,
+      "route": "en-fr",
+      "learning_rate": 0.00011309,
+      "cross_entropy": 0.498783,
+      "gradient_norm": 0.8705
+    },
+    {
+      "update": 104,
+      "route": "es-fr",
+      "learning_rate": 0.00011225,
+      "cross_entropy": 0.790237,
+      "gradient_norm": 1.05539
+    },
+    {
+      "update": 105,
+      "route": "en-es",
+      "learning_rate": 0.00011142,
+      "cross_entropy": 0.622108,
+      "gradient_norm": 1.22805
+    },
+    {
+      "update": 106,
+      "route": "fr-en",
+      "learning_rate": 0.00011058,
+      "cross_entropy": 0.448138,
+      "gradient_norm": 1.09462
+    },
+    {
+      "update": 107,
+      "route": "fr-en",
+      "learning_rate": 0.00010973,
+      "cross_entropy": 0.735775,
+      "gradient_norm": 1.095
+    },
+    {
+      "update": 108,
+      "route": "es-fr",
+      "learning_rate": 0.00010888,
+      "cross_entropy": 1.354775,
+      "gradient_norm": 1.8339
+    },
+    {
+      "update": 109,
+      "route": "fr-es",
+      "learning_rate": 0.00010802,
+      "cross_entropy": 0.757439,
+      "gradient_norm": 0.98597
+    },
+    {
+      "update": 110,
+      "route": "fr-es",
+      "learning_rate": 0.00010716,
+      "cross_entropy": 1.582743,
+      "gradient_norm": 2.20368
+    },
+    {
+      "update": 111,
+      "route": "es-en",
+      "learning_rate": 0.00010629,
+      "cross_entropy": 1.134286,
+      "gradient_norm": 1.16634
+    },
+    {
+      "update": 112,
+      "route": "en-es",
+      "learning_rate": 0.00010543,
+      "cross_entropy": 0.420944,
+      "gradient_norm": 0.95898
+    },
+    {
+      "update": 113,
+      "route": "es-fr",
+      "learning_rate": 0.00010455,
+      "cross_entropy": 1.107866,
+      "gradient_norm": 1.10235
+    },
+    {
+      "update": 114,
+      "route": "es-fr",
+      "learning_rate": 0.00010368,
+      "cross_entropy": 0.943426,
+      "gradient_norm": 1.05861
+    },
+    {
+      "update": 115,
+      "route": "en-fr",
+      "learning_rate": 0.0001028,
+      "cross_entropy": 0.718084,
+      "gradient_norm": 0.92714
+    },
+    {
+      "update": 116,
+      "route": "es-fr",
+      "learning_rate": 0.00010191,
+      "cross_entropy": 1.155072,
+      "gradient_norm": 1.16524
+    },
+    {
+      "update": 117,
+      "route": "es-en",
+      "learning_rate": 0.00010103,
+      "cross_entropy": 0.88025,
+      "gradient_norm": 1.09
+    },
+    {
+      "update": 118,
+      "route": "en-fr",
+      "learning_rate": 0.00010014,
+      "cross_entropy": 0.956231,
+      "gradient_norm": 1.0903
+    },
+    {
+      "update": 119,
+      "route": "en-fr",
+      "learning_rate": 9.925e-05,
+      "cross_entropy": 0.659099,
+      "gradient_norm": 1.17452
+    },
+    {
+      "update": 120,
+      "route": "fr-en",
+      "learning_rate": 9.835e-05,
+      "cross_entropy": 0.709408,
+      "gradient_norm": 1.04645
+    },
+    {
+      "update": 121,
+      "route": "fr-es",
+      "learning_rate": 9.746e-05,
+      "cross_entropy": 2.138309,
+      "gradient_norm": 1.93322
+    },
+    {
+      "update": 122,
+      "route": "es-en",
+      "learning_rate": 9.656e-05,
+      "cross_entropy": 0.40034,
+      "gradient_norm": 1.15694
+    },
+    {
+      "update": 123,
+      "route": "en-fr",
+      "learning_rate": 9.566e-05,
+      "cross_entropy": 0.773596,
+      "gradient_norm": 1.20953
+    },
+    {
+      "update": 124,
+      "route": "fr-es",
+      "learning_rate": 9.476e-05,
+      "cross_entropy": 0.708827,
+      "gradient_norm": 1.08576
+    },
+    {
+      "update": 125,
+      "route": "es-fr",
+      "learning_rate": 9.385e-05,
+      "cross_entropy": 0.535241,
+      "gradient_norm": 0.70282
+    },
+    {
+      "update": 126,
+      "route": "fr-en",
+      "learning_rate": 9.295e-05,
+      "cross_entropy": 0.425527,
+      "gradient_norm": 0.94269
+    },
+    {
+      "update": 127,
+      "route": "en-fr",
+      "learning_rate": 9.204e-05,
+      "cross_entropy": 0.686661,
+      "gradient_norm": 1.02342
+    },
+    {
+      "update": 128,
+      "route": "en-fr",
+      "learning_rate": 9.113e-05,
+      "cross_entropy": 1.230374,
+      "gradient_norm": 1.33055
+    },
+    {
+      "update": 129,
+      "route": "fr-es",
+      "learning_rate": 9.023e-05,
+      "cross_entropy": 0.670637,
+      "gradient_norm": 1.1826
+    },
+    {
+      "update": 130,
+      "route": "es-fr",
+      "learning_rate": 8.932e-05,
+      "cross_entropy": 1.365914,
+      "gradient_norm": 2.07507
+    },
+    {
+      "update": 131,
+      "route": "es-en",
+      "learning_rate": 8.841e-05,
+      "cross_entropy": 0.604642,
+      "gradient_norm": 0.78871
+    },
+    {
+      "update": 132,
+      "route": "es-fr",
+      "learning_rate": 8.75e-05,
+      "cross_entropy": 0.916203,
+      "gradient_norm": 1.31599
+    },
+    {
+      "update": 133,
+      "route": "en-es",
+      "learning_rate": 8.659e-05,
+      "cross_entropy": 1.056467,
+      "gradient_norm": 1.72058
+    },
+    {
+      "update": 134,
+      "route": "fr-es",
+      "learning_rate": 8.568e-05,
+      "cross_entropy": 0.504711,
+      "gradient_norm": 1.26443
+    },
+    {
+      "update": 135,
+      "route": "en-es",
+      "learning_rate": 8.477e-05,
+      "cross_entropy": 1.789855,
+      "gradient_norm": 1.33591
+    },
+    {
+      "update": 136,
+      "route": "en-es",
+      "learning_rate": 8.387e-05,
+      "cross_entropy": 0.56196,
+      "gradient_norm": 0.91556
+    },
+    {
+      "update": 137,
+      "route": "es-en",
+      "learning_rate": 8.296e-05,
+      "cross_entropy": 0.767187,
+      "gradient_norm": 1.71176
+    },
+    {
+      "update": 138,
+      "route": "en-fr",
+      "learning_rate": 8.205e-05,
+      "cross_entropy": 0.618506,
+      "gradient_norm": 1.19645
+    },
+    {
+      "update": 139,
+      "route": "es-fr",
+      "learning_rate": 8.115e-05,
+      "cross_entropy": 1.259192,
+      "gradient_norm": 1.3887
+    },
+    {
+      "update": 140,
+      "route": "en-es",
+      "learning_rate": 8.024e-05,
+      "cross_entropy": 0.837526,
+      "gradient_norm": 1.42738
+    },
+    {
+      "update": 141,
+      "route": "en-es",
+      "learning_rate": 7.934e-05,
+      "cross_entropy": 1.512735,
+      "gradient_norm": 1.77295
+    },
+    {
+      "update": 142,
+      "route": "fr-es",
+      "learning_rate": 7.844e-05,
+      "cross_entropy": 1.588388,
+      "gradient_norm": 1.75176
+    },
+    {
+      "update": 143,
+      "route": "fr-es",
+      "learning_rate": 7.754e-05,
+      "cross_entropy": 0.447261,
+      "gradient_norm": 1.31752
+    },
+    {
+      "update": 144,
+      "route": "en-fr",
+      "learning_rate": 7.665e-05,
+      "cross_entropy": 1.207166,
+      "gradient_norm": 1.76024
+    },
+    {
+      "update": 145,
+      "route": "fr-en",
+      "learning_rate": 7.575e-05,
+      "cross_entropy": 0.46863,
+      "gradient_norm": 0.96934
+    },
+    {
+      "update": 146,
+      "route": "en-fr",
+      "learning_rate": 7.486e-05,
+      "cross_entropy": 0.740878,
+      "gradient_norm": 1.19513
+    },
+    {
+      "update": 147,
+      "route": "en-es",
+      "learning_rate": 7.397e-05,
+      "cross_entropy": 0.310284,
+      "gradient_norm": 0.91136
+    },
+    {
+      "update": 148,
+      "route": "en-es",
+      "learning_rate": 7.309e-05,
+      "cross_entropy": 0.54062,
+      "gradient_norm": 1.4371
+    },
+    {
+      "update": 149,
+      "route": "es-fr",
+      "learning_rate": 7.22e-05,
+      "cross_entropy": 1.229411,
+      "gradient_norm": 1.32879
+    },
+    {
+      "update": 150,
+      "route": "fr-es",
+      "learning_rate": 7.132e-05,
+      "cross_entropy": 1.431771,
+      "gradient_norm": 2.51851
+    },
+    {
+      "update": 151,
+      "route": "fr-es",
+      "learning_rate": 7.045e-05,
+      "cross_entropy": 1.216835,
+      "gradient_norm": 2.01083
+    },
+    {
+      "update": 152,
+      "route": "es-en",
+      "learning_rate": 6.957e-05,
+      "cross_entropy": 0.975621,
+      "gradient_norm": 1.16006
+    },
+    {
+      "update": 153,
+      "route": "es-en",
+      "learning_rate": 6.871e-05,
+      "cross_entropy": 0.372835,
+      "gradient_norm": 1.04771
+    },
+    {
+      "update": 154,
+      "route": "es-fr",
+      "learning_rate": 6.784e-05,
+      "cross_entropy": 1.153583,
+      "gradient_norm": 1.31313
+    },
+    {
+      "update": 155,
+      "route": "fr-en",
+      "learning_rate": 6.698e-05,
+      "cross_entropy": 0.904712,
+      "gradient_norm": 1.64232
+    },
+    {
+      "update": 156,
+      "route": "en-fr",
+      "learning_rate": 6.612e-05,
+      "cross_entropy": 0.85429,
+      "gradient_norm": 1.29628
+    },
+    {
+      "update": 157,
+      "route": "en-fr",
+      "learning_rate": 6.527e-05,
+      "cross_entropy": 0.682527,
+      "gradient_norm": 0.95668
+    },
+    {
+      "update": 158,
+      "route": "en-es",
+      "learning_rate": 6.442e-05,
+      "cross_entropy": 1.195408,
+      "gradient_norm": 2.01658
+    },
+    {
+      "update": 159,
+      "route": "fr-en",
+      "learning_rate": 6.358e-05,
+      "cross_entropy": 0.145694,
+      "gradient_norm": 0.65474
+    },
+    {
+      "update": 160,
+      "route": "es-fr",
+      "learning_rate": 6.275e-05,
+      "cross_entropy": 1.192268,
+      "gradient_norm": 1.55554
+    },
+    {
+      "update": 161,
+      "route": "en-es",
+      "learning_rate": 6.191e-05,
+      "cross_entropy": 1.357508,
+      "gradient_norm": 1.19786
+    },
+    {
+      "update": 162,
+      "route": "fr-en",
+      "learning_rate": 6.109e-05,
+      "cross_entropy": 1.457799,
+      "gradient_norm": 1.54635
+    },
+    {
+      "update": 163,
+      "route": "en-es",
+      "learning_rate": 6.027e-05,
+      "cross_entropy": 0.960115,
+      "gradient_norm": 1.52139
+    },
+    {
+      "update": 164,
+      "route": "fr-es",
+      "learning_rate": 5.945e-05,
+      "cross_entropy": 2.19795,
+      "gradient_norm": 1.76715
+    },
+    {
+      "update": 165,
+      "route": "en-fr",
+      "learning_rate": 5.864e-05,
+      "cross_entropy": 0.575253,
+      "gradient_norm": 1.34166
+    },
+    {
+      "update": 166,
+      "route": "fr-en",
+      "learning_rate": 5.784e-05,
+      "cross_entropy": 0.774983,
+      "gradient_norm": 1.6445
+    },
+    {
+      "update": 167,
+      "route": "en-es",
+      "learning_rate": 5.704e-05,
+      "cross_entropy": 0.831215,
+      "gradient_norm": 1.1096
+    },
+    {
+      "update": 168,
+      "route": "es-fr",
+      "learning_rate": 5.625e-05,
+      "cross_entropy": 0.863841,
+      "gradient_norm": 1.17165
+    },
+    {
+      "update": 169,
+      "route": "es-en",
+      "learning_rate": 5.547e-05,
+      "cross_entropy": 1.057183,
+      "gradient_norm": 1.74537
+    },
+    {
+      "update": 170,
+      "route": "fr-en",
+      "learning_rate": 5.469e-05,
+      "cross_entropy": 0.725264,
+      "gradient_norm": 1.14532
+    },
+    {
+      "update": 171,
+      "route": "es-en",
+      "learning_rate": 5.392e-05,
+      "cross_entropy": 0.63091,
+      "gradient_norm": 1.14887
+    },
+    {
+      "update": 172,
+      "route": "es-fr",
+      "learning_rate": 5.316e-05,
+      "cross_entropy": 0.411234,
+      "gradient_norm": 0.98113
+    },
+    {
+      "update": 173,
+      "route": "en-es",
+      "learning_rate": 5.24e-05,
+      "cross_entropy": 1.334792,
+      "gradient_norm": 1.73158
+    },
+    {
+      "update": 174,
+      "route": "es-en",
+      "learning_rate": 5.165e-05,
+      "cross_entropy": 0.370899,
+      "gradient_norm": 1.01031
+    },
+    {
+      "update": 175,
+      "route": "en-fr",
+      "learning_rate": 5.091e-05,
+      "cross_entropy": 1.133918,
+      "gradient_norm": 1.68546
+    },
+    {
+      "update": 176,
+      "route": "es-fr",
+      "learning_rate": 5.018e-05,
+      "cross_entropy": 1.371068,
+      "gradient_norm": 1.71275
+    },
+    {
+      "update": 177,
+      "route": "en-es",
+      "learning_rate": 4.945e-05,
+      "cross_entropy": 1.044323,
+      "gradient_norm": 1.33406
+    },
+    {
+      "update": 178,
+      "route": "en-es",
+      "learning_rate": 4.874e-05,
+      "cross_entropy": 1.42816,
+      "gradient_norm": 2.62719
+    },
+    {
+      "update": 179,
+      "route": "es-en",
+      "learning_rate": 4.803e-05,
+      "cross_entropy": 0.554063,
+      "gradient_norm": 1.18597
+    },
+    {
+      "update": 180,
+      "route": "fr-es",
+      "learning_rate": 4.733e-05,
+      "cross_entropy": 0.67468,
+      "gradient_norm": 1.41273
+    },
+    {
+      "update": 181,
+      "route": "es-fr",
+      "learning_rate": 4.663e-05,
+      "cross_entropy": 0.530082,
+      "gradient_norm": 1.1791
+    },
+    {
+      "update": 182,
+      "route": "fr-en",
+      "learning_rate": 4.595e-05,
+      "cross_entropy": 0.329215,
+      "gradient_norm": 1.0535
+    },
+    {
+      "update": 183,
+      "route": "fr-es",
+      "learning_rate": 4.528e-05,
+      "cross_entropy": 1.247904,
+      "gradient_norm": 1.33813
+    },
+    {
+      "update": 184,
+      "route": "fr-es",
+      "learning_rate": 4.461e-05,
+      "cross_entropy": 1.885945,
+      "gradient_norm": 1.53095
+    },
+    {
+      "update": 185,
+      "route": "fr-en",
+      "learning_rate": 4.395e-05,
+      "cross_entropy": 0.248081,
+      "gradient_norm": 0.86455
+    },
+    {
+      "update": 186,
+      "route": "fr-en",
+      "learning_rate": 4.331e-05,
+      "cross_entropy": 0.801105,
+      "gradient_norm": 1.15811
+    },
+    {
+      "update": 187,
+      "route": "fr-es",
+      "learning_rate": 4.267e-05,
+      "cross_entropy": 1.745359,
+      "gradient_norm": 2.71352
+    },
+    {
+      "update": 188,
+      "route": "fr-en",
+      "learning_rate": 4.204e-05,
+      "cross_entropy": 0.275295,
+      "gradient_norm": 1.07916
+    },
+    {
+      "update": 189,
+      "route": "es-fr",
+      "learning_rate": 4.142e-05,
+      "cross_entropy": 1.173648,
+      "gradient_norm": 1.56421
+    },
+    {
+      "update": 190,
+      "route": "es-en",
+      "learning_rate": 4.081e-05,
+      "cross_entropy": 0.930403,
+      "gradient_norm": 1.51925
+    },
+    {
+      "update": 191,
+      "route": "fr-en",
+      "learning_rate": 4.021e-05,
+      "cross_entropy": 1.72038,
+      "gradient_norm": 1.41198
+    },
+    {
+      "update": 192,
+      "route": "es-en",
+      "learning_rate": 3.962e-05,
+      "cross_entropy": 2.224651,
+      "gradient_norm": 2.00616
+    },
+    {
+      "update": 193,
+      "route": "es-fr",
+      "learning_rate": 3.904e-05,
+      "cross_entropy": 0.525501,
+      "gradient_norm": 1.17301
+    },
+    {
+      "update": 194,
+      "route": "es-fr",
+      "learning_rate": 3.847e-05,
+      "cross_entropy": 1.30198,
+      "gradient_norm": 2.21742
+    },
+    {
+      "update": 195,
+      "route": "fr-en",
+      "learning_rate": 3.792e-05,
+      "cross_entropy": 1.151363,
+      "gradient_norm": 1.12464
+    },
+    {
+      "update": 196,
+      "route": "fr-en",
+      "learning_rate": 3.737e-05,
+      "cross_entropy": 0.4368,
+      "gradient_norm": 0.93838
+    },
+    {
+      "update": 197,
+      "route": "en-fr",
+      "learning_rate": 3.683e-05,
+      "cross_entropy": 0.695877,
+      "gradient_norm": 1.27648
+    },
+    {
+      "update": 198,
+      "route": "en-fr",
+      "learning_rate": 3.63e-05,
+      "cross_entropy": 0.475292,
+      "gradient_norm": 1.47513
+    },
+    {
+      "update": 199,
+      "route": "en-fr",
+      "learning_rate": 3.579e-05,
+      "cross_entropy": 1.467738,
+      "gradient_norm": 2.92383
+    },
+    {
+      "update": 200,
+      "route": "es-en",
+      "learning_rate": 3.528e-05,
+      "cross_entropy": 0.642611,
+      "gradient_norm": 1.20829
+    },
+    {
+      "update": 201,
+      "route": "fr-en",
+      "learning_rate": 3.479e-05,
+      "cross_entropy": 0.561317,
+      "gradient_norm": 1.56889
+    },
+    {
+      "update": 202,
+      "route": "fr-en",
+      "learning_rate": 3.431e-05,
+      "cross_entropy": 0.356004,
+      "gradient_norm": 1.40461
+    },
+    {
+      "update": 203,
+      "route": "en-es",
+      "learning_rate": 3.383e-05,
+      "cross_entropy": 0.844773,
+      "gradient_norm": 1.62311
+    },
+    {
+      "update": 204,
+      "route": "fr-en",
+      "learning_rate": 3.337e-05,
+      "cross_entropy": 0.867174,
+      "gradient_norm": 0.96079
+    },
+    {
+      "update": 205,
+      "route": "en-fr",
+      "learning_rate": 3.292e-05,
+      "cross_entropy": 1.138353,
+      "gradient_norm": 1.15267
+    },
+    {
+      "update": 206,
+      "route": "es-en",
+      "learning_rate": 3.249e-05,
+      "cross_entropy": 0.190622,
+      "gradient_norm": 0.72059
+    },
+    {
+      "update": 207,
+      "route": "en-es",
+      "learning_rate": 3.206e-05,
+      "cross_entropy": 1.251349,
+      "gradient_norm": 1.79235
+    },
+    {
+      "update": 208,
+      "route": "fr-en",
+      "learning_rate": 3.165e-05,
+      "cross_entropy": 1.257957,
+      "gradient_norm": 2.02446
+    },
+    {
+      "update": 209,
+      "route": "es-en",
+      "learning_rate": 3.125e-05,
+      "cross_entropy": 1.313495,
+      "gradient_norm": 1.76086
+    },
+    {
+      "update": 210,
+      "route": "es-en",
+      "learning_rate": 3.086e-05,
+      "cross_entropy": 0.206625,
+      "gradient_norm": 0.76583
+    },
+    {
+      "update": 211,
+      "route": "es-en",
+      "learning_rate": 3.048e-05,
+      "cross_entropy": 0.404913,
+      "gradient_norm": 1.55192
+    },
+    {
+      "update": 212,
+      "route": "es-fr",
+      "learning_rate": 3.011e-05,
+      "cross_entropy": 0.423222,
+      "gradient_norm": 1.19001
+    },
+    {
+      "update": 213,
+      "route": "fr-en",
+      "learning_rate": 2.976e-05,
+      "cross_entropy": 1.688752,
+      "gradient_norm": 2.09521
+    },
+    {
+      "update": 214,
+      "route": "en-fr",
+      "learning_rate": 2.942e-05,
+      "cross_entropy": 0.967179,
+      "gradient_norm": 2.16061
+    },
+    {
+      "update": 215,
+      "route": "en-es",
+      "learning_rate": 2.909e-05,
+      "cross_entropy": 1.048881,
+      "gradient_norm": 1.08856
+    },
+    {
+      "update": 216,
+      "route": "es-fr",
+      "learning_rate": 2.877e-05,
+      "cross_entropy": 0.697303,
+      "gradient_norm": 1.49066
+    },
+    {
+      "update": 217,
+      "route": "es-en",
+      "learning_rate": 2.846e-05,
+      "cross_entropy": 1.010783,
+      "gradient_norm": 1.43903
+    },
+    {
+      "update": 218,
+      "route": "fr-es",
+      "learning_rate": 2.817e-05,
+      "cross_entropy": 0.699753,
+      "gradient_norm": 1.74082
+    },
+    {
+      "update": 219,
+      "route": "fr-es",
+      "learning_rate": 2.789e-05,
+      "cross_entropy": 0.538596,
+      "gradient_norm": 1.05191
+    },
+    {
+      "update": 220,
+      "route": "es-fr",
+      "learning_rate": 2.763e-05,
+      "cross_entropy": 0.903076,
+      "gradient_norm": 2.25765
+    },
+    {
+      "update": 221,
+      "route": "fr-es",
+      "learning_rate": 2.737e-05,
+      "cross_entropy": 1.017158,
+      "gradient_norm": 1.77219
+    },
+    {
+      "update": 222,
+      "route": "en-es",
+      "learning_rate": 2.713e-05,
+      "cross_entropy": 2.068433,
+      "gradient_norm": 2.22934
+    },
+    {
+      "update": 223,
+      "route": "es-en",
+      "learning_rate": 2.69e-05,
+      "cross_entropy": 0.339181,
+      "gradient_norm": 0.98927
+    },
+    {
+      "update": 224,
+      "route": "es-en",
+      "learning_rate": 2.668e-05,
+      "cross_entropy": 0.186266,
+      "gradient_norm": 0.64786
+    },
+    {
+      "update": 225,
+      "route": "es-en",
+      "learning_rate": 2.648e-05,
+      "cross_entropy": 0.15109,
+      "gradient_norm": 0.70579
+    },
+    {
+      "update": 226,
+      "route": "fr-es",
+      "learning_rate": 2.629e-05,
+      "cross_entropy": 1.469205,
+      "gradient_norm": 1.85338
+    },
+    {
+      "update": 227,
+      "route": "en-fr",
+      "learning_rate": 2.611e-05,
+      "cross_entropy": 0.724431,
+      "gradient_norm": 1.43352
+    },
+    {
+      "update": 228,
+      "route": "es-en",
+      "learning_rate": 2.595e-05,
+      "cross_entropy": 0.86507,
+      "gradient_norm": 1.26653
+    },
+    {
+      "update": 229,
+      "route": "es-fr",
+      "learning_rate": 2.58e-05,
+      "cross_entropy": 1.177453,
+      "gradient_norm": 1.68923
+    },
+    {
+      "update": 230,
+      "route": "fr-en",
+      "learning_rate": 2.566e-05,
+      "cross_entropy": 1.395793,
+      "gradient_norm": 1.51283
+    },
+    {
+      "update": 231,
+      "route": "es-fr",
+      "learning_rate": 2.553e-05,
+      "cross_entropy": 0.588188,
+      "gradient_norm": 1.32332
+    },
+    {
+      "update": 232,
+      "route": "fr-en",
+      "learning_rate": 2.542e-05,
+      "cross_entropy": 1.321328,
+      "gradient_norm": 1.59211
+    },
+    {
+      "update": 233,
+      "route": "fr-es",
+      "learning_rate": 2.532e-05,
+      "cross_entropy": 0.970194,
+      "gradient_norm": 2.36376
+    },
+    {
+      "update": 234,
+      "route": "fr-en",
+      "learning_rate": 2.524e-05,
+      "cross_entropy": 1.735045,
+      "gradient_norm": 1.80957
+    },
+    {
+      "update": 235,
+      "route": "fr-es",
+      "learning_rate": 2.517e-05,
+      "cross_entropy": 1.107985,
+      "gradient_norm": 2.3989
+    },
+    {
+      "update": 236,
+      "route": "en-es",
+      "learning_rate": 2.511e-05,
+      "cross_entropy": 0.936559,
+      "gradient_norm": 1.78735
+    },
+    {
+      "update": 237,
+      "route": "es-en",
+      "learning_rate": 2.506e-05,
+      "cross_entropy": 0.437872,
+      "gradient_norm": 1.34347
+    },
+    {
+      "update": 238,
+      "route": "en-es",
+      "learning_rate": 2.503e-05,
+      "cross_entropy": 2.440013,
+      "gradient_norm": 1.826
+    },
+    {
+      "update": 239,
+      "route": "en-fr",
+      "learning_rate": 2.501e-05,
+      "cross_entropy": 0.621842,
+      "gradient_norm": 1.24638
+    },
+    {
+      "update": 240,
+      "route": "es-en",
+      "learning_rate": 2.5e-05,
+      "cross_entropy": 1.181526,
+      "gradient_norm": 1.664
+    }
+  ],
+  "human_semantic_accuracy_verified": false,
+  "true_multiturn_context_or_slang_supervision": false,
+  "new_tatoeba_dev_is_not_independent_of_foundation_pretraining": true,
+  "final_holdout_accessed": false,
+  "user_reviewed_500_used": false,
+  "noncommercial_data_used": false,
+  "production_provider_or_ASR_modified": false,
+  "release_approved": false,
+  "paid_spend_usd": 0,
+  "wall_seconds": 1338.439,
+  "peak_rss_kib_linux": 3428744,
+  "warning": "chrF/BLEU are overlap scores, NOT meaning accuracy. Development data is limited, and authentic multi-turn bilingual supervision and independent human QA are still missing."
+}

@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "phase": "licensed_data_growth_and_38_update_warm_start",
+  "release_approved": false,
+  "paid_spend_cap_usd": 0,
+  "timeout_minutes": 45,
+  "parent": {
+    "model": "facebook/m2m100_418M",
+    "revision": "55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636",
+    "selected_adapter_sha256": "a00c7965211853df07ce3fa032a76283dfc984dcdaeac85e03263445029ffb8e",
+    "adapter_path": "research/multilingual_student/experiment_002/shared_lora_extra20.safetensors"
+  },
+  "parallel_sources": [
+    {
+      "id": "Tatoeba_en_es",
+      "pair": "en-es",
+      "version": "v2023-04-12",
+      "license": "CC-BY-2.0-FR",
+      "training_permission": "allowed_with_attribution",
+      "original_corpus": "https://tatoeba.org/en/downloads",
+      "download_urls": [
+        "https://opus.nlpl.eu/download.php?f=Tatoeba/v2023-04-12/moses/en-es.txt.zip",
+        "https://object.pouta.csc.fi/OPUS-Tatoeba/v2023-04-12/moses/en-es.txt.zip"
+      ],
+      "max_selected_pairs": 350
+    },
+    {
+      "id": "Tatoeba_en_fr",
+      "pair": "en-fr",
+      "version": "v2023-04-12",
+      "license": "CC-BY-2.0-FR",
+      "training_permission": "allowed_with_attribution",
+      "original_corpus": "https://tatoeba.org/en/downloads",
+      "download_urls": [
+        "https://opus.nlpl.eu/download.php?f=Tatoeba/v2023-04-12/moses/en-fr.txt.zip",
+        "https://object.pouta.csc.fi/OPUS-Tatoeba/v2023-04-12/moses/en-fr.txt.zip"
+      ],
+      "max_selected_pairs": 350
+    },
+    {
+      "id": "Tatoeba_es_fr",
+      "pair": "es-fr",
+      "version": "v2023-04-12",
+      "license": "CC-BY-2.0-FR",
+      "training_permission": "allowed_with_attribution",
+      "original_corpus": "https://tatoeba.org/en/downloads",
+      "download_urls": [
+        "https://opus.nlpl.eu/download.php?f=Tatoeba/v2023-04-12/moses/es-fr.txt.zip",
+        "https://object.pouta.csc.fi/OPUS-Tatoeba/v2023-04-12/moses/es-fr.txt.zip"
+      ],
+      "max_selected_pairs": 350
+    }
+  ],
+  "nonparallel_sources": [
+    {
+      "id": "OpenAssistant/oasst1",
+      "license": "Apache-2.0",
+      "use": "context mining and human review candidates only, never a parallel translation target",
+      "status": "review_candidate"
+    },
+    {
+      "id": "UTEP-DRAL",
+      "license": "CC0",
+      "use": "future conversation-grouped bilingual speech pairs after transcript-level ingestion, no automatic 11GB download",
+      "status": "not_ingested"
+    }
+  ],
+  "excluded": [
+    "WMT24 Chat CC-BY-NC context data",
+    "TED2020 CC-BY-NC-ND",
+    "OpenSubtitles license-unverified subsets"
+  ],
+  "training": {
+    "seed": 2026112143,
+    "updates": 72,
+    "batch_size": 2,
+    "lr": 0.000045,
+    "checkpoint_updates": [
+      24,
+      48,
+      72
+    ],
+    "sampling": {
+      "es-en": 18,
+      "fr-en": 18,
+      "en-es": 12,
+      "en-fr": 8,
+      "es-fr": 8,
+      "fr-es": 8
+    },
+    "reserved_new_development_groups": 36
+  },
+  "gates": {
+    "overall_chrF_gain_min": 0.25,
+    "max_any_chrF_loss": 1,
+    "max_any_BLEU_loss": 1,
+    "critical_error_rate_must_not_increase": true,
+    "human_95_claim_allowed": false
+  },
+  "final_holdout_access": false,
+  "reviewed_500_as_training": false
+}

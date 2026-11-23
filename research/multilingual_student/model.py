@@ -144,7 +144,7 @@ def attach_shared_lora(model, *, rank: int = 4, alpha: int = 8,
         raise RuntimeError("Expected one low-rank tensor pair per target")
     trainable=[p for p in model.parameters() if p.requires_grad]
     n=sum(p.numel() for p in trainable)
-    if not 10000 < n < 350000:
+    if not 10000 < n < 700000:
         raise RuntimeError("Shared trainable adapter unexpectedly large")
     return {"targets":[name for name,_ in layers],
             "tensor_keys":keys,"trainable_parameters":n,

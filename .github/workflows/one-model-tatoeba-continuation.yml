@@ -1,0 +1,130 @@
+name: Actually continue one EN-ES-FR model with new licensed parallel dialogue-like text
+
+on:
+  push:
+    branches: [feat/global-language-architecture-and-conversation-training-20261121]
+    paths:
+      - .github/workflows/one-model-tatoeba-continuation.yml
+      - research/conversation_growth/config.json
+      - research/conversation_growth/data.py
+      - research/conversation_growth/train.py
+      - research/conversation_growth/tests/**
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bridgecaption-commercial-tatoeba-one-model-continuation
+  cancel-in-progress: false
+
+jobs:
+  cpu-learning:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      PYTHONPATH: ".:src"
+      HF_HOME: /tmp/bridgecaption-m2m100-cache
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      TOKENIZERS_PARALLELISM: "false"
+      OMP_NUM_THREADS: "3"
+      MKL_NUM_THREADS: "3"
+      BRIDGE_NO_PAID_APIS: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install free pinned CPU-only multilingual model and licensed dataset dependencies
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'datasets==2.21.0' 'huggingface-hub==0.36.0' 'hf-xet>=1.1,<2'
+      - name: Prove new corpus licence, contamination and safe alignment using offline tests
+        run: |
+          python -m compileall -q research/conversation_growth
+          python -m unittest discover -s research/conversation_growth/tests -p 'test_*.py' -v
+      - name: Verify preserved best one-model checkpoint and original specialists before training
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,json
+          from research.multilingual_student.train import ensure_old_winners_untouched
+          from research.conversation_growth.data import settings
+          c=settings()
+          p=Path('research/multilingual_student/experiment_002/shared_lora_extra20.safetensors')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='a00c7965211853df07ce3fa032a76283dfc984dcdaeac85e03263445029ffb8e'
+          assert set(ensure_old_winners_untouched())=={'es-en','fr-en'}
+          assert c['paid_spend_cap_usd']==0
+          assert c['final_holdout_access'] is False
+          assert all(x['license']=='CC-BY-2.0-FR' for x in c['parallel_sources'])
+          print('TRAINING_REALLY_RESUMES_FROM_PINNED_SHARED_NEURAL_WEIGHTS')
+          PY
+      - name: Download only licensed Tatoeba pairs and train bounded 72-step true shared model continuation
+        run: python -u research/conversation_growth/train.py
+      - name: Verify three saved shared weights, trained runs, dataset lineage and no made-up semantics
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          from safetensors import safe_open
+          root=Path('research/conversation_growth/experiment_001')
+          report=json.loads((root/'report.json').read_text())
+          data=json.loads((root/'data_manifest.json').read_text())
+          assert report['status']=='actual_additional_licensed_multilingual_training_completed'
+          assert report['actual_optimizer_updates']==72
+          assert len(report['directions'])==6
+          assert set(report['directions'])=={'es-en','fr-en','en-es','en-fr','es-fr','fr-es'}
+          assert report['parent_file_unchanged'] is True
+          assert report['parent_38_step_shared_sha256']=='a00c7965211853df07ce3fa032a76283dfc984dcdaeac85e03263445029ffb8e'
+          assert report['human_95_percent_meaning_accuracy_verified'] is False
+          assert report['true_dialogue_context_trained'] is False
+          assert report['final_holdout_accessed'] is False
+          assert report['prior_reviewed_500_used_as_train_or_dev'] is False
+          assert report['noncommercial_or_unlicensed_data_used'] is False
+          assert report['default_live_app_modified'] is False
+          assert report['paid_cost_usd']==0
+          assert data['source_license'].startswith('Tatoeba CC BY 2.0 FR')
+          assert data['real_multi_turn_dialogue_pairs']==0
+          assert data['all_500_reviewed_sources_excluded'] is True
+          assert data['final_holdout_downloaded'] is False
+          for step in (24,48,72):
+              p=root/f'shared_tatoeba_extra{step:02d}.safetensors'
+              assert p.is_file()
+              with safe_open(p,framework='pt',device='cpu') as f:
+                  assert len(list(f.keys()))==24
+          selected=Path(report['selected_relative_path'])
+          assert selected.is_file()
+          assert hashlib.sha256(selected.read_bytes()).hexdigest()==report['selected_sha256']
+          for line in (root/'SHA256SUMS.txt').read_text().splitlines():
+              digest,name=line.split('  ')
+              assert hashlib.sha256((root/name).read_bytes()).hexdigest()==digest
+          print('ACTUAL_LEGALLY_USABLE_EN_ES_FR_NEW_DATA_TRAINING_VERIFIED',json.dumps({
+            'steps':report['actual_optimizer_updates'],
+            'datasets':sorted(data['sources']),
+            'dev_n_per_route':report['dev_group_count_per_route'],
+            'checkpoint_selection':report['checkpoint_decision'],
+            'selected_sha256':report['selected_sha256'],
+            'not_a_human_accuracy_score':True}))
+          PY
+      - name: Save reproducible research checkpoints to dedicated branch, never merge or deploy
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/conversation_growth/experiment_001
+          git commit -m 'train: preserve actual 72-step Tatoeba+MASSIVE one-model continuation and DEV gates [skip ci]'
+          git pull --rebase origin feat/global-language-architecture-and-conversation-training-20261121
+          git push origin HEAD:refs/heads/feat/global-language-architecture-and-conversation-training-20261121
+      - name: Preserve completed model and reproducibility data after any Git push race
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: actually-trained-licensed-english-spanish-french-single-model
+          path: research/conversation_growth/experiment_001/
+          if-no-files-found: warn
+          retention-days: 30

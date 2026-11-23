@@ -1,0 +1,86 @@
+name: Verify worldwide language catalog and capability routing
+
+on:
+  push:
+    branches: [feat/global-language-architecture-and-conversation-training-20261121]
+    paths:
+      - .github/workflows/global-language-catalog.yml
+      - research/global_languages/catalog.py
+      - research/global_languages/sync_catalog.py
+      - research/global_languages/tests/**
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: global-language-catalog-import-v1
+  cancel-in-progress: false
+
+jobs:
+  documented-languages:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    env:
+      PYTHONPATH: ".:src"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile importer and test catalog ISO IDs, variants and unavailable language handling
+        run: |
+          python -m compileall -q research/global_languages
+          python -m unittest discover -s research/global_languages/tests -p 'test_*.py' -v
+      - name: Actually ingest CC BY 4.0 Glottolog 5.4 and IANA registry
+        run: |
+          python -m research.global_languages.sync_catalog
+      - name: Verify thousands of language entries remain distinct from model/translation availability
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          from research.global_languages.catalog import DocumentedCatalog,CATALOG_DIR
+          from research.global_languages.capabilities import GlobalLanguageRouter
+          c=DocumentedCatalog.load()
+          report=json.loads((CATALOG_DIR/'manifest.json').read_text())
+          assert report['source_license']=='CC-BY-4.0'
+          assert 7000<=report['documented_languages']<=15000
+          assert 500<=report['documented_dialects']<=40000
+          assert report['languoids_total']==len(c.by_glottocode)
+          assert report['mt_validated_pairs']==0
+          assert report['translation_production_supported'] is False
+          assert report['meaning_accuracy_verified'] is False
+          assert c.cataloged('en') and c.cataloged('es') and c.cataloged('fr')
+          assert c.cataloged('zh-Hant-TW')
+          # A catalog-only language cannot be automatically claimed as native.
+          rare=next(item for item in c.by_glottocode.values()
+                    if item.level=='language' and item.iso639_3 is None)
+          print('ACTUAL_GLOTTOLOG_AND_IANA_CATALOG_VERIFIED',json.dumps({
+            'documented_languages':report['documented_languages'],
+            'dialects':report['documented_dialects'],
+            'iana_identifiers':report['iana_language_subtags'],
+            'example_catalog_only':rare.glottocode,
+            'real_mt_adequacy_claims':0}))
+          PY
+      - name: Commit pinned real metadata and attribution only; no production route changes
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/global_languages/generated
+          if git diff --cached --quiet; then
+            echo 'CATALOG_ALREADY_IMMUTABLY_SAVED_NO_DUPLICATE_COMMIT'
+          else
+            git commit -m 'catalog: pin real Glottolog 5.4 documented languages/dialects and IANA SHA [skip ci]'
+            git pull --rebase origin feat/global-language-architecture-and-conversation-training-20261121
+            git push origin HEAD:refs/heads/feat/global-language-architecture-and-conversation-training-20261121
+          fi
+      - name: Preserve generated catalog if data provider is reachable but branch push conflicts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: global-language-catalog-versioned-and-licensed
+          path: research/global_languages/generated/
+          if-no-files-found: warn
+          retention-days: 30

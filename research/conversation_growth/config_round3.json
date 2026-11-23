@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "experiment": "conversation_growth_experiment_003_parallel_expansion",
+  "model": {
+    "id": "facebook/m2m100_418M",
+    "revision": "55c2e61bbf05dfb8d7abccdc3fae6fc8512fd636"
+  },
+  "parent": {
+    "path": "research/multilingual_student/experiment_002/shared_lora_extra20.safetensors",
+    "sha256": "a00c7965211853df07ce3fa032a76283dfc984dcdaeac85e03263445029ffb8e",
+    "rank": 4,
+    "alpha": 8
+  },
+  "reference_receipts": {
+    "original_72_step_run": "research/conversation_growth/experiment_001/report.json",
+    "round2_48_step_run": "research/conversation_growth/experiment_002/report.json",
+    "Tatoeba_licence_and_archives": "research/conversation_growth/experiment_001/data_manifest.json",
+    "frozen_massive_dev_sha256": "7c17d60b03186d0aa76898d71431bd15148aa114525ce26daadf427ada5b2838"
+  },
+  "data": {
+    "source": "OPUS-Tatoeba-v2023-04-12",
+    "license": "CC-BY-2.0-FR",
+    "original_seed_from_round1": true,
+    "download_pairs": 1500,
+    "past_training_prefix": 350,
+    "training_upper_index": 1200,
+    "min_training_pairs_per_corpus": 550,
+    "dev_per_corpus": 20,
+    "training_sample_use_limit_per_corpus": 800,
+    "publication": "research_only",
+    "frozen_massive_validation_per_route": 36,
+    "no_multiturn_claim": true
+  },
+  "train": {
+    "seed": 2026112301,
+    "batch_size": 2,
+    "updates_per_direction": 40,
+    "total_updates": 240,
+    "warmup_updates": 24,
+    "max_learning_rate": 0.00015,
+    "min_learning_rate": 0.000025,
+    "max_token_length": 96,
+    "saved_updates": [
+      60,
+      120,
+      240
+    ],
+    "clip_grad_norm": 1,
+    "anchor_penalty": 0.03,
+    "original_parent_weights_may_be_changed_in_new_candidates_only": true
+  },
+  "quality_gates": {
+    "massive_mean_chrF_min_gain": 0.25,
+    "massive_max_per_direction_chrF_loss": 1,
+    "massive_max_per_direction_BLEU_loss": 1,
+    "tatoeba_mean_chrF_min_gain": 0.5,
+    "tatoeba_max_per_direction_chrF_loss": 0.5,
+    "tatoeba_max_per_direction_BLEU_loss": 1
+  },
+  "restrictions": {
+    "no_paid_compute": true,
+    "no_final_holdout": true,
+    "no_reviewed_500_training_or_validation": true,
+    "no_MASSIVE_intent_as_literal_gold": true,
+    "do_not_modify_original_or_round2_checkpoints": true,
+    "no_production_changes": true,
+    "no_independent_human_adequacy_claim": true
+  }
+}

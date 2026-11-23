@@ -1,0 +1,95 @@
+name: BridgeCaption additive single-model parallel-only continuation
+
+on:
+  push:
+    branches: [feat/global-language-architecture-and-conversation-training-20261121]
+    paths:
+      - .github/workflows/one-model-additive-round2.yml
+      - research/conversation_growth/config_round2.json
+      - research/conversation_growth/round2.py
+      - research/conversation_growth/round2_tests/**
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bridgecaption-additive-shared-model-round2
+  cancel-in-progress: false
+
+jobs:
+  cpu-additive-training:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      PYTHONPATH: ".:src"
+      HF_HOME: /tmp/bridgecaption-m2m100-cache
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      TOKENIZERS_PARALLELISM: "false"
+      OMP_NUM_THREADS: "3"
+      MKL_NUM_THREADS: "3"
+      BRIDGE_NO_PAID_APIS: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install pinned CPU-only dependencies
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'datasets==2.21.0' 'huggingface-hub==0.36.0' 'hf-xet>=1.1,<2'
+      - name: Offline no-regression tests and syntax checks
+        run: |
+          python -m compileall -q research/conversation_growth
+          python -m unittest discover -s research/conversation_growth/round2_tests -p 'test_*.py' -v
+          python -m unittest discover -s research/conversation_growth/tests -p 'test_*.py' -v
+      - name: Run actual additive single-model CPU training and six-direction DEV gate
+        run: python -u research/conversation_growth/round2.py
+      - name: Verify genuine updates and immutable parent
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          from safetensors import safe_open
+          p=Path('research/conversation_growth/experiment_002')
+          r=json.loads((p/'report.json').read_text())
+          assert r['status']=='actual_additive_rank8_training_completed'
+          assert r['actual_optimizer_updates']==48
+          assert len(r['candidate_evaluations'])==3
+          assert r['parent_unchanged'] is True
+          assert r['old_learned_rank4_frozen'] is True
+          assert r['previous_specialists_unchanged'] is True
+          assert r['final_holdout_accessed'] is False
+          assert r['reviewer_500_used_for_training'] is False
+          assert r['production_translation_provider_changed'] is False
+          assert r['paid_spend_usd']==0
+          assert r['human_semantic_95_percent_verified'] is False
+          assert set(r['directions'])=={'es-en','fr-en','en-es','en-fr','es-fr','fr-es'}
+          for step in (12,24,48):
+              with safe_open(str(p/f'shared_rank8_extra{step:02d}.safetensors'),framework='pt',device='cpu') as f:
+                  assert len(list(f.keys()))==24
+          for line in (p/'SHA256SUMS.txt').read_text().splitlines():
+              digest,name=line.split('  ')
+              assert hashlib.sha256((p/name).read_bytes()).hexdigest()==digest
+          print('REAL_ADDITIVE_MODEL_TRAINING_VERIFIED',r['checkpoint_decision'],r['selected_sha256'])
+          PY
+      - name: Preserve research checkpoints without merging or deploying
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/conversation_growth/experiment_002
+          git commit -m 'train: save additive rank8 licensed parallel-only round2 and DEV receipts [skip ci]'
+          git pull --rebase origin feat/global-language-architecture-and-conversation-training-20261121
+          git push origin HEAD:refs/heads/feat/global-language-architecture-and-conversation-training-20261121
+      - name: Retain checkpoint artifacts even if push races
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bridgecaption-additive-one-model-round2
+          path: research/conversation_growth/experiment_002/
+          if-no-files-found: warn
+          retention-days: 30
