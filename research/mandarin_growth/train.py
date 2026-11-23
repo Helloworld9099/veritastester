@@ -26,6 +26,59 @@ def rows_from_jsonl(path):
     return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
 
 
+MANDARIN_ROUTES = frozenset(("en-zh","zh-en","es-zh","zh-es","fr-zh","zh-fr"))
+
+
+def evaluate_mandarin(model,tokenizer,dev,*,n_per_route=12):
+    """Research-only true Mandarin evaluation without changing six-route app API.
+
+    The older shared-model generate() intentionally rejects zh. This local
+    evaluator exercises the native pinned M2M100 tokenizer's explicit zh ID.
+    It NEVER silently aliases Cantonese, other Chinese varieties or unknown
+    locale tags to Mandarin.
+    """
+    if set(dev) != MANDARIN_ROUTES or n_per_route < 1:
+        raise ValueError("Only six explicit Mandarin development directions allowed")
+    import torch
+    from sacrebleu.metrics import CHRF,BLEU
+    results={}
+    model.eval()
+    with torch.inference_mode():
+        for route in sorted(dev):
+            source,target=route.split("-")
+            if source not in ("en","es","fr","zh") or target not in ("en","es","fr","zh"):
+                raise ValueError("Unsupported source/target code")
+            if not isinstance(tokenizer.get_lang_id(target),int):
+                raise RuntimeError("Pinned M2M100 has no tokenizer id for "+target)
+            samples=dev[route][:n_per_route]
+            if len(samples)!=n_per_route:
+                raise RuntimeError("Incomplete Mandarin development set: "+route)
+            predictions=[]
+            for row in samples:
+                tokenizer.src_lang=source
+                encoded=tokenizer(row["src"],return_tensors="pt",truncation=False)
+                if int(encoded["input_ids"].shape[-1])>72:
+                    raise ValueError("Mandarin development source exceeds 72-token safety bound")
+                generated=model.generate(**encoded,
+                    forced_bos_token_id=tokenizer.get_lang_id(target),
+                    num_beams=2,max_new_tokens=72,use_cache=True)
+                text=tokenizer.decode(generated[0],skip_special_tokens=True).strip()
+                if not text:
+                    raise RuntimeError("No translated text from shared Mandarin model")
+                predictions.append(text)
+            references=[row["tgt"] for row in samples]
+            results[route]={
+                "n":len(samples),
+                "chrF_not_accuracy":round(CHRF().corpus_score(predictions,[references]).score,4),
+                "BLEU_not_accuracy":round(BLEU().corpus_score(predictions,[references]).score,4),
+                "empty_predictions":0,
+                "source_and_reference_not_in_report":True
+            }
+            print("NATIVE_MANDARIN_DEV_"+route.upper().replace("-","_"),
+                  json.dumps(results[route]),flush=True)
+    return results
+
+
 def schedule(mandarin,old,seed=2026112204):
     rng=random.Random(seed)
     schedule=[]
@@ -101,7 +154,7 @@ def run():
             routes.setdefault("zh-"+src,[]).append({"src":r["target"],"tgt":r["source"]})
         return routes
     zh_dev=chinese_dev()
-    zh_baseline=evaluate(model,tokenizer,zh_dev,n_per_route=12)
+    zh_baseline=evaluate_mandarin(model,tokenizer,zh_dev,n_per_route=12)
     opt=torch.optim.AdamW([p for p in model.parameters() if p.requires_grad],
                           lr=0.00002,weight_decay=0)
     records=[]
@@ -125,7 +178,7 @@ def run():
         file=OUT/f"shared_mandarin_rank8_step{i:02d}.safetensors"
         save_file(only_adapter_state(model),str(file))
         old_after=evaluate(model,tokenizer,old_dev,n_per_route=36)
-        zh_after=evaluate(model,tokenizer,zh_dev,n_per_route=12)
+        zh_after=evaluate_mandarin(model,tokenizer,zh_dev,n_per_route=12)
         old_deltas={k:round(old_after[k]["chrF_not_accuracy"]-old_baseline[k]["chrF_not_accuracy"],4) for k in old_dev}
         zh_deltas={k:round(zh_after[k]["chrF_not_accuracy"]-zh_baseline[k]["chrF_not_accuracy"],4) for k in zh_dev}
         eligible=all(v>=-1 for v in old_deltas.values()) and sum(zh_deltas.values())>0 and all(v>=-1 for v in zh_deltas.values())
