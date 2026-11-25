@@ -1,0 +1,141 @@
+name: Actually fine-tune free MADLAD-400 3B shared 400-plus-language model
+
+on:
+  # Start costly real-model training only when a dedicated immutable
+  # request is explicitly committed. Ordinary code/test edits must NOT
+  # spawn additional hours of identical 3B training.
+  push:
+    branches: [train/madlad400-3b-shared-20261121]
+    paths:
+      - research/madlad400/run_request.json
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: real-free-madlad-400-pretrained-3b-pilot
+  cancel-in-progress: false
+
+jobs:
+  offline-contract:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PYTHONPATH: ".:src"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install free CPU-only PyTorch (no 3B weights for contract tests)
+        run: python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+      - name: Compile and prove policy, LoRA gradients, native tags and license fail-closed
+        run: |
+          python -m compileall -q research/madlad400
+          python -m unittest discover -s research/madlad400/tests -p 'test_*.py' -v
+
+  actual-pretrained-training:
+    needs: offline-contract
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    env:
+      PYTHONPATH: ".:src"
+      HF_HOME: /tmp/bridgecaption-madlad400-cache
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      HF_HUB_DISABLE_XET: "0"
+      TOKENIZERS_PARALLELISM: "false"
+      OMP_NUM_THREADS: "3"
+      MKL_NUM_THREADS: "3"
+      BRIDGE_NO_PAID_APIS: "true"
+      TRANSFORMERS_NO_TF: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install official free CPU PyTorch, pinned Transformers, real dataset and streaming HF weights
+        run: |
+          python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r research/requirements-replay.txt
+          python -m pip install 'datasets==2.21.0' 'huggingface-hub==0.36.0' 'accelerate>=1.5,<2' 'hf-xet>=1.1,<2'
+      - name: Document actual $0 hosted runner memory and disk, never provision paid GPU
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import os,shutil
+          print('FREE_GITHUB_ACTIONS_CPU_CORES',os.cpu_count())
+          print('LINUX_MEMORY_CAPACITY',Path('/proc/meminfo').read_text().splitlines()[:5])
+          d=shutil.disk_usage('/tmp')
+          print('FREE_DISK_AVAILABLE_GB',round(d.free/1e9,2))
+          print('NO_PAID_API_OR_EXTERNAL_INFRASTRUCTURE')
+          PY
+      - name: Verify original checkpoint, upstream Apache 2.0 and run REAL MADLAD 3B gradient updates
+        run: python -u research/madlad400/train.py
+      - name: Verify pretrained 3B, >400 target codes, actual weights and genuine optimizer gradients
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          from safetensors import safe_open
+          root=Path('research/madlad400/experiment_001')
+          report=json.loads((root/'report.json').read_text())
+          cfg=json.loads(Path('research/madlad400/config.json').read_text())
+          assert report['status']=='completed_real_MADLAD_3B_CPU_finetuning_pilot'
+          assert report['model_commit_SHA']==cfg['model']['revision']
+          assert report['model_license']=='apache-2.0'
+          assert report['native_target_codes']>=400
+          assert report['real_optimizer_updates']==3
+          assert report['training_examples_seen']==3
+          assert len(report['optimizer_trace'])==3
+          assert all(x['gradient_norm']>0 for x in report['optimizer_trace'])
+          assert report['real_trainable_adapter']['all_pretrained_parameters_frozen'] is True
+          assert report['real_trainable_adapter']['all_native_languages_share_adapter'] is True
+          assert report['all_previous_adapters_unchanged']
+          assert report['original_legacy_Marian_models']
+          assert report['publisher_final_test_accessed'] is False
+          assert report['previous_500_reviewed_cases_used_as_training'] is False
+          assert report['production_activated'] is False
+          assert report['human_95_meaning_accuracy_verified'] is False
+          assert report['paid_spend_usd']==0
+          assert set(report['development_baseline'])==set(cfg['directions'])
+          assert set(report['development_after'])==set(cfg['directions'])
+          for step in range(1,4):
+              file=root/f'madlad400_shared_lora_step{step:02d}.safetensors'
+              assert file.is_file()
+              with safe_open(file,framework='pt',device='cpu') as f:
+                  names=list(f.keys())
+                  assert len(names)==8
+                  assert all('.lora_' in n for n in names)
+              if step==3:
+                  assert hashlib.sha256(file.read_bytes()).hexdigest()==report['trained_shared_model_adapter_sha256']
+          for line in (root/'SHA256SUMS.txt').read_text().splitlines():
+              sha,name=line.split('  ')
+              assert hashlib.sha256((root/name).read_bytes()).hexdigest()==sha
+          print('VERIFIED_REAL_400_PLUS_LANGUAGE_PRETRAINED_MADLAD_GRADIENT_UPDATE_AND_SAVED_SHARED_MODEL',json.dumps({
+            'steps':report['real_optimizer_updates'],
+            'model':report['model_id'],
+            'codes':report['native_target_codes'],
+            'checkpoint_sha256':report['trained_shared_model_adapter_sha256'],
+            'human_quality_claim':False}))
+          PY
+      - name: Keep real trainable adapter checkpoint and results, do NOT push 12GB base
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/madlad400/experiment_001
+          git commit -m 'research: preserve real 3B MADLAD pretrained single-model optimizer updates and no-release receipt [skip ci]'
+          git pull --rebase origin train/madlad400-3b-shared-20261121
+          git push origin HEAD:refs/heads/train/madlad400-3b-shared-20261121
+      - name: Archive any real checkpoint progress and evidence on failure, never fake success
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genuine-MADLAD-400-3B-one-neural-model-training-proof
+          path: research/madlad400/experiment_001/
+          if-no-files-found: warn
+          retention-days: 30

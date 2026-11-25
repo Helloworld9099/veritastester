@@ -11,7 +11,7 @@
       "source": "https://huggingface.co/google/madlad400-3b-mt",
       "architecture": "T5 translation model with target language prefix",
       "weights_approx_bytes_fp16": 6000000000,
-      "status": "review_first_then_benchmark",
+      "status": "selected_research_training_backbone_actual_pretrained_CPU_pilot_launched",
       "enabled": false,
       "requirements": [
         "verify upstream revision and original license; inspect training-data license and intended use",
@@ -19,7 +19,12 @@
         "measure CPU RAM and streaming caption latency; 3B may be too slow on local laptop",
         "compare independent bilingual meaning accuracy and rare-language harm",
         "enable only with new pinned backend and rollback policy"
-      ]
+      ],
+      "selected_for_research": true,
+      "pinned_revision": "fa184c675da0b5c9e1c8694fccd4e12e2d422094",
+      "first_training_workflow": "https://github.com/Helloworld9099/veritastester/actions/runs/44972404726",
+      "training_proven_complete": false,
+      "do_not_replace_production_until_bilingual_review": true
     },
     {
       "model_id": "facebook/nllb-200-distilled-600M",
@@ -44,5 +49,6 @@
       ]
     }
   ],
-  "disclaimer": "These are research leads, NOT loaded/downloaded/trained/verified backends. Future expansion requires resource, rights and quality tests; 8k documented language labels are not 8k translated languages."
+  "disclaimer": "These are research leads, NOT loaded/downloaded/trained/verified backends. Future expansion requires resource, rights and quality tests; 8k documented language labels are not 8k translated languages.",
+  "selected_current_research_backbone": "google/madlad400-3b-mt"
 }

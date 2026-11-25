@@ -1,0 +1,144 @@
+{
+  "status": "actual_three_corpus_parallel_data_selection_ablation_completed",
+  "source_license": "Tatoeba CC BY 2.0 FR (attribution required)",
+  "source_url": "https://tatoeba.org/en/downloads",
+  "comparisons": {
+    "en-es": {
+      "source_zip_sha256": "a26e7675cae64c93ce45e6cae48f38424bf26e0923cec9d7881b1fa2bb636227",
+      "raw_parallel_pairs": 222073,
+      "filtered_hard_case_pool": 115554,
+      "random_baseline": {
+        "count": 350,
+        "category_counts": {
+          "explicit_negation": 80,
+          "informal_register": 22,
+          "multi_clause": 39,
+          "pronoun_reference": 174,
+          "time_number": 21
+        },
+        "fraction_with_any_flag": 0.6714,
+        "fraction_with_two_or_more_flags": 0.2286
+      },
+      "category_stratified_candidate": {
+        "count": 350,
+        "category_counts": {
+          "explicit_negation": 320,
+          "idiom_or_regional_phrase": 17,
+          "informal_register": 240,
+          "multi_clause": 330,
+          "pronoun_reference": 333,
+          "time_number": 157
+        },
+        "fraction_with_any_flag": 1.0,
+        "fraction_with_two_or_more_flags": 0.9914
+      },
+      "hard_category_coverage_delta": {
+        "idiom_or_regional_phrase": 17,
+        "explicit_negation": 240,
+        "time_number": 136,
+        "pronoun_reference": 159,
+        "informal_register": 218,
+        "multi_clause": 291
+      },
+      "selected_id_hash": "21e151d6a1862022396a1c311d383365b14b31bdb7b67ddfc6c6f21375055c95",
+      "train_or_production_promoted": false,
+      "human_translation_quality_unverified": true
+    },
+    "en-fr": {
+      "source_zip_sha256": "be06c23bb4d5e477a6ae5c71ddcbacd8799cde4292b40e2a40fc616a0c7538e8",
+      "raw_parallel_pairs": 275413,
+      "filtered_hard_case_pool": 148035,
+      "random_baseline": {
+        "count": 350,
+        "category_counts": {
+          "explicit_negation": 81,
+          "informal_register": 76,
+          "multi_clause": 42,
+          "pronoun_reference": 181,
+          "time_number": 18
+        },
+        "fraction_with_any_flag": 0.7829,
+        "fraction_with_two_or_more_flags": 0.2857
+      },
+      "category_stratified_candidate": {
+        "count": 350,
+        "category_counts": {
+          "explicit_negation": 308,
+          "idiom_or_regional_phrase": 35,
+          "informal_register": 271,
+          "multi_clause": 315,
+          "pronoun_reference": 321,
+          "time_number": 111
+        },
+        "fraction_with_any_flag": 1.0,
+        "fraction_with_two_or_more_flags": 0.9743
+      },
+      "hard_category_coverage_delta": {
+        "idiom_or_regional_phrase": 35,
+        "explicit_negation": 227,
+        "time_number": 93,
+        "pronoun_reference": 140,
+        "informal_register": 195,
+        "multi_clause": 273
+      },
+      "selected_id_hash": "93890d1701d7da965cf57b880e90681475d387d6c25a038f9824f9d34c4fdc34",
+      "train_or_production_promoted": false,
+      "human_translation_quality_unverified": true
+    },
+    "es-fr": {
+      "source_zip_sha256": "4c0f6b7d034ba37dce35b34bc1e81ade975accbddc7ea17d77dceb9da061e95e",
+      "raw_parallel_pairs": 51988,
+      "filtered_hard_case_pool": 34715,
+      "random_baseline": {
+        "count": 350,
+        "category_counts": {
+          "explicit_negation": 90,
+          "informal_register": 62,
+          "multi_clause": 47,
+          "pronoun_reference": 208,
+          "time_number": 12
+        },
+        "fraction_with_any_flag": 0.7971,
+        "fraction_with_two_or_more_flags": 0.32
+      },
+      "category_stratified_candidate": {
+        "count": 350,
+        "category_counts": {
+          "explicit_negation": 313,
+          "idiom_or_regional_phrase": 16,
+          "informal_register": 293,
+          "multi_clause": 326,
+          "pronoun_reference": 336,
+          "time_number": 86
+        },
+        "fraction_with_any_flag": 1.0,
+        "fraction_with_two_or_more_flags": 0.9771
+      },
+      "hard_category_coverage_delta": {
+        "idiom_or_regional_phrase": 16,
+        "explicit_negation": 223,
+        "time_number": 74,
+        "pronoun_reference": 128,
+        "informal_register": 231,
+        "multi_clause": 279
+      },
+      "selected_id_hash": "12100a003787b6e325fb7681bb96b38c85babdab538bfcaced4e837994c156d0",
+      "train_or_production_promoted": false,
+      "human_translation_quality_unverified": true
+    }
+  },
+  "strategies_tested": [
+    "deterministic_random",
+    "stratified_hard_phenomena"
+  ],
+  "publisher_validation_and_500_reviewed_excluded": true,
+  "final_holdout_accessed": false,
+  "new_optimizer_updates": 0,
+  "all_rows_authentic_parallel_not_synthetic": true,
+  "hard_case_correctness_independently_verified": false,
+  "slang_rows_must_be_reviewed_before_supervised_training": true,
+  "deployment_approved": false,
+  "paid_spend_usd": 0,
+  "elapsed_seconds": 30.687,
+  "conclusion": "A gain in hard-case data coverage does not imply a gain in translation accuracy; test with independently verified references before selecting a future training pool."
+}

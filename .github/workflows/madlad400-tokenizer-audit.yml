@@ -1,0 +1,71 @@
+name: Verify real MADLAD-400 3B native tokenizer coverage and Apache license (no model weights)
+
+on:
+  push:
+    branches: [train/madlad400-3b-shared-20261121]
+    paths:
+      - .github/workflows/madlad400-tokenizer-audit.yml
+      - research/madlad400/tokenizer_audit.py
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  native-tokenizer:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PYTHONPATH: ".:src"
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      HF_HOME: /tmp/madlad400-tokenizer-only
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install open tokenizer and model-card tools only; no 12GB pretrained weights
+        run: |
+          python -m pip install 'transformers==4.57.6' 'sentencepiece==0.2.3' 'huggingface-hub==0.36.0' 'hf-xet>=1.1,<2'
+      - name: Inspect actual 400+ language target-token vocabulary and pinned Apache 2.0 model
+        run: python -u research/madlad400/tokenizer_audit.py
+      - name: Verify source target prefix language tokens before any expensive training
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report=json.loads(Path('research/madlad400/real_tokenizer_audit.json').read_text())
+          assert report['status']=='real_upstream_MADLAD_tokenizer_and_license_verified'
+          assert report['model']=='google/madlad400-3b-mt'
+          assert report['license']=='apache-2.0'
+          assert report['native_target_code_count']>=400
+          assert report['native_target_code_count']<=800
+          # Some T5 tokenizers prepend a BOS token before the target
+          # language prefix. The audit already requires every target
+          # marker token to occur in the real tokenized input.
+          assert all(row['marker_token_id']>=0 and row['encoded_token_count']>1
+            for row in report['actual_tested_tag_encodings'].values())
+          assert report['finetuned_by_BridgeCaption'] is False
+          assert report['human_semantic_accuracy_verified'] is False
+          assert report['production_activated'] is False
+          assert report['weights_downloaded_by_this_audit'] is False
+          assert report['paid_spend_usd']==0
+          print('MODEL_ACTUAL_NATIVE_TARGETS',report['native_target_code_count'])
+          PY
+      - name: Save complete native target-token evidence, never conflate with actual translation quality
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/madlad400/real_tokenizer_audit.json
+          git commit -m 'audit: preserve exact MADLAD 400 native target tokens and Apache-2.0 SHA [skip ci]'
+          git pull --rebase origin train/madlad400-3b-shared-20261121
+          git push origin HEAD:refs/heads/train/madlad400-3b-shared-20261121
+      - name: Retain official native language count on any final push race
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: madlad400-real-pinned-model-tokenizer-language-audit
+          path: research/madlad400/real_tokenizer_audit.json
+          if-no-files-found: warn
+          retention-days: 30

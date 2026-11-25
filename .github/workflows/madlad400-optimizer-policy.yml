@@ -1,0 +1,68 @@
+name: Optimization decision gate - stop dead-horse training and compare alternatives
+
+on:
+  push:
+    branches: [train/madlad400-3b-shared-20261121]
+    paths:
+      - .github/workflows/madlad400-optimizer-policy.yml
+      - research/madlad400/optimization_controller.py
+      - research/madlad400/tests/test_optimization_controller.py
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  scientific-stopping-policy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    env:
+      PYTHONPATH: ".:src"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Verify all historical real M2M checkpoints and anti-regression/anti-loop gates
+        run: |
+          python -m compileall -q research/madlad400
+          python -m unittest research.madlad400.tests.test_optimization_controller -v
+      - name: Produce evidence-driven next-method selection using actual 72-update history
+        run: python -u research/madlad400/optimization_controller.py
+      - name: Enforce true previous results, 10-route gate, stopping and no false accuracy
+        run: |
+          python - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          p=Path('research/madlad400/optimization_analysis.json')
+          d=json.loads(p.read_text())
+          assert d['status']=='completed_optimization_policy_analysis_not_training'
+          assert d['prior']['status']=='analyzed_actual_historical_training_failure'
+          assert d['prior']['actual_previous_optimizer_updates']==72
+          assert d['prior']['historical_accepted_candidates']==[]
+          assert len(d['prior']['historical_rejected_and_why'])==3
+          assert len(d['language_gate_current'])==6
+          assert len(d['language_gate_beyond_english_spanish_french'])==4
+          assert d['first_next_experiment']['next']=='measure_pretrained_MADLAD_on_development'
+          assert d['no_paid_compute'] is True
+          assert d['no_automatic_accuracy_promotion'] is True
+          assert len(d['candidate_methods'])>=6
+          print('VERIFIED_NO_MORE_BLIND_REPEAT_M2M_LOSS_WITH_NEW_BACKBONE',d['first_next_experiment'])
+          PY
+      - name: Preserve reproducible optimizer policy analysis only (no model file changes)
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/madlad400/optimization_analysis.json
+          git commit -m 'research: preserve actual 72-round failure analysis and cost-aware next-method gate [skip ci]'
+          git pull --rebase origin train/madlad400-3b-shared-20261121
+          git push origin HEAD:refs/heads/train/madlad400-3b-shared-20261121
+      - name: Retain results on any concurrent PR push conflict
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: research-optimize-not-just-more-training
+          path: research/madlad400/optimization_analysis.json
+          if-no-files-found: warn
+          retention-days: 30

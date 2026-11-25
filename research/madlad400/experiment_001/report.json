@@ -1,0 +1,183 @@
+{
+  "all_previous_adapters_unchanged": true,
+  "automatic_dev_chrF_deltas_not_semantic_accuracy": {
+    "en-es": 0.0,
+    "en-fr": 0.0,
+    "es-en": 0.0,
+    "es-fr": 0.0,
+    "fr-en": 0.0,
+    "fr-es": 0.0
+  },
+  "commercial_licensed_model_verified": true,
+  "development_after": {
+    "en-es": {
+      "BLEU_not_accuracy": 27.776,
+      "chrF_not_accuracy": 61.503,
+      "human_meaning_correctness_unverified": true,
+      "inference_seconds": 2.24,
+      "n": 1,
+      "prediction": "¿Puedes darme los horarios de tren para Ann Arbor?"
+    },
+    "en-fr": {
+      "BLEU_not_accuracy": 24.808,
+      "chrF_not_accuracy": 62.134,
+      "human_meaning_correctness_unverified": true,
+      "inference_seconds": 2.141,
+      "n": 1,
+      "prediction": "Vous pouvez me donner les horaires des trains pour Ann Arbor"
+    },
+    "es-en": {
+      "BLEU_not_accuracy": 39.281,
+      "chrF_not_accuracy": 75.178,
+      "human_meaning_correctness_unverified": true,
+      "inference_seconds": 1.882,
+      "n": 1,
+      "prediction": "can you give me the train schedules for ann arbor"
+    },
+    "es-fr": {
+      "BLEU_not_accuracy": 27.776,
+      "chrF_not_accuracy": 73.829,
+      "human_meaning_correctness_unverified": true,
+      "inference_seconds": 2.409,
+      "n": 1,
+      "prediction": "Pouvez-vous me donner les horaires des trains pour Ann Arbor"
+    },
+    "fr-en": {
+      "BLEU_not_accuracy": 39.281,
+      "chrF_not_accuracy": 75.178,
+      "human_meaning_correctness_unverified": true,
+      "inference_seconds": 1.82,
+      "n": 1,
+      "prediction": "can you give me the train schedules for ann arbor"
+    },
+    "fr-es": {
+      "BLEU_not_accuracy": 31.762,
+      "chrF_not_accuracy": 63.47,
+      "human_meaning_correctness_unverified": true,
+      "inference_seconds": 2.267,
+      "n": 1,
+      "prediction": "¿Puede darme los horarios de trenes para Ann Arbor"
+    }
+  },
+  "development_baseline": {
+    "en-es": {
+      "BLEU_not_accuracy": 27.776,
+      "chrF_not_accuracy": 61.503,
+      "human_meaning_correctness_unverified": true,
+      "inference_seconds": 13.005,
+      "n": 1,
+      "prediction": "¿Puedes darme los horarios de tren para Ann Arbor?"
+    },
+    "en-fr": {
+      "BLEU_not_accuracy": 24.808,
+      "chrF_not_accuracy": 62.134,
+      "human_meaning_correctness_unverified": true,
+      "inference_seconds": 2.661,
+      "n": 1,
+      "prediction": "Vous pouvez me donner les horaires des trains pour Ann Arbor"
+    },
+    "es-en": {
+      "BLEU_not_accuracy": 39.281,
+      "chrF_not_accuracy": 75.178,
+      "human_meaning_correctness_unverified": true,
+      "inference_seconds": 1.908,
+      "n": 1,
+      "prediction": "can you give me the train schedules for ann arbor"
+    },
+    "es-fr": {
+      "BLEU_not_accuracy": 27.776,
+      "chrF_not_accuracy": 73.829,
+      "human_meaning_correctness_unverified": true,
+      "inference_seconds": 2.362,
+      "n": 1,
+      "prediction": "Pouvez-vous me donner les horaires des trains pour Ann Arbor"
+    },
+    "fr-en": {
+      "BLEU_not_accuracy": 39.281,
+      "chrF_not_accuracy": 75.178,
+      "human_meaning_correctness_unverified": true,
+      "inference_seconds": 1.868,
+      "n": 1,
+      "prediction": "can you give me the train schedules for ann arbor"
+    },
+    "fr-es": {
+      "BLEU_not_accuracy": 31.762,
+      "chrF_not_accuracy": 63.47,
+      "human_meaning_correctness_unverified": true,
+      "inference_seconds": 2.256,
+      "n": 1,
+      "prediction": "¿Puede darme los horarios de trenes para Ann Arbor"
+    }
+  },
+  "elapsed_seconds": 2079.84,
+  "full_ASR_Whisper_app_integration_verified": false,
+  "human_95_meaning_accuracy_verified": false,
+  "licensed_training_split": "MASSIVE publisher TRAIN CC BY 4.0",
+  "model_commit_SHA": "fa184c675da0b5c9e1c8694fccd4e12e2d422094",
+  "model_family": "T5_pretrained_machine_translation",
+  "model_id": "google/madlad400-3b-mt",
+  "model_license": "apache-2.0",
+  "native_target_codes": 425,
+  "optimizer_trace": [
+    {
+      "direction": "es-en",
+      "gradient_norm": 0.04534,
+      "loss": 1.14062,
+      "source": "MASSIVE_CC-BY-4.0_publisher_TRAIN",
+      "update": 1
+    },
+    {
+      "direction": "fr-en",
+      "gradient_norm": 0.0309,
+      "loss": 0.61719,
+      "source": "MASSIVE_CC-BY-4.0_publisher_TRAIN",
+      "update": 2
+    },
+    {
+      "direction": "en-es",
+      "gradient_norm": 0.04319,
+      "loss": 1.0625,
+      "source": "MASSIVE_CC-BY-4.0_publisher_TRAIN",
+      "update": 3
+    }
+  ],
+  "original_legacy_Marian_models": {
+    "es-en": {
+      "path": "experiments/es_en_v2_runs/candidate_after_three.safetensors",
+      "sha256": "3bf849bb9a4377dcb9f937cdc7750a7f26616fc1c58cf703cef0ba8e46430a71"
+    },
+    "fr-en": {
+      "path": "experiments/balanced_stage5_20261118/saved/french/adapter_selected.safetensors",
+      "sha256": "fba2bd78958bf0bf8a4c14dc55e601e08663633718c4c9c17f91ef9b52dcfa1c"
+    }
+  },
+  "paid_spend_usd": 0,
+  "parent_pretrained_weights_randomly_initialized": false,
+  "peak_rss_kib_linux": 14927708,
+  "previous_500_reviewed_cases_used_as_training": false,
+  "production_activated": false,
+  "publisher_development_only": true,
+  "publisher_final_test_accessed": false,
+  "quality_gate": "research-only, THREE steps are feasibility testing, no accuracy promotion",
+  "real_optimizer_updates": 3,
+  "real_trainable_adapter": {
+    "all_native_languages_share_adapter": true,
+    "all_pretrained_parameters_frozen": true,
+    "alpha": 8,
+    "rank": 4,
+    "targets": [
+      "decoder.block.31.layer.0.SelfAttention.q",
+      "decoder.block.31.layer.0.SelfAttention.v",
+      "decoder.block.31.layer.1.EncDecAttention.q",
+      "decoder.block.31.layer.1.EncDecAttention.v"
+    ],
+    "trainable_parameters": 49152,
+    "trainable_tensors": 8
+  },
+  "reused_incompatible_old_M2M100_weights": false,
+  "status": "completed_real_MADLAD_3B_CPU_finetuning_pilot",
+  "trained_shared_model_adapter_sha256": "56ba0f8072948a91ada0a3ce7f07e018f0a088fc22631b18da2fb79c49433ec3",
+  "training_examples_seen": 3,
+  "truly_context_slanged_trained": false,
+  "warning": "Tiny baseline vs candidate evaluation has only ONE development example/direction. This verifies real training and weights, not meaningful improvement or production adequacy. Do not replace legacy translators on these results."
+}

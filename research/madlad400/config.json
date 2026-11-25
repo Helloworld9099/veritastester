@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "project": "BridgeCaption",
+  "status": "research_only_do_not_activate",
+  "reason": "Choose most broadly documented commercially usable ONE open-weight neural MT backbone within a zero-dollar budget; maximize native translation languages over M2M100.",
+  "model": {
+    "repo_id": "google/madlad400-3b-mt",
+    "revision": "fa184c675da0b5c9e1c8694fccd4e12e2d422094",
+    "license": "apache-2.0",
+    "family": "T5ForConditionalGeneration",
+    "claimed_language_count": 419,
+    "target_token_format": "<2{code}>",
+    "size_bytes_approx": 11800000000,
+    "pretrained_base_not_random": true
+  },
+  "prior_model": {
+    "repo_id": "facebook/m2m100_418M",
+    "selected_lora_sha256": "a00c7965211853df07ce3fa032a76283dfc984dcdaeac85e03263445029ffb8e",
+    "selected_lora_compatible": false,
+    "preserve_past_models": true,
+    "preserve_unchanged_product_default": true
+  },
+  "directions": [
+    "es-en",
+    "fr-en",
+    "en-es",
+    "en-fr",
+    "es-fr",
+    "fr-es"
+  ],
+  "dataset": {
+    "repo_id": "AmazonScience/massive",
+    "revision": "ff6bd8e4b27c3543e4f8fe2108f32bb95a6f8740",
+    "license": "cc-by-4.0",
+    "split_training": "train",
+    "split_development": "validation",
+    "source_pipeline": "research.multilingual_student.data.prepare",
+    "reviewed_500_excluded": true,
+    "NC_excluded": true,
+    "final_test_access": false
+  },
+  "pilot": {
+    "seed": 2026112109,
+    "optimizer_updates": 3,
+    "batch_size": 1,
+    "training_routes": [
+      "es-en",
+      "fr-en",
+      "en-es"
+    ],
+    "lr": 0.00016,
+    "LoRA": {
+      "rank": 4,
+      "alpha": 8,
+      "target": "last_decoder_block_self_and_cross_attention_q_v"
+    },
+    "max_source_tokens": 40,
+    "max_target_tokens": 48,
+    "eval_routes": [
+      "es-en",
+      "fr-en",
+      "en-es",
+      "en-fr",
+      "es-fr",
+      "fr-es"
+    ],
+    "eval_examples_per_route": 1,
+    "checkpoint_every": 1,
+    "number_of_free_cpu_threads": 3,
+    "training_timeout_minutes": 60
+  },
+  "budget": {
+    "max_paid_spend_usd": 0,
+    "github_actions_public_repo_only": true,
+    "external_gpu_not_authorized": true,
+    "hardware": "GitHub public repo Ubuntu runner CPU 4 cores, ~16 GB if available; live memory/disk guard",
+    "weight_download_limit_gb": 13.5,
+    "preflight_network_timeout_seconds": 60
+  },
+  "acceptance": {
+    "sufficient_accuracy_proof": false,
+    "automatic_scores_not_meaning_accuracy": true,
+    "must_compare_against_old_specialists_before_production": true,
+    "critical_error_rate_must_not_increase": true,
+    "only_promote_after_independent_human_review": true
+  },
+  "caveats": [
+    "source/target prefixes must exist in the exact pinned tokenizer",
+    "MADLAD has no compatible M2M100 low-rank weights; continue from translation-pretrained MADLAD base and preserve old teachers for future distillation",
+    "three training updates are a compute-feasibility pilot not expected to establish model quality",
+    "full 3B weights should never be committed to the repository",
+    "model card says over 400 languages; token existence is not independent quality validation"
+  ]
+}

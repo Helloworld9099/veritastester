@@ -1,0 +1,185 @@
+{
+  "status": "actual_free_MADLAD400_int8_CPU_inference_ablation_completed",
+  "pinned_conversion": {
+    "converted_repo": "cstr/madlad400-3b-ct2-int8",
+    "converted_commit": "fd0b55729c074372eb84b52b9309a00dc65c40c4",
+    "license": "apache-2.0",
+    "candidate_model_size_bytes": 2960113457,
+    "file_sizes": {
+      "config.json": 224,
+      "model.bin": 2950208290,
+      "shared_vocabulary.json": 5477099,
+      "spiece.model": 4427844
+    },
+    "conversion_not_verified_exact_against_google_pretrained": true,
+    "source_provenance": "Third-party conversion claims to derive from google/madlad400-3b-mt; no parity assumed.",
+    "files_sha256": {
+      "config.json": "90fb54962455a4e0a0bc7235c0f063d7e46d9c1a1ae003af8059809abd6aeece",
+      "model.bin": "890ed3b7e4654dcf1b9e7f2ce6ce641447462e782881e81aac443568eb1ca702",
+      "shared_vocabulary.json": "c327551ce3ca6efc7b437e11a267f79979893332dda8a1d146e2c950815193f8",
+      "spiece.model": "ef11ac9a22c7503492f56d48dce53be20e339b63605983e9f27d2cd0e0f3922c"
+    }
+  },
+  "upstream_google_revision": "fa184c675da0b5c9e1c8694fccd4e12e2d422094",
+  "actual_CTranslate2_version": "4.9.0",
+  "actual_sentencepiece_version": "native_spm",
+  "model_loads": 1,
+  "model_load_seconds": 1.78,
+  "beam_decoding_comparisons": {
+    "beam_1": {
+      "per_route_metrics": {
+        "es-en": {
+          "n": 4,
+          "chrF_not_accuracy": 49.987,
+          "BLEU_not_accuracy": 8.9538,
+          "first_pred": "I'm going to need sunscreen this weekend.",
+          "human_adequacy_verified": false,
+          "publisher_development_only": true
+        },
+        "fr-en": {
+          "n": 4,
+          "chrF_not_accuracy": 55.8568,
+          "BLEU_not_accuracy": 16.0865,
+          "first_pred": "Will I need sunscreen this weekend?",
+          "human_adequacy_verified": false,
+          "publisher_development_only": true
+        },
+        "en-es": {
+          "n": 4,
+          "chrF_not_accuracy": 71.0677,
+          "BLEU_not_accuracy": 51.7033,
+          "first_pred": "¿Necesitaré protector solar este fin de semana?",
+          "human_adequacy_verified": false,
+          "publisher_development_only": true
+        },
+        "en-fr": {
+          "n": 4,
+          "chrF_not_accuracy": 77.634,
+          "BLEU_not_accuracy": 57.0311,
+          "first_pred": "Aurai-je besoin de crème solaire ce week-end ?",
+          "human_adequacy_verified": false,
+          "publisher_development_only": true
+        },
+        "es-fr": {
+          "n": 4,
+          "chrF_not_accuracy": 72.7476,
+          "BLEU_not_accuracy": 52.9784,
+          "first_pred": "J'aurai besoin de crème solaire ce week-end.",
+          "human_adequacy_verified": false,
+          "publisher_development_only": true
+        },
+        "fr-es": {
+          "n": 4,
+          "chrF_not_accuracy": 70.7741,
+          "BLEU_not_accuracy": 51.7033,
+          "first_pred": "¿Necesitaría protector solar este fin de semana?",
+          "human_adequacy_verified": false,
+          "publisher_development_only": true
+        }
+      },
+      "tested_utterances": 24,
+      "mean_seconds": 1.6468,
+      "median_seconds": 1.6014,
+      "p95_seconds": 2.2162,
+      "worst_seconds": 2.238,
+      "total_decode_seconds": 39.5233,
+      "output_sample_not_independently_rated": true
+    },
+    "beam_2": {
+      "per_route_metrics": {
+        "es-en": {
+          "n": 4,
+          "chrF_not_accuracy": 49.987,
+          "BLEU_not_accuracy": 8.9538,
+          "first_pred": "I'm going to need sunscreen this weekend.",
+          "human_adequacy_verified": false,
+          "publisher_development_only": true
+        },
+        "fr-en": {
+          "n": 4,
+          "chrF_not_accuracy": 57.8896,
+          "BLEU_not_accuracy": 16.3267,
+          "first_pred": "Will I need sunscreen this weekend?",
+          "human_adequacy_verified": false,
+          "publisher_development_only": true
+        },
+        "en-es": {
+          "n": 4,
+          "chrF_not_accuracy": 69.9792,
+          "BLEU_not_accuracy": 49.8066,
+          "first_pred": "Necesito protector solar este fin de semana?",
+          "human_adequacy_verified": false,
+          "publisher_development_only": true
+        },
+        "en-fr": {
+          "n": 4,
+          "chrF_not_accuracy": 77.634,
+          "BLEU_not_accuracy": 57.0311,
+          "first_pred": "Aurai-je besoin de crème solaire ce week-end ?",
+          "human_adequacy_verified": false,
+          "publisher_development_only": true
+        },
+        "es-fr": {
+          "n": 4,
+          "chrF_not_accuracy": 72.7476,
+          "BLEU_not_accuracy": 52.9784,
+          "first_pred": "J'aurai besoin de crème solaire ce week-end.",
+          "human_adequacy_verified": false,
+          "publisher_development_only": true
+        },
+        "fr-es": {
+          "n": 4,
+          "chrF_not_accuracy": 69.909,
+          "BLEU_not_accuracy": 49.8066,
+          "first_pred": "¿Necesitaría protector solar este fin de semana?",
+          "human_adequacy_verified": false,
+          "publisher_development_only": true
+        }
+      },
+      "tested_utterances": 24,
+      "mean_seconds": 2.0158,
+      "median_seconds": 1.9535,
+      "p95_seconds": 2.7406,
+      "worst_seconds": 2.8597,
+      "total_decode_seconds": 48.3781,
+      "output_sample_not_independently_rated": true
+    }
+  },
+  "additional_native_language_sentinels": {
+    "en-de": {
+      "source_text": "I need to reschedule the meeting.",
+      "translated": "Ich muss das Meeting verschieben. Ich muss das Meeting verschieben.",
+      "seconds": 2.1006,
+      "no_verified_bilingual_reference": true
+    },
+    "en-pt": {
+      "source_text": "Don't forget your bag when you leave.",
+      "translated": "Não se esqueça da sua mala quando sair.",
+      "seconds": 1.5617,
+      "no_verified_bilingual_reference": true
+    },
+    "en-ar": {
+      "source_text": "Can you pick me up after work?",
+      "translated": "هل يمكنك أن تأخذني بعد العمل؟",
+      "seconds": 1.3337,
+      "no_verified_bilingual_reference": true
+    },
+    "en-zh": {
+      "source_text": "Wait, I meant next Friday, not today.",
+      "translated": "等等，我是说下周五，不是今天，等等，我是说下周五，不是今天。",
+      "seconds": 3.6709,
+      "no_verified_bilingual_reference": true
+    }
+  },
+  "frozen_publisher_development_group_count": 12,
+  "publisher_test_accessed": false,
+  "old_reviewed_500_reused_for_training": false,
+  "human_95_accuracy_verified": false,
+  "production_activated": false,
+  "new_training_updates": 0,
+  "file_format": "CTranslate2 3B INT8 pretrained conversion (no LoRA training)",
+  "peak_rss_kib_linux": 3324796,
+  "elapsed_seconds": 459.06,
+  "paid_spend_usd": 0,
+  "warning": "A third-party converted checkpoint is not proved exactly equivalent to Google full-precision pretrained base. BLEU/chrF on 4 samples per route and native target tags cannot establish real-world conversational meaning or quality retention."
+}
